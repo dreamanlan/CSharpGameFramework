@@ -56,15 +56,15 @@ namespace DotnetStoryScript.CommonCommands
                 m_Format.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_FormatArgs.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<StringBuilder> m_StringBuilder = new StoryValue<StringBuilder>();
-        private IStoryFunction m_Format = new StoryValue();
+        private IStoryFunction<StringBuilder> m_StringBuilder = new StoryFunction<StringBuilder>();
+        private IStoryFunction m_Format = new StoryFunction();
         private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
     }
     /// <summary>
@@ -118,15 +118,15 @@ namespace DotnetStoryScript.CommonCommands
                 m_Format.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_FormatArgs.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<StringBuilder> m_StringBuilder = new StoryValue<StringBuilder>();
-        private IStoryFunction m_Format = new StoryValue();
+        private IStoryFunction<StringBuilder> m_StringBuilder = new StoryFunction<StringBuilder>();
+        private IStoryFunction m_Format = new StoryFunction();
         private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
     }
     /// <summary>
@@ -173,8 +173,8 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<string> m_File = new StoryValue<string>();
-        private IStoryFunction m_Val = new StoryValue();
+        private IStoryFunction<string> m_File = new StoryFunction<string>();
+        private IStoryFunction m_Val = new StoryFunction();
     }
     /// <summary>
     /// writefile(file, val);
@@ -214,8 +214,8 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<string> m_File = new StoryValue<string>();
-        private IStoryFunction m_Val = new StoryValue();
+        private IStoryFunction<string> m_File = new StoryFunction<string>();
+        private IStoryFunction m_Val = new StoryFunction();
     }
     /// <summary>
     /// hashtableadd(hashtable, key, val);
@@ -259,9 +259,9 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction m_Var = new StoryValue();
-        private IStoryFunction m_Key = new StoryValue();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
+        private IStoryFunction m_Key = new StoryFunction();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// hashtableset(hashtable,key,val);
@@ -307,9 +307,9 @@ namespace DotnetStoryScript.CommonCommands
             return true;
         }
 
-        private IStoryFunction m_Var = new StoryValue();
-        private IStoryFunction m_Key = new StoryValue();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
+        private IStoryFunction m_Key = new StoryFunction();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// hashtableremove(hashtable,key);
@@ -350,8 +350,8 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction m_Var = new StoryValue();
-        private IStoryFunction m_Key = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
+        private IStoryFunction m_Key = new StoryFunction();
     }
     /// <summary>
     /// hashtableclear(hashtable);
@@ -389,6 +389,6 @@ namespace DotnetStoryScript.CommonCommands
             return true;
         }
 
-        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
     }
 }

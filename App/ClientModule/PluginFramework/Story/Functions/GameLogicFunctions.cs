@@ -76,8 +76,8 @@ namespace ScriptableFramework.Story.Functions
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<string> m_AttrName = new StoryValue<string>();
-        private IStoryFunction m_DefaultValue = new StoryValue();
+        private IStoryFunction<string> m_AttrName = new StoryFunction<string>();
+        private IStoryFunction m_DefaultValue = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -154,8 +154,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<List<object>> m_Spline = new StoryValue<List<object>>();
-        private IStoryFunction<Vector3> m_Offset = new StoryValue<Vector3>();
+        private IStoryFunction<List<object>> m_Spline = new StoryFunction<List<object>>();
+        private IStoryFunction<Vector3> m_Offset = new StoryFunction<Vector3>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -226,9 +226,9 @@ namespace ScriptableFramework.Story.Functions
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<Vector3> m_Pt = new StoryValue<Vector3>();
-        private IStoryFunction<Vector3> m_Pt2 = new StoryValue<Vector3>();
-        private IStoryFunction<Vector3> m_Offset = new StoryValue<Vector3>();
+        private IStoryFunction<Vector3> m_Pt = new StoryFunction<Vector3>();
+        private IStoryFunction<Vector3> m_Pt2 = new StoryFunction<Vector3>();
+        private IStoryFunction<Vector3> m_Offset = new StoryFunction<Vector3>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -292,8 +292,8 @@ namespace ScriptableFramework.Story.Functions
             }
         }
 
-        private IStoryFunction<int> m_DlgId = new StoryValue<int>();
-        private IStoryFunction<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_DlgId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Index = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -362,8 +362,8 @@ namespace ScriptableFramework.Story.Functions
             }
         }
 
-        private IStoryFunction<int> m_CampId = new StoryValue<int>();
-        private IStoryFunction<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_CampId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Index = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -425,8 +425,8 @@ namespace ScriptableFramework.Story.Functions
             }
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<string> m_DataType = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<string> m_DataType = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -485,7 +485,7 @@ namespace ScriptableFramework.Story.Functions
             }
         }
 
-        private IStoryFunction<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -540,7 +540,7 @@ namespace ScriptableFramework.Story.Functions
             }
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -692,7 +692,7 @@ namespace ScriptableFramework.Story.Functions
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -927,7 +927,7 @@ namespace ScriptableFramework.Story.Functions
             }
         }
 
-        private IStoryFunction<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -985,7 +985,7 @@ namespace ScriptableFramework.Story.Functions
             }
         }
 
-        private IStoryFunction<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1038,7 +1038,7 @@ namespace ScriptableFramework.Story.Functions
                 m_Value = Dict.Get(dictId);
             }
         }
-        private IStoryFunction<string> m_DictId = new StoryValue<string>();
+        private IStoryFunction<string> m_DictId = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1053,7 +1053,7 @@ namespace ScriptableFramework.Story.Functions
                     m_DictId.InitFromDsl(callData.GetParam(0));
                 }
                 for (int i = 1; i < num; ++i) {
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(callData.GetParam(i));
                     m_FormatArgs.Add(val);
                 }
@@ -1107,7 +1107,7 @@ namespace ScriptableFramework.Story.Functions
                 m_Value = Dict.Format(dictId, args);
             }
         }
-        private IStoryFunction<string> m_DictId = new StoryValue<string>();
+        private IStoryFunction<string> m_DictId = new StoryFunction<string>();
         private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;

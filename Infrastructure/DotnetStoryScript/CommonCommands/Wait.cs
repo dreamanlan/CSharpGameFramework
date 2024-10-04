@@ -35,7 +35,7 @@ namespace DotnetStoryScript.CommonCommands
             int curTime = m_CurTime;
             m_CurTime += (int)delta;
             int val = m_Time.Value;
-            if (curTime <= val && curTime <= StoryValueHelper.c_MaxWaitCommandTime)
+            if (curTime <= val && curTime <= StoryFunctionHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -68,8 +68,8 @@ namespace DotnetStoryScript.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryFunction<int> m_Time = new StoryValue<int>();
-        private IStoryFunction<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryFunction<int>();
+        private IStoryFunction<int> m_Condition = new StoryFunction<int>();
         private bool m_HaveCondition = false;
         private int m_CurTime = 0;
     }
@@ -106,7 +106,7 @@ namespace DotnetStoryScript.CommonCommands
             }
             int curTime = (int)ScriptableFramework.TimeUtility.GetLocalRealMilliseconds();
             int val = m_Time.Value;
-            if (curTime <= m_RealStartTime + val && curTime <= m_RealStartTime + StoryValueHelper.c_MaxWaitCommandTime)
+            if (curTime <= m_RealStartTime + val && curTime <= m_RealStartTime + StoryFunctionHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -139,8 +139,8 @@ namespace DotnetStoryScript.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryFunction<int> m_Time = new StoryValue<int>();
-        private IStoryFunction<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryFunction<int>();
+        private IStoryFunction<int> m_Condition = new StoryFunction<int>();
         private bool m_HaveCondition = false;
         private int m_RealStartTime = 0;
     }
@@ -181,7 +181,7 @@ namespace DotnetStoryScript.CommonCommands
             int curTime = m_CurTime;
             m_CurTime += (int)delta;
             int val = m_Time.Value;
-            if (curTime <= val && curTime <= StoryValueHelper.c_MaxWaitCommandTime)
+            if (curTime <= val && curTime <= StoryFunctionHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -214,8 +214,8 @@ namespace DotnetStoryScript.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryFunction<int> m_Time = new StoryValue<int>();
-        private IStoryFunction<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryFunction<int>();
+        private IStoryFunction<int> m_Condition = new StoryFunction<int>();
         private bool m_HaveCondition = false;
         private int m_CurTime = 0;
     }
@@ -258,7 +258,7 @@ namespace DotnetStoryScript.CommonCommands
             }
             int curTime = (int)ScriptableFramework.TimeUtility.GetLocalRealMilliseconds();
             int val = m_Time.Value;
-            if (curTime <= m_RealStartTime + val && curTime <= m_RealStartTime + StoryValueHelper.c_MaxWaitCommandTime)
+            if (curTime <= m_RealStartTime + val && curTime <= m_RealStartTime + StoryFunctionHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -291,8 +291,8 @@ namespace DotnetStoryScript.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryFunction<int> m_Time = new StoryValue<int>();
-        private IStoryFunction<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryFunction<int>();
+        private IStoryFunction<int> m_Condition = new StoryFunction<int>();
         private bool m_HaveCondition = false;
         private int m_RealStartTime = 0;
     }
@@ -340,7 +340,7 @@ namespace DotnetStoryScript.CommonCommands
             return true;
         }
 
-        private IStoryFunction<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Condition = new StoryFunction<int>();
         private bool m_HaveCondition = false;
     }
 }

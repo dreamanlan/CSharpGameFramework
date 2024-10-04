@@ -117,7 +117,7 @@ namespace ScriptableFramework.Story.Functions
             }
         }
         private int m_ParamNum = 0;
-        private IStoryFunction<int> m_CampId = new StoryValue<int>();
+        private IStoryFunction<int> m_CampId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -171,7 +171,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -229,7 +229,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -287,7 +287,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -345,7 +345,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -408,8 +408,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
-        private IStoryFunction<int> m_ImpactId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
+        private IStoryFunction<int> m_ImpactId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -464,8 +464,8 @@ namespace ScriptableFramework.Story.Functions
                 m_Value = scene.GetNpcCount(startUnitId, endUnitId);
             }
         }
-        private IStoryFunction<int> m_StartUnitId = new StoryValue<int>();
-        private IStoryFunction<int> m_EndUnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_StartUnitId = new StoryFunction<int>();
+        private IStoryFunction<int> m_EndUnitId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

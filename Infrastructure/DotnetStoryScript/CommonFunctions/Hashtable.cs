@@ -57,7 +57,7 @@ namespace DotnetStoryScript.CommonFunctions
             }
         }
 
-        private IStoryFunction<string> m_String = new StoryValue<string>();
+        private IStoryFunction<string> m_String = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -111,7 +111,7 @@ namespace DotnetStoryScript.CommonFunctions
             }
         }
 
-        private IStoryFunction<string> m_String = new StoryValue<string>();
+        private IStoryFunction<string> m_String = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -167,7 +167,7 @@ namespace DotnetStoryScript.CommonFunctions
             }
         }
 
-        private IStoryFunction m_Hashtable = new StoryValue();
+        private IStoryFunction m_Hashtable = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -260,7 +260,7 @@ namespace DotnetStoryScript.CommonFunctions
             }
         }
 
-        private IStoryFunction<string> m_String = new StoryValue<string>();
+        private IStoryFunction<string> m_String = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -304,8 +304,8 @@ namespace DotnetStoryScript.CommonFunctions
     {
         private class Pair
         {
-            internal IStoryFunction m_Key = new StoryValue();
-            internal IStoryFunction m_Value = new StoryValue();
+            internal IStoryFunction m_Key = new StoryFunction();
+            internal IStoryFunction m_Value = new StoryFunction();
             internal Pair Clone()
             {
                 Pair pair = new Pair();
@@ -491,9 +491,9 @@ namespace DotnetStoryScript.CommonFunctions
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction m_Var = new StoryValue();
-        private IStoryFunction m_Key = new StoryValue();
-        private IStoryFunction m_DefValue = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
+        private IStoryFunction m_Key = new StoryFunction();
+        private IStoryFunction m_DefValue = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -555,7 +555,7 @@ namespace DotnetStoryScript.CommonFunctions
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -619,7 +619,7 @@ namespace DotnetStoryScript.CommonFunctions
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -683,7 +683,7 @@ namespace DotnetStoryScript.CommonFunctions
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

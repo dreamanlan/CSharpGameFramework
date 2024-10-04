@@ -113,7 +113,7 @@ internal class NativeStoryFunction : IStoryFunction
     }
 
     private string m_ClassName;
-    private StoryValueResult m_Proxy = new StoryValueResult();
+    private StoryFunctionResult m_Proxy = new StoryFunctionResult();
     private IStoryFunctionPlugin m_Plugin;
 }
 internal class ScriptStoryFunction : IStoryFunction
@@ -128,7 +128,7 @@ internal class ScriptStoryFunction : IStoryFunction
         m_FileName = m_ClassName.Replace(".", "__");
 
         if (callScript) {
-            m_Plugin = new ScriptStoryValuePlugin();
+            m_Plugin = new ScriptStoryFunctionPlugin();
             m_Plugin.LoadScript(m_FileName);
             if (null != m_Plugin) {
                 m_Plugin.SetProxy(m_Proxy);
@@ -159,7 +159,7 @@ internal class ScriptStoryFunction : IStoryFunction
         newObj.m_Proxy = m_Proxy.Clone();
         if (null != m_Plugin) {
             var ret = m_Plugin.Clone();
-            newObj.m_Plugin = new ScriptStoryValuePlugin();
+            newObj.m_Plugin = new ScriptStoryFunctionPlugin();
             if (null != newObj.m_Plugin) {
                 newObj.m_Plugin.SetProxy(newObj.m_Proxy);
             }
@@ -202,6 +202,6 @@ internal class ScriptStoryFunction : IStoryFunction
 
     private string m_FileName;
     private string m_ClassName;
-    private StoryValueResult m_Proxy = new StoryValueResult();
-    private ScriptStoryValuePlugin m_Plugin;
+    private StoryFunctionResult m_Proxy = new StoryFunctionResult();
+    private ScriptStoryFunctionPlugin m_Plugin;
 }

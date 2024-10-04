@@ -154,7 +154,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

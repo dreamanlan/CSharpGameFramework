@@ -44,7 +44,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<int> val = new StoryValue<int>();
+                IStoryFunction<int> val = new StoryFunction<int>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_ObjResIds.Add(val);
             }
@@ -129,8 +129,8 @@ namespace ScriptableFramework.Story.Commands
             }
             return true;
         }
-        private IStoryFunction<string> m_StoryId = new StoryValue<string>();
-        private IStoryFunction<int> m_Multiple = new StoryValue<int>();
+        private IStoryFunction<string> m_StoryId = new StoryFunction<string>();
+        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
     }
     /// <summary>
     /// stopstory(story_id);
@@ -183,8 +183,8 @@ namespace ScriptableFramework.Story.Commands
             }
             return true;
         }
-        private IStoryFunction<string> m_StoryId = new StoryValue<string>();
-        private IStoryFunction<int> m_Multiple = new StoryValue<int>();
+        private IStoryFunction<string> m_StoryId = new StoryFunction<string>();
+        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
     }
     /// <summary>
     /// waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)];
@@ -259,7 +259,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryValue<string>();
+                IStoryFunction<string> val = new StoryFunction<string>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_StoryIds.Add(val);
             }
@@ -322,12 +322,12 @@ namespace ScriptableFramework.Story.Commands
             }
         }
         private List<IStoryFunction<string>> m_StoryIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<string> m_SetVar = new StoryValue<string>();
-        private IStoryFunction m_SetVal = new StoryValue();
-        private IStoryFunction<int> m_TimeoutVal = new StoryValue<int>();
-        private IStoryFunction<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryFunction m_TimeoutSetVal = new StoryValue();
-        private IStoryFunction<int> m_Multiple = new StoryValue<int>();
+        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
+        private IStoryFunction m_SetVal = new StoryFunction();
+        private IStoryFunction<int> m_TimeoutVal = new StoryFunction<int>();
+        private IStoryFunction<string> m_TimeoutSetVar = new StoryFunction<string>();
+        private IStoryFunction m_TimeoutSetVal = new StoryFunction();
+        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
         private bool m_HaveMultiple = false;
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
@@ -374,7 +374,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryValue<string>();
+                IStoryFunction<string> val = new StoryFunction<string>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_StoryIds.Add(val);
             }
@@ -396,7 +396,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
         private List<IStoryFunction<string>> m_StoryIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<int> m_Multiple = new StoryValue<int>();
+        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
     }
     /// <summary>
     /// resumestory(storyid1,storyid2,...);
@@ -440,7 +440,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryValue<string>();
+                IStoryFunction<string> val = new StoryFunction<string>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_StoryIds.Add(val);
             }
@@ -462,7 +462,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
         private List<IStoryFunction<string>> m_StoryIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<int> m_Multiple = new StoryValue<int>();
+        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
     }
     /// <summary>
     /// firemessage(msgid,arg1,arg2,...);
@@ -527,14 +527,14 @@ namespace ScriptableFramework.Story.Commands
                 m_MsgId.InitFromDsl(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgArgs.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<string> m_MsgId = new StoryValue<string>();
+        private IStoryFunction<string> m_MsgId = new StoryFunction<string>();
         private List<IStoryFunction> m_MsgArgs = new List<IStoryFunction>();
         private bool m_IsConcurrent = false;
     }
@@ -630,7 +630,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryValue<string>();
+                IStoryFunction<string> val = new StoryFunction<string>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
@@ -674,11 +674,11 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private List<IStoryFunction<string>> m_MsgIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<string> m_SetVar = new StoryValue<string>();
-        private IStoryFunction m_SetVal = new StoryValue();
-        private IStoryFunction<int> m_TimeoutVal = new StoryValue<int>();
-        private IStoryFunction<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryFunction m_TimeoutSetVal = new StoryValue();
+        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
+        private IStoryFunction m_SetVal = new StoryFunction();
+        private IStoryFunction<int> m_TimeoutVal = new StoryFunction<int>();
+        private IStoryFunction<string> m_TimeoutSetVar = new StoryFunction<string>();
+        private IStoryFunction m_TimeoutSetVal = new StoryFunction();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
         private long m_StartTime = 0;
@@ -752,7 +752,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryValue<string>();
+                IStoryFunction<string> val = new StoryFunction<string>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
@@ -796,11 +796,11 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private List<IStoryFunction<string>> m_MsgIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<string> m_SetVar = new StoryValue<string>();
-        private IStoryFunction m_SetVal = new StoryValue();
-        private IStoryFunction<int> m_TimeoutVal = new StoryValue<int>();
-        private IStoryFunction<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryFunction m_TimeoutSetVal = new StoryValue();
+        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
+        private IStoryFunction m_SetVal = new StoryFunction();
+        private IStoryFunction<int> m_TimeoutVal = new StoryFunction<int>();
+        private IStoryFunction<string> m_TimeoutSetVar = new StoryFunction<string>();
+        private IStoryFunction m_TimeoutSetVal = new StoryFunction();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
     }
@@ -841,7 +841,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryValue<string>();
+                IStoryFunction<string> val = new StoryFunction<string>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
@@ -887,7 +887,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryValue<string>();
+                IStoryFunction<string> val = new StoryFunction<string>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
@@ -964,14 +964,14 @@ namespace ScriptableFramework.Story.Commands
                 m_Msg.InitFromDsl(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<string> m_Msg = new StoryValue<string>();
+        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -1049,14 +1049,14 @@ namespace ScriptableFramework.Story.Commands
                 m_Msg.InitFromDsl(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<string> m_Msg = new StoryValue<string>();
+        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -1108,15 +1108,15 @@ namespace ScriptableFramework.Story.Commands
                 m_Group.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<string> m_EventName = new StoryValue<string>();
-        private IStoryFunction<string> m_Group = new StoryValue<string>();
+        private IStoryFunction<string> m_EventName = new StoryFunction<string>();
+        private IStoryFunction<string> m_Group = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -1173,15 +1173,15 @@ namespace ScriptableFramework.Story.Commands
                 m_Msg.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<string> m_ObjName = new StoryValue<string>();
-        private IStoryFunction<string> m_Msg = new StoryValue<string>();
+        private IStoryFunction<string> m_ObjName = new StoryFunction<string>();
+        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -1238,15 +1238,15 @@ namespace ScriptableFramework.Story.Commands
                 m_Msg.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<string> m_ObjTag = new StoryValue<string>();
-        private IStoryFunction<string> m_Msg = new StoryValue<string>();
+        private IStoryFunction<string> m_ObjTag = new StoryFunction<string>();
+        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -1312,14 +1312,14 @@ namespace ScriptableFramework.Story.Commands
                 m_Msg.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
-        private IStoryFunction m_Object = new StoryValue();
-        private IStoryFunction<string> m_Msg = new StoryValue<string>();
+        private IStoryFunction m_Object = new StoryFunction();
+        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -1381,17 +1381,17 @@ namespace ScriptableFramework.Story.Commands
                 m_Msg.InitFromDsl(callData.GetParam(3));
             }
             for (int i = 4; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<int> m_ActorId = new StoryValue<int>();
-        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
-        private IStoryFunction<int> m_Seq = new StoryValue<int>();
-        private IStoryFunction<string> m_Msg = new StoryValue<string>();
+        private IStoryFunction<int> m_ActorId = new StoryFunction<int>();
+        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Seq = new StoryFunction<int>();
+        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -1558,15 +1558,15 @@ namespace ScriptableFramework.Story.Commands
             }
         }
 
-        private IStoryFunction<string> m_Name = new StoryValue<string>();
-        private IStoryFunction<string> m_Prefab = new StoryValue<string>();
-        private IStoryFunction m_Parent = new StoryValue();
+        private IStoryFunction<string> m_Name = new StoryFunction<string>();
+        private IStoryFunction<string> m_Prefab = new StoryFunction<string>();
+        private IStoryFunction m_Parent = new StoryFunction();
         private bool m_HaveParent = false;
         private bool m_HaveObj = false;
-        private IStoryFunction<string> m_ObjVarName = new StoryValue<string>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Position = new StoryValue<ScriptRuntime.Vector3>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Rotation = new StoryValue<ScriptRuntime.Vector3>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Scale = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryFunction<string> m_ObjVarName = new StoryFunction<string>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Position = new StoryFunction<ScriptRuntime.Vector3>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Rotation = new StoryFunction<ScriptRuntime.Vector3>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Scale = new StoryFunction<ScriptRuntime.Vector3>();
     }
     /// <summary>
     /// settransform(name, local_or_world){
@@ -1684,11 +1684,11 @@ namespace ScriptableFramework.Story.Commands
             }
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<int> m_LocalOrWorld = new StoryValue<int>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Position = new StoryValue<ScriptRuntime.Vector3>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Rotation = new StoryValue<ScriptRuntime.Vector3>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Scale = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<int> m_LocalOrWorld = new StoryFunction<int>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Position = new StoryFunction<ScriptRuntime.Vector3>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Rotation = new StoryFunction<ScriptRuntime.Vector3>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Scale = new StoryFunction<ScriptRuntime.Vector3>();
     }
     /// <summary>
     /// addtransform(name, local_or_world){
@@ -1810,11 +1810,11 @@ namespace ScriptableFramework.Story.Commands
             }
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<int> m_LocalOrWorld = new StoryValue<int>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Position = new StoryValue<ScriptRuntime.Vector3>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Rotation = new StoryValue<ScriptRuntime.Vector3>();
-        private IStoryFunction<ScriptRuntime.Vector3> m_Scale = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<int> m_LocalOrWorld = new StoryFunction<int>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Position = new StoryFunction<ScriptRuntime.Vector3>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Rotation = new StoryFunction<ScriptRuntime.Vector3>();
+        private IStoryFunction<ScriptRuntime.Vector3> m_Scale = new StoryFunction<ScriptRuntime.Vector3>();
     }
     /// <summary>
     /// destroygameobject(path);
@@ -1863,7 +1863,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
+        private IStoryFunction m_ObjPath = new StoryFunction();
     }
     /// <summary>
     /// setparent(objpath,parent,stay_world_pos);
@@ -1948,9 +1948,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction m_Parent = new StoryValue();
-        private IStoryFunction<int> m_StayWorldPos = new StoryValue<int>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction m_Parent = new StoryFunction();
+        private IStoryFunction<int> m_StayWorldPos = new StoryFunction<int>();
     }
     /// <summary>
     /// setactive(objpath,1_or_0);
@@ -2003,8 +2003,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<int> m_Active = new StoryValue<int>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<int> m_Active = new StoryFunction<int>();
     }
     /// <summary>
     /// setvisible(objpath,1_or_0);
@@ -2065,8 +2065,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<int> m_Visible = new StoryValue<int>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<int> m_Visible = new StoryFunction<int>();
     }
     /// <summary>
     /// putonground(objpath);
@@ -2117,7 +2117,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
+        private IStoryFunction m_ObjPath = new StoryFunction();
     }
     /// <summary>
     /// setnavmeshagentenable(objpath,1_or_0);
@@ -2173,8 +2173,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<int> m_Visible = new StoryValue<int>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<int> m_Visible = new StoryFunction<int>();
     }
     /// <summary>
     /// addcomponent(objpath,type)[obj("varname")];
@@ -2268,10 +2268,10 @@ namespace ScriptableFramework.Story.Commands
                 m_HaveObj = true;
             }
         }
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction m_ComponentType = new StoryValue();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction m_ComponentType = new StoryFunction();
         private bool m_HaveObj = false;
-        private IStoryFunction<string> m_ObjVarName = new StoryValue<string>();
+        private IStoryFunction<string> m_ObjVarName = new StoryFunction<string>();
     }
     /// <summary>
     /// removecomponent(objpath,type);
@@ -2337,8 +2337,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction m_ComponentType = new StoryValue();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction m_ComponentType = new StoryFunction();
     }
     /// <summary>
     /// installplugin(obj_path, plugin_class, is_tick_plugin, use_lua_plugin);
@@ -2395,10 +2395,10 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_ObjPath = new StoryValue<string>();
-        private IStoryFunction<string> m_PluginClass = new StoryValue<string>();
-        private IStoryFunction<int> m_IsTickPlugin = new StoryValue<int>();
-        private IStoryFunction<int> m_UseScriptPlugin = new StoryValue<int>();
+        private IStoryFunction<string> m_ObjPath = new StoryFunction<string>();
+        private IStoryFunction<string> m_PluginClass = new StoryFunction<string>();
+        private IStoryFunction<int> m_IsTickPlugin = new StoryFunction<int>();
+        private IStoryFunction<int> m_UseScriptPlugin = new StoryFunction<int>();
     }
     /// <summary>
     /// removeplugin(obj_path, plugin_class, is_tick_plugin, use_lua_plugin);
@@ -2455,10 +2455,10 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_ObjPath = new StoryValue<string>();
-        private IStoryFunction<string> m_PluginClass = new StoryValue<string>();
-        private IStoryFunction<int> m_IsTickPlugin = new StoryValue<int>();
-        private IStoryFunction<int> m_UseScriptPlugin = new StoryValue<int>();
+        private IStoryFunction<string> m_ObjPath = new StoryFunction<string>();
+        private IStoryFunction<string> m_PluginClass = new StoryFunction<string>();
+        private IStoryFunction<int> m_IsTickPlugin = new StoryFunction<int>();
+        private IStoryFunction<int> m_UseScriptPlugin = new StoryFunction<int>();
     }
     /// <summary>
     /// openurl(url);
@@ -2495,7 +2495,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_Url = new StoryValue<string>();
+        private IStoryFunction<string> m_Url = new StoryFunction<string>();
     }
     /// <summary>
     /// quit();
@@ -2560,7 +2560,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_TargetSceneId = new StoryValue<int>();
+        private IStoryFunction<int> m_TargetSceneId = new StoryFunction<int>();
     }
     /// <summary>
     /// openbattle(target_scene_id);
@@ -2598,7 +2598,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_TargetSceneId = new StoryValue<int>();
+        private IStoryFunction<int> m_TargetSceneId = new StoryFunction<int>();
     }
     /// <summary>
     /// closebattle(target_scene_id);
@@ -2636,7 +2636,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_TargetSceneId = new StoryValue<int>();
+        private IStoryFunction<int> m_TargetSceneId = new StoryFunction<int>();
     }
     /// <summary>
     /// createscenelogic(config_id,logic_id,stringlist("param1 param2 param3 ..."));
@@ -2684,9 +2684,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ConfigId = new StoryValue<int>();
-        private IStoryFunction<int> m_Logic = new StoryValue<int>();
-        private IStoryFunction<IEnumerable> m_Params = new StoryValue<IEnumerable>();
+        private IStoryFunction<int> m_ConfigId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Logic = new StoryFunction<int>();
+        private IStoryFunction<IEnumerable> m_Params = new StoryFunction<IEnumerable>();
     }
     /// <summary>
     /// destroyscenelogic(config_id);
@@ -2721,7 +2721,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ConfigId = new StoryValue<int>();
+        private IStoryFunction<int> m_ConfigId = new StoryFunction<int>();
     }
     /// <summary>
     /// pausescenelogic(scene_logic_config_id,true_or_false);
@@ -2768,8 +2768,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_SceneLogicConfigId = new StoryValue<int>();
-        private IStoryFunction<string> m_Enabled = new StoryValue<string>();
+        private IStoryFunction<int> m_SceneLogicConfigId = new StoryFunction<int>();
+        private IStoryFunction<string> m_Enabled = new StoryFunction<string>();
     }
     /// <summary>
     /// restarttimeout(scene_logic_config_id[,timeout]);
@@ -2830,8 +2830,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<int> m_SceneLogicConfigId = new StoryValue<int>();
-        private IStoryFunction<int> m_Timeout = new StoryValue<int>();
+        private IStoryFunction<int> m_SceneLogicConfigId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Timeout = new StoryFunction<int>();
     }
     /// <summary>
     /// highlightpromptwithdict(dictid,arg1,arg2,...);
@@ -2881,13 +2881,13 @@ namespace ScriptableFramework.Story.Commands
                 m_DictId.InitFromDsl(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_DictArgs.Add(val);
             }
             return true;
         }
-        private IStoryFunction<string> m_DictId = new StoryValue<string>();
+        private IStoryFunction<string> m_DictId = new StoryFunction<string>();
         private List<IStoryFunction> m_DictArgs = new List<IStoryFunction>();
     }
     /// <summary>
@@ -2921,7 +2921,7 @@ namespace ScriptableFramework.Story.Commands
             }
             return true;
         }
-        private IStoryFunction<string> m_Info = new StoryValue<string>();
+        private IStoryFunction<string> m_Info = new StoryFunction<string>();
     }
     /// <summary>
     /// setactorscale(name,value);
@@ -2964,8 +2964,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// gameobjectanimation(obj, anim[, normalized_time]);
@@ -3036,9 +3036,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
         private int m_ParamNum = 0;
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<string> m_Anim = new StoryValue<string>();
-        private IStoryFunction<float> m_Time = new StoryValue<float>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<string> m_Anim = new StoryFunction<string>();
+        private IStoryFunction<float> m_Time = new StoryFunction<float>();
     }
     /// <summary>
     /// gameobjectanimationparam(obj)
@@ -3178,11 +3178,11 @@ namespace ScriptableFramework.Story.Commands
             private void Init()
             {
                 Type = string.Empty;
-                Key = new StoryValue<string>();
-                Value = new StoryValue();
+                Key = new StoryFunction<string>();
+                Value = new StoryFunction();
             }
         }
-        private IStoryFunction m_ObjPath = new StoryValue();
+        private IStoryFunction m_ObjPath = new StoryFunction();
         private List<ParamInfo> m_Params = new List<ParamInfo>();
     }
     /// <summary>
@@ -3257,14 +3257,14 @@ namespace ScriptableFramework.Story.Commands
                 m_SkillId.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -3314,6 +3314,6 @@ namespace ScriptableFramework.Story.Commands
             }
             return true;
         }
-        private IStoryFunction m_ObjPath = new StoryValue();
+        private IStoryFunction m_ObjPath = new StoryFunction();
     }
 }

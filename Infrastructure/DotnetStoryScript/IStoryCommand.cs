@@ -5,9 +5,9 @@ using ScriptableFramework;
 namespace DotnetStoryScript
 {
     /// <summary>
-    /// Plot command interface, the basic unit of plot script (some commands are compound commands, composed of basic commands).
-    /// The value used in the command is described by the IStoryValue<T> interface, which supports parameters,
-    /// local variables and built-in functions (returning the value used by a plot command).
+    /// Story command interface, the basic unit of story script (some commands are compound commands, composed of basic commands).
+    /// The value used in the command is described by the IStoryFunction<T> interface, which supports parameters,
+    /// local variables and built-in functions (returning the value used by a story command).
     /// </summary>
     public interface IStoryCommand
     {

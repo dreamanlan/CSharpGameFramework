@@ -38,12 +38,12 @@ namespace DotnetStoryScript
             get { return m_StackVariables; }
             set { m_StackVariables = value; }
         }
-        public IStoryValueList Args
+        public StoryFunctionList Args
         {
             get { return m_Args; }
             set { m_Args = value; }
         }
-        public StrIStoryValueDict OptArgs
+        public StrStoryFunctionDict OptArgs
         {
             get { return m_OptArgs; }
             set { m_OptArgs = value; }
@@ -80,8 +80,8 @@ namespace DotnetStoryScript
 
         private IntObjDict m_LocalInfos = new IntObjDict();
         private StrBoxedValueDict m_StackVariables = new StrBoxedValueDict();
-        private IStoryValueList m_Args = new IStoryValueList();
-        private StrIStoryValueDict m_OptArgs = new StrIStoryValueDict();
+        private StoryFunctionList m_Args = new StoryFunctionList();
+        private StrStoryFunctionDict m_OptArgs = new StrStoryFunctionDict();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -213,17 +213,17 @@ namespace DotnetStoryScript
         }
         private static SimpleObjectPool<StoryRuntime> s_StoryRuntimePool = new SimpleObjectPool<StoryRuntime>(8);
     }
-    public sealed class IStoryValueList : List<IStoryFunction>
+    public sealed class StoryFunctionList : List<IStoryFunction>
     {
-        public IStoryValueList() { }
-        public IStoryValueList(int capacity) : base(capacity) { }
-        public IStoryValueList(IEnumerable<IStoryFunction> coll) : base(coll) { }
+        public StoryFunctionList() { }
+        public StoryFunctionList(int capacity) : base(capacity) { }
+        public StoryFunctionList(IEnumerable<IStoryFunction> coll) : base(coll) { }
     }
-    public sealed class StrIStoryValueDict : Dictionary<string, IStoryFunction>
+    public sealed class StrStoryFunctionDict : Dictionary<string, IStoryFunction>
     {
-        public StrIStoryValueDict() { }
-        public StrIStoryValueDict(int capacity) : base(capacity) { }
-        public StrIStoryValueDict(IDictionary<string, IStoryFunction> dict) : base(dict) { }
+        public StrStoryFunctionDict() { }
+        public StrStoryFunctionDict(int capacity) : base(capacity) { }
+        public StrStoryFunctionDict(IDictionary<string, IStoryFunction> dict) : base(dict) { }
     }
     public sealed class StoryLocalInfoStack : Stack<StoryLocalInfo>
     {
@@ -742,7 +742,7 @@ namespace DotnetStoryScript
                                 if (null != defData && defData.HaveId() && defData.HaveParam()) {
                                     string id = defData.GetId();
                                     if (id.StartsWith("@") && !id.StartsWith("@@")) {
-                                        StoryValue val = new StoryValue();
+                                        StoryFunction val = new StoryFunction();
                                         val.InitFromDsl(defData.GetParam(0));
                                         if (!m_PreInitedLocalVariables.ContainsKey(id)) {
                                             m_PreInitedLocalVariables.Add(id, val.Value);

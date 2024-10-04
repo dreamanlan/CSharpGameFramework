@@ -11,7 +11,7 @@ using DotnetStoryScript;
 
 public class AiGetEntities : ISimpleStoryFunctionPlugin
 {
-    public void SetProxy(StoryValueResult result)
+    public void SetProxy(StoryFunctionResult result)
     {
         m_Proxy = result;
     }
@@ -19,10 +19,10 @@ public class AiGetEntities : ISimpleStoryFunctionPlugin
     {
         return new AiGetEntities();
     }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
     {
         m_Proxy.Value = BoxedValue.FromObject(PluginFramework.Instance.EntityManager.Entities.Values);
     }
 
-    private StoryValueResult m_Proxy = null;
+    private StoryFunctionResult m_Proxy = null;
 }

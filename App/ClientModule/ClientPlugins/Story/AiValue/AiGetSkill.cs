@@ -11,7 +11,7 @@ using DotnetStoryScript;
 
 public class AiGetSkill : ISimpleStoryFunctionPlugin
 {
-    public void SetProxy(StoryValueResult result)
+    public void SetProxy(StoryFunctionResult result)
     {
         m_Proxy = result;
     }
@@ -19,7 +19,7 @@ public class AiGetSkill : ISimpleStoryFunctionPlugin
     {
         return new AiGetSkill();
     }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
     {
         var args = _params.Values;
         int objId = args[0];
@@ -72,5 +72,5 @@ public class AiGetSkill : ISimpleStoryFunctionPlugin
         }
     }
 
-    private StoryValueResult m_Proxy = null;
+    private StoryFunctionResult m_Proxy = null;
 }

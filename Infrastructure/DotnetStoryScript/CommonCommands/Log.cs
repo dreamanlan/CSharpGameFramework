@@ -50,13 +50,13 @@ namespace DotnetStoryScript.CommonCommands
                 m_Format.InitFromDsl(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_FormatArgs.Add(val);
             }
             return true;
         }
-        private IStoryFunction m_Format = new StoryValue();
+        private IStoryFunction m_Format = new StoryFunction();
         private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
     }
 }

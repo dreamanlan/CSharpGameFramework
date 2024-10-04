@@ -73,8 +73,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_AttrName = new StoryValue<string>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<string> m_AttrName = new StoryFunction<string>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// camerafollow(npc_unit_id1,npc_unit_id2,...)[with(camera_path)];
@@ -125,7 +125,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<int> val = new StoryValue<int>();
+                IStoryFunction<int> val = new StoryFunction<int>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_UnitIds.Add(val);
             }
@@ -153,7 +153,7 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
         private List<IStoryFunction<int>> m_UnitIds = new List<IStoryFunction<int>>();
     }
     /// <summary>
@@ -229,8 +229,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction m_Arg = new StoryFunction();
     }
     /// <summary>
     /// cameralookatimmediately(npc_unit_id)[with(camera_path)];
@@ -305,8 +305,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction m_Arg = new StoryFunction();
     }
     /// <summary>
     /// cameralooktoward(npc_unit_id)[with(camera_path)];
@@ -381,8 +381,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction m_Arg = new StoryFunction();
     }
     /// <summary>
     /// camerafixedyaw(yaw)[with(camera_path)];
@@ -445,8 +445,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryFunction<float>();
     }
     /// <summary>
     /// camerayaw(yaw, anglelag, snaplag)[with(camera_path)];
@@ -517,10 +517,10 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg3 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg3 = new StoryFunction<float>();
     }
     /// <summary>
     /// cameraheight(height, lag)[with(camera_path)];
@@ -587,9 +587,9 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryFunction<float>();
     }
     /// <summary>
     /// cameradistance(distance, lag)[with(camera_path)];
@@ -656,9 +656,9 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryFunction<float>();
     }
     /// <summary>
     /// camerasetdistanceheight(distance, height)[with(camera_path)];
@@ -725,9 +725,9 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryFunction<float>();
     }
     /// <summary>
     /// cameraresetdistanceheight()[with(camera_path)];
@@ -784,7 +784,7 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
     }
     /// <summary>
     /// camerasetfollowspeed(maxdist, mindist, maxspeed, minspeed, power)[with(camera_path)];
@@ -863,12 +863,12 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg3 = new StoryValue<float>();
-        private IStoryFunction<float> m_Arg4 = new StoryValue<float>();
-        private IStoryFunction<int> m_Arg5 = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg3 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Arg4 = new StoryFunction<float>();
+        private IStoryFunction<int> m_Arg5 = new StoryFunction<int>();
     }
     /// <summary>
     /// cameraresetfollowspeed()[with(camera_path)];
@@ -925,7 +925,7 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
     }
     /// <summary>
     /// camerafollowobj(objid)[with(camera_path)];
@@ -990,8 +990,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// cameralookobj(objid)[with(camera_path)];
@@ -1057,8 +1057,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// cameralookobjimmediately(objid)[with(camera_path)];
@@ -1124,8 +1124,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// cameralooktowardobj(objid)[with(camera_path)];
@@ -1191,8 +1191,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// cameralookcopy(objpath, unitid or vector3(x,y,z))[with(camera_path)];
@@ -1277,9 +1277,9 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction m_Arg = new StoryFunction();
     }
     /// <summary>
     /// cameralookobjcopy(objpath, objid)[with(camera_path)];
@@ -1355,9 +1355,9 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
-        private IStoryFunction m_ObjPath = new StoryValue();
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryFunction<string>();
+        private IStoryFunction m_ObjPath = new StoryFunction();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// cameraenable(name, 0_or_1);
@@ -1396,8 +1396,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_Path = new StoryValue<string>();
-        private IStoryFunction<int> m_Arg = new StoryValue<int>();
+        private IStoryFunction<string> m_Path = new StoryFunction<string>();
+        private IStoryFunction<int> m_Arg = new StoryFunction<int>();
     }
     /// <summary>
     /// lockframe(scale);
@@ -1436,7 +1436,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<float> m_Scale = new StoryValue<float>();
+        private IStoryFunction<float> m_Scale = new StoryFunction<float>();
     }
     /// <summary>
     /// setleaderid([objid,]leaderid);
@@ -1492,8 +1492,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_LeaderId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_LeaderId = new StoryFunction<int>();
     }
     /// <summary>
     /// showdlg(storyDlgId);
@@ -1532,7 +1532,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_StoryDlgId = new StoryValue<int>();
+        private IStoryFunction<int> m_StoryDlgId = new StoryFunction<int>();
     }
     /// <summary>
     /// areadetect(name,radius,type,callback)[set(var,val)];
@@ -1649,13 +1649,13 @@ namespace ScriptableFramework.Story.Commands
             }
         }
 
-        private IStoryFunction<string> m_Name = new StoryValue<string>();
-        private IStoryFunction<float> m_Radius = new StoryValue<float>();
-        private IStoryFunction<string> m_Type = new StoryValue<string>();
-        private IStoryFunction<string> m_EventName = new StoryValue<string>();
-        private IStoryFunction<string> m_SetVar = new StoryValue<string>();
-        private IStoryFunction m_SetVal = new StoryValue();
-        private IStoryFunction m_ElseSetVal = new StoryValue();
+        private IStoryFunction<string> m_Name = new StoryFunction<string>();
+        private IStoryFunction<float> m_Radius = new StoryFunction<float>();
+        private IStoryFunction<string> m_Type = new StoryFunction<string>();
+        private IStoryFunction<string> m_EventName = new StoryFunction<string>();
+        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
+        private IStoryFunction m_SetVal = new StoryFunction();
+        private IStoryFunction m_ElseSetVal = new StoryFunction();
         private bool m_HaveSet = false;
     }
     /// <summary>
@@ -1737,10 +1737,10 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_Name = new StoryValue<string>();
-        private IStoryFunction<string> m_Prefab = new StoryValue<string>();
-        private IStoryFunction<string> m_DslFile = new StoryValue<string>();
-        private IStoryFunction<int> m_DontDestroyOld = new StoryValue<int>();
+        private IStoryFunction<string> m_Name = new StoryFunction<string>();
+        private IStoryFunction<string> m_Prefab = new StoryFunction<string>();
+        private IStoryFunction<string> m_DslFile = new StoryFunction<string>();
+        private IStoryFunction<int> m_DontDestroyOld = new StoryFunction<int>();
     }
     /// <summary>
     /// bindui(gameobject){
@@ -1958,8 +1958,8 @@ namespace ScriptableFramework.Story.Commands
 
             internal VarInfo()
             {
-                m_VarName = new StoryValue<string>();
-                m_ControlPath = new StoryValue<string>();
+                m_VarName = new StoryFunction<string>();
+                m_ControlPath = new StoryFunction<string>();
             }
             internal VarInfo(VarInfo other)
             {
@@ -1975,9 +1975,9 @@ namespace ScriptableFramework.Story.Commands
 
             internal EventInfo()
             {
-                m_Event = new StoryValue<string>();
-                m_Tag = new StoryValue<string>();
-                m_Path = new StoryValue<string>();
+                m_Event = new StoryFunction<string>();
+                m_Tag = new StoryFunction<string>();
+                m_Path = new StoryFunction<string>();
             }
             internal EventInfo(EventInfo other)
             {
@@ -1987,7 +1987,7 @@ namespace ScriptableFramework.Story.Commands
             }
         }
 
-        private IStoryFunction m_Obj = new StoryValue();
+        private IStoryFunction m_Obj = new StoryFunction();
         private List<VarInfo> m_VarInfos = new List<VarInfo>();
         internal List<IStoryFunction<string>> m_Inputs = new List<IStoryFunction<string>>();
         internal List<IStoryFunction<string>> m_Toggles = new List<IStoryFunction<string>>();
@@ -1999,7 +1999,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> path = new StoryValue<string>();
+                IStoryFunction<string> path = new StoryFunction<string>();
                 path.InitFromDsl(callData.GetParam(i));
                 List.Add(path);
             }

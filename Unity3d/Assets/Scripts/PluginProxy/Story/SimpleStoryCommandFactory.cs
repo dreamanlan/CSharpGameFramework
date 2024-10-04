@@ -70,7 +70,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
     public IStoryCommand Clone()
     {
         NativeSimpleStoryCommand newObj = new NativeSimpleStoryCommand(m_ClassName, false);
-        newObj.m_Params = m_Params.Clone() as StoryValueParams;
+        newObj.m_Params = m_Params.Clone() as StoryFunctionParams;
         newObj.m_Comments = m_Comments;
         newObj.m_Config = m_Config;
         if (null != m_Plugin) {
@@ -111,7 +111,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
             m_Plugin.ResetState();
         }
     }
-    private bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
+    private bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta)
     {
         if (null != m_Plugin) {
             return m_Plugin.ExecCommand(instance, handler, _params, delta);
@@ -120,7 +120,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
     }
 
     private bool m_LastExecResult = false;
-    private StoryValueParams m_Params = new StoryValueParams();
+    private StoryFunctionParams m_Params = new StoryFunctionParams();
     private Dsl.FunctionData m_Comments;
     private Dsl.ISyntaxComponent m_Config;
     
@@ -168,7 +168,7 @@ internal class ScriptSimpleStoryCommand : IStoryCommand
     public IStoryCommand Clone()
     {
         ScriptSimpleStoryCommand newObj = new ScriptSimpleStoryCommand(m_ClassName, false);
-        newObj.m_Params = m_Params.Clone() as StoryValueParams;
+        newObj.m_Params = m_Params.Clone() as StoryFunctionParams;
         newObj.m_Comments = m_Comments;
         newObj.m_Config = m_Config;
         if (null != m_Plugin) {
@@ -210,7 +210,7 @@ internal class ScriptSimpleStoryCommand : IStoryCommand
             m_Plugin.ResetState();
         }
     }
-    private bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
+    private bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta)
     {
         if (null != m_Plugin) {
             var ret = m_Plugin.ExecCommand(instance, handler, _params, delta);
@@ -222,7 +222,7 @@ internal class ScriptSimpleStoryCommand : IStoryCommand
     }
     
     private bool m_LastExecResult = false;
-    private StoryValueParams m_Params = new StoryValueParams();
+    private StoryFunctionParams m_Params = new StoryFunctionParams();
     private Dsl.FunctionData m_Comments;
     private Dsl.ISyntaxComponent m_Config;
 

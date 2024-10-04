@@ -66,9 +66,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<float> m_Dir = new StoryValue<float>();
-        private IStoryFunction<int> m_Immediately = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<float> m_Dir = new StoryFunction<float>();
+        private IStoryFunction<int> m_Immediately = new StoryFunction<int>();
     }
     /// <summary>
     /// objmove(obj_id, vector3(x,y,z)[, event]);
@@ -129,9 +129,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<Vector3> m_Pos = new StoryValue<Vector3>();
-        private IStoryFunction<string> m_Event = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<Vector3> m_Pos = new StoryFunction<Vector3>();
+        private IStoryFunction<string> m_Event = new StoryFunction<string>();
     }
     /// <summary>
     /// objmovewithwaypoints(obj_id, vector3list("1 2 3 4 5 6")[, event]);
@@ -196,9 +196,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<List<object>> m_WayPoints = new StoryValue<List<object>>();
-        private IStoryFunction<string> m_Event = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<List<object>> m_WayPoints = new StoryFunction<List<object>>();
+        private IStoryFunction<string> m_Event = new StoryFunction<string>();
     }
     /// <summary>
     /// objstop(obj_id);
@@ -251,7 +251,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// objattack(npc_obj_id[,target_obj_id]);
@@ -303,8 +303,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_TargetObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_TargetObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// objsetformation(obj_id, index);
@@ -349,8 +349,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_FormationIndex = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_FormationIndex = new StoryFunction<int>();
     }
     /// <summary>
     /// objenableai(obj_id, 1_or_0);
@@ -399,8 +399,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_Enable = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Enable = new StoryFunction<int>();
     }
     /// <summary>
     /// objsetai(objid,ai_logic_id,stringlist("param1 param2 param3 ..."));
@@ -457,9 +457,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<string> m_AiLogic = new StoryValue<string>();
-        private IStoryFunction<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<string> m_AiLogic = new StoryFunction<string>();
+        private IStoryFunction<IEnumerable> m_AiParams = new StoryFunction<IEnumerable>();
     }
     /// <summary>
     /// objsetaitarget(objid,targetid);
@@ -502,8 +502,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_TargetId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_TargetId = new StoryFunction<int>();
     }
     /// <summary>
     /// objanimation(obj_id, anim[, normalized_time]);
@@ -565,9 +565,9 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<string> m_Anim = new StoryValue<string>();
-        private IStoryFunction<float> m_Time = new StoryValue<float>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<string> m_Anim = new StoryFunction<string>();
+        private IStoryFunction<float> m_Time = new StoryFunction<float>();
     }
     /// <summary>
     /// objanimationparam(obj_id)
@@ -697,12 +697,12 @@ namespace ScriptableFramework.Story.Commands
             private void Init()
             {
                 Type = string.Empty;
-                Key = new StoryValue<string>();
-                Value = new StoryValue();
+                Key = new StoryFunction<string>();
+                Value = new StoryFunction();
             }
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
         private List<ParamInfo> m_Params = new List<ParamInfo>();
     }
     /// <summary>
@@ -781,7 +781,7 @@ namespace ScriptableFramework.Story.Commands
                 m_ImpactId.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
@@ -809,11 +809,11 @@ namespace ScriptableFramework.Story.Commands
             }
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_ImpactId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_ImpactId = new StoryFunction<int>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveSeq = false;
-        private IStoryFunction<string> m_SeqVarName = new StoryValue<string>();
+        private IStoryFunction<string> m_SeqVarName = new StoryFunction<string>();
     }
     /// <summary>
     /// objremoveimpact(obj_id, seq);
@@ -863,8 +863,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_Seq = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Seq = new StoryFunction<int>();
     }
     /// <summary>
     /// objcastskill(obj_id, skillid, arg1, arg2, ...);
@@ -927,15 +927,15 @@ namespace ScriptableFramework.Story.Commands
                 m_SkillId.InitFromDsl(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryValue val = new StoryValue();
+                StoryFunction val = new StoryFunction();
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
@@ -975,8 +975,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
     }
     /// <summary>
     /// objlisten(unit_id, message_type, true_or_false);
@@ -1032,9 +1032,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<string> m_Event = new StoryValue<string>();
-        private IStoryFunction<string> m_Enable = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<string> m_Event = new StoryFunction<string>();
+        private IStoryFunction<string> m_Enable = new StoryFunction<string>();
     }
     /// <summary>
     /// sethp(objid,value);
@@ -1076,8 +1076,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_Value = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Value = new StoryFunction<int>();
     }
     /// <summary>
     /// setenergy(objid,value);
@@ -1119,8 +1119,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_Value = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Value = new StoryFunction<int>();
     }
     /// <summary>
     /// objset(uniqueid,localname,value);
@@ -1164,9 +1164,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_UniqueId = new StoryValue<int>();
-        private IStoryFunction<string> m_AttrName = new StoryValue<string>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<int> m_UniqueId = new StoryFunction<int>();
+        private IStoryFunction<string> m_AttrName = new StoryFunction<string>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// setlevel(objid,value);
@@ -1208,8 +1208,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_Value = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Value = new StoryFunction<int>();
     }
     /// <summary>
     /// setattr(objid,attrid,value);
@@ -1262,9 +1262,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_AttrId = new StoryValue<int>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_AttrId = new StoryFunction<int>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// markcontrolbystory(objid,true_or_false);
@@ -1306,8 +1306,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<string> m_Value = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<string> m_Value = new StoryFunction<string>();
     }
     /// <summary>
     /// setunitid(obj_id, dir);
@@ -1353,8 +1353,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
     }
     /// <summary>
     /// objsetcamp(objid,camp_id);
@@ -1399,8 +1399,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_CampId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_CampId = new StoryFunction<int>();
     }
     /// objsetsummonerid(objid, objid);
     /// </summary>
@@ -1445,8 +1445,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_SummonerId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_SummonerId = new StoryFunction<int>();
     }
     /// objsetsummonskillid(objid, objid);
     /// </summary>
@@ -1491,7 +1491,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_SummonSkillId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_SummonSkillId = new StoryFunction<int>();
     }
 }

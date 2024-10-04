@@ -8,7 +8,7 @@ namespace ScriptableFramework.Plugin
 {
     public interface IStoryFunctionPlugin
     {
-        void SetProxy(StoryValueResult result);
+        void SetProxy(StoryFunctionResult result);
         IStoryFunctionPlugin Clone();
         void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args);
         void LoadFuncData(Dsl.FunctionData funcData);
@@ -16,8 +16,8 @@ namespace ScriptableFramework.Plugin
     }
     public interface ISimpleStoryFunctionPlugin
     {
-        void SetProxy(StoryValueResult result);
+        void SetProxy(StoryFunctionResult result);
         ISimpleStoryFunctionPlugin Clone();
-        void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params);
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params);
     }
 }

@@ -20,6 +20,6 @@ namespace ScriptableFramework.Plugin
     {
         ISimpleStoryCommandPlugin Clone();
         void ResetState();
-        bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta);
+        bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta);
     }
 }

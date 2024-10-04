@@ -13,7 +13,7 @@ public class ScriptSimpleStoryCommandPlugin : ScriptPluginProxyBase
 	public void ResetState()
 	{
 	}
-	public bool ExecCommand(DotnetStoryScript.StoryInstance instance, DotnetStoryScript.StoryMessageHandler handler, DotnetStoryScript.StoryValueParams _params, System.Int64 delta)
+	public bool ExecCommand(DotnetStoryScript.StoryInstance instance, DotnetStoryScript.StoryMessageHandler handler, DotnetStoryScript.StoryFunctionParams _params, System.Int64 delta)
 	{
 		return false;
 	}

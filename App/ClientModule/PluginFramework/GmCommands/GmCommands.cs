@@ -5,9 +5,9 @@ using GameFrameworkMessage;
 
 namespace ScriptableFramework.GmCommands
 {
-    internal class EnableCalculatorLogCommand : SimpleStoryCommandBase<EnableCalculatorLogCommand, StoryValueParam<int, int, int>>
+    internal class EnableCalculatorLogCommand : SimpleStoryCommandBase<EnableCalculatorLogCommand, StoryFunctionParam<int, int, int>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int, int, int> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int, int, int> _params, long delta)
         {
             int val1 = _params.Param1Value;
             int val2 = _params.Param2Value;
@@ -19,9 +19,9 @@ namespace ScriptableFramework.GmCommands
         }
     }
     //---------------------------------------------------------------------------------------------------------------
-    internal class DoResetDslCommand : SimpleStoryCommandBase<DoResetDslCommand, StoryValueParam<string>>
+    internal class DoResetDslCommand : SimpleStoryCommandBase<DoResetDslCommand, StoryFunctionParam<string>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
         {
             string val = _params.Param1Value;
             if (Network.NetworkSystem.Instance.CanSendMessage) {
@@ -32,9 +32,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    internal class DoScpCommand : SimpleStoryCommandBase<DoScpCommand, StoryValueParam<string>>
+    internal class DoScpCommand : SimpleStoryCommandBase<DoScpCommand, StoryFunctionParam<string>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
         {
             string val = _params.Param1Value;
             if (Network.NetworkSystem.Instance.CanSendMessage) {
@@ -46,9 +46,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    internal class DoGmCommand : SimpleStoryCommandBase<DoGmCommand, StoryValueParam<string>>
+    internal class DoGmCommand : SimpleStoryCommandBase<DoGmCommand, StoryFunctionParam<string>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
         {
             string val = _params.Param1Value;
             //ChatMessageSender.SendGmCommand(val);
@@ -61,9 +61,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    internal class SetDebugCommand : SimpleStoryCommandBase<SetDebugCommand, StoryValueParam<int>>
+    internal class SetDebugCommand : SimpleStoryCommandBase<SetDebugCommand, StoryFunctionParam<int>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
         {
             int val = _params.Param1Value;
             GlobalVariables.Instance.IsDebug = val != 0;
@@ -73,9 +73,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-  internal class AllocMemoryCommand : SimpleStoryCommandBase<AllocMemoryCommand, StoryValueParam<string,int>>
+  internal class AllocMemoryCommand : SimpleStoryCommandBase<AllocMemoryCommand, StoryFunctionParam<string,int>>
   {
-    protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string,int> _params, long delta)
+    protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string,int> _params, long delta)
     {
       string key = _params.Param1Value;
       int size = _params.Param2Value;
@@ -88,9 +88,9 @@ namespace ScriptableFramework.GmCommands
       return false;
     }
   }
-  internal class FreeMemoryCommand : SimpleStoryCommandBase<FreeMemoryCommand, StoryValueParam<string>>
+  internal class FreeMemoryCommand : SimpleStoryCommandBase<FreeMemoryCommand, StoryFunctionParam<string>>
   {
-    protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string> _params, long delta)
+    protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
     {
       string key = _params.Param1Value;
       if (instance.GlobalVariables.ContainsKey(key)) {
@@ -102,9 +102,9 @@ namespace ScriptableFramework.GmCommands
       return false;
     }
   }
-  internal class ConsumeCpuCommand : SimpleStoryCommandBase<ConsumeCpuCommand, StoryValueParam<int>>
+  internal class ConsumeCpuCommand : SimpleStoryCommandBase<ConsumeCpuCommand, StoryFunctionParam<int>>
   {
-    protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
+    protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
     {
       int time = _params.Param1Value;
       long startTime = TimeUtility.GetElapsedTimeUs();

@@ -19,7 +19,7 @@ namespace DotnetStoryScript.CommonFunctions
                     m_Method.InitFromDsl(callData.GetParam(1));
                 }
                 for (int i = 2; i < callData.GetParamNum(); ++i) {
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
                 }
@@ -149,8 +149,8 @@ namespace DotnetStoryScript.CommonFunctions
             }
         }
 
-        private IStoryFunction m_Object = new StoryValue();
-        private IStoryFunction<string> m_Method = new StoryValue<string>();
+        private IStoryFunction m_Object = new StoryFunction();
+        private IStoryFunction<string> m_Method = new StoryFunction<string>();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;

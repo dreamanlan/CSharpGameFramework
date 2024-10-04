@@ -76,8 +76,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -147,8 +147,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -213,8 +213,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -279,8 +279,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -345,8 +345,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -405,8 +405,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -465,8 +465,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -525,8 +525,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -580,7 +580,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -639,8 +639,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -699,8 +699,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -759,7 +759,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -818,7 +818,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -877,7 +877,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -936,7 +936,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -994,7 +994,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1052,7 +1052,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1110,7 +1110,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1161,7 +1161,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetBool();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1212,7 +1212,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetSByte();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1263,7 +1263,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetByte();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1314,7 +1314,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetChar();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1365,7 +1365,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetShort();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1416,7 +1416,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetUShort();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1467,7 +1467,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetInt();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1518,7 +1518,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetUInt();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1569,7 +1569,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetLong();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1620,7 +1620,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetULong();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1671,7 +1671,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetFloat();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1722,7 +1722,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetDouble();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1773,7 +1773,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = valX.GetDecimal();
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1829,7 +1829,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1885,7 +1885,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1941,7 +1941,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1997,7 +1997,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2053,7 +2053,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2109,7 +2109,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2165,7 +2165,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2221,7 +2221,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = v2;
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2278,9 +2278,9 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = a + (b - a) * ClampFunction.Clamp01(t);
             }
         }
-        private IStoryFunction<double> m_X = new StoryValue<double>();
-        private IStoryFunction<double> m_Y = new StoryValue<double>();
-        private IStoryFunction<double> m_Z = new StoryValue<double>();
+        private IStoryFunction<double> m_X = new StoryFunction<double>();
+        private IStoryFunction<double> m_Y = new StoryFunction<double>();
+        private IStoryFunction<double> m_Z = new StoryFunction<double>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2337,9 +2337,9 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = a + (b - a) * t;
             }
         }
-        private IStoryFunction<double> m_X = new StoryValue<double>();
-        private IStoryFunction<double> m_Y = new StoryValue<double>();
-        private IStoryFunction<double> m_Z = new StoryValue<double>();
+        private IStoryFunction<double> m_X = new StoryFunction<double>();
+        private IStoryFunction<double> m_Y = new StoryFunction<double>();
+        private IStoryFunction<double> m_Z = new StoryFunction<double>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2400,9 +2400,9 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = a + num * ClampFunction.Clamp01(t);
             }
         }
-        private IStoryFunction<double> m_X = new StoryValue<double>();
-        private IStoryFunction<double> m_Y = new StoryValue<double>();
-        private IStoryFunction<double> m_Z = new StoryValue<double>();
+        private IStoryFunction<double> m_X = new StoryFunction<double>();
+        private IStoryFunction<double> m_Y = new StoryFunction<double>();
+        private IStoryFunction<double> m_Z = new StoryFunction<double>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -2466,9 +2466,9 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = to * t + from * (1.0 - t);
             }
         }
-        private IStoryFunction<double> m_X = new StoryValue<double>();
-        private IStoryFunction<double> m_Y = new StoryValue<double>();
-        private IStoryFunction<double> m_Z = new StoryValue<double>();
+        private IStoryFunction<double> m_X = new StoryFunction<double>();
+        private IStoryFunction<double> m_Y = new StoryFunction<double>();
+        private IStoryFunction<double> m_Z = new StoryFunction<double>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2526,7 +2526,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2594,9 +2594,9 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
-        private IStoryFunction m_Z = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
+        private IStoryFunction m_Z = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -2692,8 +2692,8 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Approximately(v1, v2) ? 1 : 0;
             }
         }
-        private IStoryFunction<double> m_X = new StoryValue<double>();
-        private IStoryFunction<double> m_Y = new StoryValue<double>();
+        private IStoryFunction<double> m_X = new StoryFunction<double>();
+        private IStoryFunction<double> m_Y = new StoryFunction<double>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -2749,7 +2749,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = IsPowerOfTwo(valX) ? 1 : 0;
             }
         }
-        private IStoryFunction<int> m_X = new StoryValue<int>();
+        private IStoryFunction<int> m_X = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -2806,7 +2806,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = ClosestPowerOfTwo(valX);
             }
         }
-        private IStoryFunction<int> m_X = new StoryValue<int>();
+        private IStoryFunction<int> m_X = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -2863,7 +2863,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = NextPowerOfTwo(valX);
             }
         }
-        private IStoryFunction<int> m_X = new StoryValue<int>();
+        private IStoryFunction<int> m_X = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -2930,10 +2930,10 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
             }
         }
-        private IStoryFunction<float> m_X1 = new StoryValue<float>();
-        private IStoryFunction<float> m_Y1 = new StoryValue<float>();
-        private IStoryFunction<float> m_X2 = new StoryValue<float>();
-        private IStoryFunction<float> m_Y2 = new StoryValue<float>();
+        private IStoryFunction<float> m_X1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Y1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_X2 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Y2 = new StoryFunction<float>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -2994,10 +2994,10 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
             }
         }
-        private IStoryFunction<float> m_X1 = new StoryValue<float>();
-        private IStoryFunction<float> m_Y1 = new StoryValue<float>();
-        private IStoryFunction<float> m_X2 = new StoryValue<float>();
-        private IStoryFunction<float> m_Y2 = new StoryValue<float>();
+        private IStoryFunction<float> m_X1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Y1 = new StoryFunction<float>();
+        private IStoryFunction<float> m_X2 = new StoryFunction<float>();
+        private IStoryFunction<float> m_Y2 = new StoryFunction<float>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3073,8 +3073,8 @@ namespace DotnetStoryScript.CommonFunctions
             }
         }
         private int m_ParamNum = 0;
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3144,8 +3144,8 @@ namespace DotnetStoryScript.CommonFunctions
             }
         }
         private int m_ParamNum = 0;
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3195,7 +3195,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Log(x) / Math.Log(2);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3245,7 +3245,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Log10(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3297,7 +3297,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Sqrt(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3347,7 +3347,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Exp(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3397,7 +3397,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Pow(2, x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3449,7 +3449,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Sin(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3501,7 +3501,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Cos(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3551,7 +3551,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Tan(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3601,7 +3601,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Asin(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3651,7 +3651,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Acos(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3701,7 +3701,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Atan(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3758,8 +3758,8 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Atan2(x, y);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
-        private IStoryFunction m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
+        private IStoryFunction m_Y = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3811,7 +3811,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Sinh(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3863,7 +3863,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Cosh(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3913,7 +3913,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_Value = Math.Tanh(x);
             }
         }
-        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -3926,7 +3926,7 @@ namespace DotnetStoryScript.CommonFunctions
 
                 for (int i = 0; i < callData.GetParamNum(); ++i) {
                     Dsl.ISyntaxComponent arg = callData.GetParam(i);
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(arg);
                     m_List.Add(val);
                 }
@@ -4014,7 +4014,7 @@ namespace DotnetStoryScript.CommonFunctions
 
                 for (int i = 0; i < callData.GetParamNum(); ++i) {
                     Dsl.ISyntaxComponent arg = callData.GetParam(i);
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(arg);
                     m_List.Add(val);
                 }

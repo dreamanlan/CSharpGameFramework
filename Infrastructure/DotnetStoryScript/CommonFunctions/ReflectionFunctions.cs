@@ -59,7 +59,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Obj = new StoryValue();
+        private IStoryFunction m_Obj = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -115,7 +115,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Obj = new StoryValue();
+        private IStoryFunction m_Obj = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -171,7 +171,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Obj = new StoryValue();
+        private IStoryFunction m_Obj = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -225,7 +225,7 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction<string> m_TypeName = new StoryValue<string>();
+        private IStoryFunction<string> m_TypeName = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -241,7 +241,7 @@ namespace DotnetStoryScript.CommonFunctions
                     m_Method.InitFromDsl(callData.GetParam(1));
                 }
                 for (int i = 2; i < callData.GetParamNum(); ++i) {
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
                 }
@@ -370,8 +370,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Object = new StoryValue();
-        private IStoryFunction m_Method = new StoryValue();
+        private IStoryFunction m_Object = new StoryFunction();
+        private IStoryFunction m_Method = new StoryFunction();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
@@ -389,7 +389,7 @@ namespace DotnetStoryScript.CommonFunctions
                     m_Method.InitFromDsl(callData.GetParam(1));
                 }
                 for (int i = 2; i < callData.GetParamNum(); ++i) {
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
                 }
@@ -504,8 +504,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Object = new StoryValue();
-        private IStoryFunction m_Method = new StoryValue();
+        private IStoryFunction m_Object = new StoryFunction();
+        private IStoryFunction m_Method = new StoryFunction();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
@@ -523,7 +523,7 @@ namespace DotnetStoryScript.CommonFunctions
                     m_Method.InitFromDsl(callData.GetParam(1));
                 }
                 for (int i = 2; i < callData.GetParamNum(); ++i) {
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
                 }
@@ -614,8 +614,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Object = new StoryValue();
-        private IStoryFunction m_Method = new StoryValue();
+        private IStoryFunction m_Object = new StoryFunction();
+        private IStoryFunction m_Method = new StoryFunction();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
@@ -632,7 +632,7 @@ namespace DotnetStoryScript.CommonFunctions
                     m_Method.InitFromDsl(callData.GetParam(1));
                 }
                 for (int i = 2; i < callData.GetParamNum(); ++i) {
-                    StoryValue val = new StoryValue();
+                    StoryFunction val = new StoryFunction();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
                 }
@@ -717,8 +717,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Object = new StoryValue();
-        private IStoryFunction m_Method = new StoryValue();
+        private IStoryFunction m_Object = new StoryFunction();
+        private IStoryFunction m_Method = new StoryFunction();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
@@ -777,45 +777,45 @@ namespace DotnetStoryScript.CommonFunctions
                     if (null != type) {
                         if (obj.IsString) {
                             if (0 == type.CompareTo("sbyte")) {
-                                m_Value = StoryValueHelper.CastTo<sbyte>(str);
+                                m_Value = StoryFunctionHelper.CastTo<sbyte>(str);
                             }
                             else if (0 == type.CompareTo("byte")) {
-                                m_Value = StoryValueHelper.CastTo<byte>(str);
+                                m_Value = StoryFunctionHelper.CastTo<byte>(str);
                             }
                             else if (0 == type.CompareTo("short")) {
-                                m_Value = StoryValueHelper.CastTo<short>(str);
+                                m_Value = StoryFunctionHelper.CastTo<short>(str);
                             }
                             else if (0 == type.CompareTo("ushort")) {
-                                m_Value = StoryValueHelper.CastTo<ushort>(str);
+                                m_Value = StoryFunctionHelper.CastTo<ushort>(str);
                             }
                             else if (0 == type.CompareTo("int")) {
-                                m_Value = StoryValueHelper.CastTo<int>(str);
+                                m_Value = StoryFunctionHelper.CastTo<int>(str);
                             }
                             else if (0 == type.CompareTo("uint")) {
-                                m_Value = StoryValueHelper.CastTo<uint>(str);
+                                m_Value = StoryFunctionHelper.CastTo<uint>(str);
                             }
                             else if (0 == type.CompareTo("long")) {
-                                m_Value = StoryValueHelper.CastTo<long>(str);
+                                m_Value = StoryFunctionHelper.CastTo<long>(str);
                             }
                             else if (0 == type.CompareTo("ulong")) {
-                                m_Value = StoryValueHelper.CastTo<ulong>(str);
+                                m_Value = StoryFunctionHelper.CastTo<ulong>(str);
                             }
                             else if (0 == type.CompareTo("float")) {
-                                m_Value = StoryValueHelper.CastTo<float>(str);
+                                m_Value = StoryFunctionHelper.CastTo<float>(str);
                             }
                             else if (0 == type.CompareTo("double")) {
-                                m_Value = StoryValueHelper.CastTo<double>(str);
+                                m_Value = StoryFunctionHelper.CastTo<double>(str);
                             }
                             else if (0 == type.CompareTo("string")) {
                                 m_Value = str;
                             }
                             else if (0 == type.CompareTo("bool")) {
-                                m_Value = StoryValueHelper.CastTo<bool>(str);
+                                m_Value = StoryFunctionHelper.CastTo<bool>(str);
                             }
                             else {
                                 Type t = Type.GetType(type);
                                 if (null != t) {
-                                    m_Value = BoxedValue.FromObject(StoryValueHelper.CastTo(t, str));
+                                    m_Value = BoxedValue.FromObject(StoryFunctionHelper.CastTo(t, str));
                                 }
                                 else {
                                     LogSystem.Warn("null == Type.GetType({0})", type);
@@ -879,7 +879,7 @@ namespace DotnetStoryScript.CommonFunctions
                     else {
                         var t = objType.IsObject ? objType.ObjectVal as Type : null;
                         if (null != t) {
-                            m_Value = BoxedValue.FromObject(StoryValueHelper.CastTo(t, obj.GetObject()));
+                            m_Value = BoxedValue.FromObject(StoryFunctionHelper.CastTo(t, obj.GetObject()));
                         }
                     }
                 }
@@ -889,8 +889,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Object = new StoryValue();
-        private IStoryFunction m_Type = new StoryValue();
+        private IStoryFunction m_Object = new StoryFunction();
+        private IStoryFunction m_Type = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -961,8 +961,8 @@ namespace DotnetStoryScript.CommonFunctions
                 }
             }
         }
-        private IStoryFunction m_Type = new StoryValue();
-        private IStoryFunction<string> m_Val = new StoryValue<string>();
+        private IStoryFunction m_Type = new StoryFunction();
+        private IStoryFunction<string> m_Val = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

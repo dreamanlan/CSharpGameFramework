@@ -9,9 +9,9 @@ namespace ScriptableFramework.GmCommands
     //********************************************************delimiter*******************************************************************
     //---------------------------------------------------------------------------------------------------------------------------------
     //Commands that are only valid within the scene (only modify ScriptableFramework combat-related data)
-    public class SetPositionCommand : SimpleStoryCommandBase<SetPositionCommand, StoryValueParam<int, float, float>>
+    public class SetPositionCommand : SimpleStoryCommandBase<SetPositionCommand, StoryFunctionParam<int, float, float>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int, float, float> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int, float, float> _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -41,9 +41,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class LevelToCommand : SimpleStoryCommandBase<LevelToCommand, StoryValueParam<int>>
+    public class LevelToCommand : SimpleStoryCommandBase<LevelToCommand, StoryFunctionParam<int>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -56,9 +56,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class FullCommand : SimpleStoryCommandBase<FullCommand, StoryValueParam>
+    public class FullCommand : SimpleStoryCommandBase<FullCommand, StoryFunctionParam>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -71,9 +71,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class ClearEquipmentsCommand : SimpleStoryCommandBase<ClearEquipmentsCommand, StoryValueParam>
+    public class ClearEquipmentsCommand : SimpleStoryCommandBase<ClearEquipmentsCommand, StoryFunctionParam>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -84,9 +84,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class AddEquipmentCommand : SimpleStoryCommandBase<AddEquipmentCommand, StoryValueParam<int>>
+    public class AddEquipmentCommand : SimpleStoryCommandBase<AddEquipmentCommand, StoryFunctionParam<int>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -98,9 +98,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class ClearSkillsCommand : SimpleStoryCommandBase<ClearSkillsCommand, StoryValueParam>
+    public class ClearSkillsCommand : SimpleStoryCommandBase<ClearSkillsCommand, StoryFunctionParam>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -112,9 +112,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class AddSkillCommand : SimpleStoryCommandBase<AddSkillCommand, StoryValueParam<int>>
+    public class AddSkillCommand : SimpleStoryCommandBase<AddSkillCommand, StoryFunctionParam<int>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -128,9 +128,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class ClearBuffsCommand : SimpleStoryCommandBase<ClearBuffsCommand, StoryValueParam>
+    public class ClearBuffsCommand : SimpleStoryCommandBase<ClearBuffsCommand, StoryFunctionParam>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
@@ -142,9 +142,9 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class AddBuffCommand : SimpleStoryCommandBase<AddBuffCommand, StoryValueParam<int>>
+    public class AddBuffCommand : SimpleStoryCommandBase<AddBuffCommand, StoryFunctionParam<int>>
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
         {
             BoxedValue us;
             if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {

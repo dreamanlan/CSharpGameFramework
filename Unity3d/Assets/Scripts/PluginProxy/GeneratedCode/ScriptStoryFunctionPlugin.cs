@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using ScriptableFramework;
 using ScriptableFramework.Plugin;
 
-public class ScriptStoryValuePlugin : ScriptPluginProxyBase
+public class ScriptStoryFunctionPlugin : ScriptPluginProxyBase
 {
-	public void SetProxy(DotnetStoryScript.StoryValueResult result)
+	public void SetProxy(DotnetStoryScript.StoryFunctionResult result)
 	{
 	}
 	public object Clone()

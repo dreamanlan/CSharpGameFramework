@@ -5,13 +5,13 @@ using ScriptableFramework.Plugin;
 using ScriptableFramework.Story;
 using DotnetStoryScript;
 
-internal class NativeSimpleStoryValueFactory : IStoryFunctionFactory
+internal class NativeSimpleStoryFunctionFactory : IStoryFunctionFactory
 {
     public IStoryFunction Build()
     {
-        return new NativeSimpleStoryValue(m_ClassName);
+        return new NativeSimpleStoryFunction(m_ClassName);
     }
-    public NativeSimpleStoryValueFactory(string name)
+    public NativeSimpleStoryFunctionFactory(string name)
     {
         m_ClassName = name;
     }
@@ -19,13 +19,13 @@ internal class NativeSimpleStoryValueFactory : IStoryFunctionFactory
     private string m_ClassName;
 }
 
-internal class ScriptSimpleStoryValueFactory : IStoryFunctionFactory
+internal class ScriptSimpleStoryFunctionFactory : IStoryFunctionFactory
 {
     public IStoryFunction Build()
     {
-        return new ScriptSimpleStoryValue(m_ClassName);
+        return new ScriptSimpleStoryFunction(m_ClassName);
     }
-    public ScriptSimpleStoryValueFactory(string name)
+    public ScriptSimpleStoryFunctionFactory(string name)
     {
         m_ClassName = name;
     }
@@ -33,12 +33,12 @@ internal class ScriptSimpleStoryValueFactory : IStoryFunctionFactory
     private string m_ClassName;
 }
 
-internal class NativeSimpleStoryValue : IStoryFunction
+internal class NativeSimpleStoryFunction : IStoryFunction
 {
-    public NativeSimpleStoryValue(string name)
+    public NativeSimpleStoryFunction(string name)
         : this(name, true)
     { }
-    public NativeSimpleStoryValue(string name, bool create)
+    public NativeSimpleStoryFunction(string name, bool create)
     {
         m_ClassName = name;
         if (create) {
@@ -56,8 +56,8 @@ internal class NativeSimpleStoryValue : IStoryFunction
     }
     public IStoryFunction Clone()
     {
-        var newObj = new NativeSimpleStoryValue(m_ClassName, false);
-        newObj.m_Params = m_Params.Clone() as StoryValueParams;
+        var newObj = new NativeSimpleStoryFunction(m_ClassName, false);
+        newObj.m_Params = m_Params.Clone() as StoryFunctionParams;
         newObj.m_Proxy = m_Proxy.Clone();
         if (null != m_Plugin) {
             newObj.m_Plugin = m_Plugin.Clone();
@@ -92,25 +92,25 @@ internal class NativeSimpleStoryValue : IStoryFunction
         }
     }
 
-    private StoryValueParams m_Params = new StoryValueParams();
-    private StoryValueResult m_Proxy = new StoryValueResult();
+    private StoryFunctionParams m_Params = new StoryFunctionParams();
+    private StoryFunctionResult m_Proxy = new StoryFunctionResult();
     private string m_ClassName;
 
     private ISimpleStoryFunctionPlugin m_Plugin;
 }
-internal class ScriptSimpleStoryValue : IStoryFunction
+internal class ScriptSimpleStoryFunction : IStoryFunction
 {
-    public ScriptSimpleStoryValue(string name)
+    public ScriptSimpleStoryFunction(string name)
         : this(name, true)
     {
     }
-    public ScriptSimpleStoryValue(string name, bool callScript)
+    public ScriptSimpleStoryFunction(string name, bool callScript)
     {
         m_ClassName = name;
         m_FileName = m_ClassName.Replace(".", "__");
 
         if (callScript) {
-            m_Plugin = new ScriptSimpleStoryValuePlugin();
+            m_Plugin = new ScriptSimpleStoryFunctionPlugin();
             m_Plugin.LoadScript(m_FileName);
             if (null != m_Plugin) {
                 m_Plugin.SetProxy(m_Proxy);
@@ -124,12 +124,12 @@ internal class ScriptSimpleStoryValue : IStoryFunction
     }
     public IStoryFunction Clone()
     {
-        var newObj = new ScriptSimpleStoryValue(m_ClassName, false);
-        newObj.m_Params = m_Params.Clone() as StoryValueParams;
+        var newObj = new ScriptSimpleStoryFunction(m_ClassName, false);
+        newObj.m_Params = m_Params.Clone() as StoryFunctionParams;
         newObj.m_Proxy = m_Proxy.Clone();
         if (null != m_Plugin) {
             var ret = m_Plugin.Clone();
-            newObj.m_Plugin = new ScriptSimpleStoryValuePlugin();
+            newObj.m_Plugin = new ScriptSimpleStoryFunctionPlugin();
             if (null != newObj.m_Plugin) {
                 newObj.m_Plugin.SetProxy(newObj.m_Proxy);
             }
@@ -161,10 +161,10 @@ internal class ScriptSimpleStoryValue : IStoryFunction
         }
     }
 
-    private StoryValueParams m_Params = new StoryValueParams();
-    private StoryValueResult m_Proxy = new StoryValueResult();
+    private StoryFunctionParams m_Params = new StoryFunctionParams();
+    private StoryFunctionResult m_Proxy = new StoryFunctionResult();
 
     private string m_FileName;
     private string m_ClassName;
-    private ScriptSimpleStoryValuePlugin m_Plugin;
+    private ScriptSimpleStoryFunctionPlugin m_Plugin;
 }

@@ -11,7 +11,7 @@ using DotnetStoryScript;
 
 public class AiSelectSkillByDistance : ISimpleStoryFunctionPlugin
 {
-    public void SetProxy(StoryValueResult result)
+    public void SetProxy(StoryFunctionResult result)
     {
         m_Proxy = result;
     }
@@ -19,7 +19,7 @@ public class AiSelectSkillByDistance : ISimpleStoryFunctionPlugin
     {
         return new AiSelectSkillByDistance();
     }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
     {
         var args = _params.Values;
         int objId = args[0];
@@ -56,5 +56,5 @@ public class AiSelectSkillByDistance : ISimpleStoryFunctionPlugin
         m_Proxy.Value = BoxedValue.NullObject;
     }
 
-    private StoryValueResult m_Proxy = null;
+    private StoryFunctionResult m_Proxy = null;
 }

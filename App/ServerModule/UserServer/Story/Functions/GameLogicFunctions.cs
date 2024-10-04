@@ -58,7 +58,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -122,8 +122,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<int> m_Index = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -179,7 +179,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -253,8 +253,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction m_Index = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction m_Index = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -312,7 +312,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -370,7 +370,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -444,8 +444,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction m_Index = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction m_Index = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -515,8 +515,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction m_Index = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction m_Index = new StoryFunction();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -578,8 +578,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<int> m_ItemId = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<int> m_ItemId = new StoryFunction<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -657,9 +657,9 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<string> m_Key = new StoryValue<string>();
-        private IStoryFunction<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<string> m_Key = new StoryFunction<string>();
+        private IStoryFunction<string> m_Type = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -722,8 +722,8 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<string> m_Key = new StoryValue<string>();
-        private IStoryFunction<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<string> m_Key = new StoryFunction<string>();
+        private IStoryFunction<string> m_Type = new StoryFunction<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

@@ -110,7 +110,7 @@ namespace DotnetStoryScript.CommonCommands
                 if (null != callData) {
                     if (callData.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent param = callData.GetParam(0);
-                        StoryValue<int> cond = new StoryValue<int>();
+                        StoryFunction<int> cond = new StoryFunction<int>();
                         cond.InitFromDsl(param);
                         m_LoadedConditions.Add(cond);
                     }

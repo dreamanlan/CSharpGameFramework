@@ -54,7 +54,7 @@ namespace ScriptableFramework.Story.Functions
                 }
             }
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

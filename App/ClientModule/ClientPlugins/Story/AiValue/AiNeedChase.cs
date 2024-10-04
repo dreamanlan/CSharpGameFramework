@@ -11,7 +11,7 @@ using DotnetStoryScript;
 
 public class AiNeedChase : ISimpleStoryFunctionPlugin
 {
-    public void SetProxy(StoryValueResult result)
+    public void SetProxy(StoryFunctionResult result)
     {
         m_Proxy = result;
     }
@@ -19,7 +19,7 @@ public class AiNeedChase : ISimpleStoryFunctionPlugin
     {
         return new AiNeedChase();
     }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
     {
         var args = _params.Values;
         int objId = args[0].GetInt();
@@ -41,5 +41,5 @@ public class AiNeedChase : ISimpleStoryFunctionPlugin
         m_Proxy.Value = 0;
     }
 
-    private StoryValueResult m_Proxy = null;
+    private StoryFunctionResult m_Proxy = null;
 }

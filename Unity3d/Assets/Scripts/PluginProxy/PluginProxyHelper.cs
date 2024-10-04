@@ -107,7 +107,7 @@ internal class NativePluginProxy : IPluginProxy
 
     public void RegisterSimpleStoryFunction(string name, string doc, string implClass)
     {
-        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new NativeSimpleStoryValueFactory(implClass), true);
+        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new NativeSimpleStoryFunctionFactory(implClass), true);
     }
 
     public void InstallStartupPlugin(string name, string implClass)
@@ -150,7 +150,7 @@ internal class ScriptPluginProxy : IPluginProxy
 
     public void RegisterStoryFunction(string name, string doc, string implClass)
     {
-        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryValueFactory(implClass), true);
+        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryFunctionFactory(implClass), true);
     }
 
     public void RegisterSimpleStoryCommand(string name, string doc, string implClass)
@@ -160,7 +160,7 @@ internal class ScriptPluginProxy : IPluginProxy
 
     public void RegisterSimpleStoryFunction(string name, string doc, string implClass)
     {
-        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryValueFactory(implClass), true);
+        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryFunctionFactory(implClass), true);
     }
 
     public void InstallStartupPlugin(string name, string implClass)

@@ -42,7 +42,7 @@ namespace DotnetStoryScript.CommonCommands
             return true;
         }
         private string m_VarName = null;
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// inc(@local,value);
@@ -161,7 +161,7 @@ namespace DotnetStoryScript.CommonCommands
         }
         private int m_ParamNum = 0;
         private string m_VarName = null;
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// dec(@local,value);
@@ -280,7 +280,7 @@ namespace DotnetStoryScript.CommonCommands
         }
         private int m_ParamNum = 0;
         private string m_VarName = null;
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// propset(name,value);
@@ -316,8 +316,8 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<string> m_VarName = new StoryValue<string>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<string> m_VarName = new StoryFunction<string>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// listset(list,index,value);
@@ -363,9 +363,9 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<IList> m_ListValue = new StoryValue<IList>();
-        private IStoryFunction<int> m_IndexValue = new StoryValue<int>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<IList> m_ListValue = new StoryFunction<IList>();
+        private IStoryFunction<int> m_IndexValue = new StoryFunction<int>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// listadd(list,value);
@@ -402,8 +402,8 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<IList> m_ListValue = new StoryValue<IList>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<IList> m_ListValue = new StoryFunction<IList>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// listremove(list,value);
@@ -440,8 +440,8 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<IList> m_ListValue = new StoryValue<IList>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<IList> m_ListValue = new StoryFunction<IList>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// listinsert(list,index,value);
@@ -482,9 +482,9 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<IList> m_ListValue = new StoryValue<IList>();
-        private IStoryFunction<int> m_IndexValue = new StoryValue<int>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<IList> m_ListValue = new StoryFunction<IList>();
+        private IStoryFunction<int> m_IndexValue = new StoryFunction<int>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// listremoveat(list,index);
@@ -521,8 +521,8 @@ namespace DotnetStoryScript.CommonCommands
             }
             return true;
         }
-        private IStoryFunction<IList> m_ListValue = new StoryValue<IList>();
-        private IStoryFunction<int> m_IndexValue = new StoryValue<int>();
+        private IStoryFunction<IList> m_ListValue = new StoryFunction<IList>();
+        private IStoryFunction<int> m_IndexValue = new StoryFunction<int>();
     }
     /// <summary>
     /// listclear(list);
@@ -556,6 +556,6 @@ namespace DotnetStoryScript.CommonCommands
             return true;
         }
 
-        private IStoryFunction<IList> m_ListValue = new StoryValue<IList>();
+        private IStoryFunction<IList> m_ListValue = new StoryFunction<IList>();
     }
 }

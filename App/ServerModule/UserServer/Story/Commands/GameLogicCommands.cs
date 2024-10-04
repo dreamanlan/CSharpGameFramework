@@ -105,21 +105,21 @@ namespace ScriptableFramework.Story.Commands
                 m_Gold.InitFromDsl(callData.GetParam(7));
             }
             for (int i = 8; i < callData.GetParamNum(); ++i) {
-                StoryValue<int> val = new StoryValue<int>();
+                StoryFunction<int> val = new StoryFunction<int>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_MailItems.Add(val);
             }
             return true;
         }
 
-        private IStoryFunction<ulong> m_Receiver = new StoryValue<ulong>();
-        private IStoryFunction<string> m_Title = new StoryValue<string>();
-        private IStoryFunction<string> m_Content = new StoryValue<string>();
-        private IStoryFunction<string> m_Sender = new StoryValue<string>();
-        private IStoryFunction<int> m_LevelDemand = new StoryValue<int>();
-        private IStoryFunction<int> m_ValidPeriod = new StoryValue<int>();
-        private IStoryFunction<int> m_Money = new StoryValue<int>();
-        private IStoryFunction<int> m_Gold = new StoryValue<int>();
+        private IStoryFunction<ulong> m_Receiver = new StoryFunction<ulong>();
+        private IStoryFunction<string> m_Title = new StoryFunction<string>();
+        private IStoryFunction<string> m_Content = new StoryFunction<string>();
+        private IStoryFunction<string> m_Sender = new StoryFunction<string>();
+        private IStoryFunction<int> m_LevelDemand = new StoryFunction<int>();
+        private IStoryFunction<int> m_ValidPeriod = new StoryFunction<int>();
+        private IStoryFunction<int> m_Money = new StoryFunction<int>();
+        private IStoryFunction<int> m_Gold = new StoryFunction<int>();
         private List<IStoryFunction<int>> m_MailItems = new List<IStoryFunction<int>>();
     }
     /// <summary>
@@ -164,7 +164,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// addmember(guid, tableid, level);
@@ -220,9 +220,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<int> m_TableId = new StoryValue<int>();
-        private IStoryFunction<int> m_Level = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<int> m_TableId = new StoryFunction<int>();
+        private IStoryFunction<int> m_Level = new StoryFunction<int>();
     }
     /// <summary>
     /// removemember(guid, id_or_guid);
@@ -290,8 +290,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction m_MemberId = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction m_MemberId = new StoryFunction();
     }
     /// <summary>
     /// syncmembers(guid);
@@ -332,7 +332,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// clearitems(guid);
@@ -376,7 +376,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// additem(guid, itemid, num);
@@ -428,9 +428,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<int> m_ItemId = new StoryValue<int>();
-        private IStoryFunction<int> m_ItemNum = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<int> m_ItemId = new StoryFunction<int>();
+        private IStoryFunction<int> m_ItemNum = new StoryFunction<int>();
     }
     /// <summary>
     /// reduceitem(guid, itemid, num);
@@ -482,9 +482,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<int> m_ItemId = new StoryValue<int>();
-        private IStoryFunction<int> m_ItemNum = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<int> m_ItemId = new StoryFunction<int>();
+        private IStoryFunction<int> m_ItemNum = new StoryFunction<int>();
     }
     /// <summary>
     /// removeitem(guid, id_or_guid);
@@ -542,8 +542,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction m_ItemId = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction m_ItemId = new StoryFunction();
     }
     /// <summary>
     /// syncitems(guid);
@@ -584,7 +584,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// clearuserdatas(guid);
@@ -630,7 +630,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// adduserdata(guid, key, val);
@@ -702,9 +702,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<string> m_Key = new StoryValue<string>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<string> m_Key = new StoryFunction<string>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// removeuserdata(guid, key, type);
@@ -762,9 +762,9 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryFunction<string> m_Key = new StoryValue<string>();
-        private IStoryFunction<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
+        private IStoryFunction<string> m_Key = new StoryFunction<string>();
+        private IStoryFunction<string> m_Type = new StoryFunction<string>();
     }
     /// <summary>
     /// clearglobaldatas(guid);
@@ -856,8 +856,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_Key = new StoryValue<string>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<string> m_Key = new StoryFunction<string>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// removeglobaldata(key, type);
@@ -908,7 +908,7 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_Key = new StoryValue<string>();
-        private IStoryFunction<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<string> m_Key = new StoryFunction<string>();
+        private IStoryFunction<string> m_Type = new StoryFunction<string>();
     }
 }

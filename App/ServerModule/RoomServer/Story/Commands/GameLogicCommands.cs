@@ -78,8 +78,8 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private IStoryFunction<string> m_AttrName = new StoryValue<string>();
-        private IStoryFunction m_Value = new StoryValue();
+        private IStoryFunction<string> m_AttrName = new StoryFunction<string>();
+        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// camerafollow(npc_unit_id1,npc_unit_id2,...)[touser(userid)];
@@ -150,7 +150,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<int> val = new StoryValue<int>();
+                IStoryFunction<int> val = new StoryFunction<int>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_UnitIds.Add(val);
             }
@@ -179,7 +179,7 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryValue<int>();
+        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
         private List<IStoryFunction<int>> m_UnitIds = new List<IStoryFunction<int>>();
     }
     /// <summary>
@@ -278,9 +278,9 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryValue<int>();
-        private IStoryFunction<int> m_BeginUnitId = new StoryValue<int>();
-        private IStoryFunction<int> m_EndUnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
+        private IStoryFunction<int> m_BeginUnitId = new StoryFunction<int>();
+        private IStoryFunction<int> m_EndUnitId = new StoryFunction<int>();
     }
     /// <summary>
     /// cameralookat(npc_unit_id)[touser(userid)];
@@ -412,8 +412,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryValue<int>();
-        private IStoryFunction m_Arg = new StoryValue();
+        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
+        private IStoryFunction m_Arg = new StoryFunction();
     }
     /// <summary>
     /// camerafollowpath()[touser(userid)];
@@ -491,7 +491,7 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryValue<int>();
+        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
     }
     /// <summary>
     /// lockframe(scale)[touser(userid)];
@@ -573,8 +573,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryValue<int>();
-        private IStoryFunction<float> m_Scale = new StoryValue<float>();
+        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
+        private IStoryFunction<float> m_Scale = new StoryFunction<float>();
     }
     /// <summary>
     /// setleaderid([objid,]leaderid);
@@ -631,8 +631,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
-        private IStoryFunction<int> m_LeaderId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
+        private IStoryFunction<int> m_LeaderId = new StoryFunction<int>();
     }
     /// <summary>
     /// showdlg(storyDlgId)[touser(userid)];
@@ -712,8 +712,8 @@ namespace ScriptableFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryValue<int>();
-        private IStoryFunction<int> m_StoryDlgId = new StoryValue<int>();
+        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
+        private IStoryFunction<int> m_StoryDlgId = new StoryFunction<int>();
     }
     /// <summary>
     /// areadetect(pos,radius,type,callback)[set(var,val)];
@@ -828,13 +828,13 @@ namespace ScriptableFramework.Story.Commands
             }
         }
 
-        private IStoryFunction<Vector3> m_Pos = new StoryValue<Vector3>();
-        private IStoryFunction<float> m_Radius = new StoryValue<float>();
-        private IStoryFunction<string> m_Type = new StoryValue<string>();
-        private IStoryFunction<string> m_EventName = new StoryValue<string>();
-        private IStoryFunction<string> m_SetVar = new StoryValue<string>();
-        private IStoryFunction m_SetVal = new StoryValue();
-        private IStoryFunction m_ElseSetVal = new StoryValue();
+        private IStoryFunction<Vector3> m_Pos = new StoryFunction<Vector3>();
+        private IStoryFunction<float> m_Radius = new StoryFunction<float>();
+        private IStoryFunction<string> m_Type = new StoryFunction<string>();
+        private IStoryFunction<string> m_EventName = new StoryFunction<string>();
+        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
+        private IStoryFunction m_SetVal = new StoryFunction();
+        private IStoryFunction m_ElseSetVal = new StoryFunction();
         private bool m_HaveSet = false;
     }
 }

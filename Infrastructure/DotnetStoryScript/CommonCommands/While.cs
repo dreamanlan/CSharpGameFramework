@@ -114,7 +114,7 @@ namespace DotnetStoryScript.CommonCommands
         }
 
         private int m_LocalInfoIndex;
-        private IStoryFunction<int> m_LoadedCondition = new StoryValue<int>();
+        private IStoryFunction<int> m_LoadedCondition = new StoryFunction<int>();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
     }
 }

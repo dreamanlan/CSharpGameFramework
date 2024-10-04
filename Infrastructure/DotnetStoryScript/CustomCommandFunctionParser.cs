@@ -172,7 +172,7 @@ namespace DotnetStoryScript
             }
             else if (id == "function") {
                 string doc = string.Empty;
-                CommonFunctions.CompositeValue val = new CommonFunctions.CompositeValue();
+                CommonFunctions.CompositeFunction val = new CommonFunctions.CompositeFunction();
                 val.InitSharedData();
                 var first = dslInfo as Dsl.FunctionData;
                 if (null != first) {
@@ -303,7 +303,7 @@ namespace DotnetStoryScript
 
                 IStoryFunctionFactory factory = StoryFunctionManager.Instance.FindFactory(name);
                 if (null != factory) {
-                    CommonFunctions.CompositeValue val = factory.Build() as CommonFunctions.CompositeValue;
+                    CommonFunctions.CompositeFunction val = factory.Build() as CommonFunctions.CompositeFunction;
                     val.InitialCommands.Clear();
 
                     Dsl.FunctionData bodyFunc = null;

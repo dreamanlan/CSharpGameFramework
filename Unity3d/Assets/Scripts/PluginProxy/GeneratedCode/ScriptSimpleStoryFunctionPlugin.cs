@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using ScriptableFramework;
 using ScriptableFramework.Plugin;
 
-public class ScriptSimpleStoryValuePlugin : ScriptPluginProxyBase
+public class ScriptSimpleStoryFunctionPlugin : ScriptPluginProxyBase
 {
-	public void SetProxy(DotnetStoryScript.StoryValueResult result)
+	public void SetProxy(DotnetStoryScript.StoryFunctionResult result)
 	{
 	}
 	public object Clone()
 	{
 		return null;
 	}
-	public void Evaluate(DotnetStoryScript.StoryInstance instance, DotnetStoryScript.StoryMessageHandler handler, DotnetStoryScript.StoryValueParams _params)
+	public void Evaluate(DotnetStoryScript.StoryInstance instance, DotnetStoryScript.StoryMessageHandler handler, DotnetStoryScript.StoryFunctionParams _params)
 	{
 	}
 
