@@ -602,7 +602,7 @@ namespace StoryScript.DslExpression
             calculator.Register("displaydialog", "displaydialog(title,msg,ok[,cancel[,alt]]) api", new ExpressionFactoryHelper<DisplayDialogExp>());
 #if USE_GM_STORY
             calculator.Register("storyvar", "storyvar(name,val) or storyvar(name) api", new ExpressionFactoryHelper<StoryVarExp>());
-            calculator.Register("storyvalue", "storyvalue(code1,code2,...) api", new ExpressionFactoryHelper<StoryFunctionExp>());
+            calculator.Register("storyfunction", "storyfunction(code1,code2,...) api", new ExpressionFactoryHelper<StoryFunctionExp>());
             calculator.Register("storycommand", "storycommand(code1,code2,...) api", new ExpressionFactoryHelper<StoryCommandExp>());
 #endif
         }
