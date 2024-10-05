@@ -18,39 +18,15 @@
           "ServerProtoBuf": "1.0.0",
           "CSharpCenterClient": "1.0.0.0",
           "LitJson": "1.0.0.0",
+          "protobuf-net.Core": "3.0.0.0",
+          "protobuf-net": "3.0.0.0",
           "ScriptFrameworkLibrary": "1.0.0.0"
         },
         "runtime": {
           "Lobby.dll": {}
         }
       },
-      "protobuf-net/3.2.26": {
-        "dependencies": {
-          "protobuf-net.Core": "3.2.26"
-        },
-        "runtime": {
-          "lib/net6.0/protobuf-net.dll": {
-            "assemblyVersion": "3.0.0.0",
-            "fileVersion": "3.2.26.38424"
-          }
-        }
-      },
-      "protobuf-net.Core/3.2.26": {
-        "dependencies": {
-          "System.Collections.Immutable": "7.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/protobuf-net.Core.dll": {
-            "assemblyVersion": "3.0.0.0",
-            "fileVersion": "3.2.26.38424"
-          }
-        }
-      },
-      "System.Collections.Immutable/7.0.0": {},
       "ClientProtoBuf/1.0.0": {
-        "dependencies": {
-          "protobuf-net": "3.2.26"
-        },
         "runtime": {
           "ClientProtoBuf.dll": {}
         }
@@ -65,10 +41,27 @@
           "DataProtoBuf.dll": {}
         }
       },
+      "DotnetSkillScript/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "runtime": {
+          "DotnetSkillScript.dll": {}
+        }
+      },
+      "DotnetStoryScript/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "runtime": {
+          "DotnetStoryScript.dll": {}
+        }
+      },
       "GameObjects/1.0.0": {
         "dependencies": {
           "Common": "1.0.0",
-          "StorySystem": "1.0.0"
+          "DotnetSkillScript": "1.0.0",
+          "DotnetStoryScript": "1.0.0"
         },
         "runtime": {
           "GameObjects.dll": {}
@@ -97,14 +90,6 @@
           "ServerProtoBuf.dll": {}
         }
       },
-      "StorySystem/1.0.0": {
-        "dependencies": {
-          "Common": "1.0.0"
-        },
-        "runtime": {
-          "StorySystem.dll": {}
-        }
-      },
       "CSharpCenterClient/1.0.0.0": {
         "runtime": {
           "CSharpCenterClient.dll": {
@@ -118,6 +103,22 @@
           "LitJson.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "protobuf-net.Core/3.0.0.0": {
+        "runtime": {
+          "protobuf-net.Core.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.26.38424"
+          }
+        }
+      },
+      "protobuf-net/3.0.0.0": {
+        "runtime": {
+          "protobuf-net.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.26.38424"
           }
         }
       },
@@ -145,27 +146,6 @@
       "serviceable": false,
       "sha512": ""
     },
-    "protobuf-net/3.2.26": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-zBzBiKs4yP+tzQOsRA5WbI/zayS6eFv8g0KIKNPI7/RUY1nk9Oe+STmtbUYkNUkO3T3SidEoZv+tF1nmgTSutQ==",
-      "path": "protobuf-net/3.2.26",
-      "hashPath": "protobuf-net.3.2.26.nupkg.sha512"
-    },
-    "protobuf-net.Core/3.2.26": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-s8oJW9dBVxix4p8uqMbeG++DIGjgzOFAKoP2i5wayeeFOKBqG+cCBO2S/CAC4MAFlb5m1Os2m/miLcqRCgqJ7Q==",
-      "path": "protobuf-net.core/3.2.26",
-      "hashPath": "protobuf-net.core.3.2.26.nupkg.sha512"
-    },
-    "System.Collections.Immutable/7.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-dQPcs0U1IKnBdRDBkrCTi1FoajSTBzLcVTpjO4MBCMC7f4pDOIPzgBoX8JjG7X6uZRJ8EBxsi8+DR1JuwjnzOQ==",
-      "path": "system.collections.immutable/7.0.0",
-      "hashPath": "system.collections.immutable.7.0.0.nupkg.sha512"
-    },
     "ClientProtoBuf/1.0.0": {
       "type": "project",
       "serviceable": false,
@@ -177,6 +157,16 @@
       "sha512": ""
     },
     "DataProtoBuf/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DotnetSkillScript/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DotnetStoryScript/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -206,17 +196,22 @@
       "serviceable": false,
       "sha512": ""
     },
-    "StorySystem/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
     "CSharpCenterClient/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
     "LitJson/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "protobuf-net.Core/3.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "protobuf-net/3.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
