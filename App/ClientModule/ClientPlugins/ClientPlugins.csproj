@@ -41,7 +41,5 @@
     <ProjectReference Include="..\PluginFramework\PluginFramework.csproj" />
     <ProjectReference Include="..\..\ClientProtoBuf\ClientProtoBuf.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
-    <ProjectReference Include="..\..\..\Infrastructure\SkillSystem\SkillSystem.csproj" />
-    <ProjectReference Include="..\..\..\Infrastructure\StorySystem\StorySystem.csproj" />
   </ItemGroup>
 </Project>

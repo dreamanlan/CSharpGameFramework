@@ -2590,6 +2590,19 @@ namespace ScriptableFramework
             bv.Set(v);
             return bv;
         }
+        //Generic From
+        public static BoxedValue From<T>(T v)
+        {
+            BoxedValue bv = new BoxedValue();
+            bv.GenericSet(v);
+            return bv;
+        }
+        public static BoxedValue From(Type t, object o)
+        {
+            BoxedValue bv = new BoxedValue();
+            bv.GenericSet(t, o);
+            return bv;
+        }
         //Used by Lua or to prevent implicit conversion problems
         public static BoxedValue FromBool(bool v)
         {

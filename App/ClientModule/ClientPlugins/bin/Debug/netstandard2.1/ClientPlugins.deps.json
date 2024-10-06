@@ -14,8 +14,6 @@
           "GameObjects": "1.0.0",
           "PluginFramework": "1.0.0",
           "SceneLogic": "1.0.0",
-          "SkillSystem": "1.0.0",
-          "StorySystem": "1.0.0",
           "Cs2DslUtility": "0.0.0.0",
           "Dsl": "0.0.0.0",
           "Lidgren.Network": "2012.1.7.0",
@@ -72,9 +70,7 @@
           "DotnetSkillScript": "1.0.0",
           "DotnetStoryScript": "1.0.0",
           "GameObjects": "1.0.0",
-          "SceneLogic": "1.0.0",
-          "SkillSystem": "1.0.0",
-          "StorySystem": "1.0.0"
+          "SceneLogic": "1.0.0"
         },
         "runtime": {
           "PluginFramework.dll": {}

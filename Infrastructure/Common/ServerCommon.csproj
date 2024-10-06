@@ -7,6 +7,11 @@
     <GenerateTargetFrameworkAttribute>False</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="PublishSubscribe\**" />
+    <EmbeddedResource Remove="PublishSubscribe\**" />
+    <None Remove="PublishSubscribe\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
@@ -39,7 +44,6 @@
     <Compile Remove="GlobalVariables.cs" />
     <Compile Remove="Log\LogSystem.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
-    <Compile Remove="PublishSubscribe\PublishSubscribeSystem.cs" />
     <Compile Remove="Story\StoryDefine.cs" />
     <Compile Remove="StrDictionary.cs" />
     <Compile Remove="Util\Converter.cs" />

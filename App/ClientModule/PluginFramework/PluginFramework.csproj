@@ -62,8 +62,6 @@
     <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\DotnetSkillScript\DotnetSkillScript.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\DotnetStoryScript\DotnetStoryScript.csproj" />
-    <ProjectReference Include="..\..\..\Infrastructure\SkillSystem\SkillSystem.csproj" />
-    <ProjectReference Include="..\..\..\Infrastructure\StorySystem\StorySystem.csproj" />
     <ProjectReference Include="..\..\ClientProtoBuf\ClientProtoBuf.csproj" />
   </ItemGroup>
 </Project>
