@@ -300,7 +300,7 @@ namespace ScriptableFramework.Story.Functions
                 var o = m_ObjPath.Value;
                 string objPath = o.IsString ? o.StringVal : null;
                 UnityEngine.GameObject uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
-                if (null != uobj) {
+                if (null == uobj) {
                     if (null != objPath) {
                         uobj = UnityEngine.GameObject.Find(objPath);
                     } else {
