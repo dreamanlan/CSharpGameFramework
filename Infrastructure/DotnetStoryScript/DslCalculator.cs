@@ -560,6 +560,14 @@ namespace DotnetStoryScript.DslExpression
             if (v1.IsString || v2.IsString) {
                 v = v1.ToString() + v2.ToString();
             }
+            else if(v1.IsInteger && v2.IsInteger) {
+                if(v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                    v = v1.GetULong() + v2.GetULong();
+                }
+                else {
+                    v = v1.GetLong() + v2.GetLong();
+                }
+            }
             else {
                 v = v1.GetDouble() + v2.GetDouble();
             }
@@ -581,7 +589,18 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetDouble() - v2.GetDouble();
+            BoxedValue v;
+            if (v1.IsInteger && v2.IsInteger) {
+                if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                    v = v1.GetULong() - v2.GetULong();
+                }
+                else {
+                    v = v1.GetLong() - v2.GetLong();
+                }
+            }
+            else {
+                v = v1.GetDouble() - v2.GetDouble();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -600,7 +619,18 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetDouble() * v2.GetDouble();
+            BoxedValue v;
+            if (v1.IsInteger && v2.IsInteger) {
+                if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                    v = v1.GetULong() * v2.GetULong();
+                }
+                else {
+                    v = v1.GetLong() * v2.GetLong();
+                }
+            }
+            else {
+                v = v1.GetDouble() * v2.GetDouble();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -619,7 +649,18 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetDouble() / v2.GetDouble();
+            BoxedValue v;
+            if (v1.IsInteger && v2.IsInteger) {
+                if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                    v = v1.GetULong() / v2.GetULong();
+                }
+                else {
+                    v = v1.GetLong() / v2.GetLong();
+                }
+            }
+            else {
+                v = v1.GetDouble() / v2.GetDouble();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -638,7 +679,18 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetDouble() % v2.GetDouble();
+            BoxedValue v;
+            if (v1.IsInteger && v2.IsInteger) {
+                if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                    v = v1.GetULong() % v2.GetULong();
+                }
+                else {
+                    v = v1.GetLong() % v2.GetLong();
+                }
+            }
+            else {
+                v = v1.GetDouble() % v2.GetDouble();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -657,7 +709,13 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetLong() & v2.GetLong();
+            BoxedValue v;
+            if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                v = v1.GetULong() & v2.GetULong();
+            }
+            else {
+                v = v1.GetLong() & v2.GetLong();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -676,7 +734,13 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetLong() | v2.GetLong();
+            BoxedValue v;
+            if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                v = v1.GetULong() | v2.GetULong();
+            }
+            else {
+                v = v1.GetLong() | v2.GetLong();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -695,7 +759,13 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetLong() ^ v2.GetLong();
+            BoxedValue v;
+            if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+                v = v1.GetULong() ^ v2.GetULong();
+            }
+            else {
+                v = v1.GetLong() ^ v2.GetLong();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -713,7 +783,13 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue DoCalc()
         {
             var v1 = m_Op1.Calc();
-            BoxedValue v = ~v1.GetLong();
+            BoxedValue v;
+            if (v1.IsUnsignedInteger) {
+                v = ~v1.GetULong();
+            }
+            else {
+                v = ~v1.GetLong();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -730,7 +806,13 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetLong() << v2.GetInt();
+            BoxedValue v;
+            if (v1.IsUnsignedInteger) {
+                v = v1.GetULong() << v2.GetInt();
+            }
+            else {
+                v = v1.GetLong() << v2.GetInt();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -749,7 +831,13 @@ namespace DotnetStoryScript.DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            BoxedValue v = v1.GetLong() >> v2.GetInt();
+            BoxedValue v;
+            if (v1.IsUnsignedInteger) {
+                v = v1.GetULong() >> v2.GetInt();
+            }
+            else {
+                v = v1.GetLong() >> v2.GetInt();
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -766,9 +854,26 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue DoCalc()
         {
-            double v1 = m_Op1.Calc().GetDouble();
-            double v2 = m_Op2.Calc().GetDouble();
-            BoxedValue v = v1 >= v2 ? v1 : v2;
+            var opd1 = m_Op1.Calc();
+            var opd2 = m_Op2.Calc();
+            BoxedValue v;
+            if (opd1.IsInteger && opd2.IsInteger) {
+                if (opd1.IsUnsignedInteger && opd2.IsUnsignedInteger) {
+                    var v1 = opd1.GetULong();
+                    var v2 = opd2.GetULong();
+                    v = v1 >= v2 ? v1 : v2;
+                }
+                else {
+                    var v1 = opd1.GetLong();
+                    var v2 = opd2.GetLong();
+                    v = v1 >= v2 ? v1 : v2;
+                }
+            }
+            else {
+                var v1 = opd1.GetDouble();
+                var v2 = opd2.GetDouble();
+                v = v1 >= v2 ? v1 : v2;
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -785,9 +890,26 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue DoCalc()
         {
-            double v1 = m_Op1.Calc().GetDouble();
-            double v2 = m_Op2.Calc().GetDouble();
-            BoxedValue v = v1 <= v2 ? v1 : v2;
+            var opd1 = m_Op1.Calc();
+            var opd2 = m_Op2.Calc();
+            BoxedValue v;
+            if (opd1.IsInteger && opd2.IsInteger) {
+                if (opd1.IsUnsignedInteger && opd2.IsUnsignedInteger) {
+                    var v1 = opd1.GetULong();
+                    var v2 = opd2.GetULong();
+                    v = v1 <= v2 ? v1 : v2;
+                }
+                else {
+                    var v1 = opd1.GetLong();
+                    var v2 = opd2.GetLong();
+                    v = v1 <= v2 ? v1 : v2;
+                }
+            }
+            else {
+                var v1 = opd1.GetDouble();
+                var v2 = opd2.GetDouble();
+                v = v1 <= v2 ? v1 : v2;
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -804,8 +926,16 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue DoCalc()
         {
-            double v1 = m_Op.Calc().GetDouble();
-            BoxedValue v = v1 >= 0 ? v1 : -v1;
+            var opd = m_Op.Calc();
+            BoxedValue v;
+            if (opd.IsInteger) {
+                long v1 = opd.GetLong();
+                v = v1 >= 0 ? v1 : -v1;
+            }
+            else {
+                double v1 = opd.GetDouble();
+                v = v1 >= 0 ? v1 : -v1;
+            }
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
