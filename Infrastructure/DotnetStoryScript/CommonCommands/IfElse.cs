@@ -133,7 +133,7 @@ namespace DotnetStoryScript.CommonCommands
                 Dsl.FunctionData functionData = statementData.Functions[stIx].AsFunction;
                 if (null != functionData) {
                     string funcId = functionData.GetId();
-                    if (funcId == "elseif") {
+                    if (funcId == "elseif" || funcId == "elif") {
                         Load(functionData);
                     } else if (funcId == "else") {
                         if (stIx == ct - 1) {
