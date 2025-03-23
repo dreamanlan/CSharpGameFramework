@@ -29,12 +29,18 @@
       },
       "ClientProtoBuf/1.0.0": {
         "runtime": {
-          "ClientProtoBuf.dll": {}
+          "ClientProtoBuf.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Common/1.0.0": {
         "runtime": {
-          "Common.dll": {}
+          "Common.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "DotnetSkillScript/1.0.0": {
@@ -42,7 +48,10 @@
           "Common": "1.0.0"
         },
         "runtime": {
-          "DotnetSkillScript.dll": {}
+          "DotnetSkillScript.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "DotnetStoryScript/1.0.0": {
@@ -50,7 +59,10 @@
           "Common": "1.0.0"
         },
         "runtime": {
-          "DotnetStoryScript.dll": {}
+          "DotnetStoryScript.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "GameObjects/1.0.0": {
@@ -60,7 +72,10 @@
           "DotnetStoryScript": "1.0.0"
         },
         "runtime": {
-          "GameObjects.dll": {}
+          "GameObjects.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
         }
       },
       "PluginFramework/1.0.0": {
@@ -73,7 +88,10 @@
           "SceneLogic": "1.0.0"
         },
         "runtime": {
-          "PluginFramework.dll": {}
+          "PluginFramework.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "SceneLogic/1.0.0": {
@@ -84,7 +102,10 @@
           "GameObjects": "1.0.0"
         },
         "runtime": {
-          "SceneLogic.dll": {}
+          "SceneLogic.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Cs2DslUtility/0.0.0.0": {

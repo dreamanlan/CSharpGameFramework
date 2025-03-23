@@ -7099,14 +7099,6 @@ namespace DotnetStoryScript.DslExpression
         {
             get { return m_NamedGlobalVariableIndexes.Keys; }
         }
-        public void RemoveGlobalVariable(string v)
-        {
-            int index;
-            if (m_NamedGlobalVariableIndexes.TryGetValue(v, out index)) {
-                SetGlobalVaraibleByIndex(index, BoxedValue.NullObject);
-                m_NamedGlobalVariableIndexes.Remove(v);
-            }
-        }
         public bool TryGetGlobalVariable(string v, out BoxedValue result)
         {
             if (null != OnTryGetVariable && OnTryGetVariable(v, out result)) {

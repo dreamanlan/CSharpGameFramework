@@ -1,10 +1,10 @@
 {
   "version": 3,
   "targets": {
-    ".NETFramework,Version=v4.7.2": {
+    ".NETStandard,Version=v2.1": {
       "Common/1.0.0": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.7.2",
+        "framework": ".NETStandard,Version=v2.1",
         "compile": {
           "bin/placeholder/Common.dll": {}
         },
@@ -17,12 +17,12 @@
   "libraries": {
     "Common/1.0.0": {
       "type": "project",
-      "path": "../Common/Common_dotnet_framework.csproj",
-      "msbuildProject": "../Common/Common_dotnet_framework.csproj"
+      "path": "../Common/Common.csproj",
+      "msbuildProject": "../Common/Common.csproj"
     }
   },
   "projectFileDependencyGroups": {
-    ".NETFramework,Version=v4.7.2": [
+    ".NETStandard,Version=v2.1": [
       "Common >= 1.0.0"
     ]
   },
@@ -33,9 +33,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript_dotnet_framework.csproj",
+      "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
       "projectName": "DotnetStoryScript",
-      "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript_dotnet_framework.csproj",
+      "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
       "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
       "outputPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\obj\\",
       "projectStyle": "PackageReference",
@@ -48,18 +48,18 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net472"
+        "netstandard2.1"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net472": {
-          "targetAlias": "net472",
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
           "projectReferences": {
-            "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common_dotnet_framework.csproj": {
-              "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common_dotnet_framework.csproj"
+            "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+              "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
             }
           }
         }
@@ -73,12 +73,29 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.200"
     },
     "frameworks": {
-      "net472": {
-        "targetAlias": "net472",
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "NETStandard.Library": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200\\RuntimeIdentifierGraph.json"
       }
     }
   }

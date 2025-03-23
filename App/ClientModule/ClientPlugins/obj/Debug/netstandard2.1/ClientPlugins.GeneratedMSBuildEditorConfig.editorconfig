@@ -3,3 +3,6 @@ build_property.RootNamespace = ClientPlugins
 build_property.ProjectDir = F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 

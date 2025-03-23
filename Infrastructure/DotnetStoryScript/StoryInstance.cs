@@ -661,24 +661,6 @@ namespace DotnetStoryScript
             }
             return ret;
         }
-        public bool RemoveVariable(string varName)
-        {
-            bool ret = false;
-            if (varName.StartsWith("$")) {
-                if (null != m_StackVariables) {
-                    ret = m_StackVariables.Remove(varName);
-                }
-            }
-            else if (varName.StartsWith("@") && !varName.StartsWith("@@")) {
-                ret = m_LocalVariables.Remove(varName);
-            }
-            else {
-                if (null != m_GlobalVariables) {
-                    ret = m_GlobalVariables.Remove(varName);
-                }
-            }
-            return ret;
-        }
         public StoryInstance Clone()
         {
             StoryInstance instance = new StoryInstance();
