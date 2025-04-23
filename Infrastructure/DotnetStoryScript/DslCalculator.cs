@@ -7475,9 +7475,9 @@ namespace DotnetStoryScript.DslExpression
                 if (null != funcData) {
                     if (funcData.HaveParam()) {
                         var callData = funcData;
-                        if (!callData.HaveId() && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET)) {
+                        if (!callData.HaveId() && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
                             switch (callData.GetParamClass()) {
-                                case (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
+                                case (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
                                     int num = callData.GetParamNum();
                                     if (num == 1) {
                                         Dsl.ISyntaxComponent param = callData.GetParam(0);
@@ -7488,7 +7488,7 @@ namespace DotnetStoryScript.DslExpression
                                         exp.Load(comp, this);
                                         return exp;
                                     }
-                                case (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET: {
+                                case (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET: {
                                         ArrayExp exp = new ArrayExp();
                                         exp.Load(comp, this);
                                         return exp;
@@ -7510,10 +7510,10 @@ namespace DotnetStoryScript.DslExpression
                                 if (null != innerCall) {
                                     //obj.property = val -> dotnetset(obj, property, val)
                                     int innerParamClass = innerCall.GetParamClass();
-                                    if (innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                      innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET) {
+                                    if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                      innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
                                         Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                        if (innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                        if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
                                             newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
                                         else
                                             newCall.Name = new Dsl.ValueData("collectionset", Dsl.ValueData.ID_TOKEN);
@@ -7553,16 +7553,16 @@ namespace DotnetStoryScript.DslExpression
                                 if (callData.IsHighOrder) {
                                     Dsl.FunctionData innerCall = callData.LowerOrderFunction;
                                     int innerParamClass = innerCall.GetParamClass();
-                                    if (paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
-                                        innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                        innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET)) {
+                                    if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
+                                        innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                        innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
                                         //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
                                         string apiName;
                                         string member = innerCall.GetParamId(0);
                                         if (member == "orderby" || member == "orderbydesc" || member == "where" || member == "top") {
                                             apiName = "linq";
                                         }
-                                        else if (innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD) {
+                                        else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD) {
                                             apiName = "dotnetcall";
                                         }
                                         else {
@@ -7591,11 +7591,11 @@ namespace DotnetStoryScript.DslExpression
                                         return Load(newCall);
                                     }
                                 }
-                                if (paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                  paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET) {
+                                if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                  paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
                                     //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
                                     Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                    if (paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                    if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
                                         newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
                                     else
                                         newCall.Name = new Dsl.ValueData("collectionget", Dsl.ValueData.ID_TOKEN);
@@ -7755,8 +7755,8 @@ namespace DotnetStoryScript.DslExpression
         private Dsl.ISyntaxComponent ConvertMember(Dsl.ISyntaxComponent p, int paramClass)
         {
             var pvd = p as Dsl.ValueData;
-            if (null != pvd && pvd.IsId() && (paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD
-                || paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_POINTER)) {
+            if (null != pvd && pvd.IsId() && (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD
+                || paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_POINTER)) {
                 pvd.SetType(Dsl.ValueData.STRING_TOKEN);
                 return pvd;
             }
