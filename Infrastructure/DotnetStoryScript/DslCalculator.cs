@@ -6796,11 +6796,16 @@ namespace DotnetStoryScript.DslExpression
             public Dictionary<string, int> LocalVarIndexes = new Dictionary<string, int>();
             public List<IExpression> Codes = new List<IExpression>();
 
+            public void AddArgNameIndex(string argName)
+            {
+                int ix = LocalVarIndexes.Count;
+                LocalVarIndexes.Add(argName, -1 - ix);
+            }
             public void BuildArgNameIndexes(IList<string> argNames)
             {
                 if (null != argNames) {
                     for (int ix = 0; ix < argNames.Count; ++ix) {
-                        LocalVarIndexes[argNames[ix]] = -1 - ix;
+                        AddArgNameIndex(argNames[ix]);
                     }
                 }
             }
@@ -7166,8 +7171,7 @@ namespace DotnetStoryScript.DslExpression
                             funcInfo = new FuncInfo();
                             foreach (var p in func.LowerOrderFunction.Params) {
                                 string argName = p.GetId();
-                                int ix = funcInfo.LocalVarIndexes.Count;
-                                funcInfo.LocalVarIndexes.Add(argName, -1 - ix);
+                                funcInfo.AddArgNameIndex(argName);
                             }
                         }
                     }
@@ -7198,10 +7202,7 @@ namespace DotnetStoryScript.DslExpression
             FuncInfo funcInfo = null;
             if (null != argNames && argNames.Count > 0) {
                 funcInfo = new FuncInfo();
-                foreach (var argName in argNames) {
-                    int ix = funcInfo.LocalVarIndexes.Count;
-                    funcInfo.LocalVarIndexes.Add(argName, -1 - ix);
-                }
+                funcInfo.BuildArgNameIndexes(argNames);
             }
             if (null == funcInfo)
                 funcInfo = new FuncInfo();
