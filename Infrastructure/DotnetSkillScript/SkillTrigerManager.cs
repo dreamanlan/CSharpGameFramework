@@ -35,7 +35,7 @@ namespace DotnetSkillScript
                     triger = factory.Create();
                     triger.Init(trigerConfig, instance);
                 } catch (Exception ex) {
-                    ScriptableFramework.LogSystem.Error("triger:{0} line:{1} failed.", trigerConfig.ToScriptString(false), trigerConfig.GetLine());
+                    ScriptableFramework.LogSystem.Error("triger:{0} line:{1} failed.", trigerConfig.ToScriptString(false, Dsl.DelimiterInfo.Default), trigerConfig.GetLine());
                     throw ex;
                 }
             } else {

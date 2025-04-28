@@ -387,7 +387,7 @@ internal static class TerrainEditUtility
                 }
                 if(!check){
                     canContinue = false;
-                    Debug.LogErrorFormat("error script:{0}, {1}", info.GetLine(), info.ToScriptString(false));
+                    Debug.LogErrorFormat("error script:{0}, {1}", info.GetLine(), info.ToScriptString(false, Dsl.DelimiterInfo.Default));
                 }
             }
             if (canContinue) {

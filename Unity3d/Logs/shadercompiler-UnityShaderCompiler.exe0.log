@@ -2,5 +2,3 @@ Base path: 'E:/UGit/official_2022.3.35f1/build/WindowsEditor/x64/Release/Data', 
 Cmd: initializeCompiler
 
 Cmd: shutdown
-
-Quitting shader compiler process

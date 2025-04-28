@@ -153,7 +153,7 @@ namespace DotnetStoryScript
                                         ret.InitFromDsl(param);
                                     }
                                     catch (Exception ex) {
-                                        var msg = string.Format("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
+                                        var msg = string.Format("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false, Dsl.DelimiterInfo.Default), param.GetLine());
                                         throw new Exception(msg, ex);
                                     }
                                 }
@@ -177,7 +177,7 @@ namespace DotnetStoryScript
                                     ret.InitFromDsl(param);
                                 }
                                 catch (Exception ex) {
-                                    var msg = string.Format("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
+                                    var msg = string.Format("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false, Dsl.DelimiterInfo.Default), param.GetLine());
                                     throw new Exception(msg, ex);
                                 }
                             }
@@ -258,13 +258,13 @@ namespace DotnetStoryScript
                                     ret.InitFromDsl(param);
                                 }
                                 catch (Exception ex) {
-                                    var msg = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false), param.GetLine());
+                                    var msg = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false, Dsl.DelimiterInfo.Default), param.GetLine());
                                     throw new Exception(msg, ex);
                                 }
                             }
                             else if (null == OnCreateFailback || !OnCreateFailback(param, out ret)) {
 #if DEBUG
-                                string err = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false), param.GetLine());
+                                string err = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false, Dsl.DelimiterInfo.Default), param.GetLine());
                                 LogSystem.Error("{0}", err);
                                 throw new Exception(err);
 #else

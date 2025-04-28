@@ -192,17 +192,17 @@ namespace DotnetStoryScript
                         try {
                             command = factory.Create();
                             if (!command.Init(commandConfig)) {
-                                LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                                LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false, Dsl.DelimiterInfo.Default), commandConfig.GetLine());
                             }
                         }
                         catch (Exception ex) {
-                            var msg = string.Format("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                            var msg = string.Format("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false, Dsl.DelimiterInfo.Default), commandConfig.GetLine());
                             throw new Exception(msg, ex);
                         }
                     }
                     else if (null == OnCreateFailback || !OnCreateFailback(commandConfig, out command)) {
 #if DEBUG
-                        string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
+                        string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false, Dsl.DelimiterInfo.Default));
                         LogSystem.Error("{0}", err);
                         throw new Exception(err);
 #else
@@ -214,7 +214,7 @@ namespace DotnetStoryScript
                     }
                     else {
 #if DEBUG
-                        string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
+                        string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false, Dsl.DelimiterInfo.Default));
                         LogSystem.Error("{0}", err);
                         throw new Exception(err);
 #else

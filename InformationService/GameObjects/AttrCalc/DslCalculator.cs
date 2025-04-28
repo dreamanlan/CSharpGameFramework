@@ -1043,7 +1043,7 @@ namespace ScriptableFramework.AttrCalc
                 m_Op3 = Calculator.Load(op2);
             } else {
                 //error
-                LogSystem.Error("DslCalculator error, {0} line {1}", statementData.ToScriptString(false), statementData.GetLine());
+                LogSystem.Error("DslCalculator error, {0} line {1}", statementData.ToScriptString(false, Dsl.DelimiterInfo.Default), statementData.GetLine());
             }
             return true;
         }
@@ -1154,7 +1154,7 @@ namespace ScriptableFramework.AttrCalc
                         item.Condition = Calculator.Load(cond);
                     } else {
                         //error
-                        LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false), fData.GetLine());
+                        LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
                     }
                     for (int ix = 0; ix < fData.GetParamNum(); ++ix) {
                         IAttrExpression subExp = Calculator.Load(fData.GetParam(ix));
@@ -1164,7 +1164,7 @@ namespace ScriptableFramework.AttrCalc
                 } else if (fData.GetId() == "else") {
                     if (fData != statementData.Last) {
                         //error
-                        LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false), fData.GetLine());
+                        LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
                     } else {
                         IfExp.Clause item = new IfExp.Clause();
                         for (int ix = 0; ix < fData.GetParamNum(); ++ix) {
@@ -1175,7 +1175,7 @@ namespace ScriptableFramework.AttrCalc
                     }
                 } else {
                     //error
-                    LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false), fData.GetLine());
+                    LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
                 }
             }
             return true;
@@ -1398,7 +1398,7 @@ namespace ScriptableFramework.AttrCalc
                     return constExp;
                 } else {
                     //error
-                    LogSystem.Error("DslCalculator error, {0} line {1}", comp.ToScriptString(false), comp.GetLine());
+                    LogSystem.Error("DslCalculator error, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
                     return null;
                 }
             } else {
@@ -1434,7 +1434,7 @@ namespace ScriptableFramework.AttrCalc
                                 exp.Load(comp, this);
                             } else {
                                 //error
-                                LogSystem.Error("DslCalculator error, {0} line {1}", callData.ToScriptString(false), callData.GetLine());
+                                LogSystem.Error("DslCalculator error, {0} line {1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
                             }
                             return exp;
                         }
@@ -1446,7 +1446,7 @@ namespace ScriptableFramework.AttrCalc
                 ret.Load(comp, this);
             } else {
                 //error
-                LogSystem.Error("DslCalculator error, {0} line {1}", comp.ToScriptString(false), comp.GetLine());
+                LogSystem.Error("DslCalculator error, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
             }
             return ret;
         }

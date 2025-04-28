@@ -62,7 +62,6 @@ F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstanda
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\SceneLogic.pdb
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\PluginFramework.pdb
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\ClientProtoBuf.pdb
-F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\Common.pdb
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\DotnetSkillScript.pdb
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\DotnetStoryScript.pdb
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\Dsl.pdb
@@ -75,3 +74,4 @@ F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstanda
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPl.36C8B2C4.Up2Date
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.dll
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.pdb
+F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\Common.pdb

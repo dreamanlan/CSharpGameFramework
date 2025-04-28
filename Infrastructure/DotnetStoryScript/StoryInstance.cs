@@ -695,7 +695,7 @@ namespace DotnetStoryScript
             Dsl.FunctionData story = config as Dsl.FunctionData;
             if (null == story) {
 #if DEBUG
-                string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString(false));
+                string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString(false, Dsl.DelimiterInfo.Default));
                 throw new Exception(err);
 #else
                 LogSystem.Error("StoryInstance::Init, isn't story DSL");
@@ -738,7 +738,7 @@ namespace DotnetStoryScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Story {0} DSL, local must be a function ! line:{1} local:{2}", m_StoryId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Story {0} DSL, local must be a function ! line:{1} local:{2}", m_StoryId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
                             LogSystem.Error("Story {0} DSL, local must be a function !", m_StoryId);
@@ -786,7 +786,7 @@ namespace DotnetStoryScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Story {0} DSL, onmessage must be a function or statement ! line:{1} onmessage:{2}", m_StoryId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Story {0} DSL, onmessage must be a function or statement ! line:{1} onmessage:{2}", m_StoryId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
                             LogSystem.Error("Story {0} DSL, onmessage must be a function !", m_StoryId);
@@ -795,7 +795,7 @@ namespace DotnetStoryScript
                     }
                     else {
 #if DEBUG
-                        string err = string.Format("StoryInstance::Init, Story {0} unknown part {1}, line:{2} section:{3}", m_StoryId, part.GetId(), part.GetLine(), part.ToScriptString(false));
+                        string err = string.Format("StoryInstance::Init, Story {0} unknown part {1}, line:{2} section:{3}", m_StoryId, part.GetId(), part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                         throw new Exception(err);
 #else
                         LogSystem.Error("StoryInstance::Init, Story {0} unknown part {1}", m_StoryId, part.GetId());
@@ -805,7 +805,7 @@ namespace DotnetStoryScript
             }
             else {
 #if DEBUG
-                string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString(false));
+                string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString(false, Dsl.DelimiterInfo.Default));
                 throw new Exception(err);
 #else
                 LogSystem.Error("StoryInstance::Init, isn't story DSL");

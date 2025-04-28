@@ -108,7 +108,7 @@ namespace DotnetSkillScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("CreateInitTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, arg.GetLine(), arg.ToScriptString(false));
+                            string err = string.Format("CreateInitTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, arg.GetLine(), arg.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #endif
                         }
@@ -202,7 +202,7 @@ namespace DotnetSkillScript
                 }
                 else {
 #if DEBUG
-                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.GetParam(i).GetLine(), sectionData.GetParam(i).ToScriptString(false));
+                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.GetParam(i).GetLine(), sectionData.GetParam(i).ToScriptString(false, Dsl.DelimiterInfo.Default));
                     throw new Exception(err);
 #endif
                 }
@@ -334,7 +334,7 @@ namespace DotnetSkillScript
                 }
                 else {
 #if DEBUG
-                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.GetParam(i).GetLine(), sectionData.GetParam(i).ToScriptString(false));
+                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.GetParam(i).GetLine(), sectionData.GetParam(i).ToScriptString(false, Dsl.DelimiterInfo.Default));
                     throw new Exception(err);
 #endif
                 }
@@ -599,7 +599,7 @@ namespace DotnetSkillScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, section must be a function ! line:{1} section:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, section must be a function ! line:{1} section:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, section must be a function !", m_DslSkillId);
@@ -618,7 +618,7 @@ namespace DotnetSkillScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, onmessage must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, onmessage must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, onmessage must be a function !", m_DslSkillId);
@@ -636,7 +636,7 @@ namespace DotnetSkillScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, onstop must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, onstop must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, onstop must be a function !", m_DslSkillId);
@@ -654,7 +654,7 @@ namespace DotnetSkillScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, oninterrupt must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, oninterrupt must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, oninterrupt must be a function !", m_DslSkillId);
@@ -683,7 +683,7 @@ namespace DotnetSkillScript
                             }
                             else {
 #if DEBUG
-                                string err = string.Format("Skill {0} DSL, emitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                                string err = string.Format("Skill {0} DSL, emitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                                 throw new Exception(err);
 #else
                                 LogSystem.Error("Skill {0} DSL, emitskill id duplicate !", m_DslSkillId);
@@ -692,7 +692,7 @@ namespace DotnetSkillScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, emitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, emitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, oninterrupt must be a function !", m_DslSkillId);
@@ -721,7 +721,7 @@ namespace DotnetSkillScript
                             }
                             else {
 #if DEBUG
-                                string err = string.Format("Skill {0} DSL, hitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                                string err = string.Format("Skill {0} DSL, hitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                                 throw new Exception(err);
 #else
                                 LogSystem.Error("Skill {0} DSL, hitskill id duplicate !", m_DslSkillId);
@@ -730,7 +730,7 @@ namespace DotnetSkillScript
                         }
                         else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, hitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, hitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, oninterrupt must be a function !", m_DslSkillId);
@@ -739,7 +739,7 @@ namespace DotnetSkillScript
                     }
                     else {
 #if DEBUG
-                        string err = string.Format("SkillInstance::Init, Skill {0} unknown part {1}, line:{2} section:{3}", m_DslSkillId, part.GetId(), part.GetLine(), part.ToScriptString(false));
+                        string err = string.Format("SkillInstance::Init, Skill {0} unknown part {1}, line:{2} section:{3}", m_DslSkillId, part.GetId(), part.GetLine(), part.ToScriptString(false, Dsl.DelimiterInfo.Default));
                         throw new Exception(err);
 #else
             LogSystem.Error("SkillInstance::Init, Skill {0} unknown part {1}", m_DslSkillId, part.GetId());
@@ -749,7 +749,7 @@ namespace DotnetSkillScript
             }
             else {
 #if DEBUG
-                string err = string.Format("SkillInstance::Init, isn't skill DSL, line:{0} skill:{1}", skill.GetLine(), skill.ToScriptString(false));
+                string err = string.Format("SkillInstance::Init, isn't skill DSL, line:{0} skill:{1}", skill.GetLine(), skill.ToScriptString(false, Dsl.DelimiterInfo.Default));
                 throw new Exception(err);
 #else
         LogSystem.Error("SkillInstance::Init, isn't skill DSL");
@@ -761,7 +761,7 @@ namespace DotnetSkillScript
         }
         public string ToScriptString()
         {
-            return m_SkillDsl.ToScriptString(true);
+            return m_SkillDsl.ToScriptString(true, Dsl.DelimiterInfo.Default);
         }
         public void Save(string file)
         {
