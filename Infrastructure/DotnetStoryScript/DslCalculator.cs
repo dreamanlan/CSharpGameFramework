@@ -7635,6 +7635,13 @@ namespace DotnetStoryScript.DslExpression
             if (null == ret) {
                 // We enable the function to be called before it is defined, so failover is done first
                 if (null == OnLoadFailback || !OnLoadFailback(comp, this, out ret)) {
+                    Dsl.StatementData stData = comp as Dsl.StatementData;
+                    if (null != stData) {
+                        //Convert command line syntax into function call syntax.
+                        if (DslSyntaxTransformer.TryTransformCommandLineLikeSyntax(stData, out var fd)) {
+                            funcData = fd;
+                        }
+                    }
                     if (null != funcData && !funcData.IsHighOrder) {
                         var fc = new FunctionCall();
                         m_FuncCalls.Add(fc);
