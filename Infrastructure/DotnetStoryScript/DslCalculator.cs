@@ -28,6 +28,15 @@ namespace DotnetStoryScript
 }
 namespace DotnetStoryScript.DslExpression
 {
+    using TupleValue1 = Tuple<BoxedValue>;
+    using TupleValue2 = Tuple<BoxedValue, BoxedValue>;
+    using TupleValue3 = Tuple<BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue4 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue5 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue6 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue7 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue8 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, Tuple<BoxedValue>>;
+
     public class BoxedValueListPool
     {
         public List<BoxedValue> Alloc()
@@ -2677,27 +2686,273 @@ namespace DotnetStoryScript.DslExpression
         private List<IExpression> m_Elements = new List<IExpression>();
         private List<IExpression> m_Expressions = new List<IExpression>();
     }
-    internal sealed class ParenthesisExp : AbstractExpression
+    internal sealed class TupleExp : AbstractExpression
     {
         protected override BoxedValue DoCalc()
         {
-            BoxedValue v = 0;
-            for (int ix = 0; ix < m_Expressions.Count; ++ix) {
-                var exp = m_Expressions[ix];
-                v = exp.Calc();
+            BoxedValue v;
+            int num = m_Expressions.Count;
+            if (num == 0) {
+                v = BoxedValue.NullObject;
+            }
+            else {
+                v = PackValues(0);
             }
             return v;
         }
         protected override bool Load(Dsl.FunctionData callData)
         {
-            for (int i = 0; i < callData.GetParamNum(); ++i) {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
                 Dsl.ISyntaxComponent param = callData.GetParam(i);
                 m_Expressions.Add(Calculator.Load(param));
             }
             return true;
         }
+        private BoxedValue PackValues(int start)
+        {
+            const int c_MaxTupleElementNum = 8;
+            BoxedValue v1 = BoxedValue.NullObject, v2 = BoxedValue.NullObject, v3 = BoxedValue.NullObject, v4 = BoxedValue.NullObject, v5 = BoxedValue.NullObject, v6 = BoxedValue.NullObject, v7 = BoxedValue.NullObject, v8 = BoxedValue.NullObject;
+            int totalNum = m_Expressions.Count;
+            int num = totalNum - start;
+            for (int ix = 0; ix < num && ix < c_MaxTupleElementNum; ++ix) {
+                var exp = m_Expressions[start + ix];
+                switch (ix) {
+                    case 0:
+                        v1 = exp.Calc();
+                        if (num == 1) {
+                            return new TupleValue1(v1);
+                        }
+                        break;
+                    case 1:
+                        v2 = exp.Calc();
+                        if (num == 2) {
+                            return new TupleValue2(v1, v2);
+                        }
+                        break;
+                    case 2:
+                        v3 = exp.Calc();
+                        if (num == 3) {
+                            return new TupleValue3(v1, v2, v3);
+                        }
+                        break;
+                    case 3:
+                        v4 = exp.Calc();
+                        if (num == 4) {
+                            return new TupleValue4(v1, v2, v3, v4);
+                        }
+                        break;
+                    case 4:
+                        v5 = exp.Calc();
+                        if (num == 5) {
+                            return new TupleValue5(v1, v2, v3, v4, v5);
+                        }
+                        break;
+                    case 5:
+                        v6 = exp.Calc();
+                        if (num == 6) {
+                            return new TupleValue6(v1, v2, v3, v4, v5, v6);
+                        }
+                        break;
+                    case 6:
+                        v7 = exp.Calc();
+                        if (num == 7) {
+                            return new TupleValue7(v1, v2, v3, v4, v5, v6, v7);
+                        }
+                        break;
+                    case 7:
+                        if (num == 8) {
+                            v8 = exp.Calc();
+                            return new TupleValue8(v1, v2, v3, v4, v5, v6, v7, Tuple.Create(v8));
+                        }
+                        else {
+                            var tuple = PackValues(start + 7);
+                            return new TupleValue8(v1, v2, v3, v4, v5, v6, v7, Tuple.Create(tuple));
+                        }
+                }
+            }
+            return BoxedValue.NullObject;
+        }
 
         private List<IExpression> m_Expressions = new List<IExpression>();
+    }
+    internal sealed class TupleSetExp : AbstractExpression
+    {
+        protected override BoxedValue DoCalc()
+        {
+            var val = m_Op.Calc();
+            bool success = true;
+            var setVars = new Dictionary<string, BoxedValue>();
+            MatchRecursively(ref success, setVars, val, m_VarIds, 0);
+            if (success) {
+                foreach(var pair in setVars) {
+                    Calculator.SetVariable(pair.Key, pair.Value);
+                }
+            }
+            return BoxedValue.FromBool(success);
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            Dsl.ISyntaxComponent param1 = callData.GetParam(0);
+            var vars = param1 as Dsl.FunctionData;
+            if (null != vars) {
+                LoadRecursively(vars, m_VarIds);
+            }
+            Dsl.ISyntaxComponent param2 = callData.GetParam(1);
+            m_Op = Calculator.Load(param2);
+            return true;
+        }
+        private void LoadRecursively(Dsl.FunctionData vars, List<ValueTuple<string, int>> varIds)
+        {
+            int num = vars.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                var p = vars.GetParam(i);
+                var pvd = p as Dsl.ValueData;
+                var pfd = p as Dsl.FunctionData;
+                if (null != pvd) {
+                    varIds.Add(ValueTuple.Create(pvd.GetId(), -1));
+                }
+                else if (null != pfd && !pfd.HaveId()) {
+                    m_EmbeddedVars.Add(new List<ValueTuple<string, int>>());
+                    int index = m_EmbeddedVars.Count - 1;
+                    varIds.Add(ValueTuple.Create(string.Empty, index));
+                    LoadRecursively(pfd, m_EmbeddedVars[index]);
+                }
+                else {
+                    Calculator.Log("invalid tuple member {0}. code:{1} line:{2}", i, p.ToScriptString(false, Dsl.DelimiterInfo.Default), p.GetLine());
+                }
+            }
+        }
+        private void MatchRecursively(ref bool success, Dictionary<string, BoxedValue> setVars, BoxedValue val, List<ValueTuple<string, int>> varIds, int start)
+        {
+            int num = varIds.Count - start;
+            if (num == 1) {
+                //tuple1 may be a single value, in order to use it both for tuple1 and for normal parentheses usage
+                if (val.IsTuple) {
+                    var tuple1 = val.GetTuple1();
+                    if (null != tuple1) {
+                        val = tuple1.Item1;
+                    }
+                }
+                MatchItem(ref success, setVars, varIds[start], val);
+            }
+            else {
+                switch (val.Type) {
+                    case BoxedValue.c_Tuple2Type:
+                        if (num == 2) {
+                            var tuple = val.GetTuple2();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple3Type:
+                        if (num == 3) {
+                            var tuple = val.GetTuple3();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple4Type:
+                        if (num == 4) {
+                            var tuple = val.GetTuple4();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple5Type:
+                        if (num == 5) {
+                            var tuple = val.GetTuple5();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple6Type:
+                        if (num == 6) {
+                            var tuple = val.GetTuple6();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                            MatchItem(ref success, setVars, varIds[start + 5], tuple.Item6);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple7Type:
+                        if (num == 7) {
+                            var tuple = val.GetTuple7();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                            MatchItem(ref success, setVars, varIds[start + 5], tuple.Item6);
+                            MatchItem(ref success, setVars, varIds[start + 6], tuple.Item7);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple8Type:
+                        if (num >= 8) {
+                            var tuple = val.GetTuple8();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                            MatchItem(ref success, setVars, varIds[start + 5], tuple.Item6);
+                            MatchItem(ref success, setVars, varIds[start + 6], tuple.Item7);
+                            MatchRecursively(ref success, setVars, tuple.Rest.Item1, varIds, start + 7);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                }
+            }
+        }
+        private void MatchItem(ref bool success, Dictionary<string, BoxedValue> setVars, ValueTuple<string, int> var, BoxedValue val)
+        {
+            string varId = var.Item1;
+            if (string.IsNullOrEmpty(varId)) {
+                int index = var.Item2;
+                if (index >= 0 && index < m_EmbeddedVars.Count) {
+                    var newVarIds = m_EmbeddedVars[index];
+                    MatchRecursively(ref success, setVars, val, newVarIds, 0);
+                }
+                else {
+                    success = false;
+                }
+            }
+            else {
+                setVars[varId] = val;
+            }
+        }
+
+        private List<ValueTuple<string, int>> m_VarIds = new List<ValueTuple<string, int>>();
+        private List<List<ValueTuple<string, int>>> m_EmbeddedVars = new List<List<ValueTuple<string, int>>>();
+        private IExpression m_Op = null;
     }
     internal sealed class FormatExp : AbstractExpression
     {
@@ -6965,6 +7220,8 @@ namespace DotnetStoryScript.DslExpression
             Register("shortdatestr", "shortdatestr() api", new ExpressionFactoryHelper<ShortDateStrExp>());
             Register("shorttimestr", "shorttimestr() api", new ExpressionFactoryHelper<ShortTimeStrExp>());
             Register("isnullorempty", "isnullorempty(str) api", new ExpressionFactoryHelper<IsNullOrEmptyExp>());
+            Register("tuple", "(v1,v2,...) or tuple(v1,v2,...) object", new ExpressionFactoryHelper<TupleExp>());
+            Register("tupleset", "(var1,var2,...) = (v1,v2,...) or tupleset((var1,var2,...), (v1,v2,...))", new ExpressionFactoryHelper<TupleSetExp>());
             Register("array", "[v1,v2,...] or array(v1,v2,...) object", new ExpressionFactoryHelper<ArrayExp>());
             Register("toarray", "toarray(list) api", new ExpressionFactoryHelper<ToArrayExp>());
             Register("listsize", "listsize(list) api", new ExpressionFactoryHelper<ListSizeExp>());
@@ -7442,7 +7699,7 @@ namespace DotnetStoryScript.DslExpression
                         //Convert a parameterless name into a parameterless function call.
                         Dsl.FunctionData fd = new Dsl.FunctionData();
                         fd.Name.CopyFrom(valueData);
-                        fd.SetParenthesisParamClass();
+                        fd.SetParenthesesParamClass();
                         if (!p.Load(fd, this)) {
                             //error
                             Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
@@ -7476,18 +7733,19 @@ namespace DotnetStoryScript.DslExpression
                 if (null != funcData) {
                     if (funcData.HaveParam()) {
                         var callData = funcData;
-                        if (!callData.HaveId() && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
+                        if (!callData.HaveId() && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES || callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
                             switch (callData.GetParamClass()) {
-                                case (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
-                                    int num = callData.GetParamNum();
-                                    if (num == 1) {
-                                        Dsl.ISyntaxComponent param = callData.GetParam(0);
-                                        return Load(param);
-                                    }
-                                    else {
-                                        ParenthesisExp exp = new ParenthesisExp();
-                                        exp.Load(comp, this);
-                                        return exp;
+                                case (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES: {
+                                        int num = callData.GetParamNum();
+                                        if (num == 1) {
+                                            Dsl.ISyntaxComponent param = callData.GetParam(0);
+                                            return Load(param);
+                                        }
+                                        else {
+                                            TupleExp exp = new TupleExp();
+                                            exp.Load(comp, this);
+                                            return exp;
+                                        }
                                     }
                                 case (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET: {
                                         ArrayExp exp = new ArrayExp();
@@ -7509,16 +7767,17 @@ namespace DotnetStoryScript.DslExpression
                             if (op == "=") {//assignment
                                 Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
                                 if (null != innerCall) {
-                                    //obj.property = val -> dotnetset(obj, property, val)
                                     int innerParamClass = innerCall.GetParamClass();
                                     if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
                                       innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
+                                        //obj.property = val -> dotnetset(obj, property, val)
+                                        //obj[property] = val -> collectionset(obj, property, val)
                                         Dsl.FunctionData newCall = new Dsl.FunctionData();
                                         if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
                                             newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
                                         else
                                             newCall.Name = new Dsl.ValueData("collectionset", Dsl.ValueData.ID_TOKEN);
-                                        newCall.SetParenthesisParamClass();
+                                        newCall.SetParenthesesParamClass();
                                         if (innerCall.IsHighOrder) {
                                             newCall.Params.Add(innerCall.LowerOrderFunction);
                                             newCall.Params.Add(ConvertMember(innerCall.GetParam(0), innerCall.GetParamClass()));
@@ -7531,6 +7790,12 @@ namespace DotnetStoryScript.DslExpression
                                         }
 
                                         return Load(newCall);
+                                    }
+                                    else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && !innerCall.HaveId()){
+                                        //(a,b,c) = val;
+                                        TupleSetExp tuple = new TupleSetExp();
+                                        tuple.Load(comp, this);
+                                        return tuple;
                                     }
                                 }
                                 IExpression exp = null;
@@ -7554,10 +7819,11 @@ namespace DotnetStoryScript.DslExpression
                                 if (callData.IsHighOrder) {
                                     Dsl.FunctionData innerCall = callData.LowerOrderFunction;
                                     int innerParamClass = innerCall.GetParamClass();
-                                    if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
+                                    if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && (
                                         innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
                                         innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
-                                        //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
+                                        //obj.member(a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
+                                        //obj[member](a,b,...) -> collectioncall(obj,member,a,b,...)
                                         string apiName;
                                         string member = innerCall.GetParamId(0);
                                         if (member == "orderby" || member == "orderbydesc" || member == "where" || member == "top") {
@@ -7571,7 +7837,7 @@ namespace DotnetStoryScript.DslExpression
                                         }
                                         Dsl.FunctionData newCall = new Dsl.FunctionData();
                                         newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
-                                        newCall.SetParenthesisParamClass();
+                                        newCall.SetParenthesesParamClass();
                                         if (innerCall.IsHighOrder) {
                                             newCall.Params.Add(innerCall.LowerOrderFunction);
                                             newCall.Params.Add(ConvertMember(innerCall.GetParam(0), innerCall.GetParamClass()));
@@ -7594,13 +7860,14 @@ namespace DotnetStoryScript.DslExpression
                                 }
                                 if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
                                   paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
-                                    //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
+                                    //obj.property or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
+                                    //obj[property] -> collectionget(obj,property)
                                     Dsl.FunctionData newCall = new Dsl.FunctionData();
                                     if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
                                         newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
                                     else
                                         newCall.Name = new Dsl.ValueData("collectionget", Dsl.ValueData.ID_TOKEN);
-                                    newCall.SetParenthesisParamClass();
+                                    newCall.SetParenthesesParamClass();
                                     if (callData.IsHighOrder) {
                                         newCall.Params.Add(callData.LowerOrderFunction);
                                         newCall.Params.Add(ConvertMember(callData.GetParam(0), callData.GetParamClass()));

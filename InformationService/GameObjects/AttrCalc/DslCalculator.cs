@@ -1189,7 +1189,7 @@ namespace ScriptableFramework.AttrCalc
 
         private List<Clause> m_Clauses = new List<Clause>();
     }
-    internal sealed class ParenthesisExp : AbstractAttrExpression
+    internal sealed class ParenthesesExp : AbstractAttrExpression
     {
         public override long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args)
         {
@@ -1406,7 +1406,7 @@ namespace ScriptableFramework.AttrCalc
                 if (null != callData) {
                     if (!callData.HaveId()) {
 #if DEBUG
-                        ParenthesisExp exp = new ParenthesisExp();
+                        ParenthesesExp exp = new ParenthesesExp();
                         exp.Load(comp, this);
                         return exp;
 #else
@@ -1415,7 +1415,7 @@ namespace ScriptableFramework.AttrCalc
                             Dsl.ISyntaxComponent param = callData.GetParam(0);
                             return Load(param);
                         } else {
-                            ParenthesisExp exp = new ParenthesisExp();
+                            ParenthesesExp exp = new ParenthesesExp();
                             exp.Load(comp, this);
                             return exp;
                         }

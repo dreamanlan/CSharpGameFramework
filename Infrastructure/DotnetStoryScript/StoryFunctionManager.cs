@@ -133,16 +133,29 @@ namespace DotnetStoryScript
                     }
                 }
                 Dsl.FunctionData callData = param as Dsl.FunctionData;
-                if (null != callData && callData.IsValid() && callData.GetId().Length == 0 && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
+                if (null != callData && callData.IsValid() && callData.GetId().Length == 0 && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES || callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
                     //Handling parentheses and square brackets
                     switch (callData.GetParamClass()) {
-                        case (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
-                            if (callData.GetParamNum() > 0) {
+                        case (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES: {
                                 int ct = callData.GetParamNum();
-                                return CreateFunction(callData.GetParam(ct - 1));
-                            }
-                            else {
-                                return null;
+                                if (ct == 1) {
+                                    return CreateFunction(callData.GetParam(0));
+                                }
+                                else {
+                                    IStoryFunction ret = null;
+                                    IStoryFunctionFactory factory = GetFactory("tuple");
+                                    if (null != factory) {
+                                        try {
+                                            ret = factory.Build();
+                                            ret.InitFromDsl(param);
+                                        }
+                                        catch (Exception ex) {
+                                            var msg = string.Format("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false, Dsl.DelimiterInfo.Default), param.GetLine());
+                                            throw new Exception(msg, ex);
+                                        }
+                                    }
+                                    return ret;
+                                }
                             }
                         case (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET: {
                                 IStoryFunction ret = null;
@@ -190,18 +203,21 @@ namespace DotnetStoryScript
                     }
                     else {
                         if (null != callData) {
+                            int paramClass = callData.GetParamClass();
                             Dsl.FunctionData innerCall = callData.LowerOrderFunction;
-                            if (callData.IsHighOrder && callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
-                                innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET
+                            int innerParamClass = innerCall.GetParamClass();
+                            if (callData.IsHighOrder && paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && (
+                                innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET
                                 )) {
-                                //obj.member(a,b,...) or obj[member](a,b,...) -> dotnetcall(obj,member,a,b,...)
+                                //obj.member(a,b,...) -> dotnetcall(obj,member,a,b,...)
+                                //obj[member](a,b,...) -> collectioncall(obj,member,a,b,...)
                                 string method = innerCall.GetParamId(0);
                                 string apiName;
                                 if (method == "orderby" || method == "orderbydesc" || method == "where" || method == "top") {
                                     apiName = "linq";
                                 }
-                                else if(innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD) {
+                                else if(innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD) {
                                     apiName = "dotnetcall";
                                 }
                                 else {
@@ -209,10 +225,10 @@ namespace DotnetStoryScript
                                 }
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
                                 newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
-                                newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES);
                                 if (innerCall.IsHighOrder) {
                                     newCall.Params.Add(innerCall.LowerOrderFunction);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerParamClass));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
@@ -220,7 +236,7 @@ namespace DotnetStoryScript
                                 }
                                 else {
                                     newCall.Params.Add(innerCall.Name);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerParamClass));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
@@ -228,22 +244,23 @@ namespace DotnetStoryScript
                                 }
                                 return CreateFunction(newCall);
                             }
-                            else if (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                              callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
-                                //obj.property or obj[property] -> dotnetget(obj,property)
+                            else if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                              paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
+                                //obj.property -> dotnetget(obj,property)
+                                //obj[property] -> collectionget(obj,property)
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                if(callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                if(paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
                                     newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
                                 else
                                     newCall.Name = new Dsl.ValueData("collectionget", Dsl.ValueData.ID_TOKEN);
-                                newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES);
                                 if (callData.IsHighOrder) {
                                     newCall.Params.Add(callData.LowerOrderFunction);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), callData.GetParamClass()));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), paramClass));
                                 }
                                 else {
                                     newCall.Params.Add(callData.Name);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), callData.GetParamClass()));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), paramClass));
                                 }
                                 return CreateFunction(newCall);
                             }

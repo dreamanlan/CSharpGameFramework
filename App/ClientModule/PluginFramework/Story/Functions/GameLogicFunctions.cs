@@ -218,9 +218,9 @@ namespace ScriptableFramework.Story.Functions
                 if (m_ParamNum == 3) {
                     Vector3 pt2 = m_Pt2.Value;
                     float dir = Geometry.GetYRadian(pt, pt2);
-                    m_Value = pt + Geometry.GetRotate(offset, dir);
+                    m_Value = (Vector3Obj)(pt + Geometry.GetRotate(offset, dir));
                 } else {
-                    m_Value = pt + offset;
+                    m_Value = (Vector3Obj)(pt + offset);
                 }
             }
         }

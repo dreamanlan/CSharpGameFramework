@@ -5,6 +5,220 @@ using ScriptableFramework;
 
 namespace DotnetStoryScript.CommonCommands
 {
+    using TupleValue1 = Tuple<BoxedValue>;
+    using TupleValue2 = Tuple<BoxedValue, BoxedValue>;
+    using TupleValue3 = Tuple<BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue4 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue5 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue6 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue7 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue8 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, Tuple<BoxedValue>>;
+
+    public sealed class TupleSetCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            TupleSetCommand cmd = new TupleSetCommand();
+            cmd.m_Line = m_Line;
+            cmd.m_VarIds.AddRange(m_VarIds);
+            foreach(var v in m_EmbeddedVars) {
+                var vs = new List<ValueTuple<string, int>>();
+                vs.AddRange(v);
+                cmd.m_EmbeddedVars.Add(vs);
+            }
+            cmd.m_Value = m_Value.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_Value.Evaluate(instance, handler, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            if (m_Value.HaveValue) {
+                var val = m_Value.Value;
+                bool success = true;
+                var setVars = new Dictionary<string, BoxedValue>();
+                MatchRecursively(ref success, setVars, val, m_VarIds, 0);
+                if (success) {
+                    foreach (var pair in setVars) {
+                        instance.SetVariable(pair.Key, pair.Value);
+                    }
+                }
+                else {
+                    LogSystem.Warn("Tuple doesnt match. line:{0}", m_Line);
+                }
+            }
+            return false;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                Dsl.ISyntaxComponent param1 = callData.GetParam(0);
+                var vars = param1 as Dsl.FunctionData;
+                if (null != vars) {
+                    int pnum = vars.GetParamNum();
+                    LoadRecursively(vars, m_VarIds);
+                }
+                m_Value.InitFromDsl(callData.GetParam(1));
+            }
+            return true;
+        }
+        private void LoadRecursively(Dsl.FunctionData vars, List<ValueTuple<string, int>> varIds)
+        {
+            m_Line = vars.GetLine();
+            int num = vars.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                var p = vars.GetParam(i);
+                var pvd = p as Dsl.ValueData;
+                var pfd = p as Dsl.FunctionData;
+                if (null != pvd) {
+                    varIds.Add(ValueTuple.Create(pvd.GetId(), -1));
+                }
+                else if (null != pfd && !pfd.HaveId()) {
+                    m_EmbeddedVars.Add(new List<ValueTuple<string, int>>());
+                    int index = m_EmbeddedVars.Count - 1;
+                    varIds.Add(ValueTuple.Create(string.Empty, index));
+                    LoadRecursively(pfd, m_EmbeddedVars[index]);
+                }
+                else {
+                    LogSystem.Warn("invalid tuple member {0}. code:{1} line:{2}", i, p.ToScriptString(false, Dsl.DelimiterInfo.Default), p.GetLine());
+                }
+            }
+        }
+        private void MatchRecursively(ref bool success, Dictionary<string, BoxedValue> setVars, BoxedValue val, List<ValueTuple<string, int>> varIds, int start)
+        {
+            int num = varIds.Count - start;
+            if (num == 1) {
+                //tuple1 may be a single value, in order to use it both for tuple1 and for normal parentheses usage
+                if (val.IsTuple) {
+                    var tuple1 = val.GetTuple1();
+                    if (null != tuple1) {
+                        val = tuple1.Item1;
+                    }
+                }
+                MatchItem(ref success, setVars, varIds[start], val);
+            }
+            else {
+                switch (val.Type) {
+                    case BoxedValue.c_Tuple2Type:
+                        if (num == 2) {
+                            var tuple = val.GetTuple2();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple3Type:
+                        if (num == 3) {
+                            var tuple = val.GetTuple3();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple4Type:
+                        if (num == 4) {
+                            var tuple = val.GetTuple4();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple5Type:
+                        if (num == 5) {
+                            var tuple = val.GetTuple5();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple6Type:
+                        if (num == 6) {
+                            var tuple = val.GetTuple6();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                            MatchItem(ref success, setVars, varIds[start + 5], tuple.Item6);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple7Type:
+                        if (num == 7) {
+                            var tuple = val.GetTuple7();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                            MatchItem(ref success, setVars, varIds[start + 5], tuple.Item6);
+                            MatchItem(ref success, setVars, varIds[start + 6], tuple.Item7);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                    case BoxedValue.c_Tuple8Type:
+                        if (num >= 8) {
+                            var tuple = val.GetTuple8();
+                            MatchItem(ref success, setVars, varIds[start + 0], tuple.Item1);
+                            MatchItem(ref success, setVars, varIds[start + 1], tuple.Item2);
+                            MatchItem(ref success, setVars, varIds[start + 2], tuple.Item3);
+                            MatchItem(ref success, setVars, varIds[start + 3], tuple.Item4);
+                            MatchItem(ref success, setVars, varIds[start + 4], tuple.Item5);
+                            MatchItem(ref success, setVars, varIds[start + 5], tuple.Item6);
+                            MatchItem(ref success, setVars, varIds[start + 6], tuple.Item7);
+                            MatchRecursively(ref success, setVars, tuple.Rest.Item1, varIds, start + 7);
+                        }
+                        else {
+                            success = false;
+                        }
+                        break;
+                }
+            }
+        }
+        private void MatchItem(ref bool success, Dictionary<string, BoxedValue> setVars, ValueTuple<string, int> var, BoxedValue val)
+        {
+            string varId = var.Item1;
+            if (string.IsNullOrEmpty(varId)) {
+                int index = var.Item2;
+                if (index >= 0 && index < m_EmbeddedVars.Count) {
+                    var newVarIds = m_EmbeddedVars[index];
+                    MatchRecursively(ref success, setVars, val, newVarIds, 0);
+                }
+                else {
+                    success = false;
+                }
+            }
+            else {
+                setVars[varId] = val;
+            }
+        }
+
+        private int m_Line = 0;
+        private List<ValueTuple<string, int>> m_VarIds = new List<ValueTuple<string, int>>();
+        private List<List<ValueTuple<string, int>>> m_EmbeddedVars = new List<List<ValueTuple<string, int>>>();
+        private IStoryFunction m_Value = new StoryFunction();
+    }
     /// <summary>
     /// assign(@local,value);
     /// or

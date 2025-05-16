@@ -1240,7 +1240,7 @@ namespace ScriptableFramework.Story.Commands
                         Utility.SendMessage(path, "CameraLookObjCopy", new object[] { pobj.transform, npc.GetId() });
                     }
                 } else {
-                    Vector3 pos = (Vector3)argObj;
+                    Vector3 pos = (Vector3Obj)argObj;
                     Utility.SendMessage(path, "CameraLookCopy", new object[] { pobj.transform, pos.X, pos.Y, pos.Z });
                 }
             }

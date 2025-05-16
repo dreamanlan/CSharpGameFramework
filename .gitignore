@@ -1,7 +1,10 @@
 #
 __MACOSX
+obj
 .vs
 *.suo
+.log
+.cache
 App/ServerModule/ServerEnv/bin/*.mdb
 App/ServerModule/ServerEnv/bin/log
 App/ClientModule/Cs2LuaScript/obj

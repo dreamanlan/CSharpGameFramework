@@ -309,9 +309,9 @@ namespace ScriptableFramework.Story.Functions
                         pt = obj.transform.localPosition;
                     else
                         pt = obj.transform.position;
-                    m_Value = new ScriptRuntime.Vector3(pt.x, pt.y, pt.z);
+                    m_Value = (Vector3Obj)new ScriptRuntime.Vector3(pt.x, pt.y, pt.z);
                 } else {
-                    m_Value = ScriptRuntime.Vector3.Zero;
+                    m_Value = (Vector3Obj)ScriptRuntime.Vector3.Zero;
                 }
             }
         }
@@ -653,9 +653,9 @@ namespace ScriptableFramework.Story.Functions
                         pt = obj.transform.localEulerAngles;
                     else
                         pt = obj.transform.eulerAngles;
-                    m_Value = new ScriptRuntime.Vector3(pt.x, pt.y, pt.z);
+                    m_Value = (Vector3Obj)new ScriptRuntime.Vector3(pt.x, pt.y, pt.z);
                 } else {
-                    m_Value = ScriptRuntime.Vector3.Zero;
+                    m_Value = (Vector3Obj)ScriptRuntime.Vector3.Zero;
                 }
             }
         }
@@ -987,9 +987,9 @@ namespace ScriptableFramework.Story.Functions
                 if (null != obj) {
                     UnityEngine.Vector3 pt;
                     pt = obj.transform.localScale;
-                    m_Value = new ScriptRuntime.Vector3(pt.x, pt.y, pt.x);
+                    m_Value = (Vector3Obj)new ScriptRuntime.Vector3(pt.x, pt.y, pt.x);
                 } else {
-                    m_Value = new ScriptRuntime.Vector3(1, 1, 1);
+                    m_Value = (Vector3Obj)new ScriptRuntime.Vector3(1, 1, 1);
                 }
             }
         }
@@ -1673,15 +1673,15 @@ namespace ScriptableFramework.Story.Functions
                     Vector2 targetPos = target.GetMovementStateInfo().GetPosition2D();
                     float radian = Geometry.GetYRadian(srcPos, targetPos);
                     Vector2 newPos = srcPos + Geometry.GetRotate(new Vector2(offset.X, offset.Z), radian);
-                    m_Value = new Vector3(newPos.X, y + offset.Y, newPos.Y);
+                    m_Value = (Vector3Obj)new Vector3(newPos.X, y + offset.Y, newPos.Y);
                 } else if (null != obj) {
                     Vector2 srcPos = obj.GetMovementStateInfo().GetPosition2D();
                     float y = obj.GetMovementStateInfo().PositionY;
                     float radian = obj.GetMovementStateInfo().GetFaceDir();
                     Vector2 newPos = srcPos + Geometry.GetRotate(new Vector2(offset.X, offset.Z), radian);
-                    m_Value = new Vector3(newPos.X, y + offset.Y, newPos.Y);
+                    m_Value = (Vector3Obj)new Vector3(newPos.X, y + offset.Y, newPos.Y);
                 } else {
-                    m_Value = Vector3.Zero;
+                    m_Value = (Vector3Obj)Vector3.Zero;
                 }
             }
         }

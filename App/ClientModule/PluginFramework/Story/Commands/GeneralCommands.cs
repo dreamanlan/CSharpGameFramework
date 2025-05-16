@@ -2948,7 +2948,7 @@ namespace ScriptableFramework.Story.Commands
             var value = m_Value.Value;
             UnityEngine.GameObject obj = PluginFramework.Instance.GetGameObject(objId);
             if (null != obj) {
-                ScriptRuntime.Vector3 scale = (ScriptRuntime.Vector3)value;
+                ScriptRuntime.Vector3 scale = (Vector3Obj)value;
                 obj.transform.localScale = new UnityEngine.Vector3(scale.X, scale.Y, scale.Z);
             }
             return false;

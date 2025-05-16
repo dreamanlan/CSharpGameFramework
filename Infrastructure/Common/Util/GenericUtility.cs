@@ -8,6 +8,15 @@ using ScriptRuntime;
 
 namespace ScriptableFramework
 {
+    using TupleValue1 = Tuple<BoxedValue>;
+    using TupleValue2 = Tuple<BoxedValue, BoxedValue>;
+    using TupleValue3 = Tuple<BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue4 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue5 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue6 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue7 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue>;
+    using TupleValue8 = Tuple<BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, BoxedValue, Tuple<BoxedValue>>;
+
     public class BoolList : List<bool>
     {
         public BoolList() { }
@@ -225,17 +234,90 @@ namespace ScriptableFramework
         public IntObjSortedDict(int capacity) { }
         public IntObjSortedDict(IDictionary<int, object> dict) : base(dict) { }
     }
-    public class Vector2List : List<ScriptRuntime.Vector2>
+    public class Vector2List : List<Vector2>
     {
         public Vector2List() { }
         public Vector2List(int capacity) : base(capacity) { }
-        public Vector2List(ICollection<ScriptRuntime.Vector2> coll) : base(coll) { }
+        public Vector2List(ICollection<Vector2> coll) : base(coll) { }
     }
-    public class Vector3List : List<ScriptRuntime.Vector3>
+    public class Vector3List : List<Vector3>
     {
         public Vector3List() { }
         public Vector3List(int capacity) : base(capacity) { }
-        public Vector3List(ICollection<ScriptRuntime.Vector3> coll) : base(coll) { }
+        public Vector3List(ICollection<Vector3> coll) : base(coll) { }
+    }
+
+    public class Vector2Obj
+    {
+        public Vector2 Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator Vector2Obj(Vector2 v) { var o = new Vector2Obj(); o.Value = v; return o; }
+        public static implicit operator Vector2(Vector2Obj v) { return v.Value; }
+    }
+    public class Vector3Obj
+    {
+        public Vector3 Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator Vector3Obj(Vector3 v) { var o = new Vector3Obj(); o.Value = v; return o; }
+        public static implicit operator Vector3(Vector3Obj v) { return v.Value; }
+    }
+    public class Vector4Obj
+    {
+        public Vector4 Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator Vector4Obj(Vector4 v) { var o = new Vector4Obj(); o.Value = v; return o; }
+        public static implicit operator Vector4(Vector4Obj v) { return v.Value; }
+    }
+    public class QuaternionObj
+    {
+        public Quaternion Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator QuaternionObj(Quaternion v) { var o = new QuaternionObj(); o.Value = v; return o; }
+        public static implicit operator Quaternion(QuaternionObj v) { return v.Value; }
+    }
+    public class ColorObj
+    {
+        public ColorF Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator ColorObj(ColorF v) { var o = new ColorObj(); o.Value = v; return o; }
+        public static implicit operator ColorF(ColorObj v) { return v.Value; }
+    }
+    public class Color32Obj
+    {
+        public Color32 Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator Color32Obj(Color32 v) { var o = new Color32Obj(); o.Value = v; return o; }
+        public static implicit operator Color32(Color32Obj v) { return v.Value; }
+    }
+    public class Vector2IntObj
+    {
+        public Vector2Int Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator Vector2IntObj(Vector2Int v) { var o = new Vector2IntObj(); o.Value = v; return o; }
+        public static implicit operator Vector2Int(Vector2IntObj v) { return v.Value; }
+    }
+    public class Vector3IntObj
+    {
+        public Vector3Int Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator Vector3IntObj(Vector3Int v) { var o = new Vector3IntObj(); o.Value = v; return o; }
+        public static implicit operator Vector3Int(Vector3IntObj v) { return v.Value; }
+    }
+    public class Matrix4x4Obj
+    {
+        public Matrix44 Value;
+
+        public override string ToString() { return Value.ToString(); }
+        public static implicit operator Matrix4x4Obj(Matrix44 v) { var o = new Matrix4x4Obj(); o.Value = v; return o; }
+        public static implicit operator Matrix44(Matrix4x4Obj v) { return v.Value; }
     }
 
     public static class GenericValueConverter
@@ -352,47 +434,124 @@ namespace ScriptableFramework
                 return from(v);
             return 0;
         }
-        public static ScriptRuntime.Vector2 ToVector2<T>(T v)
+        public static TupleValue1 ToTuple1<T>(T v)
         {
-            var from = s_FromVector2 as FromGenericDelegation<ScriptRuntime.Vector2, T>;
+            var from = s_FromTuple1 as FromGenericDelegation<TupleValue1, T>;
             if (null != from)
                 return from(v);
-            return ScriptRuntime.Vector2.Zero;
+            return Tuple.Create(BoxedValue.NullObject);
         }
-        public static ScriptRuntime.Vector3 ToVector3<T>(T v)
+        public static TupleValue2 ToTuple2<T>(T v)
         {
-            var from = s_FromVector3 as FromGenericDelegation<ScriptRuntime.Vector3, T>;
+            var from = s_FromTuple2 as FromGenericDelegation<TupleValue2, T>;
             if (null != from)
                 return from(v);
-            return ScriptRuntime.Vector3.Zero;
+            return Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject);
         }
-        public static ScriptRuntime.Vector4 ToVector4<T>(T v)
+        public static TupleValue3 ToTuple3<T>(T v)
         {
-            var from = s_FromVector4 as FromGenericDelegation<ScriptRuntime.Vector4, T>;
+            var from = s_FromTuple3 as FromGenericDelegation<TupleValue3, T>;
             if (null != from)
                 return from(v);
-            return ScriptRuntime.Vector4.Zero;
+            return Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
         }
-        public static ScriptRuntime.Quaternion ToQuaternion<T>(T v)
+        public static TupleValue4 ToTuple4<T>(T v)
         {
-            var from = s_FromQuaternion as FromGenericDelegation<ScriptRuntime.Quaternion, T>;
+            var from = s_FromTuple4 as FromGenericDelegation<TupleValue4, T>;
             if (null != from)
                 return from(v);
-            return ScriptRuntime.Quaternion.Identity;
+            return Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
         }
-        public static ScriptRuntime.ColorF ToColor<T>(T v)
+        public static TupleValue5 ToTuple5<T>(T v)
         {
-            var from = s_FromColor as FromGenericDelegation<ScriptRuntime.ColorF, T>;
+            var from = s_FromTuple5 as FromGenericDelegation<TupleValue5, T>;
             if (null != from)
                 return from(v);
-            return new ScriptRuntime.ColorF();
+            return Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
         }
-        public static ScriptRuntime.Color32 ToColor32<T>(T v)
+        public static TupleValue6 ToTuple6<T>(T v)
         {
-            var from = s_FromColor32 as FromGenericDelegation<ScriptRuntime.Color32, T>;
+            var from = s_FromTuple6 as FromGenericDelegation<TupleValue6, T>;
             if (null != from)
                 return from(v);
-            return ScriptRuntime.Color32.Black;
+            return Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
+        }
+        public static TupleValue7 ToTuple7<T>(T v)
+        {
+            var from = s_FromTuple7 as FromGenericDelegation<TupleValue7, T>;
+            if (null != from)
+                return from(v);
+            return Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
+        }
+        public static TupleValue8 ToTuple8<T>(T v)
+        {
+            var from = s_FromTuple8 as FromGenericDelegation<TupleValue8, T>;
+            if (null != from)
+                return from(v);
+            return Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
+        }
+        public static Vector2 ToVector2<T>(T v)
+        {
+            var from = s_FromVector2 as FromGenericDelegation<Vector2, T>;
+            if (null != from)
+                return from(v);
+            return Vector2.Zero;
+        }
+        public static Vector3 ToVector3<T>(T v)
+        {
+            var from = s_FromVector3 as FromGenericDelegation<Vector3, T>;
+            if (null != from)
+                return from(v);
+            return Vector3.Zero;
+        }
+        public static Vector4 ToVector4<T>(T v)
+        {
+            var from = s_FromVector4 as FromGenericDelegation<Vector4, T>;
+            if (null != from)
+                return from(v);
+            return Vector4.Zero;
+        }
+        public static Quaternion ToQuaternion<T>(T v)
+        {
+            var from = s_FromQuaternion as FromGenericDelegation<Quaternion, T>;
+            if (null != from)
+                return from(v);
+            return Quaternion.Identity;
+        }
+        public static ColorF ToColor<T>(T v)
+        {
+            var from = s_FromColor as FromGenericDelegation<ColorF, T>;
+            if (null != from)
+                return from(v);
+            return Color32.White.ToColorF();
+        }
+        public static Color32 ToColor32<T>(T v)
+        {
+            var from = s_FromColor32 as FromGenericDelegation<Color32, T>;
+            if (null != from)
+                return from(v);
+            return Color32.White;
+        }
+        public static Vector2Int ToVector2Int<T>(T v)
+        {
+            var from = s_FromVector2Int as FromGenericDelegation<Vector2Int, T>;
+            if (null != from)
+                return from(v);
+            return Vector2Int.zero;
+        }
+        public static Vector3Int ToVector3Int<T>(T v)
+        {
+            var from = s_FromVector3Int as FromGenericDelegation<Vector3Int, T>;
+            if (null != from)
+                return from(v);
+            return Vector3Int.zero;
+        }
+        public static Matrix44 ToMatrix4x4<T>(T v)
+        {
+            var from = s_FromMatrix4x4 as FromGenericDelegation<Matrix44, T>;
+            if (null != from)
+                return from(v);
+            return Matrix44.Identity;
         }
 
         public static T From<T>(BoxedValue v)
@@ -507,44 +666,121 @@ namespace ScriptableFramework
                 return from(v);
             return default(T);
         }
-        public static T From<T>(ScriptRuntime.Vector2 v)
+        public static T From<T>(TupleValue1 v)
         {
-            var from = s_FromVector2 as FromGenericDelegation<T, ScriptRuntime.Vector2>;
+            var from = s_FromTuple1 as FromGenericDelegation<T, TupleValue1>;
             if (null != from)
                 return from(v);
             return default(T);
         }
-        public static T From<T>(ScriptRuntime.Vector3 v)
+        public static T From<T>(TupleValue2 v)
         {
-            var from = s_FromVector3 as FromGenericDelegation<T, ScriptRuntime.Vector3>;
+            var from = s_FromTuple2 as FromGenericDelegation<T, TupleValue2>;
             if (null != from)
                 return from(v);
             return default(T);
         }
-        public static T From<T>(ScriptRuntime.Vector4 v)
+        public static T From<T>(TupleValue3 v)
         {
-            var from = s_FromVector4 as FromGenericDelegation<T, ScriptRuntime.Vector4>;
+            var from = s_FromTuple3 as FromGenericDelegation<T, TupleValue3>;
             if (null != from)
                 return from(v);
             return default(T);
         }
-        public static T From<T>(ScriptRuntime.Quaternion v)
+        public static T From<T>(TupleValue4 v)
         {
-            var from = s_FromQuaternion as FromGenericDelegation<T, ScriptRuntime.Quaternion>;
+            var from = s_FromTuple4 as FromGenericDelegation<T, TupleValue4>;
             if (null != from)
                 return from(v);
             return default(T);
         }
-        public static T From<T>(ScriptRuntime.ColorF v)
+        public static T From<T>(TupleValue5 v)
         {
-            var from = s_FromColor as FromGenericDelegation<T, ScriptRuntime.ColorF>;
+            var from = s_FromTuple5 as FromGenericDelegation<T, TupleValue5>;
             if (null != from)
                 return from(v);
             return default(T);
         }
-        public static T From<T>(ScriptRuntime.Color32 v)
+        public static T From<T>(TupleValue6 v)
         {
-            var from = s_FromColor32 as FromGenericDelegation<T, ScriptRuntime.Color32>;
+            var from = s_FromTuple6 as FromGenericDelegation<T, TupleValue6>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(TupleValue7 v)
+        {
+            var from = s_FromTuple7 as FromGenericDelegation<T, TupleValue7>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(TupleValue8 v)
+        {
+            var from = s_FromTuple8 as FromGenericDelegation<T, TupleValue8>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Vector2 v)
+        {
+            var from = s_FromVector2 as FromGenericDelegation<T, Vector2>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Vector3 v)
+        {
+            var from = s_FromVector3 as FromGenericDelegation<T, Vector3>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Vector4 v)
+        {
+            var from = s_FromVector4 as FromGenericDelegation<T, Vector4>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Quaternion v)
+        {
+            var from = s_FromQuaternion as FromGenericDelegation<T, Quaternion>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(ColorF v)
+        {
+            var from = s_FromColor as FromGenericDelegation<T, ColorF>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Color32 v)
+        {
+            var from = s_FromColor32 as FromGenericDelegation<T, Color32>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Vector2Int v)
+        {
+            var from = s_FromVector2Int as FromGenericDelegation<T, Vector2Int>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Vector3Int v)
+        {
+            var from = s_FromVector3Int as FromGenericDelegation<T, Vector3Int>;
+            if (null != from)
+                return from(v);
+            return default(T);
+        }
+        public static T From<T>(Matrix44 v)
+        {
+            var from = s_FromMatrix4x4 as FromGenericDelegation<T, Matrix44>;
             if (null != from)
                 return from(v);
             return default(T);
@@ -614,29 +850,73 @@ namespace ScriptableFramework
         {
             return o;
         }
-        public static ScriptRuntime.Vector2 ToVector2(Type t, object o)
+        public static TupleValue1 ToTuple1(Type t, object o)
         {
-            return CastTo<ScriptRuntime.Vector2>(o);
+            return CastTo<TupleValue1>(o);
         }
-        public static ScriptRuntime.Vector3 ToVector3(Type t, object o)
+        public static TupleValue2 ToTuple2(Type t, object o)
         {
-            return CastTo<ScriptRuntime.Vector3>(o);
+            return CastTo<TupleValue2>(o);
         }
-        public static ScriptRuntime.Vector4 ToVector4(Type t, object o)
+        public static TupleValue3 ToTuple3(Type t, object o)
         {
-            return CastTo<ScriptRuntime.Vector4>(o);
+            return CastTo<TupleValue3>(o);
         }
-        public static ScriptRuntime.Quaternion ToQuaternion(Type t, object o)
+        public static TupleValue4 ToTuple4(Type t, object o)
         {
-            return CastTo<ScriptRuntime.Quaternion>(o);
+            return CastTo<TupleValue4>(o);
         }
-        public static ScriptRuntime.ColorF ToColor(Type t, object o)
+        public static TupleValue5 ToTuple5(Type t, object o)
         {
-            return CastTo<ScriptRuntime.ColorF>(o);
+            return CastTo<TupleValue5>(o);
         }
-        public static ScriptRuntime.Color32 ToColor32(Type t, object o)
+        public static TupleValue6 ToTuple6(Type t, object o)
         {
-            return CastTo<ScriptRuntime.Color32>(o);
+            return CastTo<TupleValue6>(o);
+        }
+        public static TupleValue7 ToTuple7(Type t, object o)
+        {
+            return CastTo<TupleValue7>(o);
+        }
+        public static TupleValue8 ToTuple8(Type t, object o)
+        {
+            return CastTo<TupleValue8>(o);
+        }
+        public static Vector2 ToVector2(Type t, object o)
+        {
+            return CastTo<Vector2>(o);
+        }
+        public static Vector3 ToVector3(Type t, object o)
+        {
+            return CastTo<Vector3>(o);
+        }
+        public static Vector4 ToVector4(Type t, object o)
+        {
+            return CastTo<Vector4>(o);
+        }
+        public static Quaternion ToQuaternion(Type t, object o)
+        {
+            return CastTo<Quaternion>(o);
+        }
+        public static ColorF ToColor(Type t, object o)
+        {
+            return CastTo<ColorF>(o);
+        }
+        public static Color32 ToColor32(Type t, object o)
+        {
+            return CastTo<Color32>(o);
+        }
+        public static Vector2Int ToVector2Int(Type t, object o)
+        {
+            return CastTo<Vector2Int>(o);
+        }
+        public static Vector3Int ToVector3Int(Type t, object o)
+        {
+            return CastTo<Vector3Int>(o);
+        }
+        public static Matrix44 ToMatrix4x4(Type t, object o)
+        {
+            return CastTo<Matrix44>(o);
         }
         public static object From(Type t, object o)
         {
@@ -678,12 +958,25 @@ namespace ScriptableFramework
         private static FromGenericDelegation<decimal, decimal> s_FromDecimal = FromHelper<decimal>;
         private static FromGenericDelegation<string, string> s_FromString = FromHelper<string>;
         private static FromGenericDelegation<object, object> s_FromObject = FromHelper<object>;
-        private static FromGenericDelegation<ScriptRuntime.Vector2, ScriptRuntime.Vector2> s_FromVector2 = FromHelper<ScriptRuntime.Vector2>;
-        private static FromGenericDelegation<ScriptRuntime.Vector3, ScriptRuntime.Vector3> s_FromVector3 = FromHelper<ScriptRuntime.Vector3>;
-        private static FromGenericDelegation<ScriptRuntime.Vector4, ScriptRuntime.Vector4> s_FromVector4 = FromHelper<ScriptRuntime.Vector4>;
-        private static FromGenericDelegation<ScriptRuntime.Quaternion, ScriptRuntime.Quaternion> s_FromQuaternion = FromHelper<ScriptRuntime.Quaternion>;
-        private static FromGenericDelegation<ScriptRuntime.ColorF, ScriptRuntime.ColorF> s_FromColor = FromHelper<ScriptRuntime.ColorF>;
-        private static FromGenericDelegation<ScriptRuntime.Color32, ScriptRuntime.Color32> s_FromColor32 = FromHelper<ScriptRuntime.Color32>;
+        private static FromGenericDelegation<TupleValue1, TupleValue1> s_FromTuple1 = FromHelper<TupleValue1>;
+        private static FromGenericDelegation<TupleValue2, TupleValue2> s_FromTuple2 = FromHelper<TupleValue2>;
+        private static FromGenericDelegation<TupleValue3, TupleValue3> s_FromTuple3 = FromHelper<TupleValue3>;
+        private static FromGenericDelegation<TupleValue4, TupleValue4> s_FromTuple4 = FromHelper<TupleValue4>;
+        private static FromGenericDelegation<TupleValue5, TupleValue5> s_FromTuple5 = FromHelper<TupleValue5>;
+        private static FromGenericDelegation<TupleValue6, TupleValue6> s_FromTuple6 = FromHelper<TupleValue6>;
+        private static FromGenericDelegation<TupleValue7, TupleValue7> s_FromTuple7 = FromHelper<TupleValue7>;
+        private static FromGenericDelegation<TupleValue8, TupleValue8> s_FromTuple8 = FromHelper<TupleValue8>;
+
+        private static FromGenericDelegation<Vector2, Vector2> s_FromVector2 = FromHelper<Vector2>;
+        private static FromGenericDelegation<Vector3, Vector3> s_FromVector3 = FromHelper<Vector3>;
+        private static FromGenericDelegation<Vector4, Vector4> s_FromVector4 = FromHelper<Vector4>;
+        private static FromGenericDelegation<Quaternion, Quaternion> s_FromQuaternion = FromHelper<Quaternion>;
+        private static FromGenericDelegation<ColorF, ColorF> s_FromColor = FromHelper<ColorF>;
+        private static FromGenericDelegation<Color32, Color32> s_FromColor32 = FromHelper<Color32>;
+        private static FromGenericDelegation<Vector2Int, Vector2Int> s_FromVector2Int = FromHelper<Vector2Int>;
+        private static FromGenericDelegation<Vector3Int, Vector3Int> s_FromVector3Int = FromHelper<Vector3Int>;
+        private static FromGenericDelegation<Matrix44, Matrix44> s_FromMatrix4x4 = FromHelper<Matrix44>;
+
         private static T FromHelper<T>(T v)
         {
             return v;
@@ -707,12 +1000,14 @@ namespace ScriptableFramework
         public const int c_FloatType = 12;
         public const int c_DoubleType = 13;
         public const int c_DecimalType = 14;
-        public const int c_Vector2Type = 15;
-        public const int c_Vector3Type = 16;
-        public const int c_Vector4Type = 17;
-        public const int c_QuaternionType = 18;
-        public const int c_ColorType = 19;
-        public const int c_Color32Type = 20;
+        public const int c_Tuple1Type = 15;
+        public const int c_Tuple2Type = 16;
+        public const int c_Tuple3Type = 17;
+        public const int c_Tuple4Type = 18;
+        public const int c_Tuple5Type = 19;
+        public const int c_Tuple6Type = 20;
+        public const int c_Tuple7Type = 21;
+        public const int c_Tuple8Type = 22;
 
         [StructLayout(LayoutKind.Explicit)]
         public struct UnionValue
@@ -743,20 +1038,48 @@ namespace ScriptableFramework
             public double DoubleVal;
             [FieldOffset(0)]
             public decimal DecimalVal;
-            [FieldOffset(0)]
-            public ScriptRuntime.Vector2 Vector2Val;
-            [FieldOffset(0)]
-            public ScriptRuntime.Vector3 Vector3Val;
-            [FieldOffset(0)]
-            public ScriptRuntime.Vector4 Vector4Val;
-            [FieldOffset(0)]
-            public ScriptRuntime.Quaternion QuaternionVal;
-            [FieldOffset(0)]
-            public ScriptRuntime.ColorF ColorVal;
-            [FieldOffset(0)]
-            public ScriptRuntime.Color32 Color32Val;
         }
 
+        public TupleValue1 Tuple1Val
+        {
+            get { return ObjectVal as TupleValue1; }
+            set { ObjectVal = value; }
+        }
+        public TupleValue2 Tuple2Val
+        {
+            get { return ObjectVal as TupleValue2; }
+            set { ObjectVal = value; }
+        }
+        public TupleValue3 Tuple3Val
+        {
+            get { return ObjectVal as TupleValue3; }
+            set { ObjectVal = value; }
+        }
+        public TupleValue4 Tuple4Val
+        {
+            get { return ObjectVal as TupleValue4; }
+            set { ObjectVal = value; }
+        }
+        public TupleValue5 Tuple5Val
+        {
+            get { return ObjectVal as TupleValue5; }
+            set { ObjectVal = value; }
+        }
+        public TupleValue6 Tuple6Val
+        {
+            get { return ObjectVal as TupleValue6; }
+            set { ObjectVal = value; }
+        }
+        public TupleValue7 Tuple7Val
+        {
+            get { return ObjectVal as TupleValue7; }
+            set { ObjectVal = value; }
+        }
+        public TupleValue8 Tuple8Val
+        {
+            get { return ObjectVal as TupleValue8; }
+            set { ObjectVal = value; }
+        }
         public string StringVal
         {
             get { return ObjectVal as string; }
@@ -878,53 +1201,69 @@ namespace ScriptableFramework
         {
             return v.GetDecimal();
         }
-        public static implicit operator BoxedValue(ScriptRuntime.Vector2 v)
+        public static implicit operator BoxedValue(TupleValue1 v)
         {
             return BoxedValue.From(v);
         }
-        public static implicit operator ScriptRuntime.Vector2(BoxedValue v)
+        public static implicit operator TupleValue1(BoxedValue v)
         {
-            return v.GetVector2();
+            return v.GetTuple1();
         }
-        public static implicit operator BoxedValue(ScriptRuntime.Vector3 v)
+        public static implicit operator BoxedValue(TupleValue2 v)
         {
             return BoxedValue.From(v);
         }
-        public static implicit operator ScriptRuntime.Vector3(BoxedValue v)
+        public static implicit operator TupleValue2(BoxedValue v)
         {
-            return v.GetVector3();
+            return v.GetTuple2();
         }
-        public static implicit operator BoxedValue(ScriptRuntime.Vector4 v)
+        public static implicit operator BoxedValue(TupleValue3 v)
         {
             return BoxedValue.From(v);
         }
-        public static implicit operator ScriptRuntime.Vector4(BoxedValue v)
+        public static implicit operator TupleValue3(BoxedValue v)
         {
-            return v.GetVector4();
+            return v.GetTuple3();
         }
-        public static implicit operator BoxedValue(ScriptRuntime.Quaternion v)
+        public static implicit operator BoxedValue(TupleValue4 v)
         {
             return BoxedValue.From(v);
         }
-        public static implicit operator ScriptRuntime.Quaternion(BoxedValue v)
+        public static implicit operator TupleValue4(BoxedValue v)
         {
-            return v.GetQuaternion();
+            return v.GetTuple4();
         }
-        public static implicit operator BoxedValue(ScriptRuntime.ColorF v)
+        public static implicit operator BoxedValue(TupleValue5 v)
         {
             return BoxedValue.From(v);
         }
-        public static implicit operator ScriptRuntime.ColorF(BoxedValue v)
+        public static implicit operator TupleValue5(BoxedValue v)
         {
-            return v.GetColor();
+            return v.GetTuple5();
         }
-        public static implicit operator BoxedValue(ScriptRuntime.Color32 v)
+        public static implicit operator BoxedValue(TupleValue6 v)
         {
             return BoxedValue.From(v);
         }
-        public static implicit operator ScriptRuntime.Color32(BoxedValue v)
+        public static implicit operator TupleValue6(BoxedValue v)
         {
-            return v.GetColor32();
+            return v.GetTuple6();
+        }
+        public static implicit operator BoxedValue(TupleValue7 v)
+        {
+            return BoxedValue.From(v);
+        }
+        public static implicit operator TupleValue7(BoxedValue v)
+        {
+            return v.GetTuple7();
+        }
+        public static implicit operator BoxedValue(TupleValue8 v)
+        {
+            return BoxedValue.From(v);
+        }
+        public static implicit operator TupleValue8(BoxedValue v)
+        {
+            return v.GetTuple8();
         }
 
         public static implicit operator BoxedValue(byte[] v)
@@ -968,6 +1307,79 @@ namespace ScriptableFramework
             return v.ObjectVal as ArrayList;
         }
 
+        public static implicit operator BoxedValue(Vector2Obj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator Vector2Obj(BoxedValue v)
+        {
+            return v.ObjectVal as Vector2Obj;
+        }
+        public static implicit operator BoxedValue(Vector3Obj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator Vector3Obj(BoxedValue v)
+        {
+            return v.ObjectVal as Vector3Obj;
+        }
+        public static implicit operator BoxedValue(Vector4Obj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator Vector4Obj(BoxedValue v)
+        {
+            return v.ObjectVal as Vector4Obj;
+        }
+        public static implicit operator BoxedValue(QuaternionObj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator QuaternionObj(BoxedValue v)
+        {
+            return v.ObjectVal as QuaternionObj;
+        }
+        public static implicit operator BoxedValue(ColorObj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator ColorObj(BoxedValue v)
+        {
+            return v.ObjectVal as ColorObj;
+        }
+        public static implicit operator BoxedValue(Color32Obj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator Color32Obj(BoxedValue v)
+        {
+            return v.ObjectVal as Color32Obj;
+        }
+        public static implicit operator BoxedValue(Vector2IntObj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator Vector2IntObj(BoxedValue v)
+        {
+            return v.ObjectVal as Vector2IntObj;
+        }
+        public static implicit operator BoxedValue(Vector3IntObj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator Vector3IntObj(BoxedValue v)
+        {
+            return v.ObjectVal as Vector3IntObj;
+        }
+        public static implicit operator BoxedValue(Matrix4x4Obj v)
+        {
+            return BoxedValue.FromObject(v);
+        }
+        public static implicit operator Matrix4x4Obj(BoxedValue v)
+        {
+            return v.ObjectVal as Matrix4x4Obj;
+        }
+
         public string GetTypeName()
         {
             switch (Type) {
@@ -1001,18 +1413,22 @@ namespace ScriptableFramework
                     return "double";
                 case c_DecimalType:
                     return "decimal";
-                case c_Vector2Type:
-                    return "Vector2";
-                case c_Vector3Type:
-                    return "Vector3";
-                case c_Vector4Type:
-                    return "Vector4";
-                case c_QuaternionType:
-                    return "Quaternion";
-                case c_ColorType:
-                    return "Color";
-                case c_Color32Type:
-                    return "Color32";
+                case c_Tuple1Type:
+                    return "Tuple1";
+                case c_Tuple2Type:
+                    return "Tuple2";
+                case c_Tuple3Type:
+                    return "Tuple3";
+                case c_Tuple4Type:
+                    return "Tuple4";
+                case c_Tuple5Type:
+                    return "Tuple5";
+                case c_Tuple6Type:
+                    return "Tuple6";
+                case c_Tuple7Type:
+                    return "Tuple7";
+                case c_Tuple8Type:
+                    return "Tuple8";
                 default:
                     return "Unknown";
             }
@@ -1100,6 +1516,24 @@ namespace ScriptableFramework
         {
             get {
                 return Type == c_FloatType || Type == c_DoubleType || Type == c_DecimalType;
+            }
+        }
+        public bool IsTuple
+        {
+            get {
+                switch (Type) {
+                    case c_Tuple1Type:
+                    case c_Tuple2Type:
+                    case c_Tuple3Type:
+                    case c_Tuple4Type:
+                    case c_Tuple5Type:
+                    case c_Tuple6Type:
+                    case c_Tuple7Type:
+                    case c_Tuple8Type:
+                        return true;
+                    default:
+                        return false;
+                }
             }
         }
         public string AsString
@@ -1210,35 +1644,45 @@ namespace ScriptableFramework
             Type = c_DecimalType;
             Union.DecimalVal = v;
         }
-        public void Set(ScriptRuntime.Vector2 v)
+        public void Set(TupleValue1 v)
         {
-            Type = c_Vector2Type;
-            Union.Vector2Val = v;
+            Type = c_Tuple1Type;
+            Tuple1Val = v;
         }
-        public void Set(ScriptRuntime.Vector3 v)
+        public void Set(TupleValue2 v)
         {
-            Type = c_Vector3Type;
-            Union.Vector3Val = v;
+            Type = c_Tuple2Type;
+            Tuple2Val = v;
         }
-        public void Set(ScriptRuntime.Vector4 v)
+        public void Set(TupleValue3 v)
         {
-            Type = c_Vector4Type;
-            Union.Vector4Val = v;
+            Type = c_Tuple3Type;
+            Tuple3Val = v;
         }
-        public void Set(ScriptRuntime.Quaternion v)
+        public void Set(TupleValue4 v)
         {
-            Type = c_QuaternionType;
-            Union.QuaternionVal = v;
+            Type = c_Tuple4Type;
+            Tuple4Val = v;
         }
-        public void Set(ScriptRuntime.ColorF v)
+        public void Set(TupleValue5 v)
         {
-            Type = c_ColorType;
-            Union.ColorVal = v;
+            Type = c_Tuple5Type;
+            Tuple5Val = v;
         }
-        public void Set(ScriptRuntime.Color32 v)
+        public void Set(TupleValue6 v)
         {
-            Type = c_Color32Type;
-            Union.Color32Val = v;
+            Type = c_Tuple6Type;
+            Tuple6Val = v;
+        }
+        public void Set(TupleValue7 v)
+        {
+            Type = c_Tuple7Type;
+            Tuple7Val = v;
+        }
+        public void Set(TupleValue8 v)
+        {
+            Type = c_Tuple8Type;
+            Tuple8Val = v;
         }
         public void Set(string v)
         {
@@ -1280,18 +1724,22 @@ namespace ScriptableFramework
                 Set((double)val);
             else if (t == typeof(decimal))
                 Set((decimal)val);
-            else if (t == typeof(ScriptRuntime.Vector2))
-                Set((ScriptRuntime.Vector2)val);
-            else if (t == typeof(ScriptRuntime.Vector3))
-                Set((ScriptRuntime.Vector3)val);
-            else if (t == typeof(ScriptRuntime.Vector4))
-                Set((ScriptRuntime.Vector4)val);
-            else if (t == typeof(ScriptRuntime.Quaternion))
-                Set((ScriptRuntime.Quaternion)val);
-            else if (t == typeof(ScriptRuntime.ColorF))
-                Set((ScriptRuntime.ColorF)val);
-            else if (t == typeof(ScriptRuntime.Color32))
-                Set((ScriptRuntime.Color32)val);
+            else if (t == typeof(TupleValue1))
+                Set((TupleValue1)val);
+            else if (t == typeof(TupleValue2))
+                Set((TupleValue2)val);
+            else if (t == typeof(TupleValue3))
+                Set((TupleValue3)val);
+            else if (t == typeof(TupleValue4))
+                Set((TupleValue4)val);
+            else if (t == typeof(TupleValue5))
+                Set((TupleValue5)val);
+            else if (t == typeof(TupleValue6))
+                Set((TupleValue6)val);
+            else if (t == typeof(TupleValue7))
+                Set((TupleValue7)val);
+            else if (t == typeof(TupleValue8))
+                Set((TupleValue8)val);
             else if (t == typeof(BoxedValue))
                 this = (BoxedValue)val;
             else
@@ -1355,29 +1803,37 @@ namespace ScriptableFramework
         {
             return ToDecimal();
         }
-        public ScriptRuntime.Vector2 GetVector2()
+        public TupleValue1 GetTuple1()
         {
-            return ToVector2();
+            return ToTuple1();
         }
-        public ScriptRuntime.Vector3 GetVector3()
+        public TupleValue2 GetTuple2()
         {
-            return ToVector3();
+            return ToTuple2();
         }
-        public ScriptRuntime.Vector4 GetVector4()
+        public TupleValue3 GetTuple3()
         {
-            return ToVector4();
+            return ToTuple3();
         }
-        public ScriptRuntime.Quaternion GetQuaternion()
+        public TupleValue4 GetTuple4()
         {
-            return ToQuaternion();
+            return ToTuple4();
         }
-        public ScriptRuntime.ColorF GetColor()
+        public TupleValue5 GetTuple5()
         {
-            return ToColor();
+            return ToTuple5();
         }
-        public ScriptRuntime.Color32 GetColor32()
+        public TupleValue6 GetTuple6()
         {
-            return ToColor32();
+            return ToTuple6();
+        }
+        public TupleValue7 GetTuple7()
+        {
+            return ToTuple7();
+        }
+        public TupleValue8 GetTuple8()
+        {
+            return ToTuple8();
         }
         public string GetString()
         {
@@ -1419,22 +1875,44 @@ namespace ScriptableFramework
                 return GenericValueConverter.From<T>(ToDouble());
             else if (t == typeof(decimal))
                 return GenericValueConverter.From<T>(ToDecimal());
-            else if (t == typeof(ScriptRuntime.Vector2))
-                return GenericValueConverter.From<T>(ToVector2());
-            else if (t == typeof(ScriptRuntime.Vector3))
-                return GenericValueConverter.From<T>(ToVector3());
-            else if (t == typeof(ScriptRuntime.Vector4))
-                return GenericValueConverter.From<T>(ToVector4());
-            else if (t == typeof(ScriptRuntime.Quaternion))
-                return GenericValueConverter.From<T>(ToQuaternion());
-            else if (t == typeof(ScriptRuntime.ColorF))
-                return GenericValueConverter.From<T>(ToColor());
-            else if (t == typeof(ScriptRuntime.Color32))
-                return GenericValueConverter.From<T>(ToColor32());
+            else if (t == typeof(TupleValue1))
+                return GenericValueConverter.From<T>(ToTuple1());
+            else if (t == typeof(TupleValue2))
+                return GenericValueConverter.From<T>(ToTuple2());
+            else if (t == typeof(TupleValue3))
+                return GenericValueConverter.From<T>(ToTuple3());
+            else if (t == typeof(TupleValue4))
+                return GenericValueConverter.From<T>(ToTuple4());
+            else if (t == typeof(TupleValue5))
+                return GenericValueConverter.From<T>(ToTuple5());
+            else if (t == typeof(TupleValue6))
+                return GenericValueConverter.From<T>(ToTuple6());
+            else if (t == typeof(TupleValue7))
+                return GenericValueConverter.From<T>(ToTuple7());
+            else if (t == typeof(TupleValue8))
+                return GenericValueConverter.From<T>(ToTuple8());
             else if (t == typeof(BoxedValue))
                 return GenericValueConverter.From<T>(this);
             else if (t == typeof(object))
                 return GenericValueConverter.From<T>(ToObject());
+            else if (IsObject && t == typeof(Vector2) && ObjectVal is Vector2Obj)
+                return GenericValueConverter.From<T>((Vector2)(Vector2Obj)ObjectVal);
+            else if (IsObject && t == typeof(Vector3) && ObjectVal is Vector3Obj)
+                return GenericValueConverter.From<T>((Vector3)(Vector3Obj)ObjectVal);
+            else if (IsObject && t == typeof(Vector4) && ObjectVal is Vector4Obj)
+                return GenericValueConverter.From<T>((Vector4)(Vector4Obj)ObjectVal);
+            else if (IsObject && t == typeof(Quaternion) && ObjectVal is QuaternionObj)
+                return GenericValueConverter.From<T>((Quaternion)(QuaternionObj)ObjectVal);
+            else if (IsObject && t == typeof(ColorF) && ObjectVal is ColorObj)
+                return GenericValueConverter.From<T>((ColorF)(ColorObj)ObjectVal);
+            else if (IsObject && t == typeof(Color32) && ObjectVal is Color32Obj)
+                return GenericValueConverter.From<T>((Color32)(Color32Obj)ObjectVal);
+            else if (IsObject && t == typeof(Vector2Int) && ObjectVal is Vector2IntObj)
+                return GenericValueConverter.From<T>((Vector2Int)(Vector2IntObj)ObjectVal);
+            else if (IsObject && t == typeof(Vector3Int) && ObjectVal is Vector3IntObj)
+                return GenericValueConverter.From<T>((Vector3Int)(Vector3IntObj)ObjectVal);
+            else if (IsObject && t == typeof(Matrix44) && ObjectVal is Matrix4x4Obj)
+                return GenericValueConverter.From<T>((Matrix44)(Matrix4x4Obj)ObjectVal);
             else
                 return GenericValueConverter.CastTo<T>(ToObject());
         }
@@ -1468,22 +1946,44 @@ namespace ScriptableFramework
                 return ToDouble();
             else if (t == typeof(decimal))
                 return ToDecimal();
-            else if (t == typeof(ScriptRuntime.Vector2))
-                return ToVector2();
-            else if (t == typeof(ScriptRuntime.Vector3))
-                return ToVector3();
-            else if (t == typeof(ScriptRuntime.Vector4))
-                return ToVector4();
-            else if (t == typeof(ScriptRuntime.Quaternion))
-                return ToQuaternion();
-            else if (t == typeof(ScriptRuntime.ColorF))
-                return ToColor();
-            else if (t == typeof(ScriptRuntime.Color32))
-                return ToColor32();
+            else if (t == typeof(TupleValue1))
+                return ToTuple1();
+            else if (t == typeof(TupleValue2))
+                return ToTuple2();
+            else if (t == typeof(TupleValue3))
+                return ToTuple3();
+            else if (t == typeof(TupleValue4))
+                return ToTuple4();
+            else if (t == typeof(TupleValue5))
+                return ToTuple5();
+            else if (t == typeof(TupleValue6))
+                return ToTuple6();
+            else if (t == typeof(TupleValue7))
+                return ToTuple7();
+            else if (t == typeof(TupleValue8))
+                return ToTuple8();
             else if (t == typeof(BoxedValue))
                 return this;
             else if (t == typeof(object))
                 return ToObject();
+            else if (IsObject && t == typeof(Vector2) && ObjectVal is Vector2Obj)
+                return (Vector2)(Vector2Obj)ObjectVal;
+            else if (IsObject && t == typeof(Vector3) && ObjectVal is Vector3Obj)
+                return (Vector3)(Vector3Obj)ObjectVal;
+            else if (IsObject && t == typeof(Vector4) && ObjectVal is Vector4Obj)
+                return (Vector4)(Vector4Obj)ObjectVal;
+            else if (IsObject && t == typeof(Quaternion) && ObjectVal is QuaternionObj)
+                return (Quaternion)(QuaternionObj)ObjectVal;
+            else if (IsObject && t == typeof(ColorF) && ObjectVal is ColorObj)
+                return (ColorF)(ColorObj)ObjectVal;
+            else if (IsObject && t == typeof(Color32) && ObjectVal is Color32Obj)
+                return (Color32)(Color32Obj)ObjectVal;
+            else if (IsObject && t == typeof(Vector2Int) && ObjectVal is Vector2IntObj)
+                return (Vector2Int)(Vector2IntObj)ObjectVal;
+            else if (IsObject && t == typeof(Vector3Int) && ObjectVal is Vector3IntObj)
+                return (Vector3Int)(Vector3IntObj)ObjectVal;
+            else if (IsObject && t == typeof(Matrix44) && ObjectVal is Matrix4x4Obj)
+                return (Matrix44)(Matrix4x4Obj)ObjectVal;
             else
                 return Convert.ChangeType(ToObject(), t);
         }
@@ -1518,18 +2018,22 @@ namespace ScriptableFramework
                 Set(GenericValueConverter.ToDouble<T>(val));
             else if (t == typeof(decimal))
                 Set(GenericValueConverter.ToDecimal<T>(val));
-            else if (t == typeof(ScriptRuntime.Vector2))
-                Set(GenericValueConverter.ToVector2<T>(val));
-            else if (t == typeof(ScriptRuntime.Vector3))
-                Set(GenericValueConverter.ToVector3<T>(val));
-            else if (t == typeof(ScriptRuntime.Vector4))
-                Set(GenericValueConverter.ToVector4<T>(val));
-            else if (t == typeof(ScriptRuntime.Quaternion))
-                Set(GenericValueConverter.ToQuaternion<T>(val));
-            else if (t == typeof(ScriptRuntime.ColorF))
-                Set(GenericValueConverter.ToColor<T>(val));
-            else if (t == typeof(ScriptRuntime.Color32))
-                Set(GenericValueConverter.ToColor32<T>(val));
+            else if (t == typeof(TupleValue1))
+                Set(GenericValueConverter.ToTuple1<T>(val));
+            else if (t == typeof(TupleValue2))
+                Set(GenericValueConverter.ToTuple2<T>(val));
+            else if (t == typeof(TupleValue3))
+                Set(GenericValueConverter.ToTuple3<T>(val));
+            else if (t == typeof(TupleValue4))
+                Set(GenericValueConverter.ToTuple4<T>(val));
+            else if (t == typeof(TupleValue5))
+                Set(GenericValueConverter.ToTuple5<T>(val));
+            else if (t == typeof(TupleValue6))
+                Set(GenericValueConverter.ToTuple6<T>(val));
+            else if (t == typeof(TupleValue7))
+                Set(GenericValueConverter.ToTuple7<T>(val));
+            else if (t == typeof(TupleValue8))
+                Set(GenericValueConverter.ToTuple8<T>(val));
             else if (t == typeof(BoxedValue))
                 this = GenericValueConverter.ToBoxedValue<T>(val);
             else if (t == typeof(object))
@@ -1575,18 +2079,22 @@ namespace ScriptableFramework
                 Set((double)val);
             else if (t == typeof(decimal))
                 Set((decimal)val);
-            else if (t == typeof(ScriptRuntime.Vector2))
-                Set((ScriptRuntime.Vector2)val);
-            else if (t == typeof(ScriptRuntime.Vector3))
-                Set((ScriptRuntime.Vector3)val);
-            else if (t == typeof(ScriptRuntime.Vector4))
-                Set((ScriptRuntime.Vector4)val);
-            else if (t == typeof(ScriptRuntime.Quaternion))
-                Set((ScriptRuntime.Quaternion)val);
-            else if (t == typeof(ScriptRuntime.ColorF))
-                Set((ScriptRuntime.ColorF)val);
-            else if (t == typeof(ScriptRuntime.Color32))
-                Set((ScriptRuntime.Color32)val);
+            else if (t == typeof(TupleValue1))
+                Set((TupleValue1)val);
+            else if (t == typeof(TupleValue2))
+                Set((TupleValue2)val);
+            else if (t == typeof(TupleValue3))
+                Set((TupleValue3)val);
+            else if (t == typeof(TupleValue4))
+                Set((TupleValue4)val);
+            else if (t == typeof(TupleValue5))
+                Set((TupleValue5)val);
+            else if (t == typeof(TupleValue6))
+                Set((TupleValue6)val);
+            else if (t == typeof(TupleValue7))
+                Set((TupleValue7)val);
+            else if (t == typeof(TupleValue8))
+                Set((TupleValue8)val);
             else if (t == typeof(BoxedValue))
                 this = (BoxedValue)val;
             else
@@ -1668,23 +2176,29 @@ namespace ScriptableFramework
                 case c_DecimalType:
                     Union.DecimalVal = other.Union.DecimalVal;
                     break;
-                case c_Vector2Type:
-                    Union.Vector2Val = other.Union.Vector2Val;
+                case c_Tuple1Type:
+                    Tuple1Val = other.Tuple1Val;
                     break;
-                case c_Vector3Type:
-                    Union.Vector3Val = other.Union.Vector3Val;
+                case c_Tuple2Type:
+                    Tuple2Val = other.Tuple2Val;
                     break;
-                case c_Vector4Type:
-                    Union.Vector4Val = other.Union.Vector4Val;
+                case c_Tuple3Type:
+                    Tuple3Val = other.Tuple3Val;
                     break;
-                case c_QuaternionType:
-                    Union.QuaternionVal = other.Union.QuaternionVal;
+                case c_Tuple4Type:
+                    Tuple4Val = other.Tuple4Val;
                     break;
-                case c_ColorType:
-                    Union.ColorVal = other.Union.ColorVal;
+                case c_Tuple5Type:
+                    Tuple5Val = other.Tuple5Val;
                     break;
-                case c_Color32Type:
-                    Union.Color32Val = other.Union.Color32Val;
+                case c_Tuple6Type:
+                    Tuple6Val = other.Tuple6Val;
+                    break;
+                case c_Tuple7Type:
+                    Tuple7Val = other.Tuple7Val;
+                    break;
+                case c_Tuple8Type:
+                    Tuple8Val = other.Tuple8Val;
                     break;
             }
         }
@@ -1721,18 +2235,22 @@ namespace ScriptableFramework
                     return Union.DoubleVal.ToString();
                 case c_DecimalType:
                     return Union.DecimalVal.ToString();
-                case c_Vector2Type:
-                    return Union.Vector2Val.ToString();
-                case c_Vector3Type:
-                    return Union.Vector3Val.ToString();
-                case c_Vector4Type:
-                    return Union.Vector4Val.ToString();
-                case c_QuaternionType:
-                    return Union.QuaternionVal.ToString();
-                case c_ColorType:
-                    return Union.ColorVal.ToString();
-                case c_Color32Type:
-                    return Union.Color32Val.ToString();
+                case c_Tuple1Type:
+                    return Tuple1Val.ToString();
+                case c_Tuple2Type:
+                    return Tuple2Val.ToString();
+                case c_Tuple3Type:
+                    return Tuple3Val.ToString();
+                case c_Tuple4Type:
+                    return Tuple4Val.ToString();
+                case c_Tuple5Type:
+                    return Tuple5Val.ToString();
+                case c_Tuple6Type:
+                    return Tuple6Val.ToString();
+                case c_Tuple7Type:
+                    return Tuple7Val.ToString();
+                case c_Tuple8Type:
+                    return Tuple8Val.ToString();
             }
             return string.Empty;
         }
@@ -1769,18 +2287,22 @@ namespace ScriptableFramework
                     return Union.DoubleVal;
                 case c_DecimalType:
                     return Union.DecimalVal;
-                case c_Vector2Type:
-                    return Union.Vector2Val;
-                case c_Vector3Type:
-                    return Union.Vector3Val;
-                case c_Vector4Type:
-                    return Union.Vector4Val;
-                case c_QuaternionType:
-                    return Union.QuaternionVal;
-                case c_ColorType:
-                    return Union.ColorVal;
-                case c_Color32Type:
-                    return Union.Color32Val;
+                case c_Tuple1Type:
+                    return Tuple1Val;
+                case c_Tuple2Type:
+                    return Tuple2Val;
+                case c_Tuple3Type:
+                    return Tuple3Val;
+                case c_Tuple4Type:
+                    return Tuple4Val;
+                case c_Tuple5Type:
+                    return Tuple5Val;
+                case c_Tuple6Type:
+                    return Tuple6Val;
+                case c_Tuple7Type:
+                    return Tuple7Val;
+                case c_Tuple8Type:
+                    return Tuple8Val;
             }
             return null;
         }
@@ -1835,18 +2357,6 @@ namespace ScriptableFramework
                     return Union.DoubleVal != 0;
                 case c_DecimalType:
                     return Union.DecimalVal != 0;
-                case c_Vector2Type:
-                    return Union.Vector2Val != ScriptRuntime.Vector2.Zero;
-                case c_Vector3Type:
-                    return Union.Vector3Val != ScriptRuntime.Vector3.Zero;
-                case c_Vector4Type:
-                    return Union.Vector4Val != ScriptRuntime.Vector4.Zero;
-                case c_QuaternionType:
-                    return Union.QuaternionVal != ScriptRuntime.Quaternion.Identity;
-                case c_ColorType:
-                    return Union.ColorVal != ScriptRuntime.Color32.Black.ToColorF();
-                case c_Color32Type:
-                    return Union.Color32Val != ScriptRuntime.Color32.Black;
             }
             return false;
         }
@@ -2375,101 +2885,113 @@ namespace ScriptableFramework
             }
             return v;
         }
-        private ScriptRuntime.Vector2 ToVector2()
+        private TupleValue1 ToTuple1()
         {
-            ScriptRuntime.Vector2 v = ScriptRuntime.Vector2.Zero;
+            TupleValue1 v = Tuple.Create(BoxedValue.NullObject);
             switch (Type) {
-                case c_Vector2Type:
-                    return Union.Vector2Val;
-                case c_Vector3Type:
-                    return new ScriptRuntime.Vector2(Union.Vector3Val.X, Union.Vector3Val.Y);
-                case c_Vector4Type:
-                    return new ScriptRuntime.Vector2(Union.Vector4Val.X, Union.Vector4Val.Y);
+                case c_Tuple1Type:
+                    return Tuple1Val;
                 case c_ObjectType:
                     if (null != ObjectVal) {
-                        v = GenericValueConverter.CastTo<ScriptRuntime.Vector2>(ObjectVal);
+                        v = GenericValueConverter.CastTo<TupleValue1>(ObjectVal);
                     }
                     return v;
             }
             return v;
         }
-        private ScriptRuntime.Vector3 ToVector3()
+        private TupleValue2 ToTuple2()
         {
-            ScriptRuntime.Vector3 v = ScriptRuntime.Vector3.Zero;
+            TupleValue2 v = Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject);
             switch (Type) {
-                case c_Vector2Type:
-                    return new ScriptRuntime.Vector3(Union.Vector2Val, 0);
-                case c_Vector3Type:
-                    return Union.Vector3Val;
-                case c_Vector4Type:
-                    return new ScriptRuntime.Vector3(Union.Vector4Val.X, Union.Vector4Val.Y, Union.Vector4Val.Z);
+                case c_Tuple2Type:
+                    return Tuple2Val;
                 case c_ObjectType:
                     if (null != ObjectVal) {
-                        v = GenericValueConverter.CastTo<ScriptRuntime.Vector3>(ObjectVal);
+                        v = GenericValueConverter.CastTo<TupleValue2>(ObjectVal);
                     }
                     return v;
             }
             return v;
         }
-        private ScriptRuntime.Vector4 ToVector4()
+        private TupleValue3 ToTuple3()
         {
-            ScriptRuntime.Vector4 v = ScriptRuntime.Vector4.Zero;
+            TupleValue3 v = Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
             switch (Type) {
-                case c_Vector2Type:
-                    return new ScriptRuntime.Vector4(Union.Vector2Val, 0, 0);
-                case c_Vector3Type:
-                    return new ScriptRuntime.Vector4(Union.Vector3Val, 0);
-                case c_Vector4Type:
-                    return Union.Vector4Val;
+                case c_Tuple3Type:
+                    return Tuple3Val;
                 case c_ObjectType:
                     if (null != ObjectVal) {
-                        v = GenericValueConverter.CastTo<Vector4>(ObjectVal);
+                        v = GenericValueConverter.CastTo<TupleValue3>(ObjectVal);
                     }
                     return v;
             }
             return v;
         }
-        private ScriptRuntime.Quaternion ToQuaternion()
+        private TupleValue4 ToTuple4()
         {
-            ScriptRuntime.Quaternion v = ScriptRuntime.Quaternion.Identity;
+            TupleValue4 v = Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
             switch (Type) {
-                case c_QuaternionType:
-                    return Union.QuaternionVal;
+                case c_Tuple4Type:
+                    return Tuple4Val;
                 case c_ObjectType:
                     if (null != ObjectVal) {
-                        v = GenericValueConverter.CastTo<ScriptRuntime.Quaternion>(ObjectVal);
+                        v = GenericValueConverter.CastTo<TupleValue4>(ObjectVal);
                     }
                     return v;
             }
             return v;
         }
-        private ScriptRuntime.ColorF ToColor()
+        private TupleValue5 ToTuple5()
         {
-            ScriptRuntime.ColorF v = ScriptRuntime.Color32.Black.ToColorF();
+            TupleValue5 v = Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
             switch (Type) {
-                case c_ColorType:
-                    return Union.ColorVal;
-                case c_Color32Type:
-                    return Union.Color32Val.ToColorF();
+                case c_Tuple5Type:
+                    return Tuple5Val;
                 case c_ObjectType:
                     if (null != ObjectVal) {
-                        v = GenericValueConverter.CastTo<ScriptRuntime.ColorF>(ObjectVal);
+                        v = GenericValueConverter.CastTo<TupleValue5>(ObjectVal);
                     }
                     return v;
             }
             return v;
         }
-        private ScriptRuntime.Color32 ToColor32()
+        private TupleValue6 ToTuple6()
         {
-            ScriptRuntime.Color32 v = ScriptRuntime.Color32.Black;
+            TupleValue6 v = Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
             switch (Type) {
-                case c_ColorType:
-                    return Union.ColorVal.ToColor32();
-                case c_Color32Type:
-                    return Union.Color32Val;
+                case c_Tuple6Type:
+                    return Tuple6Val;
                 case c_ObjectType:
                     if (null != ObjectVal) {
-                        v = GenericValueConverter.CastTo<ScriptRuntime.Color32>(ObjectVal);
+                        v = GenericValueConverter.CastTo<TupleValue6>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private TupleValue7 ToTuple7()
+        {
+            TupleValue7 v = Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
+            switch (Type) {
+                case c_Tuple7Type:
+                    return Tuple7Val;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = GenericValueConverter.CastTo<TupleValue7>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private TupleValue8 ToTuple8()
+        {
+            TupleValue8 v = Tuple.Create(BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject, BoxedValue.NullObject);
+            switch (Type) {
+                case c_Tuple8Type:
+                    return Tuple8Val;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = GenericValueConverter.CastTo<TupleValue8>(ObjectVal);
                     }
                     return v;
             }
@@ -2548,37 +3070,49 @@ namespace ScriptableFramework
             bv.Set(v);
             return bv;
         }
-        public static BoxedValue From(ScriptRuntime.Vector2 v)
+        public static BoxedValue From(TupleValue1 v)
         {
             BoxedValue bv = new BoxedValue();
             bv.Set(v);
             return bv;
         }
-        public static BoxedValue From(ScriptRuntime.Vector3 v)
+        public static BoxedValue From(TupleValue2 v)
         {
             BoxedValue bv = new BoxedValue();
             bv.Set(v);
             return bv;
         }
-        public static BoxedValue From(ScriptRuntime.Vector4 v)
+        public static BoxedValue From(TupleValue3 v)
         {
             BoxedValue bv = new BoxedValue();
             bv.Set(v);
             return bv;
         }
-        public static BoxedValue From(ScriptRuntime.Quaternion v)
+        public static BoxedValue From(TupleValue4 v)
         {
             BoxedValue bv = new BoxedValue();
             bv.Set(v);
             return bv;
         }
-        public static BoxedValue From(ScriptRuntime.ColorF v)
+        public static BoxedValue From(TupleValue5 v)
         {
             BoxedValue bv = new BoxedValue();
             bv.Set(v);
             return bv;
         }
-        public static BoxedValue From(ScriptRuntime.Color32 v)
+        public static BoxedValue From(TupleValue6 v)
+        {
+            BoxedValue bv = new BoxedValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static BoxedValue From(TupleValue7 v)
+        {
+            BoxedValue bv = new BoxedValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static BoxedValue From(TupleValue8 v)
         {
             BoxedValue bv = new BoxedValue();
             bv.Set(v);

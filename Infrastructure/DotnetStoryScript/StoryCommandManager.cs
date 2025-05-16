@@ -130,19 +130,21 @@ namespace DotnetStoryScript
                 if (null != callData) {
                     if (callData.IsHighOrder) {
                         Dsl.FunctionData innerCall = callData.LowerOrderFunction;
-                        if (innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                            innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
-                            if (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
-                                //obj.member(a,b,...) or obj[member](a,b,...) -> execinstance(obj,member,a,b,...)
+                        int innerParamClass = innerCall.GetParamClass();
+                        if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                            innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
+                            if (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES) {
+                                //obj.member(a,b,...) -> execinstance(obj,member,a,b,...)
+                                //obj[member](a,b,...) -> collectioncall(obj,member,a,b,...)
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                if(innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                if(innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
                                     newCall.Name = new Dsl.ValueData("dotnetcall", Dsl.ValueData.ID_TOKEN);
                                 else
                                     newCall.Name = new Dsl.ValueData("collectioncall", Dsl.ValueData.ID_TOKEN);
-                                newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES);
                                 if (innerCall.IsHighOrder) {
                                     newCall.Params.Add(innerCall.LowerOrderFunction);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerParamClass));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
@@ -150,7 +152,7 @@ namespace DotnetStoryScript
                                 }
                                 else {
                                     newCall.Params.Add(innerCall.Name);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerParamClass));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
@@ -162,26 +164,48 @@ namespace DotnetStoryScript
                     }
                     else if (callData.GetId() == "=") {
                         Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
-                        if (null != innerCall && (innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                            innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
-                            //obj.property = val  or obj[property] = val -> setinstance(obj,property,val)
-                            Dsl.FunctionData newCall = new Dsl.FunctionData();
-                            if (innerCall.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
-                                newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
-                            else
-                                newCall.Name = new Dsl.ValueData("collectionset", Dsl.ValueData.ID_TOKEN);
-                            newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
-                            if (innerCall.IsHighOrder) {
-                                newCall.Params.Add(innerCall.LowerOrderFunction);
-                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                newCall.Params.Add(callData.GetParam(1));
+                        if (null != innerCall) {
+                            int innerParamClass = innerCall.GetParamClass();
+                            if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
+                                //obj.property = val -> setinstance(obj,property,val)
+                                //obj[property] = val -> collectionset(obj,property,val)
+                                Dsl.FunctionData newCall = new Dsl.FunctionData();
+                                if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                    newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
+                                else
+                                    newCall.Name = new Dsl.ValueData("collectionset", Dsl.ValueData.ID_TOKEN);
+                                newCall.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES);
+                                if (innerCall.IsHighOrder) {
+                                    newCall.Params.Add(innerCall.LowerOrderFunction);
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerParamClass));
+                                    newCall.Params.Add(callData.GetParam(1));
+                                }
+                                else {
+                                    newCall.Params.Add(innerCall.Name);
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerParamClass));
+                                    newCall.Params.Add(callData.GetParam(1));
+                                }
+                                return CreateCommand(newCall);
                             }
-                            else {
-                                newCall.Params.Add(innerCall.Name);
-                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                newCall.Params.Add(callData.GetParam(1));
+                            else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && !innerCall.HaveId()) {
+                                //(a,b,c) = val;
+                                command = null;
+                                IStoryCommandFactory factory = GetFactory("tupleset");
+                                if (null != factory) {
+                                    try {
+                                        command = factory.Create();
+                                        if (!command.Init(commandConfig)) {
+                                            LogSystem.Error("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false, Dsl.DelimiterInfo.Default), commandConfig.GetLine());
+                                        }
+                                    }
+                                    catch (Exception ex) {
+                                        var msg = string.Format("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false, Dsl.DelimiterInfo.Default), commandConfig.GetLine());
+                                        throw new Exception(msg, ex);
+                                    }
+                                }
+                                return command;
                             }
-                            return CreateCommand(newCall);
                         }
                     }
                 }
@@ -272,6 +296,7 @@ namespace DotnetStoryScript
                 m_GroupedCommandDocs[i] = new SortedList<string, string>();
             }
             //register common command
+            RegisterCommandFactory("tupleset", "tupleset or tuple assignment", new StoryCommandFactoryHelper<CommonCommands.TupleSetCommand>());
             RegisterCommandFactory("=", "assignment operator", new StoryCommandFactoryHelper<CommonCommands.AssignCommand>());
             RegisterCommandFactory("assign", "assign(var, val) command", new StoryCommandFactoryHelper<CommonCommands.AssignCommand>());
             RegisterCommandFactory("inc", "inc(var, val) command", new StoryCommandFactoryHelper<CommonCommands.IncCommand>());
@@ -344,6 +369,7 @@ namespace DotnetStoryScript
             RegisterCommandFactory("clearfuncsubsts", "clearfuncsubsts() command", new StoryCommandFactoryHelper<CommonCommands.ClearFuncSubstsCommand>());
             //register value or internal function
             //object
+            StoryFunctionManager.Instance.RegisterFunctionFactory("tuple", "tuple function", new StoryFunctionFactoryHelper<CommonFunctions.TupleFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("null", "null() function", new StoryFunctionFactoryHelper<CommonFunctions.NullValue>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("equalsnull", "equalsnull(obj) function", new StoryFunctionFactoryHelper<CommonFunctions.EqualsNullFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("eval", "eval(exp1,exp2,...) function", new StoryFunctionFactoryHelper<CommonFunctions.EvalFunction>());
@@ -353,20 +379,9 @@ namespace DotnetStoryScript
             StoryFunctionManager.Instance.RegisterFunctionFactory("countcommand", "countcommand(level) function", new StoryFunctionFactoryHelper<CommonFunctions.CountCommandFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("counthandlercommand", "counthandlercommand() function", new StoryFunctionFactoryHelper<CommonFunctions.CountHandlerCommandFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("propget", "propget(name[,defval]) function", new StoryFunctionFactoryHelper<CommonFunctions.PropGetFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2", "vector2(x,y) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3", "vector3(x,y,z) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector4", "vector4(x,y,z,w) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector4Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("quaternion", "quaternion(x,y,z,w) function", new StoryFunctionFactoryHelper<CommonFunctions.QuaternionFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("eular", "eular(x,y,z) function", new StoryFunctionFactoryHelper<CommonFunctions.EularFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("color", "color(r,g,b,a) function", new StoryFunctionFactoryHelper<CommonFunctions.ColorFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("color32", "color32(r,g,b,a) function", new StoryFunctionFactoryHelper<CommonFunctions.Color32Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2int", "vector2int(x,y) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2IntFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3int", "vector3int(x,y,z) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3IntFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("stringlist", "stringlist(str_split_by_sep) function", new StoryFunctionFactoryHelper<CommonFunctions.StringListFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("intlist", "intlist(str_split_by_sep) function", new StoryFunctionFactoryHelper<CommonFunctions.IntListFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("floatlist", "floatlist(str_split_by_sep) function", new StoryFunctionFactoryHelper<CommonFunctions.FloatListFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2list", "vector2list(str_split_by_sep) function, vector2 per 2 elements", new StoryFunctionFactoryHelper<CommonFunctions.Vector2ListFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3list", "vector3list(str_split_by_sep) function, vector3 per 3 elements", new StoryFunctionFactoryHelper<CommonFunctions.Vector3ListFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("array", "array(v1,v2,...) function", new StoryFunctionFactoryHelper<CommonFunctions.ArrayFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("toarray", "toarray(list) function", new StoryFunctionFactoryHelper<CommonFunctions.ToArrayFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("list", "list(v1,v2,...) function", new StoryFunctionFactoryHelper<CommonFunctions.ListFunction>());
@@ -374,12 +389,6 @@ namespace DotnetStoryScript
             StoryFunctionManager.Instance.RegisterFunctionFactory("listget", "listget(list,index[,defval]) function", new StoryFunctionFactoryHelper<CommonFunctions.ListGetFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("listsize", "listsize(list) function", new StoryFunctionFactoryHelper<CommonFunctions.ListSizeFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("listindexof", "listindexof(list,val) function", new StoryFunctionFactoryHelper<CommonFunctions.ListIndexOfFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2dist", "vector2dist(pt1,pt2) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2DistanceFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3dist", "vector3dist(pt1,pt2) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3DistanceFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2to3", "vector2to3(pt) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2To3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3to2", "vector3to2(pt) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3To2Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("rndvector3", "rndvector3(pt,radius) function", new StoryFunctionFactoryHelper<CommonFunctions.RandVector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("rndvector2", "rndvector2(pt,radius) function", new StoryFunctionFactoryHelper<CommonFunctions.RandVector2Function>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("+", "add operator", new StoryFunctionFactoryHelper<CommonFunctions.AddOperator>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("-", "sub operator", new StoryFunctionFactoryHelper<CommonFunctions.SubOperator>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("*", "mul operator", new StoryFunctionFactoryHelper<CommonFunctions.MulOperator>());
@@ -522,6 +531,24 @@ namespace DotnetStoryScript
             StoryFunctionManager.Instance.RegisterFunctionFactory("hashtablevalues", "hashtablevalues(hash_obj) function", new StoryFunctionFactoryHelper<CommonFunctions.HashtableValuesFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("getcmdsubst", "getcmdsubst(id) function", new StoryFunctionFactoryHelper<CommonFunctions.GetCmdSubstFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("getfuncsubst", "getfuncsubst(id) function", new StoryFunctionFactoryHelper<CommonFunctions.GetFuncSubstFunction>());
+
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2", "vector2(x,y) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3", "vector3(x,y,z) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector4", "vector4(x,y,z,w) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector4Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("quaternion", "quaternion(x,y,z,w) function", new StoryFunctionFactoryHelper<CommonFunctions.QuaternionFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("eular", "eular(x,y,z) function", new StoryFunctionFactoryHelper<CommonFunctions.EularFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("color", "color(r,g,b,a) function", new StoryFunctionFactoryHelper<CommonFunctions.ColorFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("color32", "color32(r,g,b,a) function", new StoryFunctionFactoryHelper<CommonFunctions.Color32Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2int", "vector2int(x,y) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2IntFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3int", "vector3int(x,y,z) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3IntFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2list", "vector2list(str_split_by_sep) function, vector2 per 2 elements", new StoryFunctionFactoryHelper<CommonFunctions.Vector2ListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3list", "vector3list(str_split_by_sep) function, vector3 per 3 elements", new StoryFunctionFactoryHelper<CommonFunctions.Vector3ListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2dist", "vector2dist(pt1,pt2) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2DistanceFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3dist", "vector3dist(pt1,pt2) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3DistanceFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2to3", "vector2to3(pt) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2To3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3to2", "vector3to2(pt) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3To2Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("rndvector3", "rndvector3(pt,radius) function", new StoryFunctionFactoryHelper<CommonFunctions.RandVector3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("rndvector2", "rndvector2(pt,radius) function", new StoryFunctionFactoryHelper<CommonFunctions.RandVector2Function>());
         }
 
         private object m_Lock = new object();

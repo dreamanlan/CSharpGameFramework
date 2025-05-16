@@ -377,6 +377,9 @@ namespace ScriptableFramework
                 return GenericValueConverter.From<T>(BoxedValue.FromObject(obj));
             }
             else {
+                if (Conversion.TryInvoke(obj, typeof(T), out var res)) {
+                    return GenericValueConverter.From<T>(res);
+                }
                 try {
                     return (T)Convert.ChangeType(obj, typeof(T));
                 }
@@ -392,6 +395,9 @@ namespace ScriptableFramework
         {
             if (null == obj)
                 return null;
+            if (t.IsByRef) {
+                t = t.GetElementType();
+            }
             Type st = obj.GetType();
             if (obj is BoxedValue) {
                 return ((BoxedValue)obj).CastTo(t);
@@ -403,6 +409,9 @@ namespace ScriptableFramework
                 return BoxedValue.FromObject(obj);
             }
             else {
+                if (Conversion.TryInvoke(obj, t, out var res)) {
+                    return res;
+                }
                 try {
                     return Convert.ChangeType(obj, t);
                 }
@@ -525,5 +534,37 @@ namespace ScriptableFramework
         }
 
         public static char[] s_FloatExponent = new char[] { 'e', 'E', '.' };
+    }
+}
+public static class Conversion
+{
+    public static bool TryInvoke(object source, Type targetType, out object target)
+    {
+        var sourceType = source.GetType();
+        var methods = sourceType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+
+        foreach (var method in methods) {
+            if ((method.Name == "op_Implicit" || method.Name == "op_Explicit") && method.ReturnType == targetType) {
+                var parameters = method.GetParameters();
+                if (parameters.Length == 1 && parameters[0].ParameterType == sourceType) {
+                    target = method.Invoke(null, new object[] { source });
+                    return true;
+                }
+            }
+        }
+
+        var targetMethods = targetType.GetMethods(BindingFlags.Static | BindingFlags.Public);
+        foreach(var method in targetMethods) {
+            if (method.Name == "op_Implicit" && method.ReturnType == targetType) {
+                var parameters = method.GetParameters();
+                if (parameters.Length == 1 && parameters[0].ParameterType == sourceType) {
+                    target = method.Invoke(null, new object[] { source });
+                    return true;
+                }
+            }
+        }
+
+        target = null;
+        return false;
     }
 }

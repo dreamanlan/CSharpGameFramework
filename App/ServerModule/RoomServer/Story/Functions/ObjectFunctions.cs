@@ -291,9 +291,9 @@ namespace ScriptableFramework.Story.Functions
                     m_HaveValue = true;
                     EntityInfo obj = scene.SceneContext.GetEntityById(objId);
                     if (null != obj) {
-                        m_Value = obj.GetMovementStateInfo().GetPosition3D();
+                        m_Value = (Vector3Obj)obj.GetMovementStateInfo().GetPosition3D();
                     } else {
-                        m_Value = Vector3.Zero;
+                        m_Value = (Vector3Obj)Vector3.Zero;
                     }
                 }
             }
@@ -945,15 +945,15 @@ namespace ScriptableFramework.Story.Functions
                         Vector2 targetPos = target.GetMovementStateInfo().GetPosition2D();
                         float radian = Geometry.GetYRadian(srcPos, targetPos);
                         Vector2 newPos = srcPos + Geometry.GetRotate(new Vector2(offset.X, offset.Z), radian);
-                        m_Value = new Vector3(newPos.X, y + offset.Y, newPos.Y);
+                        m_Value = (Vector3Obj)new Vector3(newPos.X, y + offset.Y, newPos.Y);
                     } else if (null != obj) {
                         Vector2 srcPos = obj.GetMovementStateInfo().GetPosition2D();
                         float y = obj.GetMovementStateInfo().PositionY;
                         float radian = obj.GetMovementStateInfo().GetFaceDir();
                         Vector2 newPos = srcPos + Geometry.GetRotate(new Vector2(offset.X, offset.Z), radian);
-                        m_Value = new Vector3(newPos.X, y + offset.Y, newPos.Y);
+                        m_Value = (Vector3Obj)new Vector3(newPos.X, y + offset.Y, newPos.Y);
                     } else {
-                        m_Value = Vector3.Zero;
+                        m_Value = (Vector3Obj)Vector3.Zero;
                     }
                 }
             }

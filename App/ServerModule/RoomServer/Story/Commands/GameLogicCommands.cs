@@ -348,7 +348,7 @@ namespace ScriptableFramework.Story.Commands
                         }
                     }
                 } else {
-                    Vector3 pos = obj.GetVector3();
+                    Vector3 pos = obj.As<Vector3Obj>();
                     Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
                     msg.name = "GameRoot";
                     msg.msg = "CameraLook";
@@ -763,7 +763,7 @@ namespace ScriptableFramework.Story.Commands
                 if (type == "user") {
                     scene.KdTree.QueryWithFunc(pos, radius, (float distSqr, KdTreeObject kdObj) => {
                         if (kdObj.Object.EntityType != (int)EntityTypeEnum.Hero) {
-                            scene.StorySystem.SendMessage(eventName, pos, radius, type);
+                            scene.StorySystem.SendMessage(eventName, (Vector3Obj)pos, radius, type);
                             triggered = true;
                             return false;
                         }
@@ -772,7 +772,7 @@ namespace ScriptableFramework.Story.Commands
                 } else if (type == "npc") {
                     scene.KdTree.QueryWithFunc(pos, radius, (float distSqr, KdTreeObject kdObj) => {
                         if (kdObj.Object.EntityType != (int)EntityTypeEnum.Hero) {
-                            scene.StorySystem.SendMessage(eventName, pos, radius, type);
+                            scene.StorySystem.SendMessage(eventName, (Vector3Obj)pos, radius, type);
                             triggered = true;
                             return false;
                         }

@@ -43747,7 +43747,7 @@
             Returns true if the supplied string contains a valid property name
             </summary>
         </member>
-        <member name="M:Microsoft.Build.Evaluation.Expander`2.ScanForClosingParenthesis(System.String,System.Int32)">
+        <member name="M:Microsoft.Build.Evaluation.Expander`2.ScanForClosingParentheses(System.String,System.Int32)">
             <summary>
             Scan for the closing bracket that matches the one we've already skipped;
             essentially, pushes and pops on a stack of parentheses to do this.
@@ -43755,7 +43755,7 @@
             Returns the index of the matching parenthesis, or -1 if it was not found.
             </summary>
         </member>
-        <member name="M:Microsoft.Build.Evaluation.Expander`2.ScanForClosingParenthesis(System.String,System.Int32,System.Boolean@,System.Boolean@)">
+        <member name="M:Microsoft.Build.Evaluation.Expander`2.ScanForClosingParentheses(System.String,System.Int32,System.Boolean@,System.Boolean@)">
             <summary>
             Scan for the closing bracket that matches the one we've already skipped;
             essentially, pushes and pops on a stack of parentheses to do this.

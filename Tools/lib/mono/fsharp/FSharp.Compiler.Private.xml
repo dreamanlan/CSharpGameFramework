@@ -2528,7 +2528,7 @@
  (Originally from ../FSComp.txt:610)
 </summary>
 </member>
-<member name="M:FSComp.SR.tcExpressionWithIfRequiresParenthesis">
+<member name="M:FSComp.SR.tcExpressionWithIfRequiresParentheses">
 <summary>
  This list or array expression includes an element of the form &apos;if ... then ... else&apos;. Parenthesize this expression to indicate it is an individual element of the list or array, to disambiguate this from a list generated using a sequence expression
  (Originally from ../FSComp.txt:585)
