@@ -22,6 +22,39 @@ using StoryScript;
 #pragma warning disable 8600,8601,8602,8603,8604,8618,8619,8620,8625
 namespace StoryScript.DslExpression
 {
+    internal class GetObjectByIdExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            UnityEngine.Object r = null;
+            if (operands.Count >= 1)
+            {
+                var instId = operands[0].GetInt();
+                if (instId != 0)
+                {
+                    var o = typeof(UnityEngine.Object).InvokeMember("FindObjectFromInstanceID", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, null, new object[] { instId });
+                    r = o as UnityEngine.Object;
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetObjectIdExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            int r = 0;
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                if (null != obj)
+                {
+                    r = obj.GetInstanceID();
+                }
+            }
+            return r;
+        }
+    }
     internal class AssetPath2GUIDExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -577,6 +610,8 @@ namespace StoryScript.DslExpression
     {
         public static void Register(DslCalculator calculator)
         {
+            calculator.Register("getobjectbyid", "getobjectbyid(instance_id) api", new ExpressionFactoryHelper<GetObjectByIdExp>());
+            calculator.Register("getobjectid", "getobjectid(obj) api", new ExpressionFactoryHelper<GetObjectIdExp>());
             calculator.Register("assetpath2guid", "assetpath2guid(asset_path) api", new ExpressionFactoryHelper<AssetPath2GUIDExp>());
             calculator.Register("guid2assetpath", "guid2assetpath(guid) api", new ExpressionFactoryHelper<GUID2AssetPathExp>());
             calculator.Register("getassetpath", "getassetpath(obj) api", new ExpressionFactoryHelper<GetAssetPathExp>());
