@@ -36,8 +36,8 @@ namespace DotnetStoryScript.CommonCommands
             var disp = obj as IObjectDispatch;
             BoxedValueList dispArgs = null;
             ArrayList arglist = null;
-            var methodObj = m_Method.Value;
-            string method = methodObj.IsString ? methodObj.StringVal : null;
+            var bvMethod = m_Method.Value;
+            string method = bvMethod.IsString ? bvMethod.StringVal : null;
             if (null != disp) {
                 dispArgs = instance.NewBoxedValueList();
                 for (int i = 0; i < m_Args.Count; i++) {
@@ -64,7 +64,13 @@ namespace DotnetStoryScript.CommonCommands
                     else {
                         object[] args = arglist.ToArray();
                         IDictionary dict = obj as IDictionary;
-                        if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
+                        if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict && bvDict.TryGetValue(bvMethod, out var val) && val.IsObject && val.ObjectVal is Delegate) {
+                            var d = val.ObjectVal as Delegate;
+                            if (null != d) {
+                                d.DynamicInvoke(args);
+                            }
+                        }
+                        else if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
                             var d = dict[method] as Delegate;
                             if (null != d) {
                                 d.DynamicInvoke(args);
@@ -148,8 +154,8 @@ namespace DotnetStoryScript.CommonCommands
             object obj = m_Object.Value.GetObject();
             var disp = obj as IObjectDispatch;
             BoxedValue argv = BoxedValue.NullObject;
-            var methodObj = m_Method.Value;
-            string method = methodObj.IsString ? methodObj.StringVal : null;
+            var bvMethod = m_Method.Value;
+            string method = bvMethod.IsString ? bvMethod.StringVal : null;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
                 if (null != disp && i == 0)
@@ -170,7 +176,12 @@ namespace DotnetStoryScript.CommonCommands
                     else {
                         IDictionary dict = obj as IDictionary;
                         if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic)) {
-                            dict[method] = args[0];
+                            if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                                bvDict[bvMethod] = BoxedValue.FromObject(args[0]);
+                            }
+                            else {
+                                dict[method] = args[0];
+                            }
                         }
                         else {
                             Type t = obj as Type;
@@ -248,7 +259,7 @@ namespace DotnetStoryScript.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             object obj = m_Object.Value.GetObject();
-            var methodObj = m_Method.Value;
+            var bvMethod = m_Method.Value;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
                 arglist.Add(m_Args[i].Value.GetObject());
@@ -256,8 +267,14 @@ namespace DotnetStoryScript.CommonCommands
             object[] args = arglist.ToArray();
             if (null != obj) {
                 IDictionary dict = obj as IDictionary;
-                var mobj = methodObj.GetObject();
-                if (null != dict && dict.Contains(mobj)) {
+                var mobj = bvMethod.GetObject();
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict && bvDict.TryGetValue(bvMethod, out var val)) {
+                    var d = val.As<Delegate>();
+                    if (null != d) {
+                        d.DynamicInvoke(args);
+                    }
+                }
+                else if (null != dict && dict.Contains(mobj)) {
                     var d = dict[mobj] as Delegate;
                     if (null != d) {
                         d.DynamicInvoke(args);
@@ -265,8 +282,8 @@ namespace DotnetStoryScript.CommonCommands
                 }
                 else {
                     IEnumerable enumer = obj as IEnumerable;
-                    if (null != enumer && methodObj.IsInteger) {
-                        int index = methodObj.GetInt();
+                    if (null != enumer && bvMethod.IsInteger) {
+                        int index = bvMethod.GetInt();
                         var e = enumer.GetEnumerator();
                         for (int i = 0; i <= index; ++i) {
                             e.MoveNext();
@@ -324,7 +341,7 @@ namespace DotnetStoryScript.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             object obj = m_Object.Value.GetObject();
-            var methodObj = m_Method.Value;
+            var bvMethod = m_Method.Value;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
                 arglist.Add(m_Args[i].Value.GetObject());
@@ -332,14 +349,17 @@ namespace DotnetStoryScript.CommonCommands
             object[] args = arglist.ToArray();
             if (null != obj) {
                 IDictionary dict = obj as IDictionary;
-                var mobj = methodObj.GetObject();
-                if (null != dict && dict.Contains(mobj)) {
+                var mobj = bvMethod.GetObject();
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    bvDict[bvMethod] = BoxedValue.FromObject(args[0]);
+                }
+                else if (null != dict) {
                     dict[mobj] = args[0];
                 }
                 else {
                     IList list = obj as IList;
-                    if (null != list && methodObj.IsInteger) {
-                        int index = methodObj.GetInt();
+                    if (null != list && bvMethod.IsInteger) {
+                        int index = bvMethod.GetInt();
                         if (index >= 0 && index < list.Count) {
                             list[index] = args[0];
                         }
