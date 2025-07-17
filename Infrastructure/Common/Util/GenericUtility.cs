@@ -983,7 +983,7 @@ namespace ScriptableFramework
         }
     }
 
-    public struct BoxedValue
+    public struct BoxedValue : IEquatable<BoxedValue>
     {
         public const int c_ObjectType = 0;
         public const int c_StringType = 1;
@@ -2201,6 +2201,120 @@ namespace ScriptableFramework
                     Tuple8Val = other.Tuple8Val;
                     break;
             }
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is BoxedValue other)
+                return Equals(other);
+            return false;
+        }
+
+        public bool Equals(BoxedValue other)
+        {
+            if (Type != other.Type)
+                return false;
+            switch (Type) {
+                case c_ObjectType:
+                    return null != ObjectVal ? ObjectVal == other.ObjectVal : true;
+                case c_StringType:
+                    return null != StringVal ? StringVal == other.StringVal : true;
+                case c_BoolType:
+                    return Union.BoolVal == other.Union.BoolVal;
+                case c_CharType:
+                    return Union.CharVal == other.Union.CharVal;
+                case c_SByteType:
+                    return Union.SByteVal == other.Union.SByteVal;
+                case c_ShortType:
+                    return Union.ShortVal == other.Union.ShortVal;
+                case c_IntType:
+                    return Union.IntVal == other.Union.IntVal;
+                case c_LongType:
+                    return Union.LongVal == other.Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal == other.Union.ByteVal;
+                case c_UShortType:
+                    return Union.UShortVal == other.Union.UShortVal;
+                case c_UIntType:
+                    return Union.UIntVal == other.Union.UIntVal;
+                case c_ULongType:
+                    return Union.ULongVal == other.Union.ULongVal;
+                case c_FloatType:
+                    return Union.FloatVal == other.Union.FloatVal;
+                case c_DoubleType:
+                    return Union.DoubleVal == other.Union.DoubleVal;
+                case c_DecimalType:
+                    return Union.DecimalVal == other.Union.DecimalVal;
+                case c_Tuple1Type:
+                    return Tuple1Val == other.Tuple1Val;
+                case c_Tuple2Type:
+                    return Tuple2Val == other.Tuple2Val;
+                case c_Tuple3Type:
+                    return Tuple3Val == other.Tuple3Val;
+                case c_Tuple4Type:
+                    return Tuple4Val == other.Tuple4Val;
+                case c_Tuple5Type:
+                    return Tuple5Val == other.Tuple5Val;
+                case c_Tuple6Type:
+                    return Tuple6Val == other.Tuple6Val;
+                case c_Tuple7Type:
+                    return Tuple7Val == other.Tuple7Val;
+                case c_Tuple8Type:
+                    return Tuple8Val == other.Tuple8Val;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            switch (Type) {
+                case c_ObjectType:
+                    return null != ObjectVal ? ObjectVal.GetHashCode() : 0;
+                case c_StringType:
+                    return null != StringVal ? StringVal.GetHashCode() : 0;
+                case c_BoolType:
+                    return Union.BoolVal.GetHashCode();
+                case c_CharType:
+                    return Union.CharVal.GetHashCode();
+                case c_SByteType:
+                    return Union.SByteVal.GetHashCode();
+                case c_ShortType:
+                    return Union.ShortVal.GetHashCode();
+                case c_IntType:
+                    return Union.IntVal.GetHashCode();
+                case c_LongType:
+                    return Union.LongVal.GetHashCode();
+                case c_ByteType:
+                    return Union.ByteVal.GetHashCode();
+                case c_UShortType:
+                    return Union.UShortVal.GetHashCode();
+                case c_UIntType:
+                    return Union.UIntVal.GetHashCode();
+                case c_ULongType:
+                    return Union.ULongVal.GetHashCode();
+                case c_FloatType:
+                    return Union.FloatVal.GetHashCode();
+                case c_DoubleType:
+                    return Union.DoubleVal.GetHashCode();
+                case c_DecimalType:
+                    return Union.DecimalVal.GetHashCode();
+                case c_Tuple1Type:
+                    return Tuple1Val.GetHashCode();
+                case c_Tuple2Type:
+                    return Tuple2Val.GetHashCode();
+                case c_Tuple3Type:
+                    return Tuple3Val.GetHashCode();
+                case c_Tuple4Type:
+                    return Tuple4Val.GetHashCode();
+                case c_Tuple5Type:
+                    return Tuple5Val.GetHashCode();
+                case c_Tuple6Type:
+                    return Tuple6Val.GetHashCode();
+                case c_Tuple7Type:
+                    return Tuple7Val.GetHashCode();
+                case c_Tuple8Type:
+                    return Tuple8Val.GetHashCode();
+            }
+            return 0;
         }
         public override string ToString()
         {

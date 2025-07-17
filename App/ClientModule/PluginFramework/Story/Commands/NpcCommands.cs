@@ -68,8 +68,15 @@ namespace ScriptableFramework.Story.Commands
                     string aiLogic = m_AiLogic.Value;
                     List<string> aiParams = new List<string>();
                     IEnumerable aiParamEnumer = m_AiParams.Value;
-                    foreach (string aiParam in aiParamEnumer) {
-                        aiParams.Add(aiParam);
+                    if (aiParamEnumer is List<BoxedValue> bvAiParamEnumer) {
+                        foreach (var aiParam in bvAiParamEnumer) {
+                            aiParams.Add(aiParam.GetString());
+                        }
+                    }
+                    else {
+                        foreach (string aiParam in aiParamEnumer) {
+                            aiParams.Add(aiParam);
+                        }
                     }
                     objId = PluginFramework.Instance.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, tableId, aiLogic, aiParams.ToArray());
                 } else {

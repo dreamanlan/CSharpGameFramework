@@ -240,11 +240,14 @@ namespace DotnetStoryScript.CommonCommands
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
                 object obj = m_Var.Value.GetObject();
-                object key = m_Key.Value.GetObject();
-                object val = m_Value.Value.GetObject();
+                var key = m_Key.Value;
+                var val = m_Value.Value;
                 var dict = obj as IDictionary;
-                if (null != dict && null != key) {
-                    dict.Add(key, val);
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    bvDict.Add(key, val);
+                }
+                else if (null != dict && null != key.GetObject()) {
+                    dict.Add(key.GetObject(), val.GetObject());
                 }
             }
             return false;
@@ -287,11 +290,14 @@ namespace DotnetStoryScript.CommonCommands
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
                 object obj = m_Var.Value.GetObject();
-                object key = m_Key.Value.GetObject();
-                object val = m_Value.Value.GetObject();
+                var key = m_Key.Value;
+                var val = m_Value.Value;
                 var dict = obj as IDictionary;
-                if (null != dict && null != key) {
-                    dict[key] = val;
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    bvDict[key] = val;
+                }
+                else if (null != dict && null != key.GetObject()) {
+                    dict[key.GetObject()] = val.GetObject();
                 }
             }
             return false;
@@ -333,10 +339,13 @@ namespace DotnetStoryScript.CommonCommands
         {
             if (m_Var.HaveValue && m_Key.HaveValue) {
                 object obj = m_Var.Value.GetObject();
-                object key = m_Key.Value.GetObject();
+                var key = m_Key.Value;
                 var dict = obj as IDictionary;
-                if (null != dict && null != key) {
-                    dict.Remove(key);
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    bvDict.Remove(key);
+                }
+                else if (null != dict && null != key.GetObject()) {
+                    dict.Remove(key.GetObject());
                 }
             }
             return false;

@@ -2611,14 +2611,14 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue DoCalc()
         {
             BoxedValue v = 0;
-            List<object> list = new List<object>();
+            List<BoxedValue> list = new List<BoxedValue>();
             for (int ix = 0; ix < m_Elements.Count; ++ix) {
-                object val = m_Elements[ix].Calc().GetObject();
+                var val = m_Elements[ix].Calc();
                 list.Add(val);
             }
-            IEnumerator enumer = list.GetEnumerator();
+            var enumer = list.GetEnumerator();
             while (enumer.MoveNext()) {
-                var val = BoxedValue.FromObject(enumer.Current);
+                var val = enumer.Current;
                 Calculator.SetVariable("$$", val);
                 for (int index = 0; index < m_Expressions.Count; ++index) {
                     v = m_Expressions[index].Calc();
@@ -3712,19 +3712,19 @@ namespace DotnetStoryScript.DslExpression
             if (null != obj && !string.IsNullOrEmpty(method)) {
                 if (method == "orderby" || method == "orderbydesc") {
                     bool desc = method == "orderbydesc";
-                    List<object> results = new List<object>();
-                    IEnumerator enumer = obj.GetEnumerator();
+                    List<BoxedValue> results = new List<BoxedValue>();
+                    var enumer = obj.GetEnumerator();
                     while (enumer.MoveNext()) {
                         var val = BoxedValue.FromObject(enumer.Current);
                         results.Add(val);
                     }
-                    results.Sort((object o1, object o2) => {
-                        Calculator.SetVariable("$$", BoxedValue.FromObject(o1));
+                    results.Sort((BoxedValue o1, BoxedValue o2) => {
+                        Calculator.SetVariable("$$", o1);
                         var r1 = BoxedValue.NullObject;
                         for (int index = 0; index < m_Expressions.Count; ++index) {
                             r1 = m_Expressions[index].Calc();
                         }
-                        Calculator.SetVariable("$$", BoxedValue.FromObject(o2));
+                        Calculator.SetVariable("$$", o2);
                         var r2 = BoxedValue.NullObject;
                         for (int index = 0; index < m_Expressions.Count; ++index) {
                             r2 = m_Expressions[index].Calc();
@@ -3745,7 +3745,7 @@ namespace DotnetStoryScript.DslExpression
                     v = BoxedValue.FromObject(results);
                 }
                 else if (method == "where") {
-                    List<object> results = new List<object>();
+                    List<BoxedValue> results = new List<BoxedValue>();
                     IEnumerator enumer = obj.GetEnumerator();
                     while (enumer.MoveNext()) {
                         var val = BoxedValue.FromObject(enumer.Current);
@@ -3767,7 +3767,7 @@ namespace DotnetStoryScript.DslExpression
                         r = m_Expressions[index].Calc();
                     }
                     long ct = r.GetLong();
-                    List<object> results = new List<object>();
+                    List<BoxedValue> results = new List<BoxedValue>();
                     IEnumerator enumer = obj.GetEnumerator();
                     while (enumer.MoveNext()) {
                         var val = BoxedValue.FromObject(enumer.Current);
@@ -4493,9 +4493,9 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            object[] r = new object[operands.Count];
+            BoxedValue[] r = new BoxedValue[operands.Count];
             for (int i = 0; i < operands.Count; ++i) {
-                r[i] = operands[i].GetObject();
+                r[i] = operands[i];
             }
             return BoxedValue.FromObject(r);
         }
@@ -4509,7 +4509,7 @@ namespace DotnetStoryScript.DslExpression
                 var list = operands[0];
                 IEnumerable obj = list.As<IEnumerable>();
                 if (null != obj) {
-                    ArrayList al = new ArrayList();
+                    List<BoxedValue> al = new List<BoxedValue>();
                     IEnumerator enumer = obj.GetEnumerator();
                     while (enumer.MoveNext()) {
                         var val = BoxedValue.FromObject(enumer.Current);
@@ -4540,11 +4540,11 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue r = BoxedValue.NullObject;
-            ArrayList al = new ArrayList();
+            List<BoxedValue> al = new List<BoxedValue>();
             for (int i = 0; i < operands.Count; ++i) {
-                al.Add(operands[i].GetObject());
+                al.Add(operands[i]);
             }
-            r = al;
+            r = BoxedValue.FromObject(al);
             return r;
         }
     }
@@ -4581,7 +4581,12 @@ namespace DotnetStoryScript.DslExpression
                 var list = operands[0].As<IList>();
                 var index = operands[1].GetInt();
                 var val = operands[2];
-                if (null != list) {
+                if(null!=list && list is List<BoxedValue> bvList) {
+                    if (index >= 0 && index < list.Count) {
+                        bvList[index] = val;
+                    }
+                }
+                else if (null != list) {
                     if (index >= 0 && index < list.Count) {
                         list[index] = val.GetObject();
                     }
@@ -4597,9 +4602,12 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
-                object val = operands[1];
-                if (null != list) {
-                    r = list.IndexOf(val);
+                var val = operands[1];
+                if (null != list && list is List<BoxedValue> bvList) {
+                    r = bvList.IndexOf(val);
+                }
+                else if (null != list) {
+                    r = list.IndexOf(val.GetObject());
                 }
             }
             return r;
@@ -4612,9 +4620,12 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
-                object val = operands[1];
-                if (null != list) {
-                    list.Add(val);
+                var val = operands[1];
+                if (null != list && list is List<BoxedValue> bvList) {
+                    bvList.Add(val);
+                }
+                else if (null != list) {
+                    list.Add(val.GetObject());
                 }
             }
             return r;
@@ -4627,9 +4638,12 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
-                object val = operands[1];
-                if (null != list) {
-                    list.Remove(val);
+                var val = operands[1];
+                if (null != list && list is List<BoxedValue> bvList) {
+                    bvList.Remove(val);
+                }
+                else if (null != list) {
+                    list.Remove(val.GetObject());
                 }
             }
             return r;
@@ -4643,9 +4657,12 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 3) {
                 var list = operands[0].As<IList>();
                 var index = operands[1].GetInt();
-                object val = operands[2].GetObject();
-                if (null != list) {
-                    list.Insert(index, val);
+                var val = operands[2];
+                if (null != list && list is List<BoxedValue> bvList) {
+                    bvList.Insert(index, val);
+                }
+                else if (null != list) {
+                    list.Insert(index, val.GetObject());
                 }
             }
             return r;
@@ -4688,27 +4705,48 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 2) {
                 var enumer = operands[0].As<IEnumerable>();
                 var ct = operands[1].GetInt();
-                if (null != enumer) {
+                if (null != enumer && enumer is List<BoxedValue> bvList) {
+                    var e = bvList.GetEnumerator();
+                    List<List<BoxedValue>> al = new List<List<BoxedValue>>();
+                    List<BoxedValue> arr = new List<BoxedValue>();
+                    int ix = 0;
+                    while (e.MoveNext()) {
+                        if (ix < ct) {
+                            arr.Add(e.Current);
+                            ++ix;
+                        }
+                        if (ix >= ct) {
+                            al.Add(arr);
+                            arr = new List<BoxedValue>();
+                            ix = 0;
+                        }
+                    }
+                    if (arr.Count > 0) {
+                        al.Add(arr);
+                    }
+                    r = BoxedValue.FromObject(al);
+                }
+                else if (null != enumer) {
                     var e = enumer.GetEnumerator();
                     if (null != e) {
-                        ArrayList al = new ArrayList();
-                        ArrayList arr = new ArrayList();
+                        List<List<BoxedValue>> al = new List<List<BoxedValue>>();
+                        List<BoxedValue> arr = new List<BoxedValue>();
                         int ix = 0;
                         while (e.MoveNext()) {
                             if (ix < ct) {
-                                arr.Add(e.Current);
+                                arr.Add(BoxedValue.FromObject(e.Current));
                                 ++ix;
                             }
                             if (ix >= ct) {
                                 al.Add(arr);
-                                arr = new ArrayList();
+                                arr = new List<BoxedValue>();
                                 ix = 0;
                             }
                         }
                         if (arr.Count > 0) {
                             al.Add(arr);
                         }
-                        r = al;
+                        r = BoxedValue.FromObject(al);
                     }
                 }
             }
@@ -4734,10 +4772,10 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue DoCalc()
         {
             BoxedValue r = BoxedValue.NullObject;
-            Hashtable dict = new Hashtable();
+            var dict = new Dictionary<BoxedValue, BoxedValue>();
             for (int i = 0; i < m_Expressions.Count - 1; i += 2) {
-                var key = m_Expressions[i].Calc().GetObject();
-                var val = m_Expressions[i + 1].Calc().GetObject();
+                var key = m_Expressions[i].Calc();
+                var val = m_Expressions[i + 1].Calc();
                 dict.Add(key, val);
             }
             r = BoxedValue.FromObject(dict);
@@ -4766,16 +4804,22 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
-                var index = operands[1].GetObject();
+                var index = operands[1];
                 var defVal = BoxedValue.NullObject;
                 if (operands.Count >= 3) {
                     defVal = operands[2];
                 }
-                if (null != dict && dict.Contains(index)) {
-                    r = BoxedValue.FromObject(dict[index]);
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    r = bvDict.TryGetValue(index, out var val) ? val : defVal;
                 }
                 else {
-                    r = defVal;
+                    var indexObj = index.GetObject();
+                    if (null != dict && dict.Contains(indexObj)) {
+                        r = BoxedValue.FromObject(dict[indexObj]);
+                    }
+                    else {
+                        r = defVal;
+                    }
                 }
             }
             return r;
@@ -4788,10 +4832,17 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var dict = operands[0].As<IDictionary>();
-                var index = operands[1].GetObject();
-                object val = operands[2].GetObject();
-                if (null != dict) {
-                    dict[index] = val;
+                var index = operands[1];
+                var val = operands[2];
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    bvDict[index] = val;
+                }
+                else {
+                    var indexObj = index.GetObject();
+                    var valObj = val.GetObject();
+                    if (null != dict) {
+                        dict[indexObj] = valObj;
+                    }
                 }
             }
             return r;
@@ -4804,10 +4855,17 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var dict = operands[0].As<IDictionary>();
-                object key = operands[1];
-                object val = operands[2];
-                if (null != dict && null != key) {
-                    dict.Add(key, val);
+                var key = operands[1];
+                var val = operands[2];
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    bvDict.Add(key, val);
+                }
+                else {
+                    var keyObj = key.GetObject();
+                    var valObj = val.GetObject();
+                    if (null != dict && null != keyObj) {
+                        dict.Add(keyObj, valObj);
+                    }
                 }
             }
             return r;
@@ -4820,9 +4878,15 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
-                object key = operands[1];
-                if (null != dict && null != key) {
-                    dict.Remove(key);
+                var key = operands[1];
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    bvDict.Remove(key);
+                }
+                else {
+                    var keyObj = key.GetObject();
+                    if (null != dict && null != keyObj) {
+                        dict.Remove(keyObj);
+                    }
                 }
             }
             return r;
@@ -4849,10 +4913,19 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
-                if (null != dict) {
-                    var list = new ArrayList();
-                    list.AddRange(dict.Keys);
-                    r = list;
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    var list = new List<BoxedValue>();
+                    list.AddRange(bvDict.Keys);
+                    r = BoxedValue.FromObject(list);
+                }
+                else {
+                    if (null != dict) {
+                        var list = new List<BoxedValue>();
+                        foreach (var key in dict.Keys) {
+                            list.Add(BoxedValue.FromObject(key));
+                        }
+                        r = BoxedValue.FromObject(list);
+                    }
                 }
             }
             return r;
@@ -4865,10 +4938,19 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
-                if (null != dict) {
-                    var list = new ArrayList();
-                    list.AddRange(dict.Values);
-                    r = list;
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    var list = new List<BoxedValue>();
+                    list.AddRange(bvDict.Values);
+                    r = BoxedValue.FromObject(list);
+                }
+                else {
+                    if (null != dict) {
+                        var list = new List<BoxedValue>();
+                        foreach (var val in dict.Values) {
+                            list.Add(BoxedValue.FromObject(val));
+                        }
+                        r = BoxedValue.FromObject(list);
+                    }
                 }
             }
             return r;
@@ -4900,27 +4982,48 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
                 var ct = operands[1].GetInt();
-                if (null != dict) {
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    var e = bvDict.GetEnumerator();
+                    var al = new List<Dictionary<BoxedValue, BoxedValue>>();
+                    var ht = new Dictionary<BoxedValue, BoxedValue>();
+                    int ix = 0;
+                    while (e.MoveNext()) {
+                        if (ix < ct) {
+                            ht.Add(e.Current.Key, e.Current.Value);
+                            ++ix;
+                        }
+                        if (ix >= ct) {
+                            al.Add(ht);
+                            ht = new Dictionary<BoxedValue, BoxedValue>();
+                            ix = 0;
+                        }
+                    }
+                    if (ht.Count > 0) {
+                        al.Add(ht);
+                    }
+                    r = BoxedValue.FromObject(al);
+                }
+                else if (null != dict) {
                     var e = dict.GetEnumerator();
                     if (null != e) {
-                        ArrayList al = new ArrayList();
-                        Hashtable ht = new Hashtable();
+                        var al = new List<Dictionary<BoxedValue, BoxedValue>>();
+                        var ht = new Dictionary<BoxedValue, BoxedValue>();
                         int ix = 0;
                         while (e.MoveNext()) {
                             if (ix < ct) {
-                                ht.Add(e.Key, e.Value);
+                                ht.Add(BoxedValue.FromObject(e.Key), BoxedValue.FromObject(e.Value));
                                 ++ix;
                             }
                             if (ix >= ct) {
                                 al.Add(ht);
-                                ht = new Hashtable();
+                                ht = new Dictionary<BoxedValue, BoxedValue>();
                                 ix = 0;
                             }
                         }
                         if (ht.Count > 0) {
                             al.Add(ht);
                         }
-                        r = al;
+                        r = BoxedValue.FromObject(al);
                     }
                 }
             }
@@ -4934,13 +5037,13 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var stack = operands[0].As<Stack<object>>();
-                var queue = operands[0].As<Queue<object>>();
+                var stack = operands[0].As<Stack<BoxedValue>>();
+                var queue = operands[0].As<Queue<BoxedValue>>();
                 if (null != stack) {
-                    r = BoxedValue.FromObject(stack.Peek());
+                    r = stack.Peek();
                 }
                 else if (null != queue) {
-                    r = BoxedValue.FromObject(queue.Peek());
+                    r = queue.Peek();
                 }
             }
             return r;
@@ -4952,7 +5055,7 @@ namespace DotnetStoryScript.DslExpression
         {
             int r = 0;
             if (operands.Count >= 1) {
-                var stack = operands[0].As<Stack<object>>();
+                var stack = operands[0].As<Stack<BoxedValue>>();
                 if (null != stack) {
                     r = stack.Count;
                 }
@@ -4965,9 +5068,9 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue r = BoxedValue.NullObject;
-            var stack = new Stack<object>();
+            var stack = new Stack<BoxedValue>();
             for (int i = 0; i < operands.Count; ++i) {
-                stack.Push(operands[i].GetObject());
+                stack.Push(operands[i]);
             }
             r = BoxedValue.FromObject(stack);
             return r;
@@ -4979,7 +5082,7 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
-                var stack = operands[0].As<Stack<object>>();
+                var stack = operands[0].As<Stack<BoxedValue>>();
                 var val = operands[1];
                 if (null != stack) {
                     stack.Push(val);
@@ -4994,9 +5097,9 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var stack = operands[0].As<Stack<object>>();
+                var stack = operands[0].As<Stack<BoxedValue>>();
                 if (null != stack) {
-                    r = BoxedValue.FromObject(stack.Pop());
+                    r = stack.Pop();
                 }
             }
             return r;
@@ -5008,7 +5111,7 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var stack = operands[0].As<Stack<object>>();
+                var stack = operands[0].As<Stack<BoxedValue>>();
                 if (null != stack) {
                     stack.Clear();
                 }
@@ -5022,7 +5125,7 @@ namespace DotnetStoryScript.DslExpression
         {
             int r = 0;
             if (operands.Count >= 1) {
-                var queue = operands[0].As<Queue<object>>();
+                var queue = operands[0].As<Queue<BoxedValue>>();
                 if (null != queue) {
                     r = queue.Count;
                 }
@@ -5035,9 +5138,9 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue r = BoxedValue.NullObject;
-            var queue = new Queue<object>();
+            var queue = new Queue<BoxedValue>();
             for (int i = 0; i < operands.Count; ++i) {
-                queue.Enqueue(operands[i].GetObject());
+                queue.Enqueue(operands[i]);
             }
             r = BoxedValue.FromObject(queue);
             return r;
@@ -5049,7 +5152,7 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
-                var queue = operands[0].As<Queue<object>>();
+                var queue = operands[0].As<Queue<BoxedValue>>();
                 var val = operands[1];
                 if (null != queue) {
                     queue.Enqueue(val);
@@ -5064,9 +5167,9 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var queue = operands[0].As<Queue<object>>();
+                var queue = operands[0].As<Queue<BoxedValue>>();
                 if (null != queue) {
-                    r = BoxedValue.FromObject(queue.Dequeue());
+                    r = queue.Dequeue();
                 }
             }
             return r;
@@ -5078,7 +5181,7 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var queue = operands[0].As<Queue<object>>();
+                var queue = operands[0].As<Queue<BoxedValue>>();
                 if (null != queue) {
                     queue.Clear();
                 }

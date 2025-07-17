@@ -256,7 +256,7 @@ namespace DotnetStoryScript.CommonFunctions
                 string str = m_String.Value;
                 m_HaveValue = true;
                 var json = JsonMapper.ToObject(str);
-                m_Value = BoxedValue.FromObject(ToValue(json, null));
+                m_Value = ToValue(json, BoxedValue.NullObject);
             }
         }
 
@@ -264,37 +264,37 @@ namespace DotnetStoryScript.CommonFunctions
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
-        private static object ToValue(JsonData data, object defVal)
+        private static BoxedValue ToValue(JsonData data, BoxedValue defVal)
         {
             if (null == data) {
                 return defVal;
             }
             if (data.IsObject) {
-                var dict = new Hashtable();
+                var dict = new Dictionary<BoxedValue, BoxedValue>();
                 foreach (var key in data.Keys) {
                     var val = ToValue(data[key], defVal);
                     dict.Add(key, val);
                 }
-                return dict;
+                return BoxedValue.FromObject(dict);
             } else if (data.IsArray) {
-                var list = new ArrayList();
+                var list = new List<BoxedValue>();
                 for (int i = 0; i < data.Count; ++i) {
                     var val = ToValue(data[i], defVal);
                     list.Add(val);
                 }
-                return list;
+                return BoxedValue.FromObject(list);
             } else if (data.IsInt) {
-                return (int)data;
+                return BoxedValue.From((int)data);
             } else if (data.IsLong) {
-                return (int)(long)data;
+                return BoxedValue.From((int)(long)data);
             } else if (data.IsDouble) {
-                return (float)(double)data;
+                return BoxedValue.From((float)(double)data);
             } else if (data.IsBoolean) {
-                return ((bool)data ? 1 : 0);
+                return BoxedValue.From((bool)data ? 1 : 0);
             } else if (data.IsString) {
-                return (string)data;
+                return BoxedValue.FromString((string)data);
             } else if (data.IsObject || data.IsArray) {
-                return data;
+                return BoxedValue.FromObject(data);
             } else {
                 return defVal;
             }
@@ -393,13 +393,11 @@ namespace DotnetStoryScript.CommonFunctions
             }
             if (canCalc) {
                 m_HaveValue = true;
-                var dict = new Hashtable();
+                var dict = new Dictionary<BoxedValue, BoxedValue>();
                 for (int i = 0; i < m_Args.Count; i++) {
                     Pair pair = m_Args[i];
-                    var key = pair.m_Key.Value.ToString();
-                    if (null != key) {
-                        dict.Add(key, pair.m_Value.Value.GetObject());
-                    }
+                    var key = pair.m_Key.Value;
+                    dict.Add(key, pair.m_Value.Value);
                 }
                 m_Value = BoxedValue.FromObject(dict);
             }
@@ -468,13 +466,26 @@ namespace DotnetStoryScript.CommonFunctions
             if (m_Var.HaveValue && m_Key.HaveValue && (m_ParamNum <= 2 || m_DefValue.HaveValue)) {
                 object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
-                object key = m_Key.Value.GetObject();
+                var key = m_Key.Value;
                 BoxedValue defVal = BoxedValue.NullObject;
                 if (m_ParamNum > 2) {
                     defVal = m_DefValue.Value;
                 }
                 m_HaveValue = true;
-                if (null != dict && null != key) {
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    try {
+                        if (bvDict.TryGetValue(key, out var val)) {
+                            m_Value = val;
+                        }
+                        else {
+                            m_Value = defVal;
+                        }
+                    }
+                    catch {
+                        m_Value = defVal;
+                    }
+                }
+                else if (null != dict) {
                     try {
                         if (dict.Contains(key)) {
                             m_Value = BoxedValue.FromObject(dict[key]);
@@ -608,11 +619,19 @@ namespace DotnetStoryScript.CommonFunctions
                 object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
-                if (null != dict) {
-                    ArrayList list = new ArrayList();
-                    list.AddRange(dict.Keys);
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    var list = new List<BoxedValue>();
+                    list.AddRange(bvDict.Keys);
                     m_Value = BoxedValue.FromObject(list);
-                } else {
+                }
+                else if (null != dict) {
+                    var list = new List<BoxedValue>();
+                    foreach (var key in dict.Keys) {
+                        list.Add(BoxedValue.FromObject(key));
+                    }
+                    m_Value = BoxedValue.FromObject(list);
+                }
+                else {
                     m_Value.SetNullObject();
                 }
             }
@@ -672,11 +691,19 @@ namespace DotnetStoryScript.CommonFunctions
                 object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
-                if (null != dict) {
-                    ArrayList list = new ArrayList();
-                    list.AddRange(dict.Values);
+                if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict) {
+                    var list = new List<BoxedValue>();
+                    list.AddRange(bvDict.Values);
                     m_Value = BoxedValue.FromObject(list);
-                } else {
+                }
+                else if (null != dict) {
+                    var list = new List<BoxedValue>();
+                    foreach (var val in dict.Values) {
+                        list.Add(BoxedValue.FromObject(val));
+                    }
+                    m_Value = BoxedValue.FromObject(list);
+                }
+                else {
                     m_Value.SetNullObject();
                 }
             }

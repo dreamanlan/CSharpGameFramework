@@ -557,12 +557,25 @@ namespace DotnetStoryScript.CommonCommands
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
                 int index = m_IndexValue.Value;
-                object val = m_Value.Value.GetObject();
-                int ct = listValue.Count;
-                if (index >= 0 && index < ct) {
-                    listValue[index] = val;
-                } else {
-                    listValue.Add(val);
+                if (listValue is List<BoxedValue> bvList) {
+                    var val = m_Value.Value;
+                    int ct = listValue.Count;
+                    if (index >= 0 && index < ct) {
+                        bvList[index] = val;
+                    }
+                    else {
+                        bvList.Add(val);
+                    }
+                }
+                else {
+                    object val = m_Value.Value.GetObject();
+                    int ct = listValue.Count;
+                    if (index >= 0 && index < ct) {
+                        listValue[index] = val;
+                    }
+                    else {
+                        listValue.Add(val);
+                    }
                 }
             }
             return false;
@@ -602,8 +615,14 @@ namespace DotnetStoryScript.CommonCommands
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
-                object val = m_Value.Value.GetObject();
-                listValue.Add(val);
+                if (listValue is List<BoxedValue> bvList) {
+                    var val = m_Value.Value;
+                    bvList.Add(val);
+                }
+                else {
+                    object val = m_Value.Value.GetObject();
+                    listValue.Add(val);
+                }
             }
             return false;
         }
@@ -640,8 +659,14 @@ namespace DotnetStoryScript.CommonCommands
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
-                object val = m_Value.Value.GetObject();
-                listValue.Remove(val);
+                if (listValue is List<BoxedValue> bvList) {
+                    var val = m_Value.Value;
+                    bvList.Remove(val);
+                }
+                else {
+                    object val = m_Value.Value.GetObject();
+                    listValue.Remove(val);
+                }
             }
             return false;
         }
@@ -681,8 +706,14 @@ namespace DotnetStoryScript.CommonCommands
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
                 int index = m_IndexValue.Value;
-                object val = m_Value.Value.GetObject();
-                listValue.Insert(index, val);
+                if (listValue is List<BoxedValue> bvList) {
+                    var val = m_Value.Value;
+                    bvList.Insert(index, val);
+                }
+                else {
+                    object val = m_Value.Value.GetObject();
+                    listValue.Insert(index, val);
+                }
             }
             return false;
         }

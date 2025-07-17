@@ -1,7 +1,6 @@
 D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\netstandard2.1\LogSys.deps.json
 D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\netstandard2.1\LogSys.dll
 D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\netstandard2.1\LogSys.pdb
-D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.csproj.AssemblyReference.cache
 D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.GeneratedMSBuildEditorConfig.editorconfig
 D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.csproj.CoreCompileInputs.cache
 D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.dll
@@ -14,3 +13,4 @@ F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstanda
 F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.sourcelink.json
 F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.dll
 F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.sourcelink.json

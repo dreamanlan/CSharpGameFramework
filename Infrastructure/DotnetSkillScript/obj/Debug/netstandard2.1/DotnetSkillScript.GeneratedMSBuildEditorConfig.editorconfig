@@ -1,6 +1,6 @@
 is_global = true
 build_property.RootNamespace = DotnetSkillScript
-build_property.ProjectDir = F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\
+build_property.ProjectDir = D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false

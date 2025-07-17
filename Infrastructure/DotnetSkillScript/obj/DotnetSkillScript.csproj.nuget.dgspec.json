@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {}
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {}
   },
   "projects": {
-    "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
         "projectName": "Common",
-        "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\obj\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "netstandard2.1": {
@@ -65,18 +65,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
         "projectName": "DotnetSkillScript",
-        "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\obj\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -97,8 +97,8 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               }
             }
           }
@@ -113,7 +113,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "netstandard2.1": {
@@ -134,7 +134,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
+      "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
       "projectName": "Messenger",
-      "projectPath": "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
+      "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
       "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-      "outputPath": "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\obj\\",
+      "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,7 +51,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "netstandard2.1": {
@@ -72,7 +72,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302\\RuntimeIdentifierGraph.json"
       }
     }
   }

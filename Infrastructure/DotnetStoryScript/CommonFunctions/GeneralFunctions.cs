@@ -1036,9 +1036,9 @@ namespace DotnetStoryScript.CommonFunctions
             }
             if (canCalc) {
                 m_HaveValue = true;
-                var list = new ObjList();
+                var list = new BoxedValueList();
                 for (int i = 0; i < m_List.Count; i++) {
-                    list.Add(m_List[i].Value.GetObject());
+                    list.Add(m_List[i].Value);
                 }
                 m_Value = BoxedValue.FromObject(list.ToArray());
             }
@@ -1091,11 +1091,11 @@ namespace DotnetStoryScript.CommonFunctions
                 object list = m_ListValue.Value.GetObject();
                 IEnumerable obj = list as IEnumerable;
                 if (null != obj) {
-                    ArrayList al = new ArrayList();
+                    BoxedValueList al = new BoxedValueList();
                     IEnumerator enumer = obj.GetEnumerator();
                     while (enumer.MoveNext()) {
                         object val = enumer.Current;
-                        al.Add(val);
+                        al.Add(BoxedValue.FromObject(val));
                     }
                     m_Value = BoxedValue.FromObject(al.ToArray());
                 } else {
@@ -1167,9 +1167,9 @@ namespace DotnetStoryScript.CommonFunctions
             }
             if (canCalc) {
                 m_HaveValue = true;
-                var v = new ObjList();
+                var v = new BoxedValueList();
                 for (int i = 0; i < m_List.Count; i++) {
-                    v.Add(m_List[i].Value.GetObject());
+                    v.Add(m_List[i].Value);
                 }
                 m_Value = BoxedValue.FromObject(v);
             }
@@ -1438,8 +1438,14 @@ namespace DotnetStoryScript.CommonFunctions
             if (m_ListValue.HaveValue && m_IndexOfValue.HaveValue) {
                 m_HaveValue = true;
                 IList listValue = m_ListValue.Value;
-                object val = m_IndexOfValue.Value.GetObject();
-                m_Value = listValue.IndexOf(val);
+                if (listValue is List<BoxedValue> bvList) {
+                    var val = m_IndexOfValue.Value;
+                    m_Value = bvList.IndexOf(val);
+                }
+                else {
+                    object val = m_IndexOfValue.Value.GetObject();
+                    m_Value = listValue.IndexOf(val);
+                }
             }
         }
         private int m_ParamNum = 0;
