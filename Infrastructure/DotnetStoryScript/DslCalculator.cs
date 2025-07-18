@@ -2540,23 +2540,20 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue v = 0;
             var list = m_List.Calc();
             IEnumerable obj = list.As<IEnumerable>();
-            if (null != obj) {
-                IEnumerator enumer = obj.GetEnumerator();
+            if (null != obj && obj is IEnumerable<BoxedValue> bvEnumer) {
+                var enumer = bvEnumer.GetEnumerator();
+                while (enumer.MoveNext()) {
+                    var val = enumer.Current;
+                    if (LoopOnce(val, ref v))
+                        return v;
+                }
+            }
+            else if (null != obj) {
+                var enumer = obj.GetEnumerator();
                 while (enumer.MoveNext()) {
                     var val = BoxedValue.FromObject(enumer.Current);
-                    Calculator.SetVariable("$$", val);
-                    for (int index = 0; index < m_Expressions.Count; ++index) {
-                        v = m_Expressions[index].Calc();
-                        if (Calculator.RunState == RunStateEnum.Continue) {
-                            Calculator.RunState = RunStateEnum.Normal;
-                            break;
-                        }
-                        else if (Calculator.RunState != RunStateEnum.Normal) {
-                            if (Calculator.RunState == RunStateEnum.Break)
-                                Calculator.RunState = RunStateEnum.Normal;
-                            return v;
-                        }
-                    }
+                    if (LoopOnce(val, ref v))
+                        return v;
                 }
             }
             return v;
@@ -2597,6 +2594,24 @@ namespace DotnetStoryScript.DslExpression
                     }
                     IExpression subExp = Calculator.Load(second);
                     m_Expressions.Add(subExp);
+                    return true;
+                }
+            }
+            return false;
+        }
+        private bool LoopOnce(in BoxedValue val, ref BoxedValue ret)
+        {
+            Calculator.SetVariable("$$", val);
+            for (int index = 0; index < m_Expressions.Count; ++index) {
+                BoxedValue v = m_Expressions[index].Calc();
+                if (Calculator.RunState == RunStateEnum.Continue) {
+                    Calculator.RunState = RunStateEnum.Normal;
+                    break;
+                }
+                else if (Calculator.RunState != RunStateEnum.Normal) {
+                    if (Calculator.RunState == RunStateEnum.Break)
+                        Calculator.RunState = RunStateEnum.Normal;
+                    ret = v;
                     return true;
                 }
             }
