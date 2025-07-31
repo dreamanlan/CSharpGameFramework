@@ -503,6 +503,40 @@ namespace StoryScript.DslExpression
 #endif
         }
     }
+    internal class HasCmdArgExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count >= 1) {
+                var name = operands[0].AsString;
+                bool r = HasCommandArg(name, out var val);
+                return BoxedValue.From(Tuple.Create(BoxedValue.FromBool(r), BoxedValue.FromString(val)));
+            }
+            return BoxedValue.From(Tuple.Create(BoxedValue.FromBool(false), BoxedValue.FromString(string.Empty)));
+        }
+        private static bool HasCommandArg(string name, out string val)
+        {
+            val = string.Empty;
+            try {
+                var args = Environment.GetCommandLineArgs();
+                for (var i = 0; i < args.Length; i++) {
+                    if (string.Equals(args[i], name, StringComparison.CurrentCultureIgnoreCase)) {
+                        if (args.Length > i + 1) {
+                            var result = args[i + 1];
+                            if (result.Length > 0 && result[0] != '-') {
+                                val = result;
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e) {
+                LogSystem.Error(e.ToString());
+            }
+            return false;
+        }
+    }
 #if USE_GM_STORY
     internal class StoryVarExp : SimpleExpressionBase
     {
@@ -635,6 +669,7 @@ namespace StoryScript.DslExpression
             calculator.Register("savefilepanelinproject", "savefilepanelinproject(title,def,ext,msg[,path]) api", new ExpressionFactoryHelper<SaveFilePanelInProjectExp>());
             calculator.Register("savefolderpanel", "savefolderpanel(title,dir,def) api", new ExpressionFactoryHelper<SaveFolderPanelExp>());
             calculator.Register("displaydialog", "displaydialog(title,msg,ok[,cancel[,alt]]) api", new ExpressionFactoryHelper<DisplayDialogExp>());
+            calculator.Register("hascmdarg", "hascmdarg(name) api, return (bool,string)", new ExpressionFactoryHelper<HasCmdArgExp>());
 #if USE_GM_STORY
             calculator.Register("storyvar", "storyvar(name,val) or storyvar(name) api", new ExpressionFactoryHelper<StoryVarExp>());
             calculator.Register("storyfunction", "storyfunction(code1,code2,...) api", new ExpressionFactoryHelper<StoryFunctionExp>());
