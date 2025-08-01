@@ -2323,11 +2323,12 @@ namespace DotnetStoryScript.DslExpression
             int funcNum = statementData.GetFunctionNum();
             if (funcNum == 2) {
                 var first = statementData.First.AsFunction;
-                var second = statementData.Second.AsFunction;
+                var secondV = statementData.Second.AsValue;
+                var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
-                var secondId = second.GetId();
+                var secondId = statementData.Second.GetId();
                 if (firstId == "if" && !first.HaveStatement() && !first.HaveExternScript() &&
-                        !string.IsNullOrEmpty(secondId) && !second.HaveStatement() && !second.HaveExternScript()) {
+                        !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     IfExp.Clause item = new IfExp.Clause();
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent cond = first.GetParam(0);
@@ -2337,7 +2338,7 @@ namespace DotnetStoryScript.DslExpression
                         //error
                         Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(second);
+                    IExpression subExp = Calculator.Load(statementData.Second);
                     item.Expressions.Add(subExp);
                     m_Clauses.Add(item);
                     return true;
@@ -2440,11 +2441,12 @@ namespace DotnetStoryScript.DslExpression
             //the handling of the simple syntax 'while(exp) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
-                var second = statementData.Second.AsFunction;
+                var secondV = statementData.Second.AsValue;
+                var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
-                var secondId = second.GetId();
+                var secondId = statementData.Second.GetId();
                 if (firstId == "while" && !first.HaveStatement() && !first.HaveExternScript() &&
-                        !string.IsNullOrEmpty(secondId) && !second.HaveStatement() && !second.HaveExternScript()) {
+                        !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent cond = first.GetParam(0);
                         m_Condition = Calculator.Load(cond);
@@ -2453,7 +2455,7 @@ namespace DotnetStoryScript.DslExpression
                         //error
                         Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(second);
+                    IExpression subExp = Calculator.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     return true;
                 }
@@ -2509,11 +2511,12 @@ namespace DotnetStoryScript.DslExpression
             //the handling of the simple syntax 'loop(exp) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
-                var second = statementData.Second.AsFunction;
+                var secondV = statementData.Second.AsValue;
+                var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
-                var secondId = second.GetId();
+                var secondId = statementData.Second.GetId();
                 if (firstId == "loop" && !first.HaveStatement() && !first.HaveExternScript() &&
-                        !string.IsNullOrEmpty(secondId) && !second.HaveStatement() && !second.HaveExternScript()) {
+                        !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent exp = first.GetParam(0);
                         m_Count = Calculator.Load(exp);
@@ -2522,7 +2525,7 @@ namespace DotnetStoryScript.DslExpression
                         //error
                         Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(second);
+                    IExpression subExp = Calculator.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     return true;
                 }
@@ -2579,11 +2582,12 @@ namespace DotnetStoryScript.DslExpression
             //the handling of the simple syntax 'looplist(exp) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
-                var second = statementData.Second.AsFunction;
+                var secondV = statementData.Second.AsValue;
+                var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
-                var secondId = second.GetId();
+                var secondId = statementData.Second.GetId();
                 if (firstId == "looplist" && !first.HaveStatement() && !first.HaveExternScript() &&
-                        !string.IsNullOrEmpty(secondId) && !second.HaveStatement() && !second.HaveExternScript()) {
+                        !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent exp = first.GetParam(0);
                         m_List = Calculator.Load(exp);
@@ -2592,7 +2596,7 @@ namespace DotnetStoryScript.DslExpression
                         //error
                         Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(second);
+                    IExpression subExp = Calculator.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     return true;
                 }
@@ -2674,11 +2678,12 @@ namespace DotnetStoryScript.DslExpression
             //the handling of the simple syntax 'foreach(exp1,exp2,...) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
-                var second = statementData.Second.AsFunction;
+                var secondV = statementData.Second.AsValue;
+                var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
-                var secondId = second.GetId();
+                var secondId = statementData.Second.GetId();
                 if (firstId == "foreach" && !first.HaveStatement() && !first.HaveExternScript() &&
-                        !string.IsNullOrEmpty(secondId) && !second.HaveStatement() && !second.HaveExternScript()) {
+                        !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     int num = first.GetParamNum();
                     if (num > 0) {
                         for (int ix = 0; ix < num; ++ix) {
@@ -2690,7 +2695,7 @@ namespace DotnetStoryScript.DslExpression
                         //error
                         Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(second);
+                    IExpression subExp = Calculator.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     return true;
                 }
