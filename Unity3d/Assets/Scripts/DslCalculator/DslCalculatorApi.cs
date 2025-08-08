@@ -537,6 +537,17 @@ namespace StoryScript.DslExpression
             return false;
         }
     }
+    internal class StrLenExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count >= 1) {
+                string str = operands[0].GetString();
+                return string.IsNullOrEmpty(str) ? 0 : str.Length;
+            }
+            return 0;
+        }
+    }
 #if USE_GM_STORY
     internal class StoryVarExp : SimpleExpressionBase
     {
@@ -670,6 +681,7 @@ namespace StoryScript.DslExpression
             calculator.Register("savefolderpanel", "savefolderpanel(title,dir,def) api", new ExpressionFactoryHelper<SaveFolderPanelExp>());
             calculator.Register("displaydialog", "displaydialog(title,msg,ok[,cancel[,alt]]) api", new ExpressionFactoryHelper<DisplayDialogExp>());
             calculator.Register("hascmdarg", "hascmdarg(name) api, return (bool,string)", new ExpressionFactoryHelper<HasCmdArgExp>());
+            calculator.Register("strlen", "strlen(str) api", new ExpressionFactoryHelper<StrLenExp>());
 #if USE_GM_STORY
             calculator.Register("storyvar", "storyvar(name,val) or storyvar(name) api", new ExpressionFactoryHelper<StoryVarExp>());
             calculator.Register("storyfunction", "storyfunction(code1,code2,...) api", new ExpressionFactoryHelper<StoryFunctionExp>());
