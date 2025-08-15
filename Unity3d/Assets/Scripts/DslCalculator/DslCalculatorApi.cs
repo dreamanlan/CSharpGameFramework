@@ -186,7 +186,12 @@ namespace StoryScript.DslExpression
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
                 if (null != path) {
-                    r = BoxedValue.FromObject(AssetDatabase.LoadMainAssetAtPath(path));
+                    try {
+                        r = BoxedValue.FromObject(AssetDatabase.LoadMainAssetAtPath(path));
+                    }
+                    catch(Exception e) {
+                        LogSystem.Error("LoadAsset {0} failed: {1}", path, e.Message);
+                    }
                 }
             }
 #endif
@@ -200,7 +205,18 @@ namespace StoryScript.DslExpression
             if (operands.Count >= 1) {
                 var obj = operands[0].As<UnityEngine.Object>();
                 if (null != obj) {
-                    Resources.UnloadAsset(obj);
+                    var t = obj.GetType();
+                    if (typeof(GameObject).IsAssignableFrom(t) || typeof(Component).IsAssignableFrom(t) || typeof(AssetBundle).IsAssignableFrom(t) || typeof(ScriptableObject).IsAssignableFrom(t)) {
+#if UNITY_EDITOR
+                        if (!PrefabUtility.IsPartOfPrefabAsset(obj)) {
+                            StoryScriptUtility.DestroyObject(obj);
+                            //EditorUtility.UnloadUnusedAssetsImmediate();
+                        }
+#endif
+                    }
+                    else {
+                        Resources.UnloadAsset(obj);
+                    }
                 }
             }
             return BoxedValue.NullObject;
