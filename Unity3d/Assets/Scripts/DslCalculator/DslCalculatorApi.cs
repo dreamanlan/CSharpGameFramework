@@ -186,12 +186,7 @@ namespace StoryScript.DslExpression
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
                 if (null != path) {
-                    try {
-                        r = BoxedValue.FromObject(AssetDatabase.LoadMainAssetAtPath(path));
-                    }
-                    catch(Exception e) {
-                        LogSystem.Error("LoadAsset {0} failed: {1}", path, e.Message);
-                    }
+                    r = BoxedValue.FromObject(AssetDatabase.LoadMainAssetAtPath(path));
                 }
             }
 #endif
