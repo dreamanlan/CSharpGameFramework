@@ -204,7 +204,7 @@ namespace StoryScript.DslExpression
                     if (typeof(GameObject).IsAssignableFrom(t) || typeof(Component).IsAssignableFrom(t) || typeof(AssetBundle).IsAssignableFrom(t) || typeof(ScriptableObject).IsAssignableFrom(t)) {
 #if UNITY_EDITOR
                         if (!PrefabUtility.IsPartOfPrefabAsset(obj)) {
-                            StoryScriptUtility.DestroyObject(obj);
+                            DestroyObject(obj);
                             //EditorUtility.UnloadUnusedAssetsImmediate();
                         }
 #endif
@@ -215,6 +215,19 @@ namespace StoryScript.DslExpression
                 }
             }
             return BoxedValue.NullObject;
+        }
+        private static void DestroyObject(UnityEngine.Object obj)
+        {
+            if (obj != null) {
+#if UNITY_EDITOR
+                if (Application.isPlaying && !UnityEditor.EditorApplication.isPaused)
+                    UnityEngine.Object.Destroy(obj);
+                else
+                    UnityEngine.Object.DestroyImmediate(obj, false);
+#else
+                UnityEngine.Object.DestroyImmediate(obj);
+#endif
+            }
         }
     }
     internal class GetPrefabTypeExp : SimpleExpressionBase
