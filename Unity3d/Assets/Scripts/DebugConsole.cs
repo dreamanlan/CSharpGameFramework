@@ -244,7 +244,7 @@ public class DebugConsole : MonoBehaviour
         {
             var list = new List<string>();
             foreach (var msg in m_History) {
-                if (msg.StartsWith(filter)) {
+                if (msg.IndexOf(filter, StringComparison.OrdinalIgnoreCase) >= 0) {
                     list.Add(msg);
                 }
             }
@@ -400,7 +400,7 @@ public class DebugConsole : MonoBehaviour
 
         if (GUI.GetNameOfFocusedControl() == ENTRYFIELD)
         {
-            if (evt.isKey && evt.type == EventType.KeyUp)
+            if (evt.isKey && (evt.type == EventType.KeyUp || c_is_osx_ios && evt.type == EventType.KeyDown))
             {
                 if (evt.keyCode == KeyCode.Return)
                 {
@@ -435,22 +435,22 @@ public class DebugConsole : MonoBehaviour
         // Create a custom GUI skin
         GUISkin customSkin = GUI.skin;
 
-        customSkin.label.fontSize = 20;
-        customSkin.textField.fontSize = 20;
-        customSkin.textArea.fontSize = 20;
+        customSkin.label.fontSize = 24;
+        customSkin.textField.fontSize = 24;
+        customSkin.textArea.fontSize = 24;
         customSkin.textField.fixedHeight = 30;
 
         // Set button size
         customSkin.button.fixedHeight = 30;
-        customSkin.button.fontSize = 20;
+        customSkin.button.fontSize = 24;
 
         // Set the width of the scroll bar
-        customSkin.verticalScrollbar.fixedWidth = 20;
-        customSkin.horizontalScrollbar.fixedHeight = 20;
+        customSkin.verticalScrollbar.fixedWidth = 30;
+        customSkin.horizontalScrollbar.fixedHeight = 30;
 
         // Set the size of the scroll bar slider
-        customSkin.verticalScrollbarThumb.fixedWidth = 20;
-        customSkin.horizontalScrollbarThumb.fixedHeight = 20;
+        customSkin.verticalScrollbarThumb.fixedWidth = 30;
+        customSkin.horizontalScrollbarThumb.fixedHeight = 30;
 
         // Apply a custom skin
         GUI.skin = customSkin;
@@ -468,9 +468,13 @@ public class DebugConsole : MonoBehaviour
             GUI.matrix = GUI.matrix * Matrix4x4.Scale(guiScale);
         }
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR || MOBILE
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR || UNITY_ANDROID
         // Toggle key shows the console
         if (evt.keyCode == ToggleKey && evt.type == EventType.KeyUp)
+            m_IsOpen = !m_IsOpen;
+#elif UNITY_STANDALONE_OSX || UNITY_IOS
+        // Toggle key shows the console
+        if (evt.keyCode == ToggleKey && evt.type == EventType.KeyDown)
             m_IsOpen = !m_IsOpen;
 #endif
 #if MOBILE
@@ -548,20 +552,20 @@ public class DebugConsole : MonoBehaviour
             m_WindowStyle = new GUIStyle(GUI.skin.window);
             m_WindowOnStyle = new GUIStyle(GUI.skin.window);
             m_WindowOnStyle.normal.background = GUI.skin.window.onNormal.background;
-            m_WindowStyle.fontSize = 20;
-            m_WindowOnStyle.fontSize = 20;
+            m_WindowStyle.fontSize = 24;
+            m_WindowOnStyle.fontSize = 24;
         }
         if (m_LabelStyle == null) {
             m_LabelStyle = new GUIStyle(GUI.skin.label);
-            m_LabelStyle.fontSize = 20;
+            m_LabelStyle.fontSize = 24;
         }
         if (m_TextareaStyle == null) {
             m_TextareaStyle = new GUIStyle(GUI.skin.textArea);
-            m_TextareaStyle.fontSize = 20;
+            m_TextareaStyle.fontSize = 24;
         }
         if (m_TextfieldStyle == null) {
             m_TextfieldStyle = new GUIStyle(GUI.skin.textField);
-            m_TextfieldStyle.fontSize = 20;
+            m_TextfieldStyle.fontSize = 24;
         }
         if (!m_IsOpen) {
             return;
@@ -592,7 +596,7 @@ public class DebugConsole : MonoBehaviour
 #endif
 
         if (GUI.GetNameOfFocusedControl() == ENTRYFIELD) {
-            if (evt.isKey && evt.type == EventType.KeyUp) {
+            if (evt.isKey && (evt.type == EventType.KeyUp || c_is_osx_ios && evt.type == EventType.KeyDown)) {
                 if (evt.keyCode == KeyCode.Return) {
                     EvalInputString(m_InputText);
                     m_InputText = string.Empty;
@@ -1197,5 +1201,10 @@ public class DebugConsole : MonoBehaviour
     private const string VERSION = "3.0";
     private const string ENTRYFIELD = "DebugConsoleEntryField";
 
+#if UNITY_STANDALONE_OSX || UNITY_IOS || UNITY_EDITOR_OSX
+    private const bool c_is_osx_ios = true;
+#else
+    private const bool c_is_osx_ios = false;
+#endif
     #endregion
 }
