@@ -264,6 +264,29 @@ namespace DotnetStoryScript
                                 }
                                 return CreateFunction(newCall);
                             }
+                            else if (callData.GetId() == "`") {//backtick
+                                int paramNum = callData.GetParamNum();
+                                if (paramNum == 2) {
+                                    Dsl.ISyntaxComponent param0 = callData.GetParam(0);
+                                    Dsl.ISyntaxComponent param1 = callData.GetParam(1);
+                                    if (param0 is Dsl.ValueData vd) {
+                                        if (vd.GetId() == "return") {
+                                            Dsl.FunctionData newCall = new Dsl.FunctionData();
+                                            newCall.Name = new Dsl.ValueData("return", Dsl.ValueData.ID_TOKEN);
+                                            newCall.SetParenthesesParamClass();
+                                            newCall.Params.Add(param1);
+                                            return CreateFunction(newCall);
+                                        }
+                                    }
+                                    else if (param0 is Dsl.FunctionData fd) {
+                                        Dsl.FunctionData newCall = new Dsl.FunctionData();
+                                        newCall.LowerOrderFunction = fd;
+                                        newCall.SetStatementParamClass();
+                                        newCall.Params.Add(param1);
+                                        return CreateFunction(newCall);
+                                    }
+                                }
+                            }
                         }
                         IStoryFunction ret = null;
                         string id = param.GetId();

@@ -26,22 +26,34 @@
       },
       "Common/1.0.0": {
         "runtime": {
-          "Common.dll": {}
+          "Common.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "DataProtoBuf/1.0.0": {
         "runtime": {
-          "DataProtoBuf.dll": {}
+          "DataProtoBuf.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "LogSys/1.0.0": {
         "runtime": {
-          "LogSys.dll": {}
+          "LogSys.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Messenger/1.0.0": {
         "runtime": {
-          "Messenger.dll": {}
+          "Messenger.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "ServerCommon/1.0.0": {
@@ -49,12 +61,18 @@
           "Common": "1.0.0"
         },
         "runtime": {
-          "ServerCommon.dll": {}
+          "ServerCommon.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
         }
       },
       "ServerProtoBuf/1.0.0": {
         "runtime": {
-          "ServerProtoBuf.dll": {}
+          "ServerProtoBuf.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "CSharpCenterClient/1.0.0.0": {

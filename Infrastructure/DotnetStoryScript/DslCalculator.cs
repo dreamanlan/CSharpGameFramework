@@ -7565,6 +7565,7 @@ namespace DotnetStoryScript.DslExpression
         public void LoadDsl(string dslFile)
         {
             Dsl.DslFile file = new Dsl.DslFile();
+            ScriptableDslHelper.ForDslCalculator.SetCallbacks(file);
             string path = dslFile;
             if (file.Load(path, OnLog)) {
                 foreach (Dsl.ISyntaxComponent info in file.DslInfos) {
@@ -7931,7 +7932,30 @@ namespace DotnetStoryScript.DslExpression
                         else {
                             int paramClass = callData.GetParamClass();
                             string op = callData.GetId();
-                            if (op == "=") {//assignment
+                            if (op == "`") {//backtick
+                                int paramNum = callData.GetParamNum();
+                                if (paramNum == 2) {
+                                    Dsl.ISyntaxComponent param0 = callData.GetParam(0);
+                                    Dsl.ISyntaxComponent param1 = callData.GetParam(1);
+                                    if (param0 is Dsl.ValueData vd) {
+                                        if (vd.GetId() == "return") {
+                                            Dsl.FunctionData newCall = new Dsl.FunctionData();
+                                            newCall.Name = new Dsl.ValueData("return", Dsl.ValueData.ID_TOKEN);
+                                            newCall.SetParenthesesParamClass();
+                                            newCall.Params.Add(param1);
+                                            return Load(newCall);
+                                        }
+                                    }
+                                    else if(param0 is Dsl.FunctionData fd) {
+                                        Dsl.FunctionData newCall = new Dsl.FunctionData();
+                                        newCall.LowerOrderFunction = fd;
+                                        newCall.SetStatementParamClass();
+                                        newCall.Params.Add(param1);
+                                        return Load(newCall);
+                                    }
+                                }
+                            }
+                            else if (op == "=") {//assignment
                                 Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
                                 if (null != innerCall) {
                                     int innerParamClass = innerCall.GetParamClass();

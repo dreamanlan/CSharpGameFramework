@@ -11,6 +11,7 @@ namespace DotnetStoryScript
         {
             if (!string.IsNullOrEmpty(file)) {
                 Dsl.DslFile dataFile = new Dsl.DslFile();
+                ScriptableDslHelper.ForStoryInstance.SetCallbacks(dataFile);
                 var bytes = new byte[Dsl.DslFile.c_BinaryIdentity.Length];
                 using (var fs = File.OpenRead(file)) {
                     fs.Read(bytes, 0, bytes.Length);
@@ -55,6 +56,7 @@ namespace DotnetStoryScript
             if (Dsl.DslFile.IsBinaryDsl(bytes, 0)) {
                 try {
                     Dsl.DslFile dataFile = new Dsl.DslFile();
+                    ScriptableDslHelper.ForStoryInstance.SetCallbacks(dataFile);
                     dataFile.LoadBinaryCode(bytes, StoryConfigManager.ReuseKeyBuffer, StoryConfigManager.ReuseIdBuffer);
                     return dataFile;
                 }
@@ -70,6 +72,7 @@ namespace DotnetStoryScript
                 string text = Converter.FileContent2Utf8String(bytes);
                 try {
                     Dsl.DslFile dataFile = new Dsl.DslFile();
+                    ScriptableDslHelper.ForStoryInstance.SetCallbacks(dataFile);
                     if (dataFile.LoadFromString(text, LogSystem.Log)) {
                         return dataFile;
                     }

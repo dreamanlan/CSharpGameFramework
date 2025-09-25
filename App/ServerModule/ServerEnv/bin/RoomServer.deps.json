@@ -32,12 +32,18 @@
       },
       "ClientProtoBuf/1.0.0": {
         "runtime": {
-          "ClientProtoBuf.dll": {}
+          "ClientProtoBuf.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Common/1.0.0": {
         "runtime": {
-          "Common.dll": {}
+          "Common.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "DotnetSkillScript/1.0.0": {
@@ -45,7 +51,10 @@
           "Common": "1.0.0"
         },
         "runtime": {
-          "DotnetSkillScript.dll": {}
+          "DotnetSkillScript.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "DotnetStoryScript/1.0.0": {
@@ -53,7 +62,10 @@
           "Common": "1.0.0"
         },
         "runtime": {
-          "DotnetStoryScript.dll": {}
+          "DotnetStoryScript.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "GameObjects/1.0.0": {
@@ -63,17 +75,26 @@
           "DotnetStoryScript": "1.0.0"
         },
         "runtime": {
-          "GameObjects.dll": {}
+          "GameObjects.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
         }
       },
       "LogSys/1.0.0": {
         "runtime": {
-          "LogSys.dll": {}
+          "LogSys.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "Messenger/1.0.0": {
         "runtime": {
-          "Messenger.dll": {}
+          "Messenger.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "SceneLogic/1.0.0": {
@@ -84,7 +105,10 @@
           "GameObjects": "1.0.0"
         },
         "runtime": {
-          "SceneLogic.dll": {}
+          "SceneLogic.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "ServerCommon/1.0.0": {
@@ -92,12 +116,18 @@
           "Common": "1.0.0"
         },
         "runtime": {
-          "ServerCommon.dll": {}
+          "ServerCommon.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
         }
       },
       "ServerProtoBuf/1.0.0": {
         "runtime": {
-          "ServerProtoBuf.dll": {}
+          "ServerProtoBuf.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
       "CSharpCenterClient/1.0.0.0": {
