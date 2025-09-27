@@ -6509,8 +6509,8 @@ namespace DotnetStoryScript.DslExpression
                             else if (type == "windowstyle") {
                                 cmd.m_WindowStyle = exp;
                             }
-                            else if (type == "newwindow") {
-                                cmd.m_NewWindow = exp;
+                            else if (type == "createwindow") {
+                                cmd.m_CreateWindow = exp;
                             }
                             else if (type == "errordialog") {
                                 cmd.m_ErrorDialog = exp;
@@ -6629,8 +6629,8 @@ namespace DotnetStoryScript.DslExpression
                     option.WindowStyle = style;
                 }
             }
-            if (null != cfg.m_NewWindow) {
-                option.NewWindow = cfg.m_NewWindow.Calc().GetBool();
+            if (null != cfg.m_CreateWindow) {
+                option.CreateWindow = cfg.m_CreateWindow.Calc().GetBool();
             }
             if (null != cfg.m_ErrorDialog) {
                 option.ErrorDialog = cfg.m_ErrorDialog.Calc().GetBool();
@@ -6813,8 +6813,8 @@ namespace DotnetStoryScript.DslExpression
                         option.WindowStyle = style;
                     }
                 }
-                if (null != cfg.m_NewWindow) {
-                    option.NewWindow = cfg.m_NewWindow.Calc().GetBool();
+                if (null != cfg.m_CreateWindow) {
+                    option.CreateWindow = cfg.m_CreateWindow.Calc().GetBool();
                 }
                 if (null != cfg.m_ErrorDialog) {
                     option.ErrorDialog = cfg.m_ErrorDialog.Calc().GetBool();
@@ -6984,7 +6984,7 @@ namespace DotnetStoryScript.DslExpression
             internal IExpression m_PasswordInClearText = null;
             internal IExpression m_LoadUserProfile = null;
             internal IExpression m_WindowStyle = null;
-            internal IExpression m_NewWindow = null;
+            internal IExpression m_CreateWindow = null;
             internal IExpression m_ErrorDialog = null;
             internal IExpression m_WorkingDirectory = null;
             internal IExpression m_Encoding = null;
@@ -8408,7 +8408,7 @@ namespace DotnetStoryScript.DslExpression
                     psi.LoadUserProfile = option.LoadUserProfile;
                 }
                 psi.WindowStyle = option.WindowStyle;
-                psi.CreateNoWindow = !option.NewWindow;
+                psi.CreateNoWindow = !option.CreateWindow;
                 psi.ErrorDialog = option.ErrorDialog;
                 psi.WorkingDirectory = option.WorkingDirectory;
 
@@ -8555,7 +8555,7 @@ namespace DotnetStoryScript.DslExpression
             internal string PasswordInClearText = null;
             internal bool LoadUserProfile = false;
             internal System.Diagnostics.ProcessWindowStyle WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-            internal bool NewWindow = false;
+            internal bool CreateWindow = false;
             internal bool ErrorDialog = false;
             internal string WorkingDirectory = Environment.CurrentDirectory;
         }
