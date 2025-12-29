@@ -7218,16 +7218,16 @@ namespace DotnetStoryScript.DslExpression
             public Dictionary<string, int> LocalVarIndexes = new Dictionary<string, int>();
             public List<IExpression> Codes = new List<IExpression>();
 
-            public void AddArgNameIndex(string argName)
+            public void AddParamNameIndex(string paramName)
             {
                 int ix = LocalVarIndexes.Count;
-                LocalVarIndexes.Add(argName, -1 - ix);
+                LocalVarIndexes.Add(paramName, -1 - ix);
             }
-            public void BuildArgNameIndexes(IList<string> argNames)
+            public void BuildParamNameIndexes(IList<string> paramNames)
             {
-                if (null != argNames) {
-                    for (int ix = 0; ix < argNames.Count; ++ix) {
-                        AddArgNameIndex(argNames[ix]);
+                if (null != paramNames) {
+                    for (int ix = 0; ix < paramNames.Count; ++ix) {
+                        AddParamNameIndex(paramNames[ix]);
                     }
                 }
             }
@@ -7591,12 +7591,12 @@ namespace DotnetStoryScript.DslExpression
                 if (null != statement && statement.GetFunctionNum() == 2) {
                     id = statement.First.AsFunction.GetParamId(0);
                     func = statement.Second.AsFunction;
-                    if (func.GetId() == "args" && func.IsHighOrder) {
+                    if ((func.GetId() == "params" || func.GetId() == "args") && func.IsHighOrder) {
                         if (func.LowerOrderFunction.GetParamNum() > 0) {
                             funcInfo = new FuncInfo();
                             foreach (var p in func.LowerOrderFunction.Params) {
                                 string argName = p.GetId();
-                                funcInfo.AddArgNameIndex(argName);
+                                funcInfo.AddParamNameIndex(argName);
                             }
                         }
                     }
@@ -7622,12 +7622,12 @@ namespace DotnetStoryScript.DslExpression
         {
             LoadDsl(func, null, dslFunc);
         }
-        public void LoadDsl(string func, IList<string> argNames, Dsl.FunctionData dslFunc)
+        public void LoadDsl(string func, IList<string> paramNames, Dsl.FunctionData dslFunc)
         {
             FuncInfo funcInfo = null;
-            if (null != argNames && argNames.Count > 0) {
+            if (null != paramNames && paramNames.Count > 0) {
                 funcInfo = new FuncInfo();
-                funcInfo.BuildArgNameIndexes(argNames);
+                funcInfo.BuildParamNameIndexes(paramNames);
             }
             if (null == funcInfo)
                 funcInfo = new FuncInfo();

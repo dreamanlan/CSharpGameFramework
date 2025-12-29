@@ -169,8 +169,8 @@ namespace DotnetStoryScript
                 { "loopd", new HashSet<string> { } },
                 { "looplist", new HashSet<string> { } },
                 { "struct", new HashSet<string> { } },
-                { "script", new HashSet<string> { "args" } },
-                { "story", new HashSet<string> { "args" } }
+                { "script", new HashSet<string> { "params", "args" } },
+                { "story", new HashSet<string> { "params", "args" } }
             };
         private HashSet<string> m_CompoundStatements = new HashSet<string> {
                 "if",
@@ -202,10 +202,10 @@ namespace DotnetStoryScript
                     s_ForStoryInstance = new ScriptableDslHelper();
                     var obj = s_ForStoryInstance;
                     obj.FirstLastKeyOfCompoundStatements.Add("local", "local");
-                    obj.SuccessorsOfCompoundStatements.Add("command", new HashSet<string> { "args", "opts", "doc", "body" });
-                    obj.SuccessorsOfCompoundStatements.Add("function", new HashSet<string> { "args", "ret", "opts", "doc", "body" });
-                    obj.SuccessorsOfCompoundStatements.Add("onmessage", new HashSet<string> { "args", "comment", "comments", "body" });
-                    obj.SuccessorsOfCompoundStatements.Add("onnamespacedmessage ", new HashSet<string> { "args", "comment", "comments", "body" });
+                    obj.SuccessorsOfCompoundStatements.Add("command", new HashSet<string> { "params", "args", "opts", "doc", "body" });
+                    obj.SuccessorsOfCompoundStatements.Add("function", new HashSet<string> { "params", "args", "ret", "opts", "doc", "body" });
+                    obj.SuccessorsOfCompoundStatements.Add("onmessage", new HashSet<string> { "params", "args", "comment", "comments", "body" });
+                    obj.SuccessorsOfCompoundStatements.Add("onnamespacedmessage ", new HashSet<string> { "params", "args", "comment", "comments", "body" });
                     obj.CompoundStatements.Add("command");
                     obj.CompoundStatements.Add("function");
                     obj.CompoundStatements.Add("onmessage");

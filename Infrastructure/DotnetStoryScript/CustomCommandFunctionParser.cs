@@ -145,7 +145,7 @@ namespace DotnetStoryScript
                             if (funcData.IsHighOrder)
                                 cd = funcData.LowerOrderFunction;
                             var fid = funcData.GetId();
-                            if (fid == "args") {
+                            if (fid == "params" || fid == "args") {
                                 for (int ix = 0; ix < cd.GetParamNum(); ++ix) {
                                     cmd.ArgNames.Add(cd.GetParamId(ix));
                                 }
@@ -198,7 +198,7 @@ namespace DotnetStoryScript
                                 cd = funcData.LowerOrderFunction;
                             }
                             var fid = funcData.GetId();
-                            if (fid == "args") {
+                            if (fid == "params" || fid == "args") {
                                 for (int ix = 0; ix < cd.GetParamNum(); ++ix) {
                                     val.ArgNames.Add(cd.GetParamId(ix));
                                 }

@@ -343,7 +343,7 @@ namespace DotnetStoryScript
             }
             handler.m_StoryId = m_StoryId;
             handler.m_MessageId = m_MessageId;
-            handler.m_ArgumentNames = m_ArgumentNames;
+            handler.m_ParamNames = m_ParamNames;
             handler.m_Comments = m_Comments;
             return handler;
         }
@@ -382,7 +382,7 @@ namespace DotnetStoryScript
             for (int ix = 1; ix < messageHandlerData.GetFunctionNum(); ++ix) {
                 var funcData = messageHandlerData.Functions[ix].AsFunction;
                 var id = funcData.GetId();
-                if (id == "args") {
+                if (id == "params" || id == "args") {
                     var callData = funcData;
                     if (funcData.IsHighOrder) {
                         callData = funcData.LowerOrderFunction;
@@ -390,9 +390,9 @@ namespace DotnetStoryScript
                     if (null != callData && callData.HaveParam()) {
                         int paramNum = callData.GetParamNum();
                         if (paramNum > 0) {
-                            m_ArgumentNames = new string[paramNum];
+                            m_ParamNames = new string[paramNum];
                             for (int i = 0; i < paramNum; ++i) {
-                                m_ArgumentNames[i] = callData.GetParamId(i);
+                                m_ParamNames[i] = callData.GetParamId(i);
                             }
                         }
                     }
@@ -496,12 +496,12 @@ namespace DotnetStoryScript
             instance.StackVariables = StackVariables;
             m_IsTriggered = true;
             m_Arguments = args;
-            if (null != m_ArgumentNames) {
-                for (int i = 0; i < m_ArgumentNames.Length; ++i) {
+            if (null != m_ParamNames) {
+                for (int i = 0; i < m_ParamNames.Length; ++i) {
                     if (i < args.Count)
-                        instance.SetVariable(m_ArgumentNames[i], args[i]);
+                        instance.SetVariable(m_ParamNames[i], args[i]);
                     else
-                        instance.SetVariable(m_ArgumentNames[i], BoxedValue.NullObject);
+                        instance.SetVariable(m_ParamNames[i], BoxedValue.NullObject);
                 }
             }
             m_Runtime.Iterator = BoxedValue.From(args.Count);
@@ -525,7 +525,7 @@ namespace DotnetStoryScript
         private bool m_IsInTick = false;
         private StoryLocalInfo m_LocalInfo = new StoryLocalInfo();
         private StoryRuntime m_Runtime = new StoryRuntime();
-        private string[] m_ArgumentNames = null;
+        private string[] m_ParamNames = null;
         private BoxedValueList m_Arguments = null;
         private StoryLocalInfoStack m_LocalInfoStack = new StoryLocalInfoStack();
         private StoryRuntimeStack m_RuntimeStack = new StoryRuntimeStack();
