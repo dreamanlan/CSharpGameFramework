@@ -15,6 +15,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using ScriptableFramework;
 using ScriptableFramework.GmCommands;
 using StoryScript;
 
@@ -161,6 +162,118 @@ namespace StoryScript.DslExpression
             return BoxedValue.FromObject(ret);
         }
     }
+    internal class GetDirectDependenciesExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            string[] ret = null;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var list = new List<string>();
+                for (int i = 0; i < operands.Count; ++i)
+                {
+                    var str = operands[i].AsString;
+                    if (null != str)
+                    {
+                        list.Add(str);
+                    }
+                    else
+                    {
+                        var strList = operands[i].As<IList>();
+                        if (null != strList)
+                        {
+                            foreach (var strObj in strList)
+                            {
+                                var tempStr = strObj as string;
+                                if (null != tempStr)
+                                    list.Add(tempStr);
+                            }
+                        }
+                    }
+                }
+                if (list.Count == 1)
+                {
+                    ret = AssetDatabase.GetDependencies(list[0], false);
+                }
+                else if (list.Count > 1)
+                {
+                    ret = AssetDatabase.GetDependencies(list.ToArray(), false);
+                }
+            }
+#endif
+            return BoxedValue.FromObject(ret);
+        }
+    }
+    internal class GetDependenciesGraphExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            string[] ret = null;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var list = new List<string>();
+                for (int i = 0; i < operands.Count; ++i)
+                {
+                    var str = operands[i].AsString;
+                    if (null != str)
+                    {
+                        list.Add(str);
+                    }
+                    else
+                    {
+                        var strList = operands[i].As<IList>();
+                        if (null != strList)
+                        {
+                            foreach (var strObj in strList)
+                            {
+                                var tempStr = strObj as string;
+                                if (null != tempStr)
+                                    list.Add(tempStr);
+                            }
+                        }
+                    }
+                }
+                List<string> results = new List<string>();
+                HashSet<string> accessed = new HashSet<string>();
+                Queue<Tuple<string, string>> queue = new Queue<Tuple<string, string>>();
+                foreach (var str in list)
+                {
+                    queue.Enqueue(Tuple.Create(str, string.Empty));
+                }
+                while (queue.Count > 0)
+                {
+                    var tuple = queue.Dequeue();
+                    string asset = tuple.Item1;
+                    string path = tuple.Item2 + "->" + tuple.Item1;
+                    if (accessed.Contains(asset))
+                    {
+                        results.Add(path);
+                    }
+                    else
+                    {
+                        accessed.Add(asset);
+                        var deps = AssetDatabase.GetDependencies(asset, false);
+                        if (deps.Length > 0)
+                        {
+                            foreach (var dep in deps)
+                            {
+                                queue.Enqueue(Tuple.Create(dep, path));
+                            }
+                        }
+                        else
+                        {
+                            results.Add(path);
+                        }
+                    }
+                }
+                ret = results.ToArray();
+            }
+#endif
+            return BoxedValue.FromObject(ret);
+        }
+    }
     internal class GetAssetImporterExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -293,6 +406,481 @@ namespace StoryScript.DslExpression
 #endif
             return r;
         }
+    }
+    internal class GetPrefabParentAtPathExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 2)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                var assetPath = operands[1].AsString;
+                if (null != obj && !string.IsNullOrEmpty(assetPath))
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.GetCorrespondingObjectFromSourceAtPath(obj, assetPath));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GetPrefabParentFromOriginExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                if (null != obj)
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GetNearstPrefabRootExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                if (null != obj)
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.GetNearestPrefabInstanceRoot(obj));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GetNearstPrefabRootAssetExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                if (null != obj)
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(obj));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GetOutermostPrefabRootExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                if (null != obj)
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.GetOutermostPrefabInstanceRoot(obj));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GetOriginalPrefabRootWhereAddedExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.GameObject>();
+                if (null != obj)
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.GetOriginalSourceRootWhereGameObjectIsAdded(obj));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GetPrefabOverridesExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.GameObject>();
+                bool includeDefaultOverrides = false;
+                if(operands.Count >= 2)
+                {
+                    includeDefaultOverrides = operands[1].GetBool();
+                }
+                if (null != obj)
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.GetObjectOverrides(obj, includeDefaultOverrides));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class FindPrefabInstancesExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.GameObject>();
+                if (null != obj)
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.FindAllInstancesOfPrefab(obj));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class FindPrefabInstancesInSceneExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.GameObject>();
+                var scene = operands[1].CastTo< UnityEngine.SceneManagement.Scene>();
+                if (null != obj && scene.IsValid())
+                {
+                    r = BoxedValue.FromObject(PrefabUtility.FindAllInstancesOfPrefab(obj, scene));
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class CheckPrefabExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.GameObject>();
+                if (null != obj)
+                {
+                    var sb = new StringBuilder();
+                    CheckPrefabRecursively(sb, obj, 0);
+                    return sb.ToString();
+                }
+            }
+#endif
+            return r;
+        }
+#if UNITY_EDITOR
+        private static void CheckPrefabRecursively(StringBuilder sb, UnityEngine.GameObject obj, int indent)
+        {
+            var objFromSource = PrefabUtility.GetCorrespondingObjectFromSource(obj);
+            var originObj = PrefabUtility.GetOriginalSourceRootWhereGameObjectIsAdded(obj);
+            var objFromOrigin = originObj ? PrefabUtility.GetCorrespondingObjectFromOriginalSource(originObj) : null;
+            sb.Append(s_IndentString.Substring(0, indent * 4));
+            sb.AppendFormat("obj:{0} objFromSource:{1} origin:{2} objFromOrigin:{3}", obj, objFromSource, originObj, objFromOrigin);
+            var prefab = PrefabUtility.GetPrefabInstanceHandle(obj) as UnityEngine.GameObject;
+            bool isInst = true;
+            if (!prefab)
+            {
+                prefab = obj;
+                isInst = false;
+            }
+            if (null != prefab)
+            {
+                if (isInst)
+                {
+                    var objFromSourcePrefab = PrefabUtility.GetCorrespondingObjectFromSource(prefab);
+                    var originObjPrefab = PrefabUtility.GetOriginalSourceRootWhereGameObjectIsAdded(prefab);
+                    var objFromOriginPrefab = originObjPrefab ? PrefabUtility.GetCorrespondingObjectFromOriginalSource(originObjPrefab) : null;
+                    sb.AppendFormat(" prefab:{0} prefab_objFromSource:{1} prefab_origin:{2} prefab_objFromOrigin:{3}", prefab, objFromSourcePrefab, originObjPrefab, objFromOriginPrefab);
+                }
+                var assetType = PrefabUtility.GetPrefabAssetType(prefab);
+                var status = PrefabUtility.GetPrefabInstanceStatus(prefab);
+                bool missing = PrefabUtility.HasManagedReferencesWithMissingTypes(prefab);
+                string asset = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(prefab);
+                var rootNearst = PrefabUtility.GetNearestPrefabInstanceRoot(prefab);
+                var rootOutermost = PrefabUtility.GetOutermostPrefabInstanceRoot(prefab);
+                bool overrides = PrefabUtility.HasPrefabInstanceAnyOverrides(prefab, true);
+                bool overridesNearst = rootNearst ? PrefabUtility.HasPrefabInstanceAnyOverrides(rootNearst, true) : false;
+                bool overridesOuter = rootOutermost ? PrefabUtility.HasPrefabInstanceAnyOverrides(rootOutermost, true) : false;
+                sb.AppendFormat(" type:{0} status:{1} missing:{2} overrides:{3} overridesNearst:{4} overridesOutermost:{5} asset:{6}", assetType, status, missing, overrides, overridesNearst, overridesOuter, asset);
+                if (rootNearst)
+                {
+                    sb.AppendFormat(" root:{0}", rootNearst.name);
+                }
+                if (rootOutermost)
+                {
+                    sb.AppendFormat(" rootOuter:{0}", rootOutermost.name);
+                }
+                sb.AppendFormat(" added_comp_overrides:{0} added_obj_overrides:{1} anyroot:{2} outermost:{3}", PrefabUtility.IsAddedComponentOverride(prefab)
+                    , PrefabUtility.IsAddedGameObjectOverride(prefab)
+                    , PrefabUtility.IsAnyPrefabInstanceRoot(prefab)
+                    , PrefabUtility.IsOutermostPrefabInstanceRoot(prefab));
+                sb.AppendFormat(" part_of_any:{0} part_of_immutable:{1} part_of_model:{2} part_of_nonasset:{3} part_of_asset:{4} part_of_instance:{5} part_of_canbeapply:{6} part_of_regular:{7} part_of_variant:{8} missing:{9}"
+                    , PrefabUtility.IsPartOfAnyPrefab(prefab)
+                    , PrefabUtility.IsPartOfImmutablePrefab(prefab)
+                    , PrefabUtility.IsPartOfModelPrefab(prefab)
+                    , PrefabUtility.IsPartOfNonAssetPrefabInstance(prefab)
+                    , PrefabUtility.IsPartOfPrefabAsset(prefab)
+                    , PrefabUtility.IsPartOfPrefabInstance(prefab)
+                    , PrefabUtility.IsPartOfPrefabThatCanBeAppliedTo(prefab)
+                    , PrefabUtility.IsPartOfRegularPrefab(prefab)
+                    , PrefabUtility.IsPartOfVariantPrefab(prefab)
+                    , PrefabUtility.IsPrefabAssetMissing(prefab));
+                if (isInst)
+                {
+                    sb.Append(" modifications:");
+                    var modifications = PrefabUtility.GetPropertyModifications(prefab);
+                    if (null != modifications)
+                    {
+                        foreach (var modification in modifications)
+                        {
+                            sb.AppendFormat(" {0}", modification.propertyPath);
+                        }
+                    }
+                    sb.Append(" added_objs:");
+                    var addObjs = PrefabUtility.GetAddedGameObjects(prefab);
+                    if (null != addObjs)
+                    {
+                        foreach (var mobj in addObjs)
+                        {
+                            sb.AppendFormat(" {0}", mobj);
+                        }
+                    }
+                    sb.Append(" removed_objs:");
+                    var removeObjs = PrefabUtility.GetRemovedGameObjects(prefab);
+                    if (null != removeObjs)
+                    {
+                        foreach (var mobj in removeObjs)
+                        {
+                            sb.AppendFormat(" {0}", mobj);
+                        }
+                    }
+                    sb.Append(" added_comps:");
+                    var addComps = PrefabUtility.GetAddedComponents(prefab);
+                    if (null != addComps)
+                    {
+                        foreach (var mobj in addComps)
+                        {
+                            sb.AppendFormat(" {0}", mobj);
+                        }
+                    }
+                    sb.Append(" removed_comps:");
+                    var removeComps = PrefabUtility.GetRemovedComponents(prefab);
+                    if (null != removeComps)
+                    {
+                        foreach (var mobj in removeObjs)
+                        {
+                            sb.AppendFormat(" {0}", mobj);
+                        }
+                    }
+                }
+                sb.Append(" comps:");
+                foreach (var comp in obj.GetComponents<Component>())
+                {
+                    sb.AppendFormat(" {0}({1})", comp.name, comp.GetType().Name);
+                }
+                sb.AppendLine();
+                for (int ix = 0; ix < obj.transform.childCount; ++ix)
+                {
+                    var tr = obj.transform.GetChild(ix);
+                    CheckPrefabRecursively(sb, tr.gameObject, indent + 1);
+                }
+            }
+        }
+        private static string s_IndentString = "                                                                                                                                                                                                                                                                ";
+#endif
+    }
+    internal class CheckDependencyExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 2)
+            {
+                var prefabA = operands[0].AsString;
+                var prefabB = operands[1].AsString;
+                if (!string.IsNullOrEmpty(prefabA) && !string.IsNullOrEmpty(prefabB))
+                {
+                    var sb = new StringBuilder();
+                    ScanForDependency(prefabA, prefabB, sb);
+                    return sb.ToString();
+                }
+            }
+#endif
+            return r;
+        }
+#if UNITY_EDITOR
+        private static void ScanForDependency(string sourcePath, string targetPath, StringBuilder sb)
+        {
+            GameObject sourcePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(sourcePath);
+            GameObject targetDependency = AssetDatabase.LoadAssetAtPath<GameObject>(targetPath);
+
+            if (sourcePrefab == null || targetDependency == null)
+            {
+                sb.AppendLine("The path is incorrect; please check the path in the script.");
+                return;
+            }
+
+            sb.AppendLine($"[Start Scanning] Looking for references to {targetDependency.name} inside {sourcePrefab.name}...");
+
+            // Instantiate the prefab to resolve all Nesting and Overrides
+            GameObject instance = (GameObject) PrefabUtility.InstantiatePrefab(sourcePrefab);
+            bool foundAny = false;
+
+            try
+            {
+                // =========================================================
+                // PHASE 1: Hierarchy Structure Check (Nesting & Variants)
+                // =========================================================
+                // Get all transforms, including hidden/inactive ones
+                Transform[] allTransforms = instance.GetComponentsInChildren<Transform>(true);
+
+                foreach (Transform t in allTransforms)
+                {
+                    // Check if this GameObject is the root of a Prefab Instance
+                    if (PrefabUtility.IsAnyPrefabInstanceRoot(t.gameObject))
+                    {
+                        // Get the immediate source asset for this instance (e.g., Prefab B)
+                        GameObject sourceAsset = PrefabUtility.GetCorrespondingObjectFromSource(t.gameObject);
+
+                        // Check if this source asset IS the target, or INHERITS from the target (Variant)
+                        if (IsAssetDerivedFrom(sourceAsset, targetPath))
+                        {
+                            foundAny = true;
+                            sb.AppendLine();
+                            sb.AppendLine($"[FOUND NESTED/VARIANT PREFAB!]");
+                            sb.AppendLine($"    Location: {GetHierarchyPath(t)}");
+                            sb.AppendLine($"    Instance Source: {sourceAsset.name}");
+                            sb.AppendLine($"    Relationship: This object is (or inherits from) the target.");
+                        }
+                    }
+                }
+
+                // =========================================================
+                // PHASE 2: Component Properties Check (Direct References)
+                // =========================================================
+                Component[] allComponents = instance.GetComponentsInChildren<Component>(true);
+
+                foreach (Component comp in allComponents)
+                {
+                    if (comp == null)
+                        continue; // Skip missing scripts
+
+                    SerializedObject so = new SerializedObject(comp);
+                    SerializedProperty sp = so.GetIterator();
+
+                    // Iterate through all properties (including arrays and structs)
+                    while (sp.Next(true))
+                    {
+                        if (sp.propertyType == SerializedPropertyType.ObjectReference)
+                        {
+                            var refObj = sp.objectReferenceValue;
+                            if (refObj != null)
+                            {
+                                string refPath = AssetDatabase.GetAssetPath(refObj);
+
+                                // Check if the property points to the target file
+                                if (refPath == targetPath)
+                                {
+                                    foundAny = true;
+                                    sb.AppendLine();
+                                    sb.AppendLine($"[FOUND PROPERTY REFERENCE!]");
+                                    sb.AppendLine($"    Location: {GetHierarchyPath(comp.transform)}");
+                                    sb.AppendLine($"    Component: {comp.GetType().Name}");
+                                    sb.AppendLine($"    Property: {sp.propertyPath}");
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!foundAny)
+                {
+                    sb.AppendLine();
+                    sb.AppendLine($"[Scan Complete] No references found. If AssetDatabase still reports a dependency, try deleting the 'Library' folder to clear cache.");
+                }
+            }
+            finally
+            {
+                // Cleanup: Destroy the temporary instance
+                GameObject.DestroyImmediate(instance);
+            }
+        }
+        /// <summary>
+        /// Recursively checks if 'assetToCheck' is the target or a Variant of the target.
+        /// </summary>
+        private static bool IsAssetDerivedFrom(GameObject assetToCheck, string targetPath)
+        {
+            if (assetToCheck == null)
+            {
+                return false;
+            }
+
+            // Check 1: Is the current asset the target?
+            string currentPath = AssetDatabase.GetAssetPath(assetToCheck);
+            if (currentPath == targetPath)
+            {
+                return true;
+            }
+
+            // Check 2: Is it a Variant? Get its Base Prefab.
+            // When called on an Asset (not an instance), GetCorrespondingObjectFromSource returns the Base Prefab.
+            GameObject basePrefab = PrefabUtility.GetCorrespondingObjectFromSource(assetToCheck);
+
+            // If there is no base prefab, we reached the top of the chain.
+            if (basePrefab == null)
+            {
+                return false;
+            }
+
+            // Safety check to prevent infinite loops (though Unity prevents circular prefabs)
+            if (basePrefab == assetToCheck)
+            {
+                return false;
+            }
+
+            // Recursive Step: Check the parent
+            return IsAssetDerivedFrom(basePrefab, targetPath);
+        }
+        // Helper to get a readable path in the hierarchy
+        private static string GetHierarchyPath(Transform t)
+        {
+            string path = t.name;
+            while (t.parent != null && t.parent.parent != null) // Stop before the root container
+            {
+                t = t.parent;
+                path = t.name + "/" + path;
+            }
+            return path;
+        }
+#endif
     }
     internal class DisplayProgressBarExp : SimpleExpressionBase
     {
@@ -585,7 +1173,7 @@ namespace StoryScript.DslExpression
                             ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
                             instance = ClientGmStorySystem.Instance.GetStory("main");
                         }
-                        instance.SetVariable(name, ScriptableFramework.BoxedValue.FromObject(val.GetObject()));
+                        instance.SetVariable(name, BoxedValue.FromObject(val.GetObject()));
                         ret = val;
                     }
                 }
@@ -596,7 +1184,7 @@ namespace StoryScript.DslExpression
                         ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
                         instance = ClientGmStorySystem.Instance.GetStory("main");
                     }
-                    ScriptableFramework.BoxedValue bv;
+                    BoxedValue bv;
                     instance.TryGetVariable(name, out bv);
                     ret = BoxedValue.FromObject(bv.GetObject());
                 }
@@ -618,7 +1206,7 @@ namespace StoryScript.DslExpression
             var handler = instance.GetMessageHandler("start");
             object ret = null;
             foreach (var exp in m_Values) {
-                exp.Evaluate(instance, handler, ScriptableFramework.BoxedValue.NullObject, null);
+                exp.Evaluate(instance, handler, BoxedValue.NullObject, null);
                 if (exp.HaveValue) {
                     ret = exp.Value.GetObject();
                 }
@@ -653,7 +1241,7 @@ namespace StoryScript.DslExpression
                 cmd.Reset();
             }
             foreach (var cmd in m_Commands) {
-                cmd.Execute(instance, handler, 0, ScriptableFramework.BoxedValue.NullObject, null);
+                cmd.Execute(instance, handler, 0, BoxedValue.NullObject, null);
             }
             return BoxedValue.NullObject;
         }
@@ -682,6 +1270,8 @@ namespace StoryScript.DslExpression
             calculator.Register("getassetpath", "getassetpath(obj) api", new ExpressionFactoryHelper<GetAssetPathExp>());
             calculator.Register("getguidandfileid", "getguidandfileid(obj) api, return KeyValuaPair<string,long>", new ExpressionFactoryHelper<GetGuidAndLocalFileIdentifierExp>());
             calculator.Register("getdependencies", "getdependencies(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDependenciesExp>());
+            calculator.Register("getdirectdependencies", "getdirectdependencies(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDirectDependenciesExp>());
+            calculator.Register("getdependenciesgraph", "getdependenciesgraph(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDependenciesGraphExp>());
             calculator.Register("getassetimporter", "getassetimporter(path) api", new ExpressionFactoryHelper<GetAssetImporterExp>());
             calculator.Register("loadasset", "loadasset(asset_path) api", new ExpressionFactoryHelper<LoadAssetExp>());
             calculator.Register("unloadasset", "unloadasset(obj) api", new ExpressionFactoryHelper<UnloadAssetExp>());
@@ -689,6 +1279,17 @@ namespace StoryScript.DslExpression
             calculator.Register("getprefabstatus", "getprefabstatus(obj) api", new ExpressionFactoryHelper<GetPrefabStatusExp>());
             calculator.Register("getprefabobject", "getprefabobject(obj) api", new ExpressionFactoryHelper<GetPrefabObjectExp>());
             calculator.Register("getprefabparent", "getprefabparent(obj) api", new ExpressionFactoryHelper<GetPrefabParentExp>());
+            calculator.Register("getprefabparentatpath", "getprefabparentatpath(obj) api", new ExpressionFactoryHelper<GetPrefabParentAtPathExp>());
+            calculator.Register("getprefabparentfromorigin", "getprefabparentfromorigin(obj) api", new ExpressionFactoryHelper<GetPrefabParentFromOriginExp>());
+            calculator.Register("getnearstprefabroot", "getnearstprefabroot(obj) api", new ExpressionFactoryHelper<GetNearstPrefabRootExp>());
+            calculator.Register("getnearstprefabrootasset", "getnearstprefabrootasset(obj) api", new ExpressionFactoryHelper<GetNearstPrefabRootAssetExp>());
+            calculator.Register("getoutermostprefabroot", "getoutermostprefabroot(obj) api", new ExpressionFactoryHelper<GetOutermostPrefabRootExp>());
+            calculator.Register("getoriginalprefabroot", "getoriginalprefabroot(obj) api", new ExpressionFactoryHelper<GetOriginalPrefabRootWhereAddedExp>());
+            calculator.Register("getprefaboverrides", "getprefaboverrides(obj,include_def_overrides) api", new ExpressionFactoryHelper<GetPrefabOverridesExp>());
+            calculator.Register("findprefabinstances", "findprefabinstances(obj) api", new ExpressionFactoryHelper<FindPrefabInstancesExp>());
+            calculator.Register("findprefabinstancesinscene", "findprefabinstancesinscene(obj,scene) api", new ExpressionFactoryHelper<FindPrefabInstancesInSceneExp>());
+            calculator.Register("checkprefab", "checkprefab(obj) api", new ExpressionFactoryHelper<CheckPrefabExp>());
+            calculator.Register("checkdependency", "checkdependency(prefab_a,prefab_b) api", new ExpressionFactoryHelper<CheckDependencyExp>());
             calculator.Register("displayprogressbar", "displayprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayProgressBarExp>());
             calculator.Register("displaycancelableprogressbar", "displaycancelableprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayCancelableProgressBarExp>());
             calculator.Register("clearprogressbar", "clearprogressbar() api", new ExpressionFactoryHelper<ClearProgressBarExp>());
