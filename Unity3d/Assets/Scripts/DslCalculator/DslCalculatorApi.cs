@@ -576,7 +576,7 @@ namespace StoryScript.DslExpression
             return r;
         }
     }
-    internal class CheckPrefabExp : SimpleExpressionBase
+    internal class ScanPrefabExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -716,7 +716,7 @@ namespace StoryScript.DslExpression
         private static string s_IndentString = "                                                                                                                                                                                                                                                                ";
 #endif
     }
-    internal class CheckDependencyExp : SimpleExpressionBase
+    internal class ScanDependencyExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -748,137 +748,283 @@ namespace StoryScript.DslExpression
                 return;
             }
 
-            sb.AppendLine($"[Start Scanning] Looking for references to {targetDependency.name} inside {sourcePrefab.name}...");
+            sb.AppendLine($"[Start] Checking if '{sourcePrefab.name}' depends on '{targetDependency.name}'...");
 
-            // Instantiate the prefab to resolve all Nesting and Overrides
             GameObject instance = (GameObject) PrefabUtility.InstantiatePrefab(sourcePrefab);
-            bool foundAny = false;
+            bool foundDependency = false;
 
             try
             {
-                // =========================================================
-                // PHASE 1: Hierarchy Structure Check (Nesting & Variants)
-                // =========================================================
-                // Get all transforms, including hidden/inactive ones
+                // PHASE 1: Hierarchy
                 Transform[] allTransforms = instance.GetComponentsInChildren<Transform>(true);
-
                 foreach (Transform t in allTransforms)
                 {
-                    // Check if this GameObject is the root of a Prefab Instance
-                    if (PrefabUtility.IsAnyPrefabInstanceRoot(t.gameObject))
-                    {
-                        // Get the immediate source asset for this instance (e.g., Prefab B)
-                        GameObject sourceAsset = PrefabUtility.GetCorrespondingObjectFromSource(t.gameObject);
+                    GameObject sourceAsset = PrefabUtility.GetCorrespondingObjectFromSource(t.gameObject);
 
-                        // Check if this source asset IS the target, or INHERITS from the target (Variant)
-                        if (IsAssetDerivedFrom(sourceAsset, targetPath))
-                        {
-                            foundAny = true;
-                            sb.AppendLine();
-                            sb.AppendLine($"[FOUND NESTED/VARIANT PREFAB!]");
-                            sb.AppendLine($"    Location: {GetHierarchyPath(t)}");
-                            sb.AppendLine($"    Instance Source: {sourceAsset.name}");
-                            sb.AppendLine($"    Relationship: This object is (or inherits from) the target.");
-                        }
+                    // Use Shared Utility
+                    if (sourceAsset != null && IsAssetDerivedFrom(sourceAsset, targetPath))
+                    {
+                        sb.AppendLine();
+                        sb.AppendLine($"    [Hierarchy Dependency] Node: '{GetHierarchyPath(t)}' is instance/variant of target.");
+                        foundDependency = true;
                     }
                 }
 
-                // =========================================================
-                // PHASE 2: Component Properties Check (Direct References)
-                // =========================================================
+                // PHASE 2: Properties
                 Component[] allComponents = instance.GetComponentsInChildren<Component>(true);
-
                 foreach (Component comp in allComponents)
                 {
                     if (comp == null)
-                        continue; // Skip missing scripts
-
+                        continue;
                     SerializedObject so = new SerializedObject(comp);
                     SerializedProperty sp = so.GetIterator();
 
-                    // Iterate through all properties (including arrays and structs)
                     while (sp.Next(true))
                     {
                         if (sp.propertyType == SerializedPropertyType.ObjectReference)
                         {
                             var refObj = sp.objectReferenceValue;
-                            if (refObj != null)
+                            // Use Shared Utility
+                            if (IsObjectDerivedFrom(refObj, targetPath))
                             {
-                                string refPath = AssetDatabase.GetAssetPath(refObj);
-
-                                // Check if the property points to the target file
-                                if (refPath == targetPath)
-                                {
-                                    foundAny = true;
-                                    sb.AppendLine();
-                                    sb.AppendLine($"[FOUND PROPERTY REFERENCE!]");
-                                    sb.AppendLine($"    Location: {GetHierarchyPath(comp.transform)}");
-                                    sb.AppendLine($"    Component: {comp.GetType().Name}");
-                                    sb.AppendLine($"    Property: {sp.propertyPath}");
-                                }
+                                sb.AppendLine();
+                                sb.AppendLine($"    [Property Dependency] Source: '{GetHierarchyPath(comp.transform)}' -> Property: '{sp.propertyPath}' refers to target.");
+                                foundDependency = true;
                             }
                         }
                     }
                 }
 
-                if (!foundAny)
+                sb.AppendLine();
+                if (!foundDependency)
                 {
-                    sb.AppendLine();
-                    sb.AppendLine($"[Scan Complete] No references found. If AssetDatabase still reports a dependency, try deleting the 'Library' folder to clear cache.");
+                    sb.AppendLine($"    [Result] No dependency found.");
+                }
+                else
+                {
+                    sb.AppendLine($"    [Result] Dependencies found!");
                 }
             }
             finally
             {
-                // Cleanup: Destroy the temporary instance
                 GameObject.DestroyImmediate(instance);
             }
         }
-        /// <summary>
-        /// Recursively checks if 'assetToCheck' is the target or a Variant of the target.
-        /// </summary>
-        private static bool IsAssetDerivedFrom(GameObject assetToCheck, string targetPath)
+        // Helper: Check if an object (Component or GameObject) belongs to an asset
+        // that is (or inherits from) the target path.
+        internal static bool IsObjectDerivedFrom(UnityEngine.Object obj, string targetPath)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // Get the path of the asset this object belongs to
+            string objPath = AssetDatabase.GetAssetPath(obj);
+            if (string.IsNullOrEmpty(objPath))
+            {
+                return false;
+            }
+
+            // 1. Direct path match (Fastest)
+            if (objPath == targetPath)
+            {
+                return true;
+            }
+
+            // 2. Variant check
+            // Load the Main Asset at the path to check the Prefab chain
+            GameObject assetRoot = AssetDatabase.LoadMainAssetAtPath(objPath) as GameObject;
+            return IsAssetDerivedFrom(assetRoot, targetPath);
+        }
+        // Recursive check for Prefab Variants
+        internal static bool IsAssetDerivedFrom(GameObject assetToCheck, string targetPath)
         {
             if (assetToCheck == null)
             {
                 return false;
             }
 
-            // Check 1: Is the current asset the target?
             string currentPath = AssetDatabase.GetAssetPath(assetToCheck);
             if (currentPath == targetPath)
             {
                 return true;
             }
 
-            // Check 2: Is it a Variant? Get its Base Prefab.
-            // When called on an Asset (not an instance), GetCorrespondingObjectFromSource returns the Base Prefab.
             GameObject basePrefab = PrefabUtility.GetCorrespondingObjectFromSource(assetToCheck);
 
-            // If there is no base prefab, we reached the top of the chain.
             if (basePrefab == null)
             {
                 return false;
             }
-
-            // Safety check to prevent infinite loops (though Unity prevents circular prefabs)
             if (basePrefab == assetToCheck)
             {
                 return false;
             }
-
-            // Recursive Step: Check the parent
             return IsAssetDerivedFrom(basePrefab, targetPath);
         }
-        // Helper to get a readable path in the hierarchy
-        private static string GetHierarchyPath(Transform t)
+        // Helper: Check if a GameObject is the main root of its own asset file
+        internal static bool IsRootOfItsAsset(GameObject go)
         {
+            if (go == null)
+            {
+                return false;
+            }
+            string assetPath = AssetDatabase.GetAssetPath(go);
+            GameObject mainAsset = AssetDatabase.LoadMainAssetAtPath(assetPath) as GameObject;
+            return go == mainAsset;
+        }
+        internal static string GetHierarchyPath(Transform t)
+        {
+            if (t == null)
+            {
+                return "";
+            }
             string path = t.name;
-            while (t.parent != null && t.parent.parent != null) // Stop before the root container
+            while (t.parent != null && t.parent.parent != null)
             {
                 t = t.parent;
                 path = t.name + "/" + path;
             }
             return path;
+        }
+#endif
+    }
+    internal class CheckInternalDependencyExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 2)
+            {
+                var prefabA = operands[0].AsString;
+                var prefabB = operands[1].AsString;
+                bool checkChildGameObjects = false;
+                if (operands.Count >= 3)
+                {
+                    checkChildGameObjects = operands[2].GetBool();
+                }
+                if (!string.IsNullOrEmpty(prefabA) && !string.IsNullOrEmpty(prefabB))
+                {
+                    var sb = new StringBuilder();
+                    bool foundIssue = CheckInternalDependency(prefabA, prefabB, checkChildGameObjects, sb);
+                    if (foundIssue)
+                    {
+                        return sb.ToString();
+                    }
+                    return string.Empty;
+                }
+            }
+#endif
+            return r;
+        }
+#if UNITY_EDITOR
+        private static bool CheckInternalDependency(string sourcePath, string targetPath, bool checkChildGameObjects, StringBuilder sb)
+        {
+            GameObject sourcePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(sourcePath);
+            GameObject targetDependency = AssetDatabase.LoadAssetAtPath<GameObject>(targetPath);
+
+            if (sourcePrefab == null || targetDependency == null)
+            {
+                return false;
+            }
+
+            // Load the Main Asset (Root GameObject) of B to distinguish between Root and Child
+            GameObject targetRoot = AssetDatabase.LoadMainAssetAtPath(targetPath) as GameObject;
+            if (targetRoot == null)
+            {
+                return false;
+            }
+
+            GameObject instance = (GameObject) PrefabUtility.InstantiatePrefab(sourcePrefab);
+            bool foundIssue = false;
+
+            try
+            {
+                Component[] allComponents = instance.GetComponentsInChildren<Component>(true);
+
+                foreach (Component comp in allComponents)
+                {
+                    if (comp == null)
+                    {
+                        continue;
+                    }
+
+                    SerializedObject so = new SerializedObject(comp);
+                    SerializedProperty sp = so.GetIterator();
+
+                    while (sp.Next(true))
+                    {
+                        if (sp.propertyType == SerializedPropertyType.ObjectReference)
+                        {
+                            var refObj = sp.objectReferenceValue;
+
+                            if (refObj != null)
+                            {
+                                // 1. Check if the referenced object is (or inherits from) the target Prefab
+                                if (ScanDependencyExp.IsObjectDerivedFrom(refObj, targetPath))
+                                {
+                                    bool shouldReport = false;
+                                    string referenceType = "";
+
+                                    // 2. Analyze the type of reference
+                                    if (refObj is Component)
+                                    {
+                                        // Case A: Reference to a Component (Script, Transform, etc.)
+                                        // Always report.
+                                        shouldReport = true;
+                                        referenceType = $"Component({refObj.GetType().Name})";
+                                    }
+                                    else if (refObj is GameObject refGo)
+                                    {
+                                        // Case B: Reference to a GameObject
+                                        // We need to check if it's the Root or a Child.
+
+                                        // To do this accurately for Variants, we check if the referenced GO
+                                        // corresponds to the Root of the asset it lives in.
+                                        if (ScanDependencyExp.IsRootOfItsAsset(refGo))
+                                        {
+                                            // It is a Root GameObject (Safe dependency)
+                                            // (Logic: pass)
+                                        }
+                                        else
+                                        {
+                                            // It is a Child GameObject (Sub-Asset)
+                                            if (checkChildGameObjects)
+                                            {
+                                                shouldReport = true;
+                                                referenceType = "Child_GameObject";
+                                            }
+                                        }
+                                    }
+
+                                    // 3. Log
+                                    if (shouldReport)
+                                    {
+                                        if (foundIssue)
+                                        {
+                                            sb.Append(" ");
+                                        }
+                                        foundIssue = true;
+                                        sb.Append($"[INTERNAL_DEPENDENCY]");
+                                        sb.Append($" Source({ScanDependencyExp.GetHierarchyPath(comp.transform)})");
+                                        sb.Append($" Property({sp.propertyPath})");
+                                        sb.Append($" Refers_to({referenceType})");
+                                        sb.Append($" Target_Object({refObj.name}) Asset({AssetDatabase.GetAssetPath(refObj)})");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return foundIssue;
+            }
+            finally
+            {
+                GameObject.DestroyImmediate(instance);
+            }
         }
 #endif
     }
@@ -1288,8 +1434,9 @@ namespace StoryScript.DslExpression
             calculator.Register("getprefaboverrides", "getprefaboverrides(obj,include_def_overrides) api", new ExpressionFactoryHelper<GetPrefabOverridesExp>());
             calculator.Register("findprefabinstances", "findprefabinstances(obj) api", new ExpressionFactoryHelper<FindPrefabInstancesExp>());
             calculator.Register("findprefabinstancesinscene", "findprefabinstancesinscene(obj,scene) api", new ExpressionFactoryHelper<FindPrefabInstancesInSceneExp>());
-            calculator.Register("checkprefab", "checkprefab(obj) api", new ExpressionFactoryHelper<CheckPrefabExp>());
-            calculator.Register("checkdependency", "checkdependency(prefab_a,prefab_b) api", new ExpressionFactoryHelper<CheckDependencyExp>());
+            calculator.Register("scanprefab", "scanprefab(obj) api", new ExpressionFactoryHelper<ScanPrefabExp>());
+            calculator.Register("scandependency", "scandependency(prefab_a,prefab_b) api", new ExpressionFactoryHelper<ScanDependencyExp>());
+            calculator.Register("checkinternaldependency", "checkinternaldependency(prefab_a,prefab_b[,include_gobj]) api", new ExpressionFactoryHelper<CheckInternalDependencyExp>());
             calculator.Register("displayprogressbar", "displayprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayProgressBarExp>());
             calculator.Register("displaycancelableprogressbar", "displaycancelableprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayCancelableProgressBarExp>());
             calculator.Register("clearprogressbar", "clearprogressbar() api", new ExpressionFactoryHelper<ClearProgressBarExp>());
