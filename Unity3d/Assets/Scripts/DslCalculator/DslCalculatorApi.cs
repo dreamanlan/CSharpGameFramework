@@ -775,7 +775,9 @@ namespace StoryScript.DslExpression
                 foreach (Component comp in allComponents)
                 {
                     if (comp == null)
+                    {
                         continue;
+                    }
                     SerializedObject so = new SerializedObject(comp);
                     SerializedProperty sp = so.GetIterator();
 
@@ -784,6 +786,19 @@ namespace StoryScript.DslExpression
                         if (sp.propertyType == SerializedPropertyType.ObjectReference)
                         {
                             var refObj = sp.objectReferenceValue;
+                            if (refObj == null)
+                            {
+                                continue;
+                            }
+                            if (IsSelfReference(refObj, instance.transform))
+                            {
+                                continue;
+                            }
+                            string refPath = AssetDatabase.GetAssetPath(refObj);
+                            if (refPath == sourcePath)
+                            {
+                                continue;
+                            }
                             // Use Shared Utility
                             if (IsObjectDerivedFrom(refObj, targetPath))
                             {
@@ -809,6 +824,25 @@ namespace StoryScript.DslExpression
             {
                 GameObject.DestroyImmediate(instance);
             }
+        }
+        /// Checks if the object is part of the current hierarchy (Self-Reference).
+        /// </summary>
+        /// <param name="obj">The object to check (GameObject or Component).</param>
+        /// <param name="rootTransform">The root of the instantiated hierarchy.</param>
+        /// <returns>True if the object is a child of the root or the root itself.</returns>
+        internal static bool IsSelfReference(UnityEngine.Object obj, Transform rootTransform)
+        {
+            if (obj is GameObject go)
+            {
+                return go.transform.IsChildOf(rootTransform);
+            }
+            else if (obj is Component comp)
+            {
+                return comp.transform.IsChildOf(rootTransform);
+            }
+
+            // Assets like Materials, Textures, etc., are not part of the hierarchy
+            return false;
         }
         // Helper: Check if an object (Component or GameObject) belongs to an asset
         // that is (or inherits from) the target path.
@@ -960,59 +994,69 @@ namespace StoryScript.DslExpression
                         {
                             var refObj = sp.objectReferenceValue;
 
-                            if (refObj != null)
+                            if (refObj == null)
                             {
-                                // 1. Check if the referenced object is (or inherits from) the target Prefab
-                                if (ScanDependencyExp.IsObjectDerivedFrom(refObj, targetPath))
+                                continue;
+                            }
+                            if (ScanDependencyExp.IsSelfReference(refObj, instance.transform))
+                            {
+                                continue;
+                            }
+                            string refPath = AssetDatabase.GetAssetPath(refObj);
+                            if (refPath == sourcePath)
+                            {
+                                continue;
+                            }
+                            // 1. Check if the referenced object is (or inherits from) the target Prefab
+                            if (ScanDependencyExp.IsObjectDerivedFrom(refObj, targetPath))
+                            {
+                                bool shouldReport = false;
+                                string referenceType = "";
+
+                                // 2. Analyze the type of reference
+                                if (refObj is Component)
                                 {
-                                    bool shouldReport = false;
-                                    string referenceType = "";
+                                    // Case A: Reference to a Component (Script, Transform, etc.)
+                                    // Always report.
+                                    shouldReport = true;
+                                    referenceType = $"Component({refObj.GetType().Name})";
+                                }
+                                else if (refObj is GameObject refGo)
+                                {
+                                    // Case B: Reference to a GameObject
+                                    // We need to check if it's the Root or a Child.
 
-                                    // 2. Analyze the type of reference
-                                    if (refObj is Component)
+                                    // To do this accurately for Variants, we check if the referenced GO
+                                    // corresponds to the Root of the asset it lives in.
+                                    if (ScanDependencyExp.IsRootOfItsAsset(refGo))
                                     {
-                                        // Case A: Reference to a Component (Script, Transform, etc.)
-                                        // Always report.
-                                        shouldReport = true;
-                                        referenceType = $"Component({refObj.GetType().Name})";
+                                        // It is a Root GameObject (Safe dependency)
+                                        // (Logic: pass)
                                     }
-                                    else if (refObj is GameObject refGo)
+                                    else
                                     {
-                                        // Case B: Reference to a GameObject
-                                        // We need to check if it's the Root or a Child.
-
-                                        // To do this accurately for Variants, we check if the referenced GO
-                                        // corresponds to the Root of the asset it lives in.
-                                        if (ScanDependencyExp.IsRootOfItsAsset(refGo))
+                                        // It is a Child GameObject (Sub-Asset)
+                                        if (checkChildGameObjects)
                                         {
-                                            // It is a Root GameObject (Safe dependency)
-                                            // (Logic: pass)
-                                        }
-                                        else
-                                        {
-                                            // It is a Child GameObject (Sub-Asset)
-                                            if (checkChildGameObjects)
-                                            {
-                                                shouldReport = true;
-                                                referenceType = "Child_GameObject";
-                                            }
+                                            shouldReport = true;
+                                            referenceType = "Child_GameObject";
                                         }
                                     }
+                                }
 
-                                    // 3. Log
-                                    if (shouldReport)
+                                // 3. Log
+                                if (shouldReport)
+                                {
+                                    if (foundIssue)
                                     {
-                                        if (foundIssue)
-                                        {
-                                            sb.Append(" ");
-                                        }
-                                        foundIssue = true;
-                                        sb.Append($"[INTERNAL_DEPENDENCY]");
-                                        sb.Append($" Source({ScanDependencyExp.GetHierarchyPath(comp.transform)})");
-                                        sb.Append($" Property({sp.propertyPath})");
-                                        sb.Append($" Refers_to({referenceType})");
-                                        sb.Append($" Target_Object({refObj.name}) Asset({AssetDatabase.GetAssetPath(refObj)})");
+                                        sb.Append(" ");
                                     }
+                                    foundIssue = true;
+                                    sb.Append($"[INTERNAL_DEPENDENCY]");
+                                    sb.Append($" Source({ScanDependencyExp.GetHierarchyPath(comp.transform)})");
+                                    sb.Append($" Property({sp.propertyPath})");
+                                    sb.Append($" Refers_to({referenceType})");
+                                    sb.Append($" Target_Object({refObj.name}) Asset({AssetDatabase.GetAssetPath(refObj)})");
                                 }
                             }
                         }
