@@ -934,15 +934,20 @@ namespace StoryScript.DslExpression
             {
                 var prefabA = operands[0].AsString;
                 var prefabB = operands[1].AsString;
+                bool checkRootObjComp = false;
                 bool checkChildGameObjects = false;
                 if (operands.Count >= 3)
                 {
-                    checkChildGameObjects = operands[2].GetBool();
+                    checkRootObjComp = operands[2].GetBool();
+                }
+                if (operands.Count >= 4)
+                {
+                    checkChildGameObjects = operands[3].GetBool();
                 }
                 if (!string.IsNullOrEmpty(prefabA) && !string.IsNullOrEmpty(prefabB))
                 {
                     var sb = new StringBuilder();
-                    bool foundIssue = CheckInternalDependency(prefabA, prefabB, checkChildGameObjects, sb);
+                    bool foundIssue = CheckInternalDependency(prefabA, prefabB, checkRootObjComp, checkChildGameObjects, sb);
                     if (foundIssue)
                     {
                         return sb.ToString();
@@ -954,7 +959,7 @@ namespace StoryScript.DslExpression
             return r;
         }
 #if UNITY_EDITOR
-        private static bool CheckInternalDependency(string sourcePath, string targetPath, bool checkChildGameObjects, StringBuilder sb)
+        private static bool CheckInternalDependency(string sourcePath, string targetPath, bool checkRootObjComp, bool checkChildGameObjects, StringBuilder sb)
         {
             GameObject sourcePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(sourcePath);
             GameObject targetDependency = AssetDatabase.LoadAssetAtPath<GameObject>(targetPath);
@@ -1014,12 +1019,22 @@ namespace StoryScript.DslExpression
                                 string referenceType = "";
 
                                 // 2. Analyze the type of reference
-                                if (refObj is Component)
+                                if (refObj is Component refComp)
                                 {
-                                    // Case A: Reference to a Component (Script, Transform, etc.)
-                                    // Always report.
-                                    shouldReport = true;
-                                    referenceType = $"Component({refObj.GetType().Name})";
+                                    if (!checkRootObjComp && ScanDependencyExp.IsRootOfItsAsset(refComp.gameObject))
+                                    {
+                                        // Case A: Reference to a Component (Script, Transform, etc.)
+                                        // Always report.
+                                        shouldReport = true;
+                                        referenceType = $"Component({refObj.GetType().Name})";
+                                    }
+                                    else
+                                    {
+                                        // Case A: Reference to a Component (Script, Transform, etc.)
+                                        // Always report.
+                                        shouldReport = true;
+                                        referenceType = $"Component({refObj.GetType().Name})";
+                                    }
                                 }
                                 else if (refObj is GameObject refGo)
                                 {
@@ -1480,7 +1495,7 @@ namespace StoryScript.DslExpression
             calculator.Register("findprefabinstancesinscene", "findprefabinstancesinscene(obj,scene) api", new ExpressionFactoryHelper<FindPrefabInstancesInSceneExp>());
             calculator.Register("scanprefab", "scanprefab(obj) api", new ExpressionFactoryHelper<ScanPrefabExp>());
             calculator.Register("scandependency", "scandependency(prefab_a,prefab_b) api", new ExpressionFactoryHelper<ScanDependencyExp>());
-            calculator.Register("checkinternaldependency", "checkinternaldependency(prefab_a,prefab_b[,include_gobj]) api", new ExpressionFactoryHelper<CheckInternalDependencyExp>());
+            calculator.Register("checkinternaldependency", "checkinternaldependency(prefab_a,prefab_b[include_root_comp,include_child_gobj]) api", new ExpressionFactoryHelper<CheckInternalDependencyExp>());
             calculator.Register("displayprogressbar", "displayprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayProgressBarExp>());
             calculator.Register("displaycancelableprogressbar", "displaycancelableprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayCancelableProgressBarExp>());
             calculator.Register("clearprogressbar", "clearprogressbar() api", new ExpressionFactoryHelper<ClearProgressBarExp>());
