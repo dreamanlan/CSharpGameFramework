@@ -1021,12 +1021,13 @@ namespace StoryScript.DslExpression
                                 // 2. Analyze the type of reference
                                 if (refObj is Component refComp)
                                 {
-                                    if (!checkRootObjComp && ScanDependencyExp.IsRootOfItsAsset(refComp.gameObject))
-                                    {
-                                        // Case A: Reference to a Component (Script, Transform, etc.)
-                                        // Always report.
-                                        shouldReport = true;
-                                        referenceType = $"Component({refObj.GetType().Name})";
+                                    if (ScanDependencyExp.IsRootOfItsAsset(refComp.gameObject)) {
+                                        if (checkRootObjComp) {
+                                            // Case A: Reference to a Component (Script, Transform, etc.)
+                                            // Always report.
+                                            shouldReport = true;
+                                            referenceType = $"Component({refObj.GetType().Name})";
+                                        }
                                     }
                                     else
                                     {
