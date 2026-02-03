@@ -966,6 +966,7 @@ namespace StoryScript.DslExpression
 
             if (sourcePrefab == null || targetDependency == null)
             {
+                Debug.LogErrorFormat("source:{0} target:{1} checkRoot:{2} checkChild:{3} sourcePrefab:{4} targetDependency:{5}", sourcePath, targetPath, checkRootObjComp, checkChildGameObjects, sourcePrefab, targetDependency);
                 return false;
             }
 
@@ -973,6 +974,7 @@ namespace StoryScript.DslExpression
             GameObject targetRoot = AssetDatabase.LoadMainAssetAtPath(targetPath) as GameObject;
             if (targetRoot == null)
             {
+                Debug.LogErrorFormat("source:{0} target:{1} checkRoot:{2} checkChild:{3} targetRoot is null", sourcePath, targetPath, checkRootObjComp, checkChildGameObjects);
                 return false;
             }
 
@@ -997,11 +999,12 @@ namespace StoryScript.DslExpression
                     }
                     catch(Exception ex)
                     {
-                        Debug.LogErrorFormat("source:{0} target:{1} checkRoot:{2} checkChild:{3} comp:{4} exception:{5}\n{6}", sourcePath, targetPath, checkRootObjComp, checkChildGameObjects, ex.Message, ex.StackTrace);
+                        Debug.LogErrorFormat("source:{0} target:{1} checkRoot:{2} checkChild:{3} comp:{4} exception:{5}\n{6}", sourcePath, targetPath, checkRootObjComp, checkChildGameObjects, comp, ex.Message, ex.StackTrace);
                         so = null;
                     }
                     if (null == so)
                     {
+                        Debug.LogErrorFormat("source:{0} target:{1} checkRoot:{2} checkChild:{3} comp:{4} so is null", sourcePath, targetPath, checkRootObjComp, checkChildGameObjects, comp);
                         continue;
                     }
 
@@ -1035,8 +1038,10 @@ namespace StoryScript.DslExpression
                                 // 2. Analyze the type of reference
                                 if (refObj is Component refComp)
                                 {
-                                    if (ScanDependencyExp.IsRootOfItsAsset(refComp.gameObject)) {
-                                        if (checkRootObjComp) {
+                                    if (ScanDependencyExp.IsRootOfItsAsset(refComp.gameObject))
+                                    {
+                                        if (checkRootObjComp)
+                                        {
                                             // Case A: Reference to a Component (Script, Transform, etc.)
                                             // Always report.
                                             shouldReport = true;
