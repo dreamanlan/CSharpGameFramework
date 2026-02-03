@@ -990,7 +990,21 @@ namespace StoryScript.DslExpression
                         continue;
                     }
 
-                    SerializedObject so = new SerializedObject(comp);
+                    SerializedObject so = null;
+                    try
+                    {
+                        so = new SerializedObject(comp);
+                    }
+                    catch(Exception ex)
+                    {
+                        Debug.LogErrorFormat("source:{0} target:{1} checkRoot:{2} checkChild:{3} comp:{4} exception:{5}\n{6}", sourcePath, targetPath, checkRootObjComp, checkChildGameObjects, ex.Message, ex.StackTrace);
+                        so = null;
+                    }
+                    if (null == so)
+                    {
+                        continue;
+                    }
+
                     SerializedProperty sp = so.GetIterator();
 
                     while (sp.Next(true))
