@@ -1107,6 +1107,201 @@ namespace StoryScript.DslExpression
         }
 #endif
     }
+    internal class ConvertDumpBinExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count >= 2)
+            {
+                var binFile = operands[0].AsString;
+                var txtFile = operands[1].AsString;
+                if (!string.IsNullOrEmpty(binFile) && !string.IsNullOrEmpty(txtFile))
+                {
+                    Convert(binFile, txtFile);
+                    return true;
+                }
+            }
+            return false;
+        }
+        /// <summary>
+        /// Convert the custom binary file to a formatted text file.
+        /// Binary format:
+        ///   [start_addr (8 bytes, Int64)]
+        ///   [size (8 bytes, Int64)]
+        ///   [size_truncated_to_max (8 bytes, Int64)]
+        ///   [data (size_truncated_to_max bytes)]
+        ///
+        /// Text format:
+        ///   Line 1: start_addr, size, size_truncated_to_max in hex (each as 16 hex digits)
+        ///   From line 2:
+        ///     - First line may be a partial line for alignment:
+        ///         address = start_addr aligned down to 8-byte boundary,
+        ///         bytes before real start_addr shown as spaces.
+        ///     - Then normal lines:
+        ///         1) Address in hex, 16 characters
+        ///         2) A space
+        ///         3) 16 bytes as 2-digit hex values, separated by spaces
+        ///         4) A space
+        ///         5) 16 ASCII chars (non-printable and >=127 shown as '.')
+        ///            for positions with no data (before start_addr or after end),
+        ///            spaces are printed.
+        /// </summary>
+        public static void Convert(string binPath, string txtPath)
+        {
+            using FileStream fs = new FileStream(binPath, FileMode.Open, FileAccess.Read);
+            using BinaryReader br = new BinaryReader(fs);
+            using StreamWriter sw = new StreamWriter(txtPath, false, Encoding.ASCII);
+
+            // Read header: 3 x 64-bit values (assuming little-endian platform)
+            long startAddr = br.ReadInt64();
+            long size = br.ReadInt64();
+            long sizeTruncated = br.ReadInt64();
+
+            // Helper to format a 64-bit integer as 16-digit uppercase hex
+            static string ToHex64(long value) => value.ToString("x16");
+
+            // Line 1: three 64-bit values in hex, width 16
+            sw.WriteLine($"{ToHex64(startAddr)} {ToHex64(size)} {ToHex64(sizeTruncated)}");
+
+            // Read data region
+            byte[] data = br.ReadBytes(checked((int) sizeTruncated));
+
+            const int bytesPerLine = 16;
+
+            // Align start address down to 8-byte boundary
+            long alignedAddr = startAddr & ~0x7L;
+
+            long addr = alignedAddr;
+            int offset = 0;
+
+            // Handle possible first partial line before startAddr
+            long delta = startAddr - alignedAddr; // how many bytes before the first real byte
+            if (delta > 0)
+            {
+                int preBytes = (int) Math.Min(bytesPerLine, delta);
+                int lineBytes = Math.Min(bytesPerLine, preBytes + data.Length);
+
+                // 1) Address field
+                sw.Write(ToHex64(addr));
+                sw.Write(' ');
+
+                // 2) Hex bytes: positions before start_addr are spaces
+                for (int i = 0; i < bytesPerLine; i++)
+                {
+                    if (i < preBytes)
+                    {
+                        // 2 hex chars + 1 space => 3 spaces
+                        sw.Write("   ");
+                    }
+                    else if (i < lineBytes)
+                    {
+                        int dataIndex = i - preBytes;
+                        sw.Write(data[dataIndex].ToString("x2"));
+                        sw.Write(i == bytesPerLine - 1 ? ' ' : ' ');
+                        if (i < bytesPerLine - 1)
+                            sw.Write(' '); // keep one extra space as separator
+                    }
+                    else
+                    {
+                        // no more data on this line; fill hex area with spaces
+                        sw.Write("   ");
+                    }
+                }
+
+                sw.Write(' ');
+
+                // 3) ASCII: spaces for positions before start_addr or without data
+                for (int i = 0; i < bytesPerLine; i++)
+                {
+                    if (i < preBytes)
+                    {
+                        sw.Write(' ');
+                    }
+                    else if (i < lineBytes)
+                    {
+                        int dataIndex = i - preBytes;
+                        byte b = data[dataIndex];
+                        char c = (b >= 32 && b < 127) ? (char) b : '.';
+                        sw.Write(c);
+                    }
+                    else
+                    {
+                        sw.Write(' ');
+                    }
+                }
+
+                sw.WriteLine();
+
+                // Advance offset and addr
+                int consumed = lineBytes - preBytes;
+                offset += consumed;
+                addr += bytesPerLine;
+            }
+
+            // Normal full/partial lines after the first aligned line
+            while (offset < data.Length)
+            {
+                int count = Math.Min(bytesPerLine, data.Length - offset);
+
+                // 1) Address field (16 hex digits)
+                sw.Write(ToHex64(addr));
+                sw.Write(' ');
+
+                // 2) Hex bytes (up to 16, separated by spaces; pad to 16-byte width)
+                for (int i = 0; i < bytesPerLine; i++)
+                {
+                    if (i < count)
+                    {
+                        sw.Write(data[offset + i].ToString("x2"));
+                        if (i < bytesPerLine - 1)
+                        {
+                            sw.Write(' ');
+                        }
+                    }
+                    else
+                    {
+                        // pad hex area for missing bytes
+                        sw.Write("   ");
+                    }
+                }
+
+                sw.Write(' ');
+
+                // 3) ASCII representation (pad with spaces for missing bytes)
+                for (int i = 0; i < bytesPerLine; i++)
+                {
+                    if (i < count)
+                    {
+                        byte b = data[offset + i];
+                        char c = (b >= 32 && b < 127) ? (char) b : '.';
+                        sw.Write(c);
+                    }
+                    else
+                    {
+                        sw.Write(' ');
+                    }
+                }
+
+                sw.WriteLine();
+
+                offset += count;
+                addr += bytesPerLine;
+            }
+        }
+        /// <summary>
+        /// Align the given 64-bit value to the next 8-byte boundary (if not already aligned).
+        /// </summary>
+        private static long AlignTo8(long value)
+        {
+            const long alignment = 8;
+            long remainder = value & (alignment - 1);
+            if (remainder == 0)
+            {
+                return value;
+            }
+            return value + (alignment - remainder);
+        }
+    }
     internal class DisplayProgressBarExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -1516,6 +1711,7 @@ namespace StoryScript.DslExpression
             calculator.Register("scanprefab", "scanprefab(obj) api", new ExpressionFactoryHelper<ScanPrefabExp>());
             calculator.Register("scandependency", "scandependency(prefab_a,prefab_b) api", new ExpressionFactoryHelper<ScanDependencyExp>());
             calculator.Register("checkinternaldependency", "checkinternaldependency(prefab_a,prefab_b[include_root_comp,include_child_gobj]) api", new ExpressionFactoryHelper<CheckInternalDependencyExp>());
+            calculator.Register("convertdumpbin", "convertdumpbin(bin_file,txt_file) api", new ExpressionFactoryHelper<ConvertDumpBinExp>());
             calculator.Register("displayprogressbar", "displayprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayProgressBarExp>());
             calculator.Register("displaycancelableprogressbar", "displaycancelableprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayCancelableProgressBarExp>());
             calculator.Register("clearprogressbar", "clearprogressbar() api", new ExpressionFactoryHelper<ClearProgressBarExp>());
