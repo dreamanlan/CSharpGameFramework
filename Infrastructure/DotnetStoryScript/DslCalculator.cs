@@ -221,7 +221,7 @@ namespace DotnetStoryScript.DslExpression
                     type = "float";
                 }
             }
-            if (type == "float" || str.IndexOfAny(s_FloatExponent) > 0) {
+            if (type == "float" || type != "uint" && str.IndexOfAny(s_FloatExponent) > 0) {
                 if (double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out var v)) {
                     if (v >= float.MinValue && v <= float.MaxValue) {
                         val.Set((float)v);
@@ -270,7 +270,7 @@ namespace DotnetStoryScript.DslExpression
                 }
                 ret = true;
             }
-            else if (TryParseBool(str, out var bv)) {
+            if (!ret && TryParseBool(str, out var bv)) {
                 val.Set(bv);
                 type = "bool";
                 ret = true;
