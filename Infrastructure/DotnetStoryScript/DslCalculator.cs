@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -3931,6 +3931,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: dotnetload(dll_path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 string path = operands[0].AsString;
@@ -3945,6 +3947,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: dotnetnew(assembly,type_name,arg1,arg2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var assem = operands[0].As<Assembly>();
@@ -3964,6 +3968,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1 || operands.Count > 3)
+                throw new Exception("Expected: substring(str[,start,len]) function");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 string str = operands[0].GetString();
@@ -3987,6 +3993,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: newstringbuilder() api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 0) {
                 r = BoxedValue.FromObject(new StringBuilder());
@@ -3998,6 +4006,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: appendformat(sb,fmt,arg1,arg2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var sb = operands[0].As<StringBuilder>();
@@ -4021,6 +4031,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: appendformatline(sb,fmt,arg1,arg2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var sb = operands[0].As<StringBuilder>();
@@ -4050,6 +4062,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stringbuilder_tostring(sb)");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var sb = operands[0].As<StringBuilder>();
@@ -4064,6 +4078,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: stringjoin(sep,list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var sep = operands[0].AsString;
@@ -4083,6 +4099,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: stringsplit(str,sep_list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var str = operands[0].AsString;
@@ -4108,6 +4126,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stringtrim(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4120,6 +4140,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stringtrimstart(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4132,6 +4154,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stringtrimend(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4144,6 +4168,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stringtolower(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4156,6 +4182,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stringtoupper(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4168,6 +4196,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 3)
+                throw new Exception("Expected: stringreplace(str,key,rep_str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var str = operands[0].AsString;
@@ -4182,6 +4212,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 3)
+                throw new Exception("Expected: stringreplacechar(str,key,char_as_str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var str = operands[0].AsString;
@@ -4221,6 +4253,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: stringcontains(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
@@ -4250,6 +4284,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: stringnotcontains(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
@@ -4279,6 +4315,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: stringcontainsany(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 r = true;
@@ -4318,6 +4356,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: stringnotcontainsany(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 r = true;
@@ -4357,6 +4397,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: str2int(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4372,6 +4414,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: str2uint(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4387,6 +4431,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: str2long(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4402,6 +4448,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: str2ulong(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4417,6 +4465,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: str2float(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4432,6 +4482,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: str2double(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4447,6 +4499,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hex2int(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4462,6 +4516,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hex2uint(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4477,6 +4533,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hex2long(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4492,6 +4550,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hex2ulong(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4507,6 +4567,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: datetimestr(fmt) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var fmt = operands[0].AsString;
@@ -4522,6 +4584,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: longdatestr() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToLongDateString());
             return r;
         }
@@ -4530,6 +4594,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: longtimestr() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToShortDateString());
             return r;
         }
@@ -4538,6 +4604,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: shortdatestr() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToShortDateString());
             return r;
         }
@@ -4546,6 +4614,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: shorttimestr() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToShortTimeString());
             return r;
         }
@@ -4554,6 +4624,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: isnullorempty(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -4577,6 +4649,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: toarray(list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var list = operands[0];
@@ -4598,6 +4672,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: listsize(list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var list = operands[0].As<IList>();
@@ -4625,6 +4701,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2 || operands.Count > 3)
+                throw new Exception("Expected: listget(list,index[,defval]) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -4649,6 +4727,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 3)
+                throw new Exception("Expected: listset(list,index,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var list = operands[0].As<IList>();
@@ -4672,6 +4752,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: listindexof(list,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -4690,6 +4772,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: listadd(list,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -4708,6 +4792,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: listremove(list,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -4726,6 +4812,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 3)
+                throw new Exception("Expected: listinsert(list,index,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var list = operands[0].As<IList>();
@@ -4745,6 +4833,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: listremoveat(list,index) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -4760,6 +4850,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: listclear(list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var list = operands[0].As<IList>();
@@ -4774,6 +4866,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: listsplit(list,ct) api, return list of list");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var enumer = operands[0].As<IEnumerable>();
@@ -4830,6 +4924,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hashtablesize(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -4874,6 +4970,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2 || operands.Count > 3)
+                throw new Exception("Expected: hashtableget(hash,key[,defval]) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
@@ -4902,6 +5000,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 3)
+                throw new Exception("Expected: hashtableset(hash,key,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var dict = operands[0].As<IDictionary>();
@@ -4925,6 +5025,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 3)
+                throw new Exception("Expected: hashtableadd(hash,key,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var dict = operands[0].As<IDictionary>();
@@ -4948,6 +5050,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: hashtableremove(hash,key) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
@@ -4969,6 +5073,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hashtableclear(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -4983,6 +5089,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hashtablekeys(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -5008,6 +5116,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hashtablevalues(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -5033,6 +5143,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: listhashtable(hash) api, return list of pair");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -5051,6 +5163,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: hashtablesplit(hash,ct) api, return list of hashtable");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
@@ -5108,6 +5222,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: peek(queue_or_stack) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
@@ -5126,6 +5242,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stacksize(stack) api");
             int r = 0;
             if (operands.Count >= 1) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
@@ -5153,6 +5271,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: push(stack,v) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
@@ -5168,6 +5288,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: pop(stack) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
@@ -5182,6 +5304,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: stackclear(stack) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
@@ -5196,6 +5320,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: queuesize(queue) api");
             int r = 0;
             if (operands.Count >= 1) {
                 var queue = operands[0].As<Queue<BoxedValue>>();
@@ -5223,6 +5349,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: enqueue(queue,v) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var queue = operands[0].As<Queue<BoxedValue>>();
@@ -5238,6 +5366,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: dequeue(queue) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var queue = operands[0].As<Queue<BoxedValue>>();
@@ -5252,6 +5382,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: queueclear(queue) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var queue = operands[0].As<Queue<BoxedValue>>();
@@ -5266,6 +5398,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: setenv(k,v) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var key = operands[0].AsString;
@@ -5280,6 +5414,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getenv(k) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var key = operands[0].AsString;
@@ -5292,6 +5428,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: expand(str) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var key = operands[0].AsString;
@@ -5304,6 +5442,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: envs() api");
             return BoxedValue.FromObject(Environment.GetEnvironmentVariables());
         }
     }
@@ -5311,6 +5451,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: cd(path) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -5330,6 +5472,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: pwd() api");
             return Environment.CurrentDirectory;
         }
     }
@@ -5337,6 +5481,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: cmdline() api");
             return Environment.CommandLine;
         }
     }
@@ -5344,6 +5490,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: cmdlineargs(prev_arg) or cmdlineargs() api, first return next arg, second return array of arg");
             if (operands.Count >= 1) {
                 string name = operands[0].AsString;
                 if (!string.IsNullOrEmpty(name)) {
@@ -5364,6 +5512,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: os() api");
             return Environment.OSVersion.VersionString;
         }
     }
@@ -5371,6 +5521,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: osplatform() api");
             return Environment.OSVersion.Platform.ToString();
         }
     }
@@ -5378,6 +5530,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: osversion() api");
             return Environment.OSVersion.Version.ToString();
         }
     }
@@ -5385,6 +5539,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getfullpath(path) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5400,6 +5556,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getpathroot(path) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5415,6 +5573,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: getrandomfilename() api");
             return Path.GetRandomFileName();
         }
     }
@@ -5422,6 +5582,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: gettempfilename() api");
             return Path.GetTempFileName();
         }
     }
@@ -5429,6 +5591,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: gettemppath() api");
             return Path.GetTempPath();
         }
     }
@@ -5436,6 +5600,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: hasextension(path) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5451,6 +5617,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: ispathrooted(path) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5466,6 +5634,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getfilename(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5481,6 +5651,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getfilenamewithoutextension(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5496,6 +5668,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getextension(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5511,6 +5685,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getdirectoryname(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5526,6 +5702,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: combinepath(path1,path2) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var path1 = operands[0].AsString;
@@ -5543,6 +5721,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: changeextension(path,ext) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var path = operands[0].AsString;
@@ -5559,6 +5739,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1 || operands.Count > 3)
+                throw new Exception("Expected: quotepath(path[,only_needed,single_quote]) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -5652,6 +5834,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: callstack() api");
             var r = System.Environment.StackTrace;
             return BoxedValue.FromObject(r);
         }
@@ -5660,6 +5844,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: call(func_name,arg1,arg2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var func = operands[0].AsString;
@@ -5679,6 +5865,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: return([val]) api");
             Calculator.RunState = RunStateEnum.Return;
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -5691,6 +5879,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: redirect(arg1,arg2,...) api");
             Calculator.RunState = RunStateEnum.Redirect;
             if (operands.Count >= 1) {
                 List<string> args = new List<string>();
@@ -5707,6 +5897,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: fileecho(bool) or fileecho() api");
             if (operands.Count >= 1) {
                 DslCalculator.FileEchoOn = operands[0].GetBool();
             }
@@ -5717,6 +5909,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: direxist(dir) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -5730,6 +5924,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: fileexist(file) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -5743,6 +5939,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: listdirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -5784,6 +5982,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: listfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -5825,6 +6025,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: listalldirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -5866,6 +6068,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: listallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -5907,6 +6111,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: createdir(dir) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -5927,6 +6133,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: copydir(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
             int ct = 0;
             if (operands.Count >= 2) {
                 var dir1 = operands[0].AsString;
@@ -6005,6 +6213,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: movedir(dir1,dir2) api");
             bool ret = false;
             if (operands.Count >= 2) {
                 var dir1 = operands[0].AsString;
@@ -6030,6 +6240,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: deletedir(dir) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -6050,6 +6262,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: copyfile(file1,file2) api");
             bool ret = false;
             if (operands.Count >= 2) {
                 var file1 = operands[0].AsString;
@@ -6076,6 +6290,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2)
+                throw new Exception("Expected: copyfiles(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
             int ct = 0;
             if (operands.Count >= 2) {
                 var dir1 = operands[0].AsString;
@@ -6139,6 +6355,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 2)
+                throw new Exception("Expected: movefile(file1,file2) api");
             bool ret = false;
             if (operands.Count >= 2) {
                 var file1 = operands[0].AsString;
@@ -6168,6 +6386,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: deletefile(file) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -6188,6 +6408,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: deletefiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
             int ct = 0;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -6232,6 +6454,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1)
+                throw new Exception("Expected: deleteallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
             int ct = 0;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -6276,6 +6500,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getfileinfo(file) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -6291,6 +6517,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getdirinfo(dir) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -6306,6 +6534,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: getdriveinfo(drive) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var drive = operands[0].AsString;
@@ -6318,6 +6548,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: getdrivesinfo() api");
             var ret = DriveInfo.GetDrives();
             return BoxedValue.FromObject(ret);
         }
@@ -6326,6 +6558,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1 || operands.Count > 2)
+                throw new Exception("Expected: readalllines(file[,encoding]) api");
             if (operands.Count >= 1) {
                 string path = operands[0].AsString;
                 if (!string.IsNullOrEmpty(path)) {
@@ -6345,6 +6579,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2 || operands.Count > 3)
+                throw new Exception("Expected: writealllines(file,lines[,encoding]) api");
             if (operands.Count >= 2) {
                 string path = operands[0].AsString;
                 var lines = operands[1].As<IList>();
@@ -6370,6 +6606,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 1 || operands.Count > 2)
+                throw new Exception("Expected: readalltext(file[,encoding]) api");
             if (operands.Count >= 1) {
                 string path = operands[0].AsString;
                 if (!string.IsNullOrEmpty(path)) {
@@ -6389,6 +6627,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count < 2 || operands.Count > 3)
+                throw new Exception("Expected: writealltext(file,txt[,encoding]) api");
             if (operands.Count >= 2) {
                 string path = operands[0].AsString;
                 var text = operands[1].AsString;
@@ -7017,6 +7257,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: kill(name_or_pid) api");
             int ret = 0;
             if (operands.Count >= 1) {
                 int myselfId = 0;
@@ -7062,6 +7304,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: killme([exit_code]) api");
             int ret = 0;
             var p = System.Diagnostics.Process.GetCurrentProcess();
             if (null != p) {
@@ -7082,6 +7326,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: pid() api");
             int ret = 0;
             var p = System.Diagnostics.Process.GetCurrentProcess();
             if (null != p) {
@@ -7094,6 +7340,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: plist([filter]) api, return list");
             IList<System.Diagnostics.Process> ret = null;
             var ps = System.Diagnostics.Process.GetProcesses();
             string filter = null;
@@ -7127,6 +7375,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: wait(time) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var time = operands[0].GetInt();
@@ -7140,6 +7390,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: waitall([timeout]) api, wait all task to exit");
             var tasks = DslCalculator.Tasks;
             int timeout = -1;
             if (operands.Count >= 1) {
@@ -7158,6 +7410,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count > 1)
+                throw new Exception("Expected: waitstartinterval(time) or waitstartinterval() api, used in Task.Wait for process/command");
             if (operands.Count >= 1) {
                 var v = operands[0];
                 if (!v.IsNullObject) {
@@ -7171,6 +7425,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: cleanupcompletedtasks() api");
             DslCalculator.CleanupCompletedTasks();
             return BoxedValue.NullObject;
         }
@@ -7179,6 +7435,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 0)
+                throw new Exception("Expected: gettaskcount() api");
             return DslCalculator.Tasks.Count;
         }
     }
@@ -7186,6 +7444,8 @@ namespace DotnetStoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
+            if (operands.Count != 1)
+                throw new Exception("Expected: calcmd5(file) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
