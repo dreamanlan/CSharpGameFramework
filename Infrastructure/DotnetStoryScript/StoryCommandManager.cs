@@ -536,7 +536,7 @@ namespace DotnetStoryScript
             StoryFunctionManager.Instance.RegisterFunctionFactory("hex2uint", "hex2uint(str) function", new StoryFunctionFactoryHelper<CommonFunctions.Hex2UintFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("hex2long", "hex2long(str) function", new StoryFunctionFactoryHelper<CommonFunctions.Hex2LongFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("hex2ulong", "hex2ulong(str) function", new StoryFunctionFactoryHelper<CommonFunctions.Hex2UlongFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("datetimestr", "datetimestr(fmt) function", new StoryFunctionFactoryHelper<CommonFunctions.DatetimeStrFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("datetimestr", "datetimestr([fmt]) function", new StoryFunctionFactoryHelper<CommonFunctions.DatetimeStrFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("longdatestr", "longdatestr() function", new StoryFunctionFactoryHelper<CommonFunctions.LongDateStrFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("longtimestr", "longtimestr() function", new StoryFunctionFactoryHelper<CommonFunctions.LongTimeStrFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("shortdatestr", "shortdatestr() function", new StoryFunctionFactoryHelper<CommonFunctions.ShortDateStrFunction>());

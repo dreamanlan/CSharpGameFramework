@@ -18,8 +18,6 @@ D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstan
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\DotnetSkillScript.pdb
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Common.dll
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Dsl.dll
-D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\ScriptFrameworkLibrary.dll
-D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Common.pdb
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Dsl.pdb
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.csproj.AssemblyReference.cache
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.GeneratedMSBuildEditorConfig.editorconfig
@@ -28,3 +26,5 @@ D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstan
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSk.75F1F714.Up2Date
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.dll
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\ScriptFrameworkLibrary.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Common.pdb
