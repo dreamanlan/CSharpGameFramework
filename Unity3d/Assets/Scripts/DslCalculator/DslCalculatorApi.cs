@@ -378,6 +378,41 @@ namespace StoryScript.DslExpression
             return r;
         }
     }
+    internal class FromJsonOverwriteExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = false;
+#if UNITY_EDITOR
+            if (operands.Count >= 2) {
+                var json = operands[0].AsString;
+                var obj = operands[1].As<UnityEngine.Object>();
+                if (!string.IsNullOrEmpty(json) && null != obj) {
+                    EditorJsonUtility.FromJsonOverwrite(json, obj);
+                    r = true;
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class ToJsonExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.EmptyString;
+#if UNITY_EDITOR
+            if (operands.Count >= 1) {
+                var obj = operands[0].As<UnityEngine.Object>();
+                var pretty = operands.Count > 1 ? operands[1].GetBool() : false;
+                if (null != obj) {
+                    r = BoxedValue.FromString(EditorJsonUtility.ToJson(obj, pretty));
+                }
+            }
+#endif
+            return r;
+        }
+    }
     internal class GetPrefabTypeExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -1615,6 +1650,8 @@ namespace StoryScript.DslExpression
             calculator.Register("unloadasset", "unloadasset(obj) api", new ExpressionFactoryHelper<UnloadAssetExp>());
             calculator.Register("addobjecttoasset", "addobjecttoasset(obj) api", new ExpressionFactoryHelper<AddObjectToAssetExp>());
             calculator.Register("removeobjectfromasset", "removeobjectfromasset(obj) api", new ExpressionFactoryHelper<RemoveObjectFromAssetExp>());
+            calculator.Register("fromjsonoverwrite", "fromjsonoverwrite(json,obj) api", new ExpressionFactoryHelper<FromJsonOverwriteExp>());
+            calculator.Register("tojson", "tojson(obj[,pretty]) api", new ExpressionFactoryHelper<ToJsonExp>());
             calculator.Register("getprefabtype", "getprefabtype(obj) api", new ExpressionFactoryHelper<GetPrefabTypeExp>());
             calculator.Register("getprefabstatus", "getprefabstatus(obj) api", new ExpressionFactoryHelper<GetPrefabStatusExp>());
             calculator.Register("getprefabobject", "getprefabobject(obj) api", new ExpressionFactoryHelper<GetPrefabObjectExp>());
