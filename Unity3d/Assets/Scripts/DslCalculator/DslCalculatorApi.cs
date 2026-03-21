@@ -306,6 +306,24 @@ namespace StoryScript.DslExpression
             return r;
         }
     }
+    internal class LoadAssetsExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var path = operands[0].AsString;
+                if (null != path)
+                {
+                    r = BoxedValue.FromObject(AssetDatabase.LoadAllAssetsAtPath(path));
+                }
+            }
+#endif
+            return r;
+        }
+    }
     internal class UnloadAssetExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -341,6 +359,45 @@ namespace StoryScript.DslExpression
                 UnityEngine.Object.DestroyImmediate(obj);
 #endif
             }
+        }
+    }
+    internal class AddObjectToAssetExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = false;
+#if UNITY_EDITOR
+            if (operands.Count >= 2)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                var path = operands[1].AsString;
+                if (null!=obj && !string.IsNullOrEmpty(path))
+                {
+                    AssetDatabase.AddObjectToAsset(obj, path);
+                    r = true;
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class RemoveObjectFromAssetExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var r = false;
+#if UNITY_EDITOR
+            if (operands.Count >= 1)
+            {
+                var obj = operands[0].As<UnityEngine.Object>();
+                if (null != obj)
+                {
+                    AssetDatabase.RemoveObjectFromAsset(obj);
+                    r = true;
+                }
+            }
+#endif
+            return r;
         }
     }
     internal class GetPrefabTypeExp : SimpleExpressionBase
@@ -1694,7 +1751,10 @@ namespace StoryScript.DslExpression
             calculator.Register("getdependenciesgraph", "getdependenciesgraph(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDependenciesGraphExp>());
             calculator.Register("getassetimporter", "getassetimporter(path) api", new ExpressionFactoryHelper<GetAssetImporterExp>());
             calculator.Register("loadasset", "loadasset(asset_path) api", new ExpressionFactoryHelper<LoadAssetExp>());
+            calculator.Register("loadassets", "loadassets(asset_path) api", new ExpressionFactoryHelper<LoadAssetsExp>());
             calculator.Register("unloadasset", "unloadasset(obj) api", new ExpressionFactoryHelper<UnloadAssetExp>());
+            calculator.Register("addobjecttoasset", "addobjecttoasset(obj) api", new ExpressionFactoryHelper<AddObjectToAssetExp>());
+            calculator.Register("removeobjectfromasset", "removeobjectfromasset(obj) api", new ExpressionFactoryHelper<RemoveObjectFromAssetExp>());
             calculator.Register("getprefabtype", "getprefabtype(obj) api", new ExpressionFactoryHelper<GetPrefabTypeExp>());
             calculator.Register("getprefabstatus", "getprefabstatus(obj) api", new ExpressionFactoryHelper<GetPrefabStatusExp>());
             calculator.Register("getprefabobject", "getprefabobject(obj) api", new ExpressionFactoryHelper<GetPrefabObjectExp>());
