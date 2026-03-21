@@ -413,6 +413,27 @@ namespace StoryScript.DslExpression
             return r;
         }
     }
+    internal sealed class GetStringInLengthExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count < 2 || operands.Count > 3) {
+                throw new Exception("Expected: getstringinlength(str, len[, get_the_end_def_false])");
+            }
+            string str = operands[0].AsString;
+            int len = operands[1].GetInt();
+            bool getTheEnd = operands.Count > 2 ? operands[2].GetBool() : false;
+            if (!string.IsNullOrEmpty(str)) {
+                if (getTheEnd) {
+                    return BoxedValue.From(str.Length > len ? "..." + str.Substring(str.Length - len, len) : str);
+                }
+                else {
+                    return BoxedValue.From(str.Length > len ? str.Substring(0, len) + "..." : str);
+                }
+            }
+            return BoxedValue.EmptyString;
+        }
+    }
     internal class GetPrefabTypeExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -1652,6 +1673,7 @@ namespace StoryScript.DslExpression
             calculator.Register("removeobjectfromasset", "removeobjectfromasset(obj) api", new ExpressionFactoryHelper<RemoveObjectFromAssetExp>());
             calculator.Register("fromjsonoverwrite", "fromjsonoverwrite(json,obj) api", new ExpressionFactoryHelper<FromJsonOverwriteExp>());
             calculator.Register("tojson", "tojson(obj[,pretty]) api", new ExpressionFactoryHelper<ToJsonExp>());
+            calculator.Register("getstringinlength", "getstringinlength(str,len[,get_the_end]) api", new ExpressionFactoryHelper<GetStringInLengthExp>());
             calculator.Register("getprefabtype", "getprefabtype(obj) api", new ExpressionFactoryHelper<GetPrefabTypeExp>());
             calculator.Register("getprefabstatus", "getprefabstatus(obj) api", new ExpressionFactoryHelper<GetPrefabStatusExp>());
             calculator.Register("getprefabobject", "getprefabobject(obj) api", new ExpressionFactoryHelper<GetPrefabObjectExp>());
