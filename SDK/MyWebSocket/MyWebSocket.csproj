@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{50B3E513-FDBF-4B78-AEDF-2C2EA2B2736F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MyWebSocket</RootNamespace>
+    <AssemblyName>MyWebSocket</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;USE_IL2CPP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;USE_IL2CPP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\DnsEndPoint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\Extensions.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\SocketAsyncArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Common\SearchMarkState.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\AsyncTcpSession.cs" />
+    <Compile Include="Core\ConcurrentQueue.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\DataEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\ErrorEventArgs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\SimpleTcpClientSession.cs" />
+    <Compile Include="Core\SslStreamTcpSession.cs" />
+    <Compile Include="Core\ModernTcpClientSession.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\ArraySegmentEx.cs" />
+    <Compile Include="Protocol\ArraySegmentList.cs" />
+    <Compile Include="Protocol\BinaryCommandInfo.cs" />
+    <Compile Include="Protocol\CommandInfo.cs" />
+    <Compile Include="Protocol\DelegateCommand.cs" />
+    <Compile Include="Protocol\IClientCommandReader.cs" />
+    <Compile Include="Protocol\ICommand.cs" />
+    <Compile Include="Protocol\ICommandInfo.cs" />
+    <Compile Include="Protocol\StringCommandInfo.cs" />
+    <Compile Include="WebSocket\Command\BadRequest.cs" />
+    <Compile Include="WebSocket\Command\Binary.cs" />
+    <Compile Include="WebSocket\Command\Close.cs" />
+    <Compile Include="WebSocket\Command\Handshake.cs" />
+    <Compile Include="WebSocket\Command\Ping.cs" />
+    <Compile Include="WebSocket\Command\Pong.cs" />
+    <Compile Include="WebSocket\Command\Text.cs" />
+    <Compile Include="WebSocket\Command\WebSocketCommandBase.cs" />
+    <Compile Include="WebSocket\DataReceivedEventArgs.cs" />
+    <Compile Include="WebSocket\Extensions.cs" />
+    <Compile Include="WebSocket\MessageReceivedEventArgs.cs" />
+    <Compile Include="WebSocket\OpCode.cs" />
+    <Compile Include="WebSocket\Protocol\CloseStatusCodeHybi10.cs" />
+    <Compile Include="WebSocket\Protocol\CloseStatusCodeRfc6455.cs" />
+    <Compile Include="WebSocket\Protocol\DraftHybi00DataReader.cs" />
+    <Compile Include="WebSocket\Protocol\DraftHybi00HandshakeReader.cs" />
+    <Compile Include="WebSocket\Protocol\DraftHybi00Processor.cs" />
+    <Compile Include="WebSocket\Protocol\DraftHybi10DataReader.cs" />
+    <Compile Include="WebSocket\Protocol\DraftHybi10HandshakeReader.cs" />
+    <Compile Include="WebSocket\Protocol\DraftHybi10Processor.cs" />
+    <Compile Include="WebSocket\Protocol\FramePartReader\DataFramePartReader.cs" />
+    <Compile Include="WebSocket\Protocol\FramePartReader\ExtendedLenghtReader.cs" />
+    <Compile Include="WebSocket\Protocol\FramePartReader\FixPartReader.cs" />
+    <Compile Include="WebSocket\Protocol\FramePartReader\IDataFramePartReader.cs" />
+    <Compile Include="WebSocket\Protocol\FramePartReader\MaskKeyReader.cs" />
+    <Compile Include="WebSocket\Protocol\FramePartReader\PayloadDataReader.cs" />
+    <Compile Include="WebSocket\Protocol\HandshakeReader.cs" />
+    <Compile Include="WebSocket\Protocol\ICloseStatusCode.cs" />
+    <Compile Include="WebSocket\Protocol\IProtocolProcessor.cs" />
+    <Compile Include="WebSocket\Protocol\ProtocolProcessorBase.cs" />
+    <Compile Include="WebSocket\Protocol\ProtocolProcessorFactory.cs" />
+    <Compile Include="WebSocket\Protocol\ReaderBase.cs" />
+    <Compile Include="WebSocket\Protocol\Rfc6455Processor.cs" />
+    <Compile Include="WebSocket\Protocol\WebSocketDataFrame.cs" />
+    <Compile Include="WebSocket\WebSocket.cs" />
+    <Compile Include="WebSocket\WebSocket.Net35.cs" />
+    <Compile Include="WebSocket\WebSocketCommandInfo.cs" />
+    <Compile Include="WebSocket\WebSocketContext.cs" />
+    <Compile Include="WebSocket\WebSocketState.cs" />
+    <Compile Include="WebSocket\WebSocketVersion.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
