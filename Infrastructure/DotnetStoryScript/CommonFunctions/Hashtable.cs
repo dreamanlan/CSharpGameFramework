@@ -377,8 +377,19 @@ namespace DotnetStoryScript.CommonFunctions
             Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 pair = new Pair();
-                pair.m_Key.InitFromDsl(callData.GetParam(0));
-                pair.m_Value.InitFromDsl(callData.GetParam(1));
+                var p0 = callData.GetParam(0);
+                var p1 = callData.GetParam(1);
+                if (p0 is Dsl.ValueData vd0 && vd0.GetIdType() == Dsl.ValueData.ID_TOKEN) {
+                    var vid = vd0.GetId();
+                    if (vid.Length > 0 && (vid[0] == '$' || vid[0] == '@')) {
+                        // Enable variables with prefixed tags
+                    }
+                    else {
+                        vd0.SetType(Dsl.ValueData.STRING_TOKEN);
+                    }
+                }
+                pair.m_Key.InitFromDsl(p0);
+                pair.m_Value.InitFromDsl(p1);
             }
             return pair;
         }

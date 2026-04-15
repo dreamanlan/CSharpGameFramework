@@ -4955,9 +4955,20 @@ namespace DotnetStoryScript.DslExpression
             for (int i = 0; i < funcData.GetParamNum(); ++i) {
                 Dsl.FunctionData callData = funcData.GetParam(i) as Dsl.FunctionData;
                 if (null != callData && callData.GetParamNum() == 2) {
-                    var expKey = Calculator.Load(callData.GetParam(0));
+                    var p0 = callData.GetParam(0);
+                    var p1 = callData.GetParam(1);
+                    if (p0 is Dsl.ValueData vd0 && vd0.GetIdType() == Dsl.ValueData.ID_TOKEN) {
+                        var vid = vd0.GetId();
+                        if (vid.Length > 0 && (vid[0] == '$' || vid[0] == '@')) {
+                            // Enable variables with prefixed tags
+                        }
+                        else {
+                            vd0.SetType(Dsl.ValueData.STRING_TOKEN);
+                        }
+                    }
+                    var expKey = Calculator.Load(p0);
                     m_Expressions.Add(expKey);
-                    var expVal = Calculator.Load(callData.GetParam(1));
+                    var expVal = Calculator.Load(p1);
                     m_Expressions.Add(expVal);
                 }
             }
