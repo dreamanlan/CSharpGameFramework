@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -63,8 +63,14 @@ namespace DotnetStoryScript.DslExpression
 
         private Queue<List<BoxedValue>> m_Pool = null;
     }
+    public sealed class AsyncCalcResult
+    {
+        public BoxedValue Result;
+        public bool IsCompleted;
+    }
     public interface IExpression
     {
+        IEnumerator Calc(AsyncCalcResult result);
         BoxedValue Calc();
         bool Load(Dsl.ISyntaxComponent dsl, DslCalculator calculator);
     }
@@ -81,17 +87,44 @@ namespace DotnetStoryScript.DslExpression
     }
     public abstract class AbstractExpression : IExpression
     {
+        public virtual bool IsAsync { get { return false; } }
+        public IEnumerator Calc(AsyncCalcResult result)
+        {
+            if (IsAsync) {
+                yield return DoCalc(result);
+            }
+            else {
+                BoxedValue ret = BoxedValue.NullObject;
+                try {
+                    ret = DoCalc();
+                }
+                catch (Exception ex) {
+                    var msg = string.Format("calc:[{0}]", ToString());
+                    throw new Exception(msg, ex);
+                }
+                result.Result = ret;
+            }
+            result.IsCompleted = true;
+        }
         public BoxedValue Calc()
         {
-            BoxedValue ret = BoxedValue.NullObject;
-            try {
-                ret = DoCalc();
+            if (IsAsync) {
+                AsyncCalcResult result = new AsyncCalcResult();
+                var enumer = DoCalc(result);
+                while (enumer.MoveNext()) ;
+                return result.Result;
             }
-            catch (Exception ex) {
-                var msg = string.Format("calc:[{0}]", ToString());
-                throw new Exception(msg, ex);
+            else {
+                BoxedValue ret = BoxedValue.NullObject;
+                try {
+                    ret = DoCalc();
+                }
+                catch (Exception ex) {
+                    var msg = string.Format("calc:[{0}]", ToString());
+                    throw new Exception(msg, ex);
+                }
+                return ret;
             }
-            return ret;
         }
         public bool Load(Dsl.ISyntaxComponent dsl, DslCalculator calculator)
         {
@@ -139,7 +172,8 @@ namespace DotnetStoryScript.DslExpression
         protected virtual bool Load(IList<IExpression> exps) { return false; }
         protected virtual bool Load(Dsl.FunctionData funcData) { return false; }
         protected virtual bool Load(Dsl.StatementData statementData) { return false; }
-        protected abstract BoxedValue DoCalc();
+        protected virtual BoxedValue DoCalc() { return BoxedValue.NullObject; }
+        protected virtual IEnumerator DoCalc(AsyncCalcResult result) { result.Result = BoxedValue.NullObject; yield break; }
 
         protected DslCalculator Calculator
         {
@@ -318,6 +352,29 @@ namespace DotnetStoryScript.DslExpression
             return true;
         }
         protected abstract BoxedValue OnCalc(IList<BoxedValue> operands);
+
+        private IList<IExpression> m_Exps = null;
+    }
+    public abstract class SimpleAsyncExpressionBase : AbstractExpression
+    {
+        public override bool IsAsync { get { return true; } }
+        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        {
+            var operands = Calculator.NewCalculatorValueList();
+            for (int i = 0; i < m_Exps.Count; ++i) {
+                yield return m_Exps[i].Calc(result);
+                operands.Add(result.Result);
+            }
+            var r = OnCalc(operands, result);
+            Calculator.RecycleCalculatorValueList(operands);
+            yield return r;
+        }
+        protected override bool Load(IList<IExpression> exps)
+        {
+            m_Exps = exps;
+            return true;
+        }
+        protected abstract IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result);
 
         private IList<IExpression> m_Exps = null;
     }
@@ -569,8 +626,8 @@ namespace DotnetStoryScript.DslExpression
             if (v1.IsString || v2.IsString) {
                 v = v1.ToString() + v2.ToString();
             }
-            else if(v1.IsInteger && v2.IsInteger) {
-                if(v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
+            else if (v1.IsInteger && v2.IsInteger) {
+                if (v1.IsUnsignedInteger && v2.IsUnsignedInteger) {
                     v = v1.GetULong() + v2.GetULong();
                 }
                 else {
@@ -1261,7 +1318,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue DoCalc()
         {
             double v1 = m_Op1.Calc().GetDouble();
-            BoxedValue v = Math.Log(v1)/Math.Log(2);
+            BoxedValue v = Math.Log(v1) / Math.Log(2);
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2398,7 +2455,8 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue DoCalc()
         {
             BoxedValue v = 0;
-            for (; ; ) {
+            for (; ; )
+            {
                 var condVal = m_Condition.Calc();
                 if (condVal.GetLong() != 0) {
                     for (int index = 0; index < m_Expressions.Count; ++index) {
@@ -2805,7 +2863,7 @@ namespace DotnetStoryScript.DslExpression
             var setVars = new Dictionary<string, BoxedValue>();
             MatchRecursively(ref success, setVars, val, m_VarIds, 0);
             if (success) {
-                foreach(var pair in setVars) {
+                foreach (var pair in setVars) {
                     Calculator.SetVariable(pair.Key, pair.Value);
                 }
             }
@@ -4734,7 +4792,7 @@ namespace DotnetStoryScript.DslExpression
                 var list = operands[0].As<IList>();
                 var index = operands[1].GetInt();
                 var val = operands[2];
-                if(null!=list && list is List<BoxedValue> bvList) {
+                if (null != list && list is List<BoxedValue> bvList) {
                     if (index >= 0 && index < list.Count) {
                         bvList[index] = val;
                     }
@@ -7402,6 +7460,22 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
+    internal sealed class AwaitExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count < 1)
+                throw new Exception("Expected: await(\"func_name\", arg1, arg2, ...) api");
+            var funcName = operands[0].AsString;
+            var args = Calculator.NewCalculatorValueList();
+            for (int i = 1; i < operands.Count; ++i) {
+                args.Add(operands[i]);
+            }
+            var enumerator = Calculator.CalcAsync(funcName, args);
+            Calculator.RecycleCalculatorValueList(args);
+            return BoxedValue.FromObject(enumerator);
+        }
+    }
     internal sealed class WaitAllExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -7508,6 +7582,7 @@ namespace DotnetStoryScript.DslExpression
         {
             public Dictionary<string, int> LocalVarIndexes = new Dictionary<string, int>();
             public List<IExpression> Codes = new List<IExpression>();
+            public bool IsAsync = false;
 
             public void AddParamNameIndex(string paramName)
             {
@@ -7778,6 +7853,7 @@ namespace DotnetStoryScript.DslExpression
             Register("pid", "pid() api", new ExpressionFactoryHelper<GetCurrentProcessIdExp>());
             Register("plist", "plist([filter]) api, return list", new ExpressionFactoryHelper<ListProcessesExp>());
             Register("wait", "wait(time) api", new ExpressionFactoryHelper<WaitExp>());
+            Register("await", "await(\"func_name\", arg1, arg2, ...) api, call async function", new ExpressionFactoryHelper<AwaitExp>());
             Register("waitall", "waitall([timeout]) api, wait all task to exit", new ExpressionFactoryHelper<WaitAllExp>());
             Register("waitstartinterval", "waitstartinterval(time) or waitstartinterval() api, used in Task.Wait for process/command", new ExpressionFactoryHelper<WaitStartIntervalExp>());
             Register("cleanupcompletedtasks", "cleanupcompletedtasks() api", new ExpressionFactoryHelper<CleanupCompletedTasksExp>());
@@ -7871,9 +7947,13 @@ namespace DotnetStoryScript.DslExpression
             var func = info as Dsl.FunctionData;
             string id;
             FuncInfo funcInfo = null;
+            bool isAsync = false;
             if (null != func) {
-                if (func.IsHighOrder)
+                if (func.IsHighOrder) {
                     id = func.LowerOrderFunction.GetParamId(0);
+                    if (func.LowerOrderFunction.GetParamNum() > 1 && func.LowerOrderFunction.GetParamId(1) == "async")
+                        isAsync = true;
+                }
                 else
                     return;
             }
@@ -7881,6 +7961,8 @@ namespace DotnetStoryScript.DslExpression
                 var statement = info as Dsl.StatementData;
                 if (null != statement && statement.GetFunctionNum() == 2) {
                     id = statement.First.AsFunction.GetParamId(0);
+                    if (statement.First.AsFunction.GetParamNum() > 1 && statement.First.AsFunction.GetParamId(1) == "async")
+                        isAsync = true;
                     func = statement.Second.AsFunction;
                     if ((func.GetId() == "params" || func.GetId() == "args") && func.IsHighOrder) {
                         if (func.LowerOrderFunction.GetParamNum() > 0) {
@@ -7907,6 +7989,7 @@ namespace DotnetStoryScript.DslExpression
                     funcInfo.Codes.Add(exp);
                 }
             }
+            funcInfo.IsAsync = isAsync;
             m_Funcs[id] = funcInfo;
         }
         public void LoadDsl(string func, Dsl.FunctionData dslFunc)
@@ -7942,7 +8025,7 @@ namespace DotnetStoryScript.DslExpression
         }
         public void CheckFuncXrefs()
         {
-            foreach(var func in m_FuncCalls) {
+            foreach (var func in m_FuncCalls) {
                 if (!m_Funcs.ContainsKey(func.FuncName)) {
                     //error
                     Log("DslCalculator error, unknown func '{0}', {1} line {2}", func.FuncName, func.SyntaxComponent.ToScriptString(false, Dsl.DelimiterInfo.Default), func.SyntaxComponent.GetLine());
@@ -8005,7 +8088,29 @@ namespace DotnetStoryScript.DslExpression
             }
             return ret;
         }
-        ///funcContext is recorded on the stack and its members can be accessed through custom apis (see parsing of no-argument variables in 'Load')  
+        ///funcContext is recorded on the stack and its members can be accessed through custom apis (see parsing of no-argument variables in 'Load')
+        public IEnumerator CalcAsync(string func, IList<BoxedValue> args)
+        {
+            FuncInfo funcInfo;
+            if (m_Funcs.TryGetValue(func, out funcInfo)) {
+                var enumerator = CalcAsync<object>(args, null, funcInfo);
+                while (enumerator.MoveNext()) {
+                    yield return enumerator.Current;
+                }
+            }
+            else {
+                //error
+                Log("DslCalculator error, unknown func {0}", func);
+            }
+        }
+        public bool IsFuncAsync(string func)
+        {
+            FuncInfo funcInfo;
+            if (m_Funcs.TryGetValue(func, out funcInfo)) {
+                return funcInfo.IsAsync;
+            }
+            return false;
+        }
         ///it's like args, but with a fixed parameter name and is mainly used to invoke snippets of code.
         public BoxedValue Calc<T>(T funcContext, FuncInfo funcInfo) where T : class
         {
@@ -8067,6 +8172,68 @@ namespace DotnetStoryScript.DslExpression
             finally {
                 LocalStackPop();
             }
+        }
+        public IEnumerator CalcInCurrentContextAsync(IList<IExpression> exps)
+        {
+            BoxedValue ret = 0;
+            for (int i = 0; i < exps.Count; ++i) {
+                var exp = exps[i];
+                IEnumerator yieldEnumerator = null;
+                try {
+                    ret = exp.Calc();
+                    if (ret.IsObject && ret.ObjectVal is IEnumerator) {
+                        yieldEnumerator = ret.ObjectVal as IEnumerator;
+                    }
+                    if (m_RunState == RunStateEnum.Return) {
+                        m_RunState = RunStateEnum.Normal;
+                        break;
+                    }
+                    else if (m_RunState == RunStateEnum.Redirect) {
+                        break;
+                    }
+                }
+                catch (DirectoryNotFoundException ex5) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex5.Message, ex5.StackTrace);
+                    OutputInnerException(ex5);
+                }
+                catch (FileNotFoundException ex4) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex4.Message, ex4.StackTrace);
+                    OutputInnerException(ex4);
+                }
+                catch (IOException ex3) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex3.Message, ex3.StackTrace);
+                    OutputInnerException(ex3);
+                    ret = -1;
+                }
+                catch (UnauthorizedAccessException ex2) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex2.Message, ex2.StackTrace);
+                    OutputInnerException(ex2);
+                    ret = -1;
+                }
+                catch (NotSupportedException ex1) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex1.Message, ex1.StackTrace);
+                    OutputInnerException(ex1);
+                    ret = -1;
+                }
+                catch (Exception ex) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex.Message, ex.StackTrace);
+                    OutputInnerException(ex);
+                    ret = -1;
+                    break;
+                }
+                if (yieldEnumerator != null) {
+                    yield return yieldEnumerator;
+                }
+            }
+        }
+        public IEnumerator CalcAsync<T>(IList<BoxedValue> args, T funcContext, FuncInfo funcInfo) where T : class
+        {
+            LocalStackPush(args, funcContext, funcInfo);
+            var enumerator = CalcInCurrentContextAsync(funcInfo.Codes);
+            while (enumerator.MoveNext()) {
+                yield return enumerator.Current;
+            }
+            LocalStackPop();
         }
         public RunStateEnum RunState
         {
@@ -8241,7 +8408,7 @@ namespace DotnetStoryScript.DslExpression
                                             return Load(newCall);
                                         }
                                     }
-                                    else if(param0 is Dsl.FunctionData fd) {
+                                    else if (param0 is Dsl.FunctionData fd) {
                                         Dsl.FunctionData newCall = new Dsl.FunctionData();
                                         newCall.LowerOrderFunction = fd;
                                         newCall.SetStatementParamClass();
@@ -8277,7 +8444,7 @@ namespace DotnetStoryScript.DslExpression
 
                                         return Load(newCall);
                                     }
-                                    else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && !innerCall.HaveId()){
+                                    else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && !innerCall.HaveId()) {
                                         //(a,b,c) = val;
                                         TupleSetExp tuple = new TupleSetExp();
                                         tuple.Load(comp, this);
@@ -8631,7 +8798,7 @@ namespace DotnetStoryScript.DslExpression
         private SortedList<string, string> m_ApiDocs = new SortedList<string, string>();
         private BoxedValueListPool m_Pool = new BoxedValueListPool(16);
         private List<FunctionCall> m_FuncCalls = new List<FunctionCall>();
-		
+
         public static bool FileEchoOn
         {
             get { return s_FileEchoOn; }
