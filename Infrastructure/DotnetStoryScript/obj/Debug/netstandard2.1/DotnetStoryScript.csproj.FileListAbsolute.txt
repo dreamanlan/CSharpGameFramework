@@ -29,3 +29,4 @@ D:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstan
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetSt.CBCC9668.Up2Date
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.dll
 D:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\Common.pdb
