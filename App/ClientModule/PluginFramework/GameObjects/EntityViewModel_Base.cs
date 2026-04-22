@@ -30,7 +30,7 @@ namespace ScriptableFramework
         protected void SetVisible(bool visible)
         {
             if (null != m_Actor) {
-                ResourceSystem.Instance.SetVisible(m_Actor, true, null);
+                ResourceSystem.Instance.SetVisible(m_Actor, true);
             }
         }
 

@@ -3,7 +3,7 @@ story(main)
   local
   {
     @dlgId(0);
-    @index(0);      
+    @index(0);
     @dlgItem(0);
     @tag(0);
     @isFinish(0);
@@ -16,11 +16,11 @@ story(main)
     installplugin("StoryDlg/Panel/ScrollView/Viewport/Content", "UiScrollInfo", 1, 0);
     @window.SetActive(changetype(0,"bool"));
   };
-  onmessage("show_dlg")
+  onmessage("show_dlg")params($dlgId)
   {
     publishgfxevent("ui_hide","ui");
     @isFinish=0;
-    @dlgId = $0;
+    @dlgId = $dlgId;
     @index = 0;
     localnamespacedmessage("show_dlg_item",@dlgId,@index);
     log("First,show_dlg_item:{0} {1}",@dlgId,@index);
@@ -33,18 +33,18 @@ story(main)
       };
     };
     clearmessage("show_dlg");
-  };  
+  };
   onnamespacedmessage("on_click")
   {
     inc(@index);
     localnamespacedmessage("show_dlg_item",@dlgId,@index);
     log("on_click,show_dlg_item:{0} {1}",@dlgId,@index);
   };
-  onnamespacedmessage("show_dlg_item")
+  onnamespacedmessage("show_dlg_item")params($dlgId,$index)
   {
-    @dlgId = $0;
-    @index = $1;
-    
+    @dlgId = $dlgId;
+    @index = $index;
+
     @dlgItem = getdialogitem(@dlgId,@index);
     if(isnull(@dlgItem)){
       if(@isFinish<=0){
@@ -56,7 +56,7 @@ story(main)
       @isFinish=1;
     }else{
       /*
-      if(@dlgItem.leftOrRight>0){        
+      if(@dlgItem.leftOrRight>0){
         @left.SetActive(changetype(0,"bool"));
         @right.SetActive(changetype(1,"bool"));
         @right_Image.sprite=getactoricon(@dlgItem.speaker);
@@ -65,7 +65,7 @@ story(main)
         @right.SetActive(changetype(0,"bool"));
         @left_Image.sprite=getactoricon(@dlgItem.speaker);
       };
-      */        
+      */
       $txt = @dlgItem.dialog;
       @window.SetActive(changetype(1,"bool"));
       sendgfxmessage("StoryDlg/Panel/ScrollView/Viewport/Content", "CallScript", "PushInfo", $txt);

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.GmCommands
 {
@@ -17,17 +19,8 @@ namespace ScriptableFramework.GmCommands
         public void Init()
         {
             //register GM commands
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "enablecalculatorlog", "enablecalculatorlog command", new StoryCommandFactoryHelper<EnableCalculatorLogCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "resetdsl", "resetdsl command", new StoryCommandFactoryHelper<DoResetDslCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "scp", "scp command", new StoryCommandFactoryHelper<DoScpCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "gm", "gm command", new StoryCommandFactoryHelper<DoGmCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "setdebug", "setdebug command", new StoryCommandFactoryHelper<SetDebugCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "allocmemory", "allocmemory command", new StoryCommandFactoryHelper<AllocMemoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "freememory", "freememory command", new StoryCommandFactoryHelper<FreeMemoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "consumecpu", "consumecpu command", new StoryCommandFactoryHelper<ConsumeCpuCommand>());
-
-            //register value or functions
-
+            var registry = DslCalculatorHost.GetSharedApiRegistry();
+            GmExpressionRegistrar.RegisterGmExpressions(registry);
         }
 
         public int ActiveStoryCount
@@ -37,16 +30,17 @@ namespace ScriptableFramework.GmCommands
                 return m_StoryLogicInfos.Count;
             }
         }
-        public StrBoxedValueDict GlobalVariables
+        public StrBoxedValueDict ContextVariables
         {
-            get { return m_GlobalVariables; }
+            get { return m_ContextVariables; }
         }
-        public void ClearGlobalVariables()
+        public void ClearContextVariables()
         {
-            m_GlobalVariables.Clear();
+            m_ContextVariables.Clear();
         }
         public void Reset()
         {
+            m_ContextVariables.Clear();
             int count = m_StoryLogicInfos.Count;
             for (int index = count - 1; index >= 0; --index) {
                 StoryInstance info = m_StoryLogicInfos[index];
@@ -79,7 +73,7 @@ namespace ScriptableFramework.GmCommands
                 StopStory(storyId);
                 m_StoryLogicInfos.Add(inst);
                 inst.Context = null;
-                inst.GlobalVariables = m_GlobalVariables;
+                inst.ContextVariables = m_ContextVariables;
                 inst.Start();
 
                 LogSystem.Info("StartStory {0}", storyId);
@@ -107,6 +101,12 @@ namespace ScriptableFramework.GmCommands
                 }
             }
         }
+        public BoxedValueList NewBoxedValueList()
+        {
+            var args = m_BoxedValueListPool.Alloc();
+            args.Clear();
+            return args;
+        }
         public void SendMessage(string msgId)
         {
             int ct = m_StoryLogicInfos.Count;
@@ -118,8 +118,7 @@ namespace ScriptableFramework.GmCommands
         public void SendMessage(string msgId, BoxedValue arg1)
         {
             int ct = m_StoryLogicInfos.Count;
-            for (int ix = ct - 1; ix >= 0; --ix)
-            {
+            for (int ix = ct - 1; ix >= 0; --ix) {
                 StoryInstance info = m_StoryLogicInfos[ix];
                 info.SendMessage(msgId, arg1);
             }
@@ -127,8 +126,7 @@ namespace ScriptableFramework.GmCommands
         public void SendMessage(string msgId, BoxedValue arg1, BoxedValue arg2)
         {
             int ct = m_StoryLogicInfos.Count;
-            for (int ix = ct - 1; ix >= 0; --ix)
-            {
+            for (int ix = ct - 1; ix >= 0; --ix) {
                 StoryInstance info = m_StoryLogicInfos[ix];
                 info.SendMessage(msgId, arg1, arg2);
             }
@@ -136,11 +134,21 @@ namespace ScriptableFramework.GmCommands
         public void SendMessage(string msgId, BoxedValue arg1, BoxedValue arg2, BoxedValue arg3)
         {
             int ct = m_StoryLogicInfos.Count;
-            for (int ix = ct - 1; ix >= 0; --ix)
-            {
+            for (int ix = ct - 1; ix >= 0; --ix) {
                 StoryInstance info = m_StoryLogicInfos[ix];
                 info.SendMessage(msgId, arg1, arg2, arg3);
             }
+        }
+        public void SendMessage(string msgId, BoxedValueList args)
+        {
+            int ct = m_StoryLogicInfos.Count;
+            for (int ix = ct - 1; ix >= 0; --ix) {
+                StoryInstance info = m_StoryLogicInfos[ix];
+                var newArgs = info.NewBoxedValueList();
+                newArgs.AddRange(args);
+                info.SendMessage(msgId, newArgs);
+            }
+            m_BoxedValueListPool.Recycle(args);
         }
 
         private StoryInstance NewStoryInstance(string storyId)
@@ -176,7 +184,8 @@ namespace ScriptableFramework.GmCommands
 
         private ClientGmStorySystem() { }
 
-        private StrBoxedValueDict m_GlobalVariables = new StrBoxedValueDict();
+        private SimpleObjectPool<BoxedValueList> m_BoxedValueListPool = new SimpleObjectPool<BoxedValueList>();
+        private StrBoxedValueDict m_ContextVariables = new StrBoxedValueDict();
 
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
         private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();
@@ -185,8 +194,7 @@ namespace ScriptableFramework.GmCommands
 
         public static ClientGmStorySystem Instance
         {
-            get
-            {
+            get {
                 return s_Instance;
             }
         }

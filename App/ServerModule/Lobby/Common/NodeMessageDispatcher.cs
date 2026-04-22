@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using CSharpCenterClient;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptableFramework.Network;
 
 namespace Lobby

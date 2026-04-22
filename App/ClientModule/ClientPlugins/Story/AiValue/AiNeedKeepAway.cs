@@ -4,24 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
-using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiNeedKeepAway : ISimpleStoryFunctionPlugin
+public class AiNeedKeepAway : ISimpleStoryApiPlugin
 {
-    public void SetProxy(StoryFunctionResult result)
+    public void Init(DslCalculator calculator)
     {
-        m_Proxy = result;
+        m_Calculator = calculator;
     }
-    public ISimpleStoryFunctionPlugin Clone()
+
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        return new AiNeedKeepAway();
-    }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
-    {
-        var args = _params.Values;
+        var args = operands;
         int objId = args[0].GetInt();
         SkillInfo skillInfo = args[1].ObjectVal as SkillInfo;
         float ratio = args[2].GetFloat();
@@ -33,14 +30,15 @@ public class AiNeedKeepAway : ISimpleStoryFunctionPlugin
                 if (null != target) {
                     float distSqr = Geometry.DistanceSquare(npc.GetMovementStateInfo().GetPosition3D(), target.GetMovementStateInfo().GetPosition3D());
                     if (distSqr < ratio * ratio * skillInfo.Distance * skillInfo.Distance) {
-                        m_Proxy.Value = 1;
-                        return;
+                        result.Value = 1;
+                        return false;
                     }
                 }
             }
         }
-        m_Proxy.Value = 0;
+        result.Value = 0;
+        return false;
     }
 
-    private StoryFunctionResult m_Proxy = null;
+    private DslCalculator m_Calculator = null;
 }

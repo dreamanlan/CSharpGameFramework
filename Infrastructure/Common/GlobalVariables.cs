@@ -39,27 +39,6 @@ namespace ScriptableFramework
             get { return m_LoggerEnabled; }
             set { m_LoggerEnabled = value; }
         }
-        public bool StoryEditorOpen
-        {
-            get { return m_StoryEditorOpen; }
-            set { m_StoryEditorOpen = value; }
-        }
-        public bool StoryEditorContinue
-        {
-            get { return m_StoryEditorContinue; }
-            set { m_StoryEditorContinue = value; }
-        }
-
-        public bool IsStorySkipped
-        {
-            get { return m_IsStorySkipped; }
-            set { m_IsStorySkipped = value; }
-        }
-        public bool IsStorySpeedup
-        {
-            get { return m_IsStorySpeedup; }
-            set { m_IsStorySpeedup = value; }
-        }        
 
         private static void AddCrypto(string s, string d, Dictionary<string, string> encodeTable, Dictionary<string, string> decodeTable)
         {
@@ -77,14 +56,10 @@ namespace ScriptableFramework
         private bool m_IsDevice = false;
         private bool m_LoggerEnabled = true;
 
-        private bool m_StoryEditorOpen = false;
-        private bool m_StoryEditorContinue = false;
-
-        private bool m_IsStorySkipped = false;
-        private bool m_IsStorySpeedup = false;
         public static bool s_EnableCalculatorLog = false;
         public static bool s_EnableCalculatorDetailLog = false;
         public static bool s_EnableCalculatorOperatorLog = false;
+		
         public static GlobalVariables Instance
         {
             get { return s_Instance; }

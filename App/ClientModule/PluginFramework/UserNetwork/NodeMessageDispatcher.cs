@@ -2,7 +2,7 @@ using System;
 using System.Text;
 using LitJson;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.Network
 {

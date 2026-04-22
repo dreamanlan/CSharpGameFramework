@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using ScriptableFramework.Skill.Trigers;
 using DotnetSkillScript;

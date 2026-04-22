@@ -33,7 +33,8 @@ namespace DotnetStoryScript
                 if (Dsl.Parser.DslConstants.IDENTIFIER_ == val && tok == "return") {
                     var oldCurTok = dslToken.getCurToken();
                     var oldLastTok = dslToken.getLastToken();
-                    if (dslToken.PeekNextValidChar(0) == ';')
+                    char nextChar = dslToken.PeekNextValidChar(0);
+                    if (nextChar == ',' || nextChar == ';')
                         return false;
                     //insert backtick char
                     dslToken.setCurToken("`");
@@ -190,7 +191,11 @@ namespace DotnetStoryScript
         {
             get {
                 if (null == s_ForDslCalculator) {
-                    s_ForDslCalculator = new ScriptableDslHelper();
+                    lock (s_ForDslCalculatorLock) {
+                        if (null == s_ForDslCalculator) {
+                            s_ForDslCalculator = new ScriptableDslHelper();
+                        }
+                    }
                 }
                 return s_ForDslCalculator;
             }
@@ -200,18 +205,22 @@ namespace DotnetStoryScript
         {
             get {
                 if (null == s_ForStoryInstance) {
-                    s_ForStoryInstance = new ScriptableDslHelper();
-                    var obj = s_ForStoryInstance;
-                    obj.FirstLastKeyOfCompoundStatements.Add("local", "local");
-                    obj.SuccessorsOfCompoundStatements.Add("command", new HashSet<string> { "params", "args", "opts", "doc", "body" });
-                    obj.SuccessorsOfCompoundStatements.Add("function", new HashSet<string> { "params", "args", "ret", "opts", "doc", "body" });
-                    obj.SuccessorsOfCompoundStatements.Add("onmessage", new HashSet<string> { "params", "args", "comment", "comments", "body" });
-                    obj.SuccessorsOfCompoundStatements.Add("onnamespacedmessage ", new HashSet<string> { "params", "args", "comment", "comments", "body" });
-                    obj.CompoundStatements.Add("command");
-                    obj.CompoundStatements.Add("function");
-                    obj.CompoundStatements.Add("onmessage");
-                    obj.CompoundStatements.Add("onnamespacedmessage");
-                    obj.CompoundStatements.Add("local");
+                    lock (s_ForStoryInstanceLock) {
+                        if (null == s_ForStoryInstance) {
+                            var obj = new ScriptableDslHelper();
+                            obj.FirstLastKeyOfCompoundStatements.Add("local", "local");
+                            obj.SuccessorsOfCompoundStatements.Add("command", new HashSet<string> { "params", "args", "opts", "doc", "body" });
+                            obj.SuccessorsOfCompoundStatements.Add("function", new HashSet<string> { "params", "args", "ret", "opts", "doc", "body" });
+                            obj.SuccessorsOfCompoundStatements.Add("onmessage", new HashSet<string> { "params", "args", "comment", "comments", "body" });
+                            obj.SuccessorsOfCompoundStatements.Add("onnamespacedmessage ", new HashSet<string> { "params", "args", "comment", "comments", "body" });
+                            obj.CompoundStatements.Add("command");
+                            obj.CompoundStatements.Add("function");
+                            obj.CompoundStatements.Add("onmessage");
+                            obj.CompoundStatements.Add("onnamespacedmessage");
+                            obj.CompoundStatements.Add("local");
+                            s_ForStoryInstance = obj;
+                        }
+                    }
                 }
                 return s_ForStoryInstance;
             }
@@ -220,5 +229,7 @@ namespace DotnetStoryScript
 
         private static ScriptableDslHelper s_ForDslCalculator = null;
         private static ScriptableDslHelper s_ForStoryInstance = null;
+        private static readonly object s_ForDslCalculatorLock = new object();
+        private static readonly object s_ForStoryInstanceLock = new object();
     }
 }

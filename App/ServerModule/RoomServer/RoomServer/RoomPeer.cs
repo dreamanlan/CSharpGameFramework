@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Lidgren.Network;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework
 {

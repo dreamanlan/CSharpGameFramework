@@ -4,24 +4,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiGetSkill : ISimpleStoryFunctionPlugin
+public class AiGetSkill : ISimpleStoryApiPlugin
 {
-    public void SetProxy(StoryFunctionResult result)
+    public void Init(DslCalculator calculator)
     {
-        m_Proxy = result;
+        m_Calculator = calculator;
     }
-    public ISimpleStoryFunctionPlugin Clone()
+
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        return new AiGetSkill();
-    }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
-    {
-        var args = _params.Values;
+        var args = operands;
         int objId = args[0];
         int index = args[1].GetInt();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
@@ -65,12 +63,13 @@ public class AiGetSkill : ISimpleStoryFunctionPlugin
                     skillInfo = new SkillInfo(skillId);
                     npc.GetSkillStateInfo().AddSkill(skillInfo);
                 }
-                m_Proxy.Value = BoxedValue.FromObject(skillInfo);
+                result.Value = BoxedValue.FromObject(skillInfo);
             } else {
-                m_Proxy.Value = BoxedValue.NullObject;
+                result.Value = BoxedValue.NullObject;
             }
         }
+        return false;
     }
 
-    private StoryFunctionResult m_Proxy = null;
+    private DslCalculator m_Calculator = null;
 }

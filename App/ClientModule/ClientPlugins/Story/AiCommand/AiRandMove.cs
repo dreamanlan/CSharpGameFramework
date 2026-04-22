@@ -4,27 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
-using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiRandMove : ISimpleStoryCommandPlugin
+public class AiRandMove : ISimpleStoryApiPlugin
 {
-    public ISimpleStoryCommandPlugin Clone()
+    public void Init(DslCalculator calculator)
     {
-        return new AiRandMove();
+        m_Calculator = calculator;
     }
 
-    public void ResetState()
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        m_ParamReaded = false;
-        m_PursueInterval = 0;
-    }
-
-    public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta)
-    {
-        var args = _params.Values;
+        var args = operands;
         if (!m_ParamReaded) {
             m_ParamReaded = true;
 
@@ -41,7 +35,7 @@ public class AiRandMove : ISimpleStoryCommandPlugin
             EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
             if (null != npc && !npc.IsUnderControl()) {
                 AiStateInfo info = npc.GetAiStateInfo();
-                return RandMoveHandler(npc, info, delta);
+                return RandMoveHandler(npc, info, (long)(Time.deltaTime * 1000));
             }
         }
         return false;
@@ -95,6 +89,7 @@ public class AiRandMove : ISimpleStoryCommandPlugin
         npc.GetMovementStateInfo().TargetPosition = AiCommand.AiGetValidPosition(npc, pos, m_Radius);
     }
 
+    private DslCalculator m_Calculator = null;
     private int m_ObjId = 0;
     private long m_Time = 0;
     private int m_Radius = 0;

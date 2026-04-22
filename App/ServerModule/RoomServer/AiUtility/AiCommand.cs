@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ScriptableFramework;
 using ScriptableFramework.Story;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 public static class AiCommand
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using LitJson;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
@@ -153,7 +153,7 @@ namespace ScriptableFramework.Network
             if (m_Guid != 0) {
                 NodeMessage msg = new NodeMessage(LobbyMessageDefine.QuitRoom);
                 msg.SetHeaderWithGuid(m_Guid);
-                GameFrameworkMessage.QuitRoom protoMsg = new GameFrameworkMessage.QuitRoom();
+                ScriptableFrameworkMessage.QuitRoom protoMsg = new ScriptableFrameworkMessage.QuitRoom();
                 protoMsg.m_IsQuitRoom = isQuitTeam;
                 msg.m_ProtoData = protoMsg;
                 SendMessage(msg);
@@ -237,7 +237,7 @@ namespace ScriptableFramework.Network
 
         private void HandleQueueingCountResult(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.QueueingCountResult protoData = lobbyMsg.m_ProtoData as GameFrameworkMessage.QueueingCountResult;
+            ScriptableFrameworkMessage.QueueingCountResult protoData = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.QueueingCountResult;
             if (null != protoData) {
                 int queueingCount = protoData.m_QueueingCount;
                 if (queueingCount != UserNetworkSystem.Instance.QueueingNum) {

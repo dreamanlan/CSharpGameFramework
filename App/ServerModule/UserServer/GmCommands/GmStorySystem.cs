@@ -27,13 +27,13 @@ namespace ScriptableFramework.GmCommands
                 return m_StoryLogicInfos.Count;
             }
         }
-        internal StrBoxedValueDict GlobalVariables
+        internal StrBoxedValueDict ContextVariables
         {
-            get { return m_GlobalVariables; }
+            get { return m_ContextVariables; }
         }
         internal void Reset()
         {
-            m_GlobalVariables.Clear();
+            m_ContextVariables.Clear();
             int count = m_StoryLogicInfos.Count;
             for (int index = count - 1; index >= 0; --index) {
                 StoryInstance info = m_StoryLogicInfos[index];
@@ -66,7 +66,7 @@ namespace ScriptableFramework.GmCommands
                 StopStory(storyId);
                 m_StoryLogicInfos.Add(inst);
                 inst.Context = m_CurUserThread;
-                inst.GlobalVariables = m_GlobalVariables;
+                inst.ContextVariables = m_ContextVariables;
                 inst.Start();
 
                 LogSystem.Info("StartStory {0}", storyId);
@@ -136,7 +136,7 @@ namespace ScriptableFramework.GmCommands
             return info;
         }
 
-        private StrBoxedValueDict m_GlobalVariables = new StrBoxedValueDict();
+        private StrBoxedValueDict m_ContextVariables = new StrBoxedValueDict();
 
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
         private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();

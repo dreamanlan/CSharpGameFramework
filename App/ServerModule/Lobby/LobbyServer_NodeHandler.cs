@@ -5,7 +5,7 @@ using System.Threading;
 using CSharpCenterClient;
 using Lobby;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace Lobby
 {
@@ -17,19 +17,19 @@ namespace Lobby
         private void InstallNodeHandlers()
         {
             NodeMessageDispatcher.Init();
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.QuitRoom, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.QuitRoom), this.HandleQuitRoom);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterScene, typeof(GameFrameworkMessage.NodeMessageWithGuid), null, this.HandleEnterScene);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.ChangeSceneRoom, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.ChangeSceneRoom), HandleChangeSceneRoom);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomInfo, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.RequestSceneRoomInfo), HandleRequestSceneRoomInfo);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.RequestSceneRoomList), HandleRequestSceneRoomList);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.QuitRoom, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.QuitRoom), this.HandleQuitRoom);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterScene, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), null, this.HandleEnterScene);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.ChangeSceneRoom, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.ChangeSceneRoom), HandleChangeSceneRoom);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomInfo, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.RequestSceneRoomInfo), HandleRequestSceneRoomInfo);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomList, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.RequestSceneRoomList), HandleRequestSceneRoomList);
             //--------------------------------------------------------------------------------------
         }
         //==========================================================================================================================
         private void HandleEnterScene(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid startGameMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid startGameMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (startGameMsg != null) {
-                GameFrameworkMessage.Msg_LB_RequestEnterScene msgData = msg.m_ProtoData as GameFrameworkMessage.Msg_LB_RequestEnterScene;
+                ScriptableFrameworkMessage.Msg_LB_RequestEnterScene msgData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_LB_RequestEnterScene;
                 if (null != msgData) {
                     m_RoomProcessThread.QueueAction(m_RoomProcessThread.RequestEnterScene, startGameMsg.m_Guid, msgData.SceneId, msgData.WantRoomId, msgData.FromSceneId);
                 }
@@ -37,9 +37,9 @@ namespace Lobby
         }
         private void HandleQuitRoom(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid quitClientMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid quitClientMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != quitClientMsg) {
-                GameFrameworkMessage.QuitRoom protoData = msg.m_ProtoData as GameFrameworkMessage.QuitRoom;
+                ScriptableFrameworkMessage.QuitRoom protoData = msg.m_ProtoData as ScriptableFrameworkMessage.QuitRoom;
                 if (null != protoData) {
                     m_RoomProcessThread.QueueAction(m_RoomProcessThread.QuitRoom, quitClientMsg.m_Guid, protoData.m_IsQuitRoom, handle);
                 }
@@ -47,9 +47,9 @@ namespace Lobby
         }
         private void HandleChangeSceneRoom(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid changeSceneMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid changeSceneMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != changeSceneMsg) {
-                GameFrameworkMessage.ChangeSceneRoom protoData = msg.m_ProtoData as GameFrameworkMessage.ChangeSceneRoom;
+                ScriptableFrameworkMessage.ChangeSceneRoom protoData = msg.m_ProtoData as ScriptableFrameworkMessage.ChangeSceneRoom;
                 if (null != protoData) {
                     m_RoomProcessThread.QueueAction(m_RoomProcessThread.RequestChangeSceneRoom, changeSceneMsg.m_Guid, protoData.m_SceneId, protoData.m_RoomId);
                 }
@@ -57,7 +57,7 @@ namespace Lobby
         }
         private void HandleRequestSceneRoomInfo(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
                 ulong guid = headerMsg.m_Guid;
 
@@ -67,7 +67,7 @@ namespace Lobby
         }
         private void HandleRequestSceneRoomList(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
                 ulong guid = headerMsg.m_Guid;
 

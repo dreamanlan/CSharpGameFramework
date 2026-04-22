@@ -3,7 +3,7 @@ using System.Reflection;
 
 using Lobby;
 using CSharpCenterClient;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using Messenger;
 
 namespace Lobby

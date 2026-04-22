@@ -4,27 +4,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiCastSkill : ISimpleStoryCommandPlugin
+public class AiCastSkill : ISimpleStoryApiPlugin
 {
-    public ISimpleStoryCommandPlugin Clone()
+    public void Init(DslCalculator calculator)
     {
-        return new AiCastSkill();
+        m_Calculator = calculator;
     }
 
-    public void ResetState()
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        m_ParamReaded = false;
-        m_SkillCasted = false;
-    }
-
-    public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta)
-    {
-        var args = _params.Values;
+        var args = operands;
         if (!m_ParamReaded) {
             m_ObjId = args[0];
             m_SkillInfo = args[1].ObjectVal as SkillInfo;
@@ -67,6 +62,7 @@ public class AiCastSkill : ISimpleStoryCommandPlugin
         return false;
     }
 
+    private DslCalculator m_Calculator = null;
     private int m_ObjId = 0;
     private SkillInfo m_SkillInfo = null;
     private bool m_SkillCasted = false;

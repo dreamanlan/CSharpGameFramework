@@ -4,24 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
-using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiSelectSkillByDistance : ISimpleStoryFunctionPlugin
+public class AiSelectSkillByDistance : ISimpleStoryApiPlugin
 {
-    public void SetProxy(StoryFunctionResult result)
+    public void Init(DslCalculator calculator)
     {
-        m_Proxy = result;
+        m_Calculator = calculator;
     }
-    public ISimpleStoryFunctionPlugin Clone()
+
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        return new AiSelectSkillByDistance();
-    }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
-    {
-        var args = _params.Values;
+        var args = operands;
         int objId = args[0];
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
@@ -46,15 +43,16 @@ public class AiSelectSkillByDistance : ISimpleStoryFunctionPlugin
                         }
                     }
                     if (null != targetSkillInfo)
-                        m_Proxy.Value = BoxedValue.FromObject(targetSkillInfo);
+                        result.Value = BoxedValue.FromObject(targetSkillInfo);
                     else
-                        m_Proxy.Value = BoxedValue.FromObject(maxSkillInfo);
-                    return;
+                        result.Value = BoxedValue.FromObject(maxSkillInfo);
+                    return false;
                 }
             }
         }
-        m_Proxy.Value = BoxedValue.NullObject;
+        result.Value = BoxedValue.NullObject;
+        return false;
     }
 
-    private StoryFunctionResult m_Proxy = null;
+    private DslCalculator m_Calculator = null;
 }

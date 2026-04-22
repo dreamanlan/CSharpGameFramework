@@ -7,11 +7,8 @@ story(story_main)
   onmessage("start")
   {
   };
-  onmessage("user_enter_scene")
+  onmessage("user_enter_scene")params($userId,$userUnitId,$campId)
   {
-    $userId=$0;
-    $userUnitId=$1;
-    $campId=$2;
     wait(1000);
     publishgfxevent("loading_complete", "ui")touser($userId);
     camerafollow($userUnitId)touser($userId);
@@ -26,10 +23,9 @@ story(story_main)
 		//log("msg_from_userserver:{0} {1}",$0,getentityinfo($0).CustomData.Guid);
 		//sendserverstorymessage("msg_from_room")touser($0);
   };
-  onmessage("client:touchnpc")
+  onmessage("client:touchnpc")params($userId)
   {
     log("touchnpc");
-    $userId = $0;
     sendclientstorymessage("open_battle", 10001)touser($userId);
   };
 };

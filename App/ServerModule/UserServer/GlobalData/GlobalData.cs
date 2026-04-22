@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GameFrameworkData;
+using ScriptableFrameworkData;
 
 namespace ScriptableFramework
 {

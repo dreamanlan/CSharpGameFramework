@@ -212,7 +212,7 @@ serverLogic.init = function () {
     socket.on('message', function (arg) {
       try {
         nodeMessage.initForRead(arg);
-        var msgId = nodeMessage.getId();        
+        var msgId = nodeMessage.getId();
 
         switch (msgId) {
           case MsgEnum.VersionVerify:
@@ -282,7 +282,7 @@ serverLogic.init = function () {
               if(socket.logicAccount==account){
                 center_client.core_send_message_by_name("UserSvr", arg);
                 console.log("!!post to user server AccountLogout msg: " + arg + " account:" + account);
-                
+
                 accountList.remove(account);
                 roleEnterList.remove(account);
               }
@@ -453,7 +453,7 @@ mainLogic.Process = function(handle, session, msg) {
       console.log("oncoremessage " + msg);
     } else {
       nodeMessage.initForRead(msg);
-      var msg_id = nodeMessage.getId();        
+      var msg_id = nodeMessage.getId();
 
       if (msg_id === MsgEnum.AccountLoginResult) {
         var _account = nodeMessage.getString();

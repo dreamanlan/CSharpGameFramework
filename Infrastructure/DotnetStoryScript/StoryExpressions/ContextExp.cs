@@ -78,8 +78,7 @@ namespace DotnetStoryScript
 
             string str = operands[0].ToString();
             var list = new List<string>();
-            if (!string.IsNullOrEmpty(str))
-            {
+            if (!string.IsNullOrEmpty(str)) {
                 string[] parts = str.Split(',');
                 foreach (var part in parts)
                     list.Add(part.Trim());
@@ -169,28 +168,24 @@ namespace DotnetStoryScript
         {
             var dict = obj as IDictionary;
             var enumer = obj as IEnumerable;
-            if (dict != null)
-            {
+            if (dict != null) {
                 var jsonData = new LitJson.JsonData();
                 var e = dict.GetEnumerator();
-                while (e.MoveNext())
-                {
+                while (e.MoveNext()) {
                     string key = e.Key?.ToString();
                     if (!string.IsNullOrEmpty(key))
                         jsonData[key] = ToJson(e.Value);
                 }
                 return jsonData;
             }
-            else if (enumer != null)
-            {
+            else if (enumer != null) {
                 var jsonData = new LitJson.JsonData();
                 var e = enumer.GetEnumerator();
                 while (e.MoveNext())
                     jsonData.Add(ToJson(e.Current));
                 return jsonData;
             }
-            else if (obj == null)
-            {
+            else if (obj == null) {
                 return new LitJson.JsonData();
             }
             else if (obj is int i) return new LitJson.JsonData(i);
@@ -221,21 +216,17 @@ namespace DotnetStoryScript
         private static BoxedValue ToValue(LitJson.JsonData data, BoxedValue defVal)
         {
             if (data == null) return defVal;
-            if (data.IsObject)
-            {
+            if (data.IsObject) {
                 var dict = new Dictionary<BoxedValue, BoxedValue>();
-                foreach (var key in data.Keys)
-                {
+                foreach (var key in data.Keys) {
                     var val = ToValue(data[key], defVal);
                     dict.Add(key, val);
                 }
                 return BoxedValue.FromObject(dict);
             }
-            else if (data.IsArray)
-            {
+            else if (data.IsArray) {
                 var list = new List<BoxedValue>();
-                for (int i = 0; i < data.Count; ++i)
-                {
+                for (int i = 0; i < data.Count; ++i) {
                     var val = ToValue(data[i], defVal);
                     list.Add(val);
                 }

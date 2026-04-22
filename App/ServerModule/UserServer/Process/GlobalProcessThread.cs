@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using ScriptableFramework;
-using GameFrameworkData;
-using GameFrameworkMessage;
+using ScriptableFrameworkData;
+using ScriptableFrameworkMessage;
 using System.Text;
 
 namespace ScriptableFramework

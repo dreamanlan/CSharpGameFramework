@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ClientPlugins;
 
 public static class SkillTriggerRegister

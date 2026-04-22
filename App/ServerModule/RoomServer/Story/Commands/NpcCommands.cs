@@ -2,94 +2,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 using ScriptRuntime;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,tableId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];
     /// </summary>
-    public class CreateNpcCommand : AbstractStoryCommand
+    public class CreateNpcCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            CreateNpcCommand cmd = new CreateNpcCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_Pos = m_Pos.Clone();
-            cmd.m_Dir = m_Dir.Clone();
-            cmd.m_Camp = m_Camp.Clone();
-            cmd.m_TableId = m_TableId.Clone();
-            cmd.m_AiLogic = m_AiLogic.Clone();
-            cmd.m_AiParams = m_AiParams.Clone();
-            cmd.m_LeaderId = m_LeaderId.Clone();
-            cmd.m_ParamNum = m_ParamNum;
-            cmd.m_HaveObjId = m_HaveObjId;
-            cmd.m_ObjIdVarName = m_ObjIdVarName.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_ParamNum >= 5) {
-                m_UnitId.Evaluate(instance, handler, iterator, args);
-                m_Pos.Evaluate(instance, handler, iterator, args);
-                m_Dir.Evaluate(instance, handler, iterator, args);
-                m_Camp.Evaluate(instance, handler, iterator, args);
-                m_TableId.Evaluate(instance, handler, iterator, args);
-
-                if (m_ParamNum > 6) {
-                    m_AiLogic.Evaluate(instance, handler, iterator, args);
-                    m_AiParams.Evaluate(instance, handler, iterator, args);
-                    if (m_ParamNum > 7) {
-                        m_LeaderId.Evaluate(instance, handler, iterator, args);
-                    }
-                }
-            }
-            if (m_HaveObjId) {
-                m_ObjIdVarName.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int objId = 0;
                 if (m_ParamNum >= 5) {
-                    Vector3 pos = m_Pos.Value;
-                    float dir = m_Dir.Value;
-                    int camp = m_Camp.Value;
-                    int tableId = m_TableId.Value;
-                    
+                    int unitId = m_UnitId.Calc().GetInt();
+                    Vector3Obj posObj = m_Pos.Calc();
+                    Vector3 pos = posObj;
+                    float dir = m_Dir.Calc().GetFloat();
+                    int camp = m_Camp.Calc().GetInt();
+                    int tableId = m_TableId.Calc().GetInt();
+
                     if (m_ParamNum > 6) {
-                        string aiLogic = m_AiLogic.Value;
+                        string aiLogic = m_AiLogic.Calc().ToString();
                         List<string> aiParams = new List<string>();
-                        IEnumerable aiParamEnumer = m_AiParams.Value;
+                        IEnumerable aiParamEnumer = m_AiParams.Calc().GetObject() as IEnumerable;
                         if (aiParamEnumer is List<BoxedValue> bvAiParamEnumer) {
                             foreach (var aiParam in bvAiParamEnumer) {
                                 aiParams.Add(aiParam.GetString());
                             }
-                        }
-                        else {
+                        } else {
                             foreach (string aiParam in aiParamEnumer) {
                                 aiParams.Add(aiParam);
                             }
                         }
-                        objId = scene.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, tableId, aiLogic, aiParams.ToArray());
+                        objId = scene.CreateEntity(unitId, pos.X, pos.Y, pos.Z, dir, camp, tableId, aiLogic, aiParams.ToArray());
                     } else {
-                        objId = scene.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, tableId);
+                        objId = scene.CreateEntity(unitId, pos.X, pos.Y, pos.Z, dir, camp, tableId);
                     }
                     if (m_ParamNum > 6) {
                         EntityInfo charObj = scene.GetEntityById(objId);
                         if (null != charObj) {
                             if (m_ParamNum > 7) {
-                                int leaderId = m_LeaderId.Value;
+                                int leaderId = m_LeaderId.Calc().GetInt();
                                 charObj.GetAiStateInfo().LeaderId = leaderId;
                             } else {
                                 charObj.GetAiStateInfo().LeaderId = 0;
@@ -103,34 +63,32 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveObjId) {
-                    string varName = m_ObjIdVarName.Value;
+                    string varName = m_ObjIdVarName.Calc().ToString();
                     instance.SetVariable(varName, objId);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
         protected override bool Load(Dsl.FunctionData callData)
         {
             m_ParamNum = callData.GetParamNum();
             if (m_ParamNum >= 5) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_Pos.InitFromDsl(callData.GetParam(1));
-                m_Dir.InitFromDsl(callData.GetParam(2));
-                m_Camp.InitFromDsl(callData.GetParam(3));
-                m_TableId.InitFromDsl(callData.GetParam(4));
+                m_UnitId = Calculator.Load(callData.GetParam(0));
+                m_Pos = Calculator.Load(callData.GetParam(1));
+                m_Dir = Calculator.Load(callData.GetParam(2));
+                m_Camp = Calculator.Load(callData.GetParam(3));
+                m_TableId = Calculator.Load(callData.GetParam(4));
 
                 if (m_ParamNum > 6) {
-                    m_AiLogic.InitFromDsl(callData.GetParam(5));
-                    m_AiParams.InitFromDsl(callData.GetParam(6));
+                    m_AiLogic = Calculator.Load(callData.GetParam(5));
+                    m_AiParams = Calculator.Load(callData.GetParam(6));
                     if (m_ParamNum > 7) {
-                        m_LeaderId.InitFromDsl(callData.GetParam(7));
+                        m_LeaderId = Calculator.Load(callData.GetParam(7));
                     }
                 }
             }
             return true;
         }
-
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
@@ -143,197 +101,105 @@ namespace ScriptableFramework.Story.Commands
             }
             return true;
         }
-
         private void LoadVarName(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "objid" && callData.GetParamNum() == 1) {
-                m_ObjIdVarName.InitFromDsl(callData.GetParam(0));
+                m_ObjIdVarName = Calculator.Load(callData.GetParam(0));
                 m_HaveObjId = true;
             }
         }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
+        private IExpression m_UnitId;
         private int m_ParamNum = 0;
-        private IStoryFunction<Vector3> m_Pos = new StoryFunction<Vector3>();
-        private IStoryFunction<float> m_Dir = new StoryFunction<float>();
-        private IStoryFunction<int> m_Camp = new StoryFunction<int>();
-        private IStoryFunction<int> m_TableId = new StoryFunction<int>();
-        private IStoryFunction<string> m_AiLogic = new StoryFunction<string>();
-        private IStoryFunction<IEnumerable> m_AiParams = new StoryFunction<IEnumerable>();
-        private IStoryFunction<int> m_LeaderId = new StoryFunction<int>();
+        private IExpression m_Pos;
+        private IExpression m_Dir;
+        private IExpression m_Camp;
+        private IExpression m_TableId;
+        private IExpression m_AiLogic;
+        private IExpression m_AiParams;
+        private IExpression m_LeaderId;
         private bool m_HaveObjId = false;
-        private IStoryFunction<string> m_ObjIdVarName = new StoryFunction<string>();
+        private IExpression m_ObjIdVarName;
     }
     /// <summary>
     /// destroynpc(npc_unit_id);
     /// </summary>
-    public class DestroyNpcCommand : AbstractStoryCommand
+    public class DestroyNpcCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            DestroyNpcCommand cmd = new DestroyNpcCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
+                if (operands.Count <= 0)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
                 EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != entity) {
                     entity.NeedDelete = true;
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
     }
     /// <summary>
     /// destroynpcwithobjid(npc_obj_id);
     /// </summary>
-    public class DestroyNpcWithObjIdCommand : AbstractStoryCommand
+    public class DestroyNpcWithObjIdCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            DestroyNpcWithObjIdCommand cmd = new DestroyNpcWithObjIdCommand();
-            cmd.m_ObjId = m_ObjId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_ObjId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int objid = m_ObjId.Value;
+                if (operands.Count <= 0)
+                    return BoxedValue.NullObject;
+                int objid = operands[0].GetInt();
                 EntityInfo entity = scene.SceneContext.GetEntityById(objid);
                 if (null != entity) {
                     entity.NeedDelete = true;
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_ObjId.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
     }
     /// <summary>
     /// npcface(npc_unit_id,dir);
     /// </summary>
-    public class NpcFaceCommand : AbstractStoryCommand
+    public class NpcFaceCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcFaceCommand cmd = new NpcFaceCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_Dir = m_Dir.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_Dir.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                float dir = m_Dir.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                float dir = operands[1].GetFloat();
                 EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != entity) {
                     MovementStateInfo msi = entity.GetMovementStateInfo();
                     msi.SetFaceDir(dir);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_Dir.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<float> m_Dir = new StoryFunction<float>();
     }
     /// <summary>
     /// npcmove(npc_unit_id,vector3(x,y,z));
     /// </summary>
-    public class NpcMoveCommand : AbstractStoryCommand
+    public class NpcMoveCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcMoveCommand cmd = new NpcMoveCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_Pos = m_Pos.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_Pos.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                Vector3 pos = m_Pos.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                Vector3Obj posObj = operands[1];
+                Vector3 pos = posObj;
                 EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != entity) {
                     List<Vector3> waypoints = new List<Vector3>();
@@ -352,51 +218,23 @@ namespace ScriptableFramework.Story.Commands
                     aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_Pos.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<Vector3> m_Pos = new StoryFunction<Vector3>();
     }
     /// <summary>
     /// npcmovewithwaypoints(npc_unit_id,vector3list("1 2 3 4 5 6"));
     /// </summary>
-    public class NpcMoveWithWaypointsCommand : AbstractStoryCommand
+    public class NpcMoveWithWaypointsCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcMoveWithWaypointsCommand cmd = new NpcMoveWithWaypointsCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_WayPoints = m_WayPoints.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_WayPoints.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                List<object> poses = m_WayPoints.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                List<object> poses = operands[1].GetObject() as List<object>;
                 EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != entity && null != poses && poses.Count > 0) {
                     List<Vector3> waypoints = new List<Vector3>();
@@ -419,48 +257,22 @@ namespace ScriptableFramework.Story.Commands
                     aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_WayPoints.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<List<object>> m_WayPoints = new StoryFunction<List<object>>();
     }
     /// <summary>
     /// npcstop(npc_unit_id);
     /// </summary>
-    public class NpcStopCommand : AbstractStoryCommand
+    public class NpcStopCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcStopCommand cmd = new NpcStopCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
+                if (operands.Count <= 0)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
                 EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != entity) {
                     AiStateInfo aiInfo = entity.GetAiStateInfo();
@@ -473,53 +285,30 @@ namespace ScriptableFramework.Story.Commands
                         aiInfo.ChangeToState((int)PredefinedAiStateId.Idle);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
     }
     /// <summary>
     /// npcattack(npc_unit_id[,target_unit_id]);
     /// </summary>
-    public class NpcAttackCommand : AbstractStoryCommand
+    public class NpcAttackCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcAttackCommand cmd = new NpcAttackCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_TargetUnitId = m_TargetUnitId.Clone();
-            cmd.m_ParamNum = m_ParamNum;
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_TargetUnitId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
+                if (operands.Count <= 0)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
                 EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
-                EntityInfo target = null;
-                int targetUnitId = m_TargetUnitId.Value;
-                target = scene.SceneContext.GetEntityByUnitId(targetUnitId);
+                int targetId = 0;
+                if (operands.Count > 1) {
+                    targetId = operands[1].GetInt();
+                } else {
+                    targetId = entity.GetAiStateInfo().Target;
+                }
+                EntityInfo target = scene.SceneContext.GetEntityByUnitId(targetId);
                 if (null != entity && null != target) {
                     AiStateInfo aiInfo = entity.GetAiStateInfo();
                     aiInfo.Target = target.GetId();
@@ -527,147 +316,66 @@ namespace ScriptableFramework.Story.Commands
                     aiInfo.ChangeToState((int)PredefinedAiStateId.Idle);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            m_ParamNum = callData.GetParamNum();
-            if (m_ParamNum > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_TargetUnitId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private int m_ParamNum = 0;
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_TargetUnitId = new StoryFunction<int>();
     }
     /// <summary>
-    /// setformation(npc_unit_id,index);
+    /// npcsetformation(npc_unit_id,index);
     /// </summary>
-    public class NpcSetFormationCommand : AbstractStoryCommand
+    public class NpcSetFormationCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcSetFormationCommand cmd = new NpcSetFormationCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_FormationIndex = m_FormationIndex.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_FormationIndex.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                EntityInfo obj = scene.SceneContext.GetEntityByUnitId(m_UnitId.Value);
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
-                    obj.GetMovementStateInfo().FormationIndex = m_FormationIndex.Value;
+                    obj.GetMovementStateInfo().FormationIndex = operands[1].GetInt();
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_FormationIndex.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_FormationIndex = new StoryFunction<int>();
     }
     /// <summary>
-    /// enableai(npc_unit_id,1_or_0);
+    /// npcenableai(npc_unit_id,1_or_0);
     /// </summary>
-    public class NpcEnableAiCommand : AbstractStoryCommand
+    public class NpcEnableAiCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcEnableAiCommand cmd = new NpcEnableAiCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_Enable = m_Enable.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_Enable.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                EntityInfo obj = scene.SceneContext.GetEntityByUnitId(m_UnitId.Value);
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
-                    obj.SetAIEnable(m_Enable.Value != 0);
+                    obj.SetAIEnable(operands[1].GetInt() != 0);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_Enable.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_Enable = new StoryFunction<int>();
     }
     /// <summary>
-    /// setai(unitid,ai_logic_id,stringlist("param1 param2 param3 ..."));
+    /// npcsetai(unitid,ai_logic_id,stringlist("param1 param2 param3 ..."));
     /// </summary>
-    public class NpcSetAiCommand : AbstractStoryCommand
+    public class NpcSetAiCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcSetAiCommand cmd = new NpcSetAiCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_AiLogic = m_AiLogic.Clone();
-            cmd.m_AiParams = m_AiParams.Clone();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_AiLogic.Evaluate(instance, handler, iterator, args);
-            m_AiParams.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                string aiLogic = m_AiLogic.Value;
-                IEnumerable aiParams = m_AiParams.Value;
+                if (operands.Count <= 2)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                string aiLogic = operands[1].ToString();
+                IEnumerable aiParams = operands[2].GetObject() as IEnumerable;
                 EntityInfo charObj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != charObj) {
                     charObj.GetAiStateInfo().Reset();
@@ -683,100 +391,46 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 2) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_AiLogic.InitFromDsl(callData.GetParam(1));
-                m_AiParams.InitFromDsl(callData.GetParam(2));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<string> m_AiLogic = new StoryFunction<string>();
-        private IStoryFunction<IEnumerable> m_AiParams = new StoryFunction<IEnumerable>();
     }
     /// <summary>
-    /// setaitarget(unitid,targetId);
+    /// npcsetaitarget(unitid,targetId);
     /// </summary>
-    public class NpcSetAiTargetCommand : AbstractStoryCommand
+    public class NpcSetAiTargetCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcSetAiTargetCommand cmd = new NpcSetAiTargetCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_TargetId = m_TargetId.Clone();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_TargetId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int targetId = m_TargetId.Value;
+                if (operands.Count < 2)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int targetId = operands[1].GetInt();
                 EntityInfo charObj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != charObj) {
                     charObj.GetAiStateInfo().Target = targetId;
                     charObj.GetAiStateInfo().HateTarget = targetId;
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num >= 2) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_TargetId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_TargetId = new StoryFunction<int>();
     }
     /// <summary>
     /// npcanimation(unit_id, anim);
     /// </summary>
-    public class NpcAnimationCommand : AbstractStoryCommand
+    public class NpcAnimationCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcAnimationCommand cmd = new NpcAnimationCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_Anim = m_Anim.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_Anim.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                string anim = m_Anim.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                string anim = operands[1].ToString();
                 EntityInfo npcInfo = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != npcInfo) {
                     int objId = npcInfo.GetId();
@@ -789,69 +443,26 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_Anim.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<string> m_Anim = new StoryFunction<string>();
     }
     /// <summary>
     /// npcaddimpact(unit_id, impactid, arg1, arg2, ...)[seq("@seq")];
     /// </summary>
-    public class NpcAddImpactCommand : AbstractStoryCommand
+    public class NpcAddImpactCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            NpcAddImpactCommand cmd = new NpcAddImpactCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_ImpactId = m_ImpactId.Clone();
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                cmd.m_Args.Add(val.Clone());
-            }
-            cmd.m_HaveSeq = m_HaveSeq;
-            cmd.m_SeqVarName = m_SeqVarName.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_ImpactId.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-            if (m_HaveSeq) {
-                m_SeqVarName.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int impactId = m_ImpactId.Value;
+                int unitId = m_UnitId.Calc().GetInt();
+                int impactId = m_ImpactId.Calc().GetInt();
                 int seq = 0;
                 Dictionary<string, object> locals = new Dictionary<string, object>();
                 for (int i = 0; i < m_Args.Count - 1; i += 2) {
-                    string key = m_Args[i].Value;
-                    object val = m_Args[i + 1].Value.GetObject();
+                    string key = m_Args[i].Calc().ToString();
+                    object val = m_Args[i + 1].Calc().GetObject();
                     if (!string.IsNullOrEmpty(key)) {
                         locals.Add(key, val);
                     }
@@ -875,28 +486,24 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveSeq) {
-                    string varName = m_SeqVarName.Value;
+                    string varName = m_SeqVarName.Calc().ToString();
                     instance.SetVariable(varName, seq);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
         protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_ImpactId.InitFromDsl(callData.GetParam(1));
+                m_UnitId = Calculator.Load(callData.GetParam(0));
+                m_ImpactId = Calculator.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_Args.Add(val);
+                m_Args.Add(Calculator.Load(callData.GetParam(i)));
             }
             return true;
         }
-
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
@@ -909,50 +516,33 @@ namespace ScriptableFramework.Story.Commands
             }
             return true;
         }
-
         private void LoadVarName(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "seq" && callData.GetParamNum() == 1) {
-                m_SeqVarName.InitFromDsl(callData.GetParam(0));
+                m_SeqVarName = Calculator.Load(callData.GetParam(0));
                 m_HaveSeq = true;
             }
         }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_ImpactId = new StoryFunction<int>();
-        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private IExpression m_UnitId;
+        private IExpression m_ImpactId;
+        private List<IExpression> m_Args = new List<IExpression>();
         private bool m_HaveSeq = false;
-        private IStoryFunction<string> m_SeqVarName = new StoryFunction<string>();
+        private IExpression m_SeqVarName;
     }
     /// <summary>
     /// npcremoveimpact(unit_id, seq);
     /// </summary>
-    public class NpcRemoveImpactCommand : AbstractStoryCommand
+    public class NpcRemoveImpactCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcRemoveImpactCommand cmd = new NpcRemoveImpactCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_Seq = m_Seq.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_Seq.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int seq = m_Seq.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int seq = operands[1].GetInt();
                 EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
                     ImpactInfo impactInfo = obj.GetSkillStateInfo().GetImpactInfoBySeq(seq);
@@ -966,63 +556,27 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_Seq.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_Seq = new StoryFunction<int>();
     }
     /// <summary>
     /// npccastskill(unit_id, skillid, arg1, arg2, ...);
     /// </summary>
-    public class NpcCastSkillCommand : AbstractStoryCommand
+    public class NpcCastSkillCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcCastSkillCommand cmd = new NpcCastSkillCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_SkillId = m_SkillId.Clone();
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                cmd.m_Args.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_SkillId.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int skillId = m_SkillId.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int skillId = operands[1].GetInt();
                 Dictionary<string, object> locals = new Dictionary<string, object>();
-                for (int i = 0; i < m_Args.Count - 1; i += 2) {
-                    string key = m_Args[i].Value;
-                    object val = m_Args[i + 1].Value.GetObject();
+                for (int i = 3; i < operands.Count; i += 2) {
+                    string key = operands[i - 1].ToString();
+                    object val = operands[i].GetObject();
                     if (!string.IsNullOrEmpty(key)) {
                         locals.Add(key, val);
                     }
@@ -1043,54 +597,22 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_SkillId.InitFromDsl(callData.GetParam(1));
-            }
-            for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_Args.Add(val);
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
-        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
     /// npcstopskill(unit_id);
     /// </summary>
-    public class NpcStopSkillCommand : AbstractStoryCommand
+    public class NpcStopSkillCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcStopSkillCommand cmd = new NpcStopSkillCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
+                if (operands.Count <= 0)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
                 EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
                     Msg_RC_NpcStopSkill skillBuilder = new Msg_RC_NpcStopSkill();
@@ -1098,50 +620,23 @@ namespace ScriptableFramework.Story.Commands
                     scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcStopSkill, skillBuilder);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
     }
     /// <summary>
     /// npcaddskill(unit_id, skillid);
     /// </summary>
-    public class NpcAddSkillCommand : AbstractStoryCommand
+    public class NpcAddSkillCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcAddSkillCommand cmd = new NpcAddSkillCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_SkillId = m_SkillId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_SkillId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int skillId = m_SkillId.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int skillId = operands[1].GetInt();
                 EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
                     if (obj.GetSkillStateInfo().GetSkillInfoById(skillId) == null) {
@@ -1154,109 +649,51 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_SkillId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
     }
     /// <summary>
     /// npcremoveskill(unit_id, skillid);
     /// </summary>
-    public class NpcRemoveSkillCommand : AbstractStoryCommand
+    public class NpcRemoveSkillCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcRemoveSkillCommand cmd = new NpcRemoveSkillCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_SkillId = m_SkillId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_SkillId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int skillId = m_SkillId.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int skillId = operands[1].GetInt();
                 EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
                     obj.GetSkillStateInfo().RemoveSkill(skillId);
-                    
+
                     Msg_RC_RemoveSkill msg = new Msg_RC_RemoveSkill();
                     msg.obj_id = obj.GetId();
                     msg.skill_id = skillId;
                     scene.NotifyAllUser(RoomMessageDefine.Msg_RC_RemoveSkill, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_SkillId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_SkillId = new StoryFunction<int>();
     }
     /// <summary>
     /// npclisten(unit_id, message_type, true_or_false);
     /// </summary>
-    public class NpcListenCommand : AbstractStoryCommand
+    public class NpcListenCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcListenCommand cmd = new NpcListenCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_Event = m_Event.Clone();
-            cmd.m_Enable = m_Enable.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_Event.Evaluate(instance, handler, iterator, args);
-            m_Enable.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                string eventName = m_Event.Value;
-                string enable = m_Enable.Value;
+                if (operands.Count <= 2)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                string eventName = operands[1].ToString();
+                string enable = operands[2].ToString();
                 EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
                     if (StoryListenFlagEnum.Damage == StoryListenFlagUtility.FromString(eventName)) {
@@ -1267,54 +704,25 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 2) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_Event.InitFromDsl(callData.GetParam(1));
-                m_Enable.InitFromDsl(callData.GetParam(2));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<string> m_Event = new StoryFunction<string>();
-        private IStoryFunction<string> m_Enable = new StoryFunction<string>();
     }
     /// <summary>
-    /// setcamp(npc_unit_id,camp_id);
+    /// npcsetcamp(npc_unit_id,camp_id);
     /// </summary>
-    public class NpcSetCampCommand : AbstractStoryCommand
+    public class NpcSetCampCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcSetCampCommand cmd = new NpcSetCampCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_CampId = m_CampId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_CampId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                EntityInfo obj = scene.SceneContext.GetEntityByUnitId(m_UnitId.Value);
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int campId = operands[1].GetInt();
+                EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != obj) {
-                    int campId = m_CampId.Value;
                     obj.SetCampId(campId);
 
                     Msg_RC_CampChanged msg = new Msg_RC_CampChanged();
@@ -1323,118 +731,51 @@ namespace ScriptableFramework.Story.Commands
                     scene.NotifyAllUser(RoomMessageDefine.Msg_RC_CampChanged, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_CampId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_CampId = new StoryFunction<int>();
     }
-    /// setsummonerid(unit_id, objid);
+    /// <summary>
+    /// npcsetsummonerid(unit_id, objid);
     /// </summary>
-    public class NpcSetSummonerIdCommand : AbstractStoryCommand
+    public class NpcSetSummonerIdCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcSetSummonerIdCommand cmd = new NpcSetSummonerIdCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_SummonerId = m_SummonerId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_SummonerId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int summonerId = m_SummonerId.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int summonerId = operands[1].GetInt();
                 EntityInfo npcInfo = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != npcInfo) {
                     npcInfo.SummonerId = summonerId;
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_SummonerId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_SummonerId = new StoryFunction<int>();
     }
-    /// setsummonskillid(unit_id, objid);
+    /// <summary>
+    /// npcsetsummonskillid(unit_id, skillid);
     /// </summary>
-    public class NpcSetSummonSkillIdCommand : AbstractStoryCommand
+    public class NpcSetSummonSkillIdCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            NpcSetSummonSkillIdCommand cmd = new NpcSetSummonSkillIdCommand();
-            cmd.m_UnitId = m_UnitId.Clone();
-            cmd.m_SummonSkillId = m_SummonSkillId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_SummonSkillId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int summonSkillId = m_SummonSkillId.Value;
+                if (operands.Count <= 1)
+                    return BoxedValue.NullObject;
+                int unitId = operands[0].GetInt();
+                int summonSkillId = operands[1].GetInt();
                 EntityInfo npcInfo = scene.SceneContext.GetEntityByUnitId(unitId);
                 if (null != npcInfo) {
                     npcInfo.SummonSkillId = summonSkillId;
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_SummonSkillId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_SummonSkillId = new StoryFunction<int>();
     }
 }

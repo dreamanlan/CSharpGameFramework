@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotnetStoryScript;
-using GameFrameworkMessage;
+using DotnetStoryScript.DslExpression;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.GmCommands
 {
@@ -9,17 +10,18 @@ namespace ScriptableFramework.GmCommands
     //********************************************************delimiter*******************************************************************
     //---------------------------------------------------------------------------------------------------------------------------------
     //Commands that are only valid within the scene (only modify ScriptableFramework combat-related data)
-    public class SetPositionCommand : SimpleStoryCommandBase<SetPositionCommand, StoryFunctionParam<int, float, float>>
+    public class SetPositionCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int, float, float> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
-                    int objId = _params.Param1Value;
-                    float x = _params.Param2Value;
-                    float z = _params.Param3Value;
+                    int objId = operands[0].GetInt();
+                    float x = operands[1].GetFloat();
+                    float z = operands[2].GetFloat();
                     EntityInfo charObj = user.SceneContext.GetEntityById(objId);
                     if (null != charObj) {
                         MovementStateInfo msi = charObj.GetMovementStateInfo();
@@ -27,7 +29,7 @@ namespace ScriptableFramework.GmCommands
 
                         Scene scene = user.SceneContext.CustomData as Scene;
                         if (null != scene) {
-                            GameFrameworkMessage.Msg_RC_AdjustPosition adjustPos = new GameFrameworkMessage.Msg_RC_AdjustPosition();
+                            ScriptableFrameworkMessage.Msg_RC_AdjustPosition adjustPos = new ScriptableFrameworkMessage.Msg_RC_AdjustPosition();
                             adjustPos.role_id = objId;
                             adjustPos.face_dir = msi.GetFaceDir();
                             adjustPos.x = x;
@@ -41,27 +43,29 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class LevelToCommand : SimpleStoryCommandBase<LevelToCommand, StoryFunctionParam<int>>
+    public class LevelToCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
-                    int lvl = _params.Param1Value;
+                    int lvl = operands[0].GetInt();
                     user.Level = lvl;
                 }
             }
             return false;
         }
     }
-    public class FullCommand : SimpleStoryCommandBase<FullCommand, StoryFunctionParam>
+    public class FullCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
                     user.Hp = user.HpMax;
@@ -71,12 +75,13 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class ClearEquipmentsCommand : SimpleStoryCommandBase<ClearEquipmentsCommand, StoryFunctionParam>
+    public class ClearEquipmentsCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
                 }
@@ -84,26 +89,28 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class AddEquipmentCommand : SimpleStoryCommandBase<AddEquipmentCommand, StoryFunctionParam<int>>
+    public class AddEquipmentCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
-                    int itemId = _params.Param1Value;
+                    int itemId = operands[0].GetInt();
                 }
             }
             return false;
         }
     }
-    public class ClearSkillsCommand : SimpleStoryCommandBase<ClearSkillsCommand, StoryFunctionParam>
+    public class ClearSkillsCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
                     user.GetSkillStateInfo().RemoveAllSkill();
@@ -112,15 +119,16 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class AddSkillCommand : SimpleStoryCommandBase<AddSkillCommand, StoryFunctionParam<int>>
+    public class AddSkillCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
-                    int skillId = _params.Param1Value;
+                    int skillId = operands[0].GetInt();
                     SkillInfo skillInfo = new SkillInfo(skillId);
                     user.GetSkillStateInfo().AddSkill(skillInfo);
                 }
@@ -128,12 +136,13 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class ClearBuffsCommand : SimpleStoryCommandBase<ClearBuffsCommand, StoryFunctionParam>
+    public class ClearBuffsCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
                     user.GetSkillStateInfo().RemoveAllImpact();
@@ -142,17 +151,18 @@ namespace ScriptableFramework.GmCommands
             return false;
         }
     }
-    public class AddBuffCommand : SimpleStoryCommandBase<AddBuffCommand, StoryFunctionParam<int>>
+    public class AddBuffCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             BoxedValue us;
-            if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
                     Scene scene = user.SceneContext.CustomData as Scene;
                     if (null != scene) {
-                        int impactId = _params.Param1Value;
+                        int impactId = operands[0].GetInt();
                     }
                 }
             }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Lidgren.Network;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptableFramework.Network;
 using ScriptableFramework.Skill;
 using ScriptableFramework.Story;

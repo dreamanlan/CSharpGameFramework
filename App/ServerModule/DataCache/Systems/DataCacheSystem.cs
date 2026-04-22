@@ -7,8 +7,8 @@ using ScriptableFramework.DataCache;
 using System.Threading;
 using System.Text;
 using Messenger;
-using GameFrameworkMessage;
-using GameFrameworkData;
+using ScriptableFrameworkMessage;
+using ScriptableFrameworkData;
 
 internal class DataCacheSystem : MyServerThread
 {

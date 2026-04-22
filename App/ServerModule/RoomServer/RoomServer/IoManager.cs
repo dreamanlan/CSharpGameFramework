@@ -9,7 +9,7 @@ using Lidgren.Network;
 using CSharpCenterClient;
 
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptableFramework.Network;
 
 namespace ScriptableFramework

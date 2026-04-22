@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using DotnetSkillScript;
 
-namespace ScriptableFramework.Plugin
+namespace ScriptableFramework
 {
     public interface ISkillTriggerPlugin
     {

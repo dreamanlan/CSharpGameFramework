@@ -7,8 +7,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Messenger;
 using ScriptableFramework;
-using GameFrameworkMessage;
-using GameFrameworkData;
+using ScriptableFrameworkMessage;
+using ScriptableFrameworkData;
 
 namespace ScriptableFramework
 {
@@ -92,10 +92,10 @@ namespace ScriptableFramework
             msg.LoadRequests.Add(reqAccount);
             RequestLoad(msg, (ret) => {
                 JsonMessage resultMsg = new JsonMessage(LobbyGmMessageDefine.Msg_CL_GmQueryAccount, gmAccount);
-                GameFrameworkMessage.Msg_LC_GmQueryAccount protoData = new GameFrameworkMessage.Msg_LC_GmQueryAccount();
-                protoData.m_Result = GameFrameworkMessage.GmResultEnum.Failed;
+                ScriptableFrameworkMessage.Msg_LC_GmQueryAccount protoData = new ScriptableFrameworkMessage.Msg_LC_GmQueryAccount();
+                protoData.m_Result = ScriptableFrameworkMessage.GmResultEnum.Failed;
                 protoData.m_QueryAccount = accountId;
-                protoData.m_AccountState = GameFrameworkMessage.GmStateEnum.Offline;
+                protoData.m_AccountState = ScriptableFrameworkMessage.GmStateEnum.Offline;
                 resultMsg.m_ProtoData = protoData;
 
                 KeyString primaryKey = KeyString.Wrap(ret.PrimaryKeys);
@@ -116,11 +116,11 @@ namespace ScriptableFramework
                             }
                         }
                     }
-                    protoData.m_Result = GameFrameworkMessage.GmResultEnum.Success;
+                    protoData.m_Result = ScriptableFrameworkMessage.GmResultEnum.Success;
                     protoData.m_QueryAccount = dataAccount.AccountId;
-                    protoData.m_AccountState = GameFrameworkMessage.GmStateEnum.Online;
+                    protoData.m_AccountState = ScriptableFrameworkMessage.GmStateEnum.Online;
                     if (dataAccount.IsBanned) {
-                        protoData.m_AccountState = GameFrameworkMessage.GmStateEnum.Banned;
+                        protoData.m_AccountState = ScriptableFrameworkMessage.GmStateEnum.Banned;
                     }
                 } else if (Msg_DL_LoadResult.ErrorNoEnum.NotFound == ret.ErrorNo) {
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "DataCache Load NotFound: Msg:{0}, Key:{1}", "GmAccount", primaryKey);
@@ -144,8 +144,8 @@ namespace ScriptableFramework
             msg.LoadRequests.Add(reqUser);
             RequestLoad(msg, (ret) => {
                 JsonMessage resultMsg = new JsonMessage(jsonMsgId, gmAccount);
-                GameFrameworkMessage.Msg_LC_GmQueryUser protoData = new GameFrameworkMessage.Msg_LC_GmQueryUser();
-                protoData.m_Result = GameFrameworkMessage.GmResultEnum.Failed;
+                ScriptableFrameworkMessage.Msg_LC_GmQueryUser protoData = new ScriptableFrameworkMessage.Msg_LC_GmQueryUser();
+                protoData.m_Result = ScriptableFrameworkMessage.GmResultEnum.Failed;
                 protoData.m_Info = null;
 
                 KeyString primaryKey = KeyString.Wrap(ret.PrimaryKeys);
@@ -166,7 +166,7 @@ namespace ScriptableFramework
                             }
                         }
                     }
-                    protoData.m_Result = GameFrameworkMessage.GmResultEnum.Success;
+                    protoData.m_Result = ScriptableFrameworkMessage.GmResultEnum.Success;
                     protoData.m_Info = CreateGmUserInfo(dataUser);
                 } else if (Msg_DL_LoadResult.ErrorNoEnum.NotFound == ret.ErrorNo) {
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "DataCache Load NotFound: Msg:{0}, Key:{1}", "GmUser", primaryKey);
@@ -177,17 +177,17 @@ namespace ScriptableFramework
                 JsonGmMessageDispatcher.SendNodeMessage(nodeHandle, resultMsg);
             });
         }
-        private GameFrameworkMessage.GmUserInfo CreateGmUserInfo(TableUserInfo user)
+        private ScriptableFrameworkMessage.GmUserInfo CreateGmUserInfo(TableUserInfo user)
         {
             if (null == user)
                 return null;
-            GameFrameworkMessage.GmUserInfo gmUserInfo = new GameFrameworkMessage.GmUserInfo();
+            ScriptableFrameworkMessage.GmUserInfo gmUserInfo = new ScriptableFrameworkMessage.GmUserInfo();
             gmUserInfo.m_Guid = (ulong)user.Guid;
             gmUserInfo.m_AccountId = user.AccountId;
             gmUserInfo.m_Nickname = user.Nickname;
-            gmUserInfo.m_UserState = GameFrameworkMessage.GmStateEnum.Offline;
+            gmUserInfo.m_UserState = ScriptableFrameworkMessage.GmStateEnum.Offline;
             //basic information
-            GameFrameworkMessage.GmUserBasic gmUserBasic = new GameFrameworkMessage.GmUserBasic();
+            ScriptableFrameworkMessage.GmUserBasic gmUserBasic = new ScriptableFrameworkMessage.GmUserBasic();
             gmUserBasic.m_HeroId = user.HeroId;
             gmUserBasic.m_Level = user.Level;
             gmUserBasic.m_Money = user.Money;
@@ -212,9 +212,9 @@ namespace ScriptableFramework
                     m_GuidInitStatus = DataInitStatus.Loading;
                     Msg_LD_Load msg = new Msg_LD_Load();
                     msg.MsgId = (int)DataEnum.TableGuid;
-                    GameFrameworkMessage.Msg_LD_SingleLoadRequest slr = new GameFrameworkMessage.Msg_LD_SingleLoadRequest();
-                    slr.MsgId = (int)GameFrameworkData.DataEnum.TableGuid;
-                    slr.LoadType = GameFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
+                    ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest slr = new ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest();
+                    slr.MsgId = (int)ScriptableFrameworkData.DataEnum.TableGuid;
+                    slr.LoadType = ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
                     slr.Keys.Clear();
                     msg.LoadRequests.Add(slr);
                     RequestLoad(msg, ((ret) => {
@@ -260,9 +260,9 @@ namespace ScriptableFramework
                     m_MailInitStatus = DataInitStatus.Loading;
                     Msg_LD_Load msg = new Msg_LD_Load();
                     msg.MsgId = (int)DataEnum.TableMailInfo;
-                    GameFrameworkMessage.Msg_LD_SingleLoadRequest slr = new GameFrameworkMessage.Msg_LD_SingleLoadRequest();
-                    slr.MsgId = (int)GameFrameworkData.DataEnum.TableMailInfo;
-                    slr.LoadType = GameFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
+                    ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest slr = new ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest();
+                    slr.MsgId = (int)ScriptableFrameworkData.DataEnum.TableMailInfo;
+                    slr.LoadType = ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
                     slr.Keys.Clear();
                     msg.LoadRequests.Add(slr);
                     RequestLoad(msg, ((ret) => {
@@ -315,9 +315,9 @@ namespace ScriptableFramework
                     m_NicknameInitStatus = DataInitStatus.Loading;
                     Msg_LD_Load msg = new Msg_LD_Load();
                     msg.MsgId = (int)DataEnum.TableNicknameInfo;
-                    GameFrameworkMessage.Msg_LD_SingleLoadRequest slr = new GameFrameworkMessage.Msg_LD_SingleLoadRequest();
-                    slr.MsgId = (int)GameFrameworkData.DataEnum.TableNicknameInfo;
-                    slr.LoadType = GameFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
+                    ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest slr = new ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest();
+                    slr.MsgId = (int)ScriptableFrameworkData.DataEnum.TableNicknameInfo;
+                    slr.LoadType = ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
                     slr.Keys.Clear();
                     msg.LoadRequests.Add(slr);
                     RequestLoad(msg, ((ret) => {
@@ -369,9 +369,9 @@ namespace ScriptableFramework
                     m_GlobalInitStatus = DataInitStatus.Loading;
                     Msg_LD_Load msg = new Msg_LD_Load();
                     msg.MsgId = (int)DataEnum.TableGlobalData;
-                    GameFrameworkMessage.Msg_LD_SingleLoadRequest slr = new GameFrameworkMessage.Msg_LD_SingleLoadRequest();
-                    slr.MsgId = (int)GameFrameworkData.DataEnum.TableGlobalData;
-                    slr.LoadType = GameFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
+                    ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest slr = new ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest();
+                    slr.MsgId = (int)ScriptableFrameworkData.DataEnum.TableGlobalData;
+                    slr.LoadType = ScriptableFrameworkMessage.Msg_LD_SingleLoadRequest.LoadTypeEnum.LoadAll;
                     slr.Keys.Clear();
                     msg.LoadRequests.Add(slr);
                     RequestLoad(msg, ((ret) => {

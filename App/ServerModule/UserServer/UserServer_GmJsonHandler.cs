@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CSharpCenterClient;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework
 {

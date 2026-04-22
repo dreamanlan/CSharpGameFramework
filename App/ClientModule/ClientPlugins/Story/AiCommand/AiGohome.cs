@@ -3,26 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
-using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiGohome : ISimpleStoryCommandPlugin
+public class AiGohome : ISimpleStoryApiPlugin
 {
-    public ISimpleStoryCommandPlugin Clone()
+    public void Init(DslCalculator calculator)
     {
-        return new AiGohome();
+        m_Calculator = calculator;
     }
 
-    public void ResetState()
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        m_ParamReaded = false;
-    }
-
-    public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta)
-    {
-        var args = _params.Values;
+        var args = operands;
         if (!m_ParamReaded) {
             m_ParamReaded = true;
             m_ObjId = args[0];
@@ -30,7 +25,7 @@ public class AiGohome : ISimpleStoryCommandPlugin
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
         if (null != npc) {
             AiStateInfo info = npc.GetAiStateInfo();
-            return GohomeHandler(npc, info, delta);
+            return GohomeHandler(npc, info, (long)(UnityEngine.Time.deltaTime * 1000));
         }
         return false;
     }
@@ -60,6 +55,7 @@ public class AiGohome : ISimpleStoryCommandPlugin
         return true;
     }
 
+    private DslCalculator m_Calculator = null;
     private int m_ObjId = 0;
     private bool m_ParamReaded = false;
 }

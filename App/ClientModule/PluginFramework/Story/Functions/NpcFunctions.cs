@@ -1,456 +1,118 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 using ScriptableFramework;
-using ScriptRuntime;
 
 namespace ScriptableFramework.Story.Functions
 {
-    internal sealed class NpcIdListFunction : IStoryFunction
+    internal sealed class NpcIdListFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData) {
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            NpcIdListFunction val = new NpcIdListFunction();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-        
-            TryUpdateValue(instance);
-        }
-        public void Analyze(StoryInstance instance)
-        {
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             List<object> npcs = new List<object>();
             PluginFramework.Instance.EntityManager.Entities.VisitValues((EntityInfo npcInfo) => {
                 npcs.Add(npcInfo.GetId());
             });
-            m_HaveValue = true;
-            m_Value = BoxedValue.FromObject(npcs);
+            return BoxedValue.FromObject(npcs);
         }
-
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class CombatNpcCountFunction : IStoryFunction
+    internal sealed class CombatNpcCountFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData) {
-                m_ParamNum = callData.GetParamNum();
-                if (m_ParamNum > 0) {
-                    m_CampId.InitFromDsl(callData.GetParam(0));
-                }
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            CombatNpcCountFunction val = new CombatNpcCountFunction();
-            val.m_ParamNum = m_ParamNum;
-            val.m_CampId = m_CampId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            if (m_ParamNum > 0) {
-                m_CampId.Evaluate(instance, handler, iterator, args);
-            }
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            m_HaveValue = true;
-            if (m_ParamNum > 0) {
-                m_Value = PluginFramework.Instance.GetBattleNpcCount(m_CampId.Value);
+            if (operands.Count > 0) {
+                int campId = operands[0].GetInt();
+                return PluginFramework.Instance.GetBattleNpcCount(campId);
             } else {
-                m_Value = PluginFramework.Instance.GetBattleNpcCount();
+                return PluginFramework.Instance.GetBattleNpcCount();
             }
         }
-
-        private int m_ParamNum = 0;
-        private IStoryFunction<int> m_CampId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class NpcGetFormationFunction : IStoryFunction
+    internal sealed class NpcGetFormationFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && 1 == callData.GetParamNum()) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
+            if (operands.Count > 0) {
+                int unitId = operands[0].GetInt();
+                EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                if (null != entity) {
+                    return entity.GetMovementStateInfo().FormationIndex;
+                }
             }
+            return 0;
         }
-        public IStoryFunction Clone()
-        {
-            NpcGetFormationFunction val = new NpcGetFormationFunction();
-            val.m_UnitId = m_UnitId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            int unitId = m_UnitId.Value;
-            m_HaveValue = true;
-            EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
-            if (null != entity) {
-                m_Value = entity.GetMovementStateInfo().FormationIndex;
-            }
-        }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class NpcGetNpcTypeFunction : IStoryFunction
+    internal sealed class NpcGetNpcTypeFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            NpcGetNpcTypeFunction val = new NpcGetNpcTypeFunction();
-            val.m_UnitId = m_UnitId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            if (m_UnitId.HaveValue) {
-                int unitId = m_UnitId.Value;
-                m_HaveValue = true;
+            if (operands.Count > 0) {
+                int unitId = operands[0].GetInt();
                 EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(unitId);
                 if (null != obj) {
-                    m_Value = obj.EntityType;
-                } else {
-                    m_Value = 0;
+                    return obj.EntityType;
                 }
             }
+            return 0;
         }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class NpcGetSummonerIdFunction : IStoryFunction
+    internal sealed class NpcGetSummonerIdFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            NpcGetSummonerIdFunction val = new NpcGetSummonerIdFunction();
-            val.m_UnitId = m_UnitId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            if (m_UnitId.HaveValue) {
-                int unitId = m_UnitId.Value;
-                m_HaveValue = true;
+            if (operands.Count > 0) {
+                int unitId = operands[0].GetInt();
                 EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(unitId);
                 if (null != obj) {
-                    m_Value = obj.SummonerId;
-                } else {
-                    m_Value = 0;
+                    return obj.SummonerId;
                 }
             }
+            return 0;
         }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class NpcGetSummonSkillIdFunction : IStoryFunction
+    internal sealed class NpcGetSummonSkillIdFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            NpcGetSummonSkillIdFunction val = new NpcGetSummonSkillIdFunction();
-            val.m_UnitId = m_UnitId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            if (m_UnitId.HaveValue) {
-                int unitId = m_UnitId.Value;
-                m_HaveValue = true;
+            if (operands.Count > 0) {
+                int unitId = operands[0].GetInt();
                 EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(unitId);
                 if (null != obj) {
-                    m_Value = obj.SummonSkillId;
-                } else {
-                    m_Value = 0;
+                    return obj.SummonSkillId;
                 }
             }
+            return 0;
         }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class NpcFindImpactSeqByIdFunction : IStoryFunction
+    internal sealed class NpcFindImpactSeqByIdFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && 2 == callData.GetParamNum()) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-                m_ImpactId.InitFromDsl(callData.GetParam(1));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            NpcFindImpactSeqByIdFunction val = new NpcFindImpactSeqByIdFunction();
-            val.m_UnitId = m_UnitId.Clone();
-            val.m_ImpactId = m_ImpactId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            m_ImpactId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            int unitId = m_UnitId.Value;
-            int impactId = m_ImpactId.Value;
-            m_HaveValue = true;
-            EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
-            if (null != entity) {
-                ImpactInfo impactInfo = entity.GetSkillStateInfo().FindImpactInfoById(impactId);
-                if (null != impactInfo) {
-                    m_Value = impactInfo.Seq;
-                } else {
-                    m_Value = 0;
+            if (operands.Count > 1) {
+                int unitId = operands[0].GetInt();
+                int impactId = operands[1].GetInt();
+                EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                if (null != entity) {
+                    ImpactInfo impactInfo = entity.GetSkillStateInfo().FindImpactInfoById(impactId);
+                    if (null != impactInfo) {
+                        return impactInfo.Seq;
+                    }
                 }
             }
+            return 0;
         }
-
-        private IStoryFunction<int> m_UnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_ImpactId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class NpcCountFunction : IStoryFunction
+    internal sealed class NpcCountFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && 2 == callData.GetParamNum()) {
-                m_StartUnitId.InitFromDsl(callData.GetParam(0));
-                m_EndUnitId.InitFromDsl(callData.GetParam(1));
+            if (operands.Count > 1) {
+                int startUnitId = operands[0].GetInt();
+                int endUnitId = operands[1].GetInt();
+                return PluginFramework.Instance.GetNpcCount(startUnitId, endUnitId);
             }
+            return 0;
         }
-        public IStoryFunction Clone()
-        {
-            NpcCountFunction val = new NpcCountFunction();
-            val.m_StartUnitId = m_StartUnitId.Clone();
-            val.m_EndUnitId = m_EndUnitId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_StartUnitId.Evaluate(instance, handler, iterator, args);
-            m_EndUnitId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            m_HaveValue = true;
-            int startUnitId = m_StartUnitId.Value;
-            int endUnitId = m_EndUnitId.Value;
-            m_Value = PluginFramework.Instance.GetNpcCount(startUnitId, endUnitId);
-        }
-
-        private IStoryFunction<int> m_StartUnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_EndUnitId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
 }

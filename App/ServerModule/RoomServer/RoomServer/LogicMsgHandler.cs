@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptRuntime;
 
 namespace ScriptableFramework
@@ -188,10 +188,10 @@ namespace ScriptableFramework
                     case 0:
                         //resetdsl
                         scene.GmStorySystem.Reset();
-                        if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                            scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
+                        if (scene.GmStorySystem.ContextVariables.ContainsKey("EntityInfo")) {
+                            scene.GmStorySystem.ContextVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
                         } else {
-                            scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
+                            scene.GmStorySystem.ContextVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
                         }
                         DotnetStoryScript.StoryConfigManager.Instance.Clear();
                         scene.StorySystem.ClearStoryInstancePool();
@@ -203,10 +203,10 @@ namespace ScriptableFramework
                         //script
                         if (null != cmdMsg.content) {
                             scene.GmStorySystem.Reset();
-                            if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
+                            if (scene.GmStorySystem.ContextVariables.ContainsKey("EntityInfo")) {
+                                scene.GmStorySystem.ContextVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
                             } else {
-                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
+                                scene.GmStorySystem.ContextVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
                             }
                             scene.GmStorySystem.LoadStory(cmdMsg.content);
                             scene.GmStorySystem.StartStory("main");
@@ -217,11 +217,11 @@ namespace ScriptableFramework
                         if (null != cmdMsg.content) {
                             string cmd = cmdMsg.content;
                             scene.GmStorySystem.Reset();
-                            if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
+                            if (scene.GmStorySystem.ContextVariables.ContainsKey("EntityInfo")) {
+                                scene.GmStorySystem.ContextVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
                             }
                             else {
-                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
+                                scene.GmStorySystem.ContextVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
                             }
                             scene.GmStorySystem.LoadStoryText(System.Text.Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
                             scene.GmStorySystem.StartStory("main");

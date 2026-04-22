@@ -17,20 +17,20 @@ story(skill_main)
     @ezPos(0);
     @ezDir(0);
   };
-  onmessage("kill_summon_npc")
+  onmessage("kill_summon_npc")params($senderObj)
   {
-    @killObjId=$0.ActorId;
+    @killObjId=$senderObj.ActorId;
     destroynpcwithobjid(@killObjId);
   };
-  onmessage("kill_npc")
+  onmessage("kill_npc")params($objId,$unitId)
   {
     log("kill_npc");
-    sethp(unitid2objid($1),0);
+    sethp(unitid2objid($unitId),0);
   };
-  onmessage("summon_bear")
+  onmessage("summon_bear")params($senderObj,$tableId,$ai)
   {
-    @anniId=$0.ActorId;
-    @anniTargetId=$0.TargetActorId;
+    @anniId=$senderObj.ActorId;
+    @anniTargetId=$senderObj.TargetActorId;
     if(@anniTargetId<=0){
       @anniTargetId = @anniId;
       @anniPos = calcoffset(@anniTargetId,0,vector3(0,0,2));
@@ -40,24 +40,24 @@ story(skill_main)
       @anniDir=calcdir(@anniTargetId,@anniId);
     };
     log("summon_bear:{0} {1} {2}",@anniId,@anniPos,@anniDir);
-    createnpc(0,@anniPos,@anniDir,getcamp(@anniId),str2int($1),str2int($2),stringlist(""))objid("@bearId");
+    createnpc(0,@anniPos,@anniDir,getcamp(@anniId),str2int($tableId),str2int($ai),stringlist(""))objid("@bearId");
     objsetsummonerid(@bearId,@anniId);
     objsetformation(@bearId,5);
     objsetaitarget(@bearId,@anniTargetId);
     objaddimpact(@bearId,12);
   };
-  onmessage("summon_hanbing_arrow")
+  onmessage("summon_hanbing_arrow")params($senderObj,$tableId,$ai)
   {
-    @hanbingId=$0.ActorId;
+    @hanbingId=$senderObj.ActorId;
     @hanbingPos=getposition(@hanbingId);
     @hanbingDir=calcdir(@hanbingId,0);
     log("summon_hanbing_arrow:{0} {1} {2}",@hanbingId,@hanbingPos,@hanbingDir);
-    createnpc(0,@hanbingPos,@hanbingDir,getcamp(@hanbingId),str2int($1),str2int($2),stringlist(""))objid("@hanbingArrowId");
+    createnpc(0,@hanbingPos,@hanbingDir,getcamp(@hanbingId),str2int($tableId),str2int($ai),stringlist(""))objid("@hanbingArrowId");
     objsetsummonerid(@hanbingArrowId,@hanbingId);
   };
-  onmessage("ez_skill_r")
+  onmessage("ez_skill_r")params($senderObj)
   {
-    @ezId=$0.ActorId;
+    @ezId=$senderObj.ActorId;
     @ezPos=getposition(@ezId);
     @ezDir=calcdir(@ezId,0);
     log("ez_skill_r:{0} {1} {2}",@ezId,@ezPos,@ezDir);

@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using GameFrameworkData;
+using ScriptableFrameworkData;
 using ScriptableFramework;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using CSharpCenterClient;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace Lobby
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using LitJson;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptableFramework;
 
 namespace ScriptableFramework

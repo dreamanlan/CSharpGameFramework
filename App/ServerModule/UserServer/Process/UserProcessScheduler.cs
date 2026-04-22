@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using GameFrameworkData;
-using GameFrameworkMessage;
+using ScriptableFrameworkData;
+using ScriptableFrameworkMessage;
 using ScriptableFramework;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -224,7 +224,7 @@ namespace ScriptableFramework
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_3b1: Start queueing but queue full. AccountId:{0}", accountId);
 
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
-                    GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
+                    ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
                     protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.QueueFull;
                     replyMsg.m_ProtoData = protoMsg;
@@ -234,7 +234,7 @@ namespace ScriptableFramework
 
                     queueingThread.QueueAction(queueingThread.StartQueueing, accountId, password, clientInfo, nodeName);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
-                    GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
+                    ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
                     protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Queueing;
                     replyMsg.m_ProtoData = protoMsg;
@@ -264,7 +264,7 @@ namespace ScriptableFramework
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
                     LogSys.Log(ServerLogType.INFO, "Account login success. Account:{0}", accountId);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
-                    GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
+                    ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
                     protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.FirstLogin;
                     protoMsg.m_UserGuid = accountInfo.UserGuid;
@@ -282,7 +282,7 @@ namespace ScriptableFramework
                     accountInfo.NodeName = nodeName;
                     accountInfo.CurrentState = AccountState.Online;
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
-                    GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
+                    ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
                     if (!string.IsNullOrEmpty(accountInfo.Nickname))
                         protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Success;
@@ -295,7 +295,7 @@ namespace ScriptableFramework
                     //The account was logged in on another device, but the login failed.
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_5b: Account is online. Login FAILED. AccountId:{0}", accountId);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
-                    GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
+                    ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
                     protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.AlreadyOnline;
                     replyMsg.m_ProtoData = protoMsg;
@@ -310,7 +310,7 @@ namespace ScriptableFramework
                 return;
             }
             NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
-            GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
+            ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
             protoMsg.m_AccountId = accountId;
             protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Error;
             try {
@@ -399,7 +399,7 @@ namespace ScriptableFramework
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             if (accountInfo != null) {
                 NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.RequestNicknameResult, accountId);
-                GameFrameworkMessage.RequestNicknameResult protoMsg = new GameFrameworkMessage.RequestNicknameResult();
+                ScriptableFrameworkMessage.RequestNicknameResult protoMsg = new ScriptableFrameworkMessage.RequestNicknameResult();
                 List<string> nicknameList = m_NicknameSystem.RequestNicknames(accountId);
                 protoMsg.m_Nicknames.AddRange(nicknameList);
 
@@ -417,7 +417,7 @@ namespace ScriptableFramework
                     if (user.CurrentState == UserState.DropOrOffline) {
                         //The user is in the offline process and needs to wait for the lobby offline process to be completed.
                         NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountId, user.Guid);
-                        GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
+                        ScriptableFrameworkMessage.RoleEnterResult protoData = new ScriptableFrameworkMessage.RoleEnterResult();
                         protoData.Result = RoleEnterResult.RoleEnterResultEnum.Wait;
                         roleEnterResultMsg.m_ProtoData = protoData;
                         NodeMessageDispatcher.SendNodeMessage(user.NodeName, roleEnterResultMsg);
@@ -431,14 +431,14 @@ namespace ScriptableFramework
                                 accountId, userGuid, user.Nickname);
                             //Reply to client
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, user.AccountId, user.Guid);
-                            GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(user);
+                            ScriptableFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(user);
                             protoData.Result = RoleEnterResult.RoleEnterResultEnum.Reconnect;
                             roleEnterResultMsg.m_ProtoData = protoData;
                             NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, roleEnterResultMsg);
                         } else {
                             //The character AccountId does not match the account AccountId, and entry into the game fails.
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountId, user.Guid);
-                            GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
+                            ScriptableFrameworkMessage.RoleEnterResult protoData = new ScriptableFrameworkMessage.RoleEnterResult();
                             protoData.Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
                             roleEnterResultMsg.m_ProtoData = protoData;
                             LogSys.Log(ServerLogType.ERROR, "LoginStep_8a: Role Reenter FAILED. AccountId:{0}, UserGuid:{1}, Nickname:{2}, UserAccountId:{3}",
@@ -510,7 +510,7 @@ namespace ScriptableFramework
                 ui.NodeName = accountInfo.NodeName;
                 this.DoUserLogin(ui);
                 NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, ui.AccountId, ui.Guid);
-                GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(ui);
+                ScriptableFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(ui);
                 protoData.Result = RoleEnterResult.RoleEnterResultEnum.Success;
                 replyMsg.m_ProtoData = protoData;
                 NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, replyMsg);
@@ -518,7 +518,7 @@ namespace ScriptableFramework
                 CreateRole(accountId, nickname, 1);
             } else {
                 NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountInfo.AccountId, userGuid);
-                GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
+                ScriptableFrameworkMessage.RoleEnterResult protoData = new ScriptableFrameworkMessage.RoleEnterResult();
                 protoData.Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
                 replyMsg.m_ProtoData = protoData;
                 NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, replyMsg);
@@ -540,7 +540,7 @@ namespace ScriptableFramework
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "ChangeName SUCCESS. AccountId:{0}, Nickname:{1}",
                       ui.AccountId, nickname);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, ui.AccountId);
-                    GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
+                    ScriptableFrameworkMessage.ChangeNameResult protoMsg = new ScriptableFrameworkMessage.ChangeNameResult();
                     protoMsg.m_Result = ChangeNameResult.ChangeNameResultEnum.Success;
                     replyMsg.m_ProtoData = protoMsg;
                     NodeMessageDispatcher.SendNodeMessage(ui.NodeName, replyMsg);
@@ -548,7 +548,7 @@ namespace ScriptableFramework
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "ChangeName FAILED. AccountId:{0}, Nickname:{1}",
                       ui.AccountId, nickname);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, ui.AccountId);
-                    GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
+                    ScriptableFrameworkMessage.ChangeNameResult protoMsg = new ScriptableFrameworkMessage.ChangeNameResult();
                     if (ret == NicknameSystem.CheckNicknameResult.AlreadyUsed) {
                         //Nickname is already taken
                         protoMsg.m_Result = ChangeNameResult.ChangeNameResultEnum.NicknameError;
@@ -741,9 +741,9 @@ namespace ScriptableFramework
             }
 
         }
-        private GameFrameworkMessage.RoleEnterResult CreateRoleEnterResultMsg(UserInfo ui)
+        private ScriptableFrameworkMessage.RoleEnterResult CreateRoleEnterResultMsg(UserInfo ui)
         {
-            GameFrameworkMessage.RoleEnterResult replyMsg = new GameFrameworkMessage.RoleEnterResult();
+            ScriptableFrameworkMessage.RoleEnterResult replyMsg = new ScriptableFrameworkMessage.RoleEnterResult();
             //
             replyMsg.Nickname = ui.Nickname;
             replyMsg.HeroId = ui.HeroId;
@@ -789,7 +789,7 @@ namespace ScriptableFramework
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_8c: New role enter SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
                       accountId, ui.Guid, ui.Nickname);
                     NodeMessage enterMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, ui.AccountId, ui.Guid);
-                    GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(ui);
+                    ScriptableFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(ui);
                     protoData.Result = RoleEnterResult.RoleEnterResultEnum.Success;
                     enterMsg.m_ProtoData = protoData;
                     NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, enterMsg);
@@ -797,7 +797,7 @@ namespace ScriptableFramework
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_7b: Create new role FAILED. AccountId:{0}, Nickname:{1}",
                       accountId, nickname);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, accountId);
-                    GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
+                    ScriptableFrameworkMessage.ChangeNameResult protoMsg = new ScriptableFrameworkMessage.ChangeNameResult();
                     if (ret == NicknameSystem.CheckNicknameResult.AlreadyUsed) {
                         //Nickname is already taken
                         protoMsg.m_Result = ChangeNameResult.ChangeNameResultEnum.NicknameError;

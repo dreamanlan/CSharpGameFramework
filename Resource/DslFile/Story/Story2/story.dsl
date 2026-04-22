@@ -7,11 +7,8 @@ story(story_main)
   onmessage("start")
   {
   };
-  onmessage("user_enter_scene")
+  onmessage("user_enter_scene")params($userId,$userUnitId,$campId)
   {
-    $userId=$0;
-    $userUnitId=$1;
-    $campId=$2;
     wait(1000);
     publishgfxevent("loading_complete", "ui")touser($userId);
     camerafollow($userUnitId)touser($userId);
@@ -38,15 +35,15 @@ story(story_main)
   };
   onmessage("refreshmonsters")
   {
-    log("scene2");    
+    log("scene2");
     if(@monsterRefresh==0){
       @monsterRefresh=1;
-      loop(32){      	
+      loop(32){
 	      $monsterInfo = getmonsterinfo(1,$$);
 	      if(!isnull($monsterInfo)){
 	      	createnpc(1006+$$,vector3($monsterInfo.x,0,$monsterInfo.y),$monsterInfo.dir*3.1415926/180,2,$monsterInfo.actorID,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
 	      };
-	    };      
+	    };
     };
   };
 };

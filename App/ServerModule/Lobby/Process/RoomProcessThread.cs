@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpCenterClient;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using System.Collections.Generic;
 using ScriptableFramework;
 using LitJson;
@@ -301,7 +301,7 @@ namespace Lobby
                     if (m_LobbyInfo.RoomServerInfos.TryGetValue(room.RoomServerName, out svrInfo)) {
                         if (null != svrInfo) {
                             NodeMessage enterSceneResultMsg = new NodeMessage(LobbyMessageDefine.EnterSceneResult, user.Guid);
-                            GameFrameworkMessage.EnterSceneResult protoData = new GameFrameworkMessage.EnterSceneResult();
+                            ScriptableFrameworkMessage.EnterSceneResult protoData = new ScriptableFrameworkMessage.EnterSceneResult();
                             protoData.server_ip = svrInfo.ServerIp;
                             protoData.server_port = svrInfo.ServerPort;
                             protoData.key = user.Key;
@@ -453,7 +453,7 @@ namespace Lobby
                             if (m_LobbyInfo.RoomServerInfos.TryGetValue(room.RoomServerName, out svrInfo)) {
                                 if (null != svrInfo) {
                                     NodeMessage startGameResultMsg = new NodeMessage(LobbyMessageDefine.EnterSceneResult, user.Guid);
-                                    GameFrameworkMessage.EnterSceneResult protoData = new GameFrameworkMessage.EnterSceneResult();
+                                    ScriptableFrameworkMessage.EnterSceneResult protoData = new ScriptableFrameworkMessage.EnterSceneResult();
                                     protoData.server_ip = svrInfo.ServerIp;
                                     protoData.server_port = svrInfo.ServerPort;
                                     protoData.key = user.Key;
@@ -479,7 +479,7 @@ namespace Lobby
                     break;
                 case (int)Msg_RL_ReplyReconnectUser.ReconnectResultEnum.Online: {
                         NodeMessage startGameResultMsg = new NodeMessage(LobbyMessageDefine.EnterSceneResult, user.Guid);
-                        GameFrameworkMessage.EnterSceneResult protoData = new GameFrameworkMessage.EnterSceneResult();
+                        ScriptableFrameworkMessage.EnterSceneResult protoData = new ScriptableFrameworkMessage.EnterSceneResult();
                         protoData.result = (int)GeneralOperationResult.LC_Failed;
 
                         startGameResultMsg.m_ProtoData = protoData;

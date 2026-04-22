@@ -13,13 +13,13 @@ story(story_main)
     wait(3000);
     quit();
   };
-  onmessage("do_login")
-  {  	
-  	publishgfxevent("ge_account_login", "lobby", $0, $1, "");
-  };
-  onmessage("do_nickname")
+  onmessage("do_login")params($user,$pwd)
   {
-  	publishgfxevent("ge_change_name", "lobby", $0);
+  	publishgfxevent("ge_account_login", "lobby", $user, $pwd, "");
+  };
+  onmessage("do_nickname")params($nickname)
+  {
+  	publishgfxevent("ge_change_name", "lobby", $nickname);
   };
   onmessage("start_game")
   {

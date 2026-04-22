@@ -14,11 +14,11 @@ story(story_main)
   onmessage("start")
   {
   };
-  onmessage("user_enter_scene")
+  onmessage("user_enter_scene")params($userId,$userUnitId,$campId)
   {
-    @userId=$0;
-    @userUnitId=$1;
-    @campId=$2;
+    @userId=$userId;
+    @userUnitId=$userUnitId;
+    @campId=$campId;
     objsetformation(@userId,0);
     loop(4){
       @unitId = @userId*100+$$;
@@ -41,8 +41,8 @@ story(story_main)
   };
   onmessage("server:msg_from_userserver")
   {
-		//log("msg_from_userserver:{0} {1}",$0,getentityinfo($0).CustomData.Guid);
-		//sendserverstorymessage("msg_from_room")touser($0);
+		//log("msg_from_userserver:{0} {1}",arg(0),getentityinfo(arg(0)).CustomData.Guid);
+		//sendserverstorymessage("msg_from_room")touser(arg(0));
   };
   onmessage("dialog_over",2)
   {
@@ -50,7 +50,7 @@ story(story_main)
   };
   onmessage("refreshmonsters")
   {
-    log("scene2");    
+    log("scene2");
     if(@monsterRefresh==0){
       @monsterRefresh=1;
       /*
@@ -59,13 +59,12 @@ story(story_main)
         createnpc(1006+$$,rndvector3(@pt,10),0,2,$$+6,2,stringlist(""));
       };
      	*/
-      loop(64){      	
+      loop(64){
 	      @monsterInfo = getmonsterinfo(2,$$);
 	      if(!isnull(@monsterInfo)){
 	      	createnpc(1006+$$,vector3(@monsterInfo.x,0,@monsterInfo.y),@monsterInfo.dir*3.1415926/180,2,@monsterInfo.actorID,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
 	      };
 	    };
-      
     };
     highlightprompt(0,"Tip_1");
   };

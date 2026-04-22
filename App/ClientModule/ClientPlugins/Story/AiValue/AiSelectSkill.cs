@@ -4,31 +4,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
-using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiSelectSkill : ISimpleStoryFunctionPlugin
+public class AiSelectSkill : ISimpleStoryApiPlugin
 {
-    public void SetProxy(StoryFunctionResult result)
+    public void Init(DslCalculator calculator)
     {
-        m_Proxy = result;
+        m_Calculator = calculator;
     }
-    public ISimpleStoryFunctionPlugin Clone()
+
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        return new AiSelectSkill();
-    }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
-    {
-        var args = _params.Values;
+        var args = operands;
         int objId = args[0];
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             SkillInfo skillInfo = AiLogicUtility.NpcFindCanUseSkill(npc);
-            m_Proxy.Value = BoxedValue.FromObject(skillInfo);
+            result.Value = BoxedValue.FromObject(skillInfo);
         }
+        return false;
     }
 
-    private StoryFunctionResult m_Proxy = null;
+    private DslCalculator m_Calculator = null;
 }

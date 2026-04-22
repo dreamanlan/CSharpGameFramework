@@ -1,6 +1,6 @@
 using System;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace Lobby
 {

@@ -13,8 +13,8 @@ namespace ScriptableFramework.Story
         {
             StoryInstance instance = GfxStorySystem.Instance.GetStory("main", WindowName);
             if (null != instance) {
-                instance.LocalVariables.Clear();
-                instance.LocalVariables.Add("@window", BoxedValue.FromObject(gameObject));
+                instance.InstanceVariables.Clear();
+                instance.InstanceVariables.Add("@window", BoxedValue.FromObject(gameObject));
                 GfxStorySystem.Instance.StartStory("main", WindowName);
             }
         }

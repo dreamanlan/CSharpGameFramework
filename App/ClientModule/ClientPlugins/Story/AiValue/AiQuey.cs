@@ -4,58 +4,41 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiQuery : IStoryFunctionPlugin
+public class AiQuery : IStoryApiPlugin
 {
-    public void SetProxy(StoryFunctionResult result)
+    public void Init(DslCalculator calculator)
     {
-        m_Proxy = result;
-    }
-    public IStoryFunctionPlugin Clone()
-    {
-        var newObj = new AiQuery();
-        if (null != m_Select) {
-            newObj.m_Select = m_Select.Clone() as IStoryFunction;
-        }
-        if (null != m_From) {
-            newObj.m_From = m_From.Clone() as IStoryFunction;
-        }
-        if (null != m_Where) {
-            newObj.m_Where = m_Where.Clone() as IStoryFunction;
-        }
-        for (int i = 0; i < m_OrderBy.Count; ++i) {
-            newObj.m_OrderBy.Add(m_OrderBy[i].Clone() as IStoryFunction);
-        }
-        newObj.m_Desc = m_Desc;
-        return newObj;
+        m_Calculator = calculator;
     }
 
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+    public bool Calc(AsyncCalcResult result)
     {
         if (null != m_Select && null != m_From) {
-            m_From.Evaluate(instance, handler, iterator, args);
+            var fromVal = m_From.Calc();
             ArrayList coll = new ArrayList();
 
             //filter
-            IEnumerable enumer = m_From.Value.ObjectVal as IEnumerable;
+            IEnumerable enumer = fromVal.ObjectVal as IEnumerable;
             if (null != enumer) {
                 var enumerator = enumer.GetEnumerator();
                 while (enumerator.MoveNext()) {
                     var v = enumerator.Current;
                     var bv = BoxedValue.FromObject(v);
                     if (null != m_Where) {
-                        m_Where.Evaluate(instance, handler, bv, args);
-                        object wvObj = m_Where.Value;
+                        var whereVal = m_Where.Calc();
+                        object wvObj = whereVal.ObjectVal;
                         int wv = (int)System.Convert.ChangeType(wvObj, typeof(int));
                         if (wv != 0) {
-                            AddRow(coll, bv, instance, handler, args);
+                            AddRow(coll, bv);
                         }
                     } else {
-                        AddRow(coll, bv, instance, handler, args);
+                        AddRow(coll, bv);
                     }
                 }
             }
@@ -67,31 +50,28 @@ public class AiQuery : IStoryFunctionPlugin
             }
 
             //get the results
-            ArrayList result = new ArrayList();
+            ArrayList res = new ArrayList();
             for (int i = 0; i < coll.Count; ++i) {
                 var ao = coll[i] as ArrayList;
-                result.Add(ao[0]);
+                res.Add(ao[0]);
             }
-            m_Proxy.Value = result;
+            result.Value = BoxedValue.FromObject(result);
         }
+        return false;
     }
 
     public void LoadCallData(Dsl.FunctionData callData)
     {
         string id = callData.GetId();
         if (id == "select") {
-            m_Select = new StoryFunction();
-            m_Select.InitFromDsl(callData.GetParam(0));
+            m_Select = m_Calculator.Load(callData.GetParam(0));
         } else if (id == "from") {
-            m_From = new StoryFunction();
-            m_From.InitFromDsl(callData.GetParam(0));
+            m_From = m_Calculator.Load(callData.GetParam(0));
         } else if (id == "where") {
-            m_Where = new StoryFunction();
-            m_Where.InitFromDsl(callData.GetParam(0));
+            m_Where = m_Calculator.Load(callData.GetParam(0));
         } else if (id == "orderby") {
             for (int i = 0; i < callData.GetParamNum(); ++i) {
-                StoryFunction v = new StoryFunction();
-                v.InitFromDsl(callData.GetParam(i));
+                var v = m_Calculator.Load(callData.GetParam(i));
                 m_OrderBy.Add(v);
             }
         } else if (id == "asc") {
@@ -114,25 +94,25 @@ public class AiQuery : IStoryFunctionPlugin
         }
     }
 
-    private void AddRow(ArrayList coll, BoxedValue v, StoryInstance instance, StoryMessageHandler handler, BoxedValueList args)
+    private void AddRow(ArrayList coll, BoxedValue v)
     {
         ArrayList row = new ArrayList();
         coll.Add(row);
 
-        m_Select.Evaluate(instance, handler, v, args);
-        row.Add(m_Select.Value.GetObject());
+        var selectVal = m_Select.Calc();
+        row.Add(selectVal.GetObject());
 
         for (int i = 0; i < m_OrderBy.Count; ++i) {
             var val = m_OrderBy[i];
-            val.Evaluate(instance, handler, v, args);
-            row.Add(val.Value.GetObject());
+            var orderVal = val.Calc();
+            row.Add(orderVal.GetObject());
         }
     }
 
-    private StoryFunctionResult m_Proxy = null;
-    private IStoryFunction m_Select = null;
-    private IStoryFunction m_From = null;
-    private IStoryFunction m_Where = null;
-    private List<IStoryFunction> m_OrderBy = new List<IStoryFunction>();
+    private DslCalculator m_Calculator = null;
+    private IExpression m_Select = null;
+    private IExpression m_From = null;
+    private IExpression m_Where = null;
+    private List<IExpression> m_OrderBy = new List<IExpression>();
     private bool m_Desc = false;
 }

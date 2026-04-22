@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework
 {
@@ -214,7 +214,7 @@ namespace ScriptableFramework
 
         private void PublishRequirePveTimeEvent()
         {
-            GameFrameworkMessage.Msg_RC_PublishEvent msg = new GameFrameworkMessage.Msg_RC_PublishEvent();
+            ScriptableFrameworkMessage.Msg_RC_PublishEvent msg = new ScriptableFrameworkMessage.Msg_RC_PublishEvent();
             msg.is_logic_event = false;
             msg.ev_name = "ge_require_pve_time";
             msg.group = "ui";

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 
 public interface IObjectPluginFactory
 {

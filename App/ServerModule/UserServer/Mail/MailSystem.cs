@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using ScriptableFramework;
-using GameFrameworkData;
-using GameFrameworkMessage;
+using ScriptableFrameworkData;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework
 {
@@ -126,7 +126,7 @@ namespace ScriptableFramework
                     }
                 }
                 NodeMessage syncMailListMsg = new NodeMessage(LobbyMessageDefine.Msg_LC_SyncMailList, userGuid);
-                GameFrameworkMessage.Msg_LC_SyncMailList protoMsg = new Msg_LC_SyncMailList();
+                ScriptableFrameworkMessage.Msg_LC_SyncMailList protoMsg = new Msg_LC_SyncMailList();
                 protoMsg.m_Mails.AddRange(mailList);
                 syncMailListMsg.m_ProtoData = protoMsg;
                 NodeMessageDispatcher.SendNodeMessage(user.NodeName, syncMailListMsg);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework
 {
@@ -51,7 +51,7 @@ namespace ScriptableFramework
             bder.npc_id = npc.GetId();
             bder.unit_id = npc.GetUnitId();
             ScriptRuntime.Vector3 pos = npc.GetMovementStateInfo().GetPosition3D();
-            GameFrameworkMessage.Position pos_bd = new GameFrameworkMessage.Position();
+            ScriptableFrameworkMessage.Position pos_bd = new ScriptableFrameworkMessage.Position();
             pos_bd.x = (float)pos.X;
             pos_bd.z = (float)pos.Z;
             bder.cur_pos = pos_bd;

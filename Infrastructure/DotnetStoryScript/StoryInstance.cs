@@ -71,6 +71,11 @@ namespace DotnetStoryScript
             get { return m_Config; }
         }
 
+        public DslCalculator Calculator
+        {
+            get { return m_Calculator; }
+        }
+
         public bool IsDebug
         {
             get { return m_IsDebug; }
@@ -98,6 +103,12 @@ namespace DotnetStoryScript
         {
             get { return m_CurrentCoroutine; }
             set { m_CurrentCoroutine = value; }
+        }
+
+        public object Context
+        {
+            get => m_Context;
+            set => m_Context = value;
         }
 
         public StrBoxedValueDict ContextVariables
@@ -215,9 +226,6 @@ namespace DotnetStoryScript
 #endif
             }
             LogSystem.Debug("StoryInstance.Init message handler num:{0} {1}", m_HandlerFunctionNames.Count, ret);
-            if (StoryConfigManager.Instance.IsDevice) {
-                m_Config = null;
-            }
             return ret;
         }
 
@@ -329,6 +337,10 @@ namespace DotnetStoryScript
         {
             calculator.OnTryGetVariable = TryGetVariableCallback;
             calculator.OnTrySetVariable = TrySetVariableCallback;
+            calculator.OnLog = msg => LogSystem.Error(msg);
+            if (null != OnLoadFailback) {
+                calculator.OnLoadFailback = OnLoadFailback;
+            }
         }
 
         private bool TryGetVariableCallback(string name, out BoxedValue val)
@@ -814,6 +826,7 @@ namespace DotnetStoryScript
         private SimpleObjectPool<BoxedValueList> m_BoxedValueListPool = new SimpleObjectPool<BoxedValueList>();
         private long m_CurTime = 0;
         private long m_LastTickTime = 0;
+        private object m_Context = null;
         private StrBoxedValueDict m_ContextVariables = null;
         private StrBoxedValueDict m_InstanceVariables = new StrBoxedValueDict();
         private bool m_IsDebug = false;
@@ -822,7 +835,6 @@ namespace DotnetStoryScript
         private bool m_IsTerminated = false;
         private bool m_IsPaused = false;
         private bool m_IsInTick = false;
-        private object m_Context = null;
         private CoroutineInfo m_CurrentCoroutine = null;
         private int m_MessageCount = 0;
         private int m_ConcurrentMessageCount = 0;
@@ -883,6 +895,9 @@ namespace DotnetStoryScript
         void ICollection.CopyTo(Array array, int index) => m_PropertyDict.CopyTo(array, index);
         bool ICollection.IsSynchronized => m_PropertyDict.IsSynchronized;
         object ICollection.SyncRoot => m_PropertyDict.SyncRoot;
+
         #endregion
+
+        public static DslCalculator.LoadFailbackDelegation OnLoadFailback;
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using CSharpCenterClient;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework
 {
@@ -18,32 +18,32 @@ namespace ScriptableFramework
         {
             NodeMessageDispatcher.Init(UserServerConfig.WorldId);
             NodeMessageDispatcher.SetMessageFilter(this.FilterMessage);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.NodeRegister, typeof(GameFrameworkMessage.NodeRegister), typeof(GameFrameworkMessage.NodeRegister), HandleNodeRegister);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.AccountLogin, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.AccountLogin), HandleAccountLogin);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestNickname, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.RequestNickname), HandleRequestNickname);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RoleEnter, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.RoleEnter), HandleRoleEnter);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.UserHeartbeat, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.UserHeartbeat), HandleUserHeartbeat);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.ChangeName, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.ChangeName), HandleChangeName);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterScene, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.EnterScene), HandleEnterScene);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.ChangeSceneRoom, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.ChangeSceneRoom), HandleChangeSceneRoom);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomInfo, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.RequestSceneRoomInfo), HandleRequestSceneRoomInfo);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.RequestSceneRoomList), HandleRequestSceneRoomList);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.QuitRoom, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.QuitRoom), HandleQuitRoom);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_GetMailList, typeof(GameFrameworkMessage.NodeMessageWithGuid), null, HandleGetMailList);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_ReceiveMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_ReceiveMail), HandleReceiveMail);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_ReadMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_ReadMail), HandleReadMail);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DeleteMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_DeleteMail), HandleDeleteMail);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_AddFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_AddFriend), HandleAddFriend);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_RemoveFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_RemoveFriend), HandleRemoveFriend);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_MarkBlack, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_MarkBlack), HandleMarkBlack);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_UseItem, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_UseItem), HandleUseItem);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DiscardItem, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_DiscardItem), HandleDiscardItem);
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.NodeRegister, typeof(ScriptableFrameworkMessage.NodeRegister), typeof(ScriptableFrameworkMessage.NodeRegister), HandleNodeRegister);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.AccountLogin, typeof(ScriptableFrameworkMessage.NodeMessageWithAccount), typeof(ScriptableFrameworkMessage.AccountLogin), HandleAccountLogin);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestNickname, typeof(ScriptableFrameworkMessage.NodeMessageWithAccount), typeof(ScriptableFrameworkMessage.RequestNickname), HandleRequestNickname);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RoleEnter, typeof(ScriptableFrameworkMessage.NodeMessageWithAccount), typeof(ScriptableFrameworkMessage.RoleEnter), HandleRoleEnter);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.UserHeartbeat, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.UserHeartbeat), HandleUserHeartbeat);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.ChangeName, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.ChangeName), HandleChangeName);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterScene, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.EnterScene), HandleEnterScene);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.ChangeSceneRoom, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.ChangeSceneRoom), HandleChangeSceneRoom);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomInfo, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.RequestSceneRoomInfo), HandleRequestSceneRoomInfo);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomList, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.RequestSceneRoomList), HandleRequestSceneRoomList);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.QuitRoom, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.QuitRoom), HandleQuitRoom);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_GetMailList, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), null, HandleGetMailList);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_ReceiveMail, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_ReceiveMail), HandleReceiveMail);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_ReadMail, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_ReadMail), HandleReadMail);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DeleteMail, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_DeleteMail), HandleDeleteMail);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_AddFriend, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_AddFriend), HandleAddFriend);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_RemoveFriend, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_RemoveFriend), HandleRemoveFriend);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_MarkBlack, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_MarkBlack), HandleMarkBlack);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_UseItem, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_UseItem), HandleUseItem);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DiscardItem, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CL_DiscardItem), HandleDiscardItem);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
             //---------------------------------------------------------------------------------------------------------------
             //The observer handles the messages sent by the big world to the client. The handle of such messages is set to 0.
             //If it is non-0, it should not be processed (the message is forged by the client).
             //---------------------------------------------------------------------------------------------------------------
-            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterSceneResult, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.EnterSceneResult), ObserveEnterSceneResult);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterSceneResult, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.EnterSceneResult), ObserveEnterSceneResult);
 
             //--------------------------------------------------------------------------------------
             //GM command messages are placed together, and the processing functions are placed in LobbyServer_GmJsonHandler.cs to facilitate security checks.
@@ -59,7 +59,7 @@ namespace ScriptableFramework
                     //These messages will not be counted.
                 }
                 else {
-                    GameFrameworkMessage.NodeMessageWithGuid msgWithGuid = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+                    ScriptableFrameworkMessage.NodeMessageWithGuid msgWithGuid = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
                     if (null != msgWithGuid) {
                         ulong guid = msgWithGuid.m_Guid;
                         isContinue = OperationMeasure.Instance.CheckOperation(msgWithGuid.m_Guid);
@@ -77,9 +77,9 @@ namespace ScriptableFramework
         {
             if (handle != 0)
                 return;
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
-                GameFrameworkMessage.EnterSceneResult protoMsg = msg.m_ProtoData as GameFrameworkMessage.EnterSceneResult;
+                ScriptableFrameworkMessage.EnterSceneResult protoMsg = msg.m_ProtoData as ScriptableFrameworkMessage.EnterSceneResult;
                 if (null != protoMsg) {
                     UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
                     UserInfo user = dataProcess.GetUserInfo(headerMsg.m_Guid);
@@ -94,10 +94,10 @@ namespace ScriptableFramework
         //------------------------------------------------------------------------------------------------------
         private void HandleNodeRegister(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeRegister nodeRegMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeRegister;
+            ScriptableFrameworkMessage.NodeRegister nodeRegMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeRegister;
             if (null != nodeRegMsg) {
                 NodeMessage retMsg = new NodeMessage(LobbyMessageDefine.NodeRegisterResult);
-                GameFrameworkMessage.NodeRegisterResult nodeRegResultMsg = new NodeRegisterResult();
+                ScriptableFrameworkMessage.NodeRegisterResult nodeRegResultMsg = new NodeRegisterResult();
                 nodeRegResultMsg.m_IsOk = true;
                 retMsg.m_NodeHeader = nodeRegResultMsg;
                 NodeMessageDispatcher.SendNodeMessage(handle, retMsg);
@@ -111,9 +111,9 @@ namespace ScriptableFramework
             CenterHubApi.TargetName(UserServerConfig.WorldId, handle, stringBuilder, size);
             string node_name = stringBuilder.ToString();
 
-            GameFrameworkMessage.NodeMessageWithAccount loginMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithAccount;
+            ScriptableFrameworkMessage.NodeMessageWithAccount loginMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithAccount;
             if (null != loginMsg) {
-                GameFrameworkMessage.AccountLogin protoData = msg.m_ProtoData as GameFrameworkMessage.AccountLogin;
+                ScriptableFrameworkMessage.AccountLogin protoData = msg.m_ProtoData as ScriptableFrameworkMessage.AccountLogin;
                 if (null != protoData) {
                     m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.DoAccountLogin, loginMsg.m_Account, protoData.m_Password, protoData.m_ClientInfo, node_name);
                 }
@@ -121,9 +121,9 @@ namespace ScriptableFramework
         }
         private void HandleRequestNickname(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithAccount nickMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithAccount;
+            ScriptableFrameworkMessage.NodeMessageWithAccount nickMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithAccount;
             if (null != nickMsg) {
-                GameFrameworkMessage.RequestNickname protoData = msg.m_ProtoData as GameFrameworkMessage.RequestNickname;
+                ScriptableFrameworkMessage.RequestNickname protoData = msg.m_ProtoData as ScriptableFrameworkMessage.RequestNickname;
                 if (null != protoData) {
                     m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.DoRequestNickname, nickMsg.m_Account);
                 }
@@ -131,9 +131,9 @@ namespace ScriptableFramework
         }
         private void HandleRoleEnter(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithAccount enterMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithAccount;
+            ScriptableFrameworkMessage.NodeMessageWithAccount enterMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithAccount;
             if (null != enterMsg) {
-                GameFrameworkMessage.RoleEnter protoData = msg.m_ProtoData as GameFrameworkMessage.RoleEnter;
+                ScriptableFrameworkMessage.RoleEnter protoData = msg.m_ProtoData as ScriptableFrameworkMessage.RoleEnter;
                 if (null != protoData) {
                     m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.DoRoleEnter, enterMsg.m_Account, protoData.m_Nickname);
                 }
@@ -142,7 +142,7 @@ namespace ScriptableFramework
         //------------------------------------------------------------------------------------------------------
         private void HandleUserHeartbeat(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid heartbeatMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid heartbeatMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != heartbeatMsg) {
                 if (null == m_UserProcessScheduler.GetUserInfo(heartbeatMsg.m_Guid)) {
                     NodeMessage retMsg = new NodeMessage(LobbyMessageDefine.KickUser, heartbeatMsg.m_Guid);
@@ -158,9 +158,9 @@ namespace ScriptableFramework
         }
         private void HandleChangeName(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid nameMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid nameMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != nameMsg) {
-                GameFrameworkMessage.ChangeName protoData = msg.m_ProtoData as GameFrameworkMessage.ChangeName;
+                ScriptableFrameworkMessage.ChangeName protoData = msg.m_ProtoData as ScriptableFrameworkMessage.ChangeName;
                 if (null != protoData) {
                     m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.DoChangeName, nameMsg.m_Guid, protoData.m_Nickname);
                 }
@@ -168,9 +168,9 @@ namespace ScriptableFramework
         }
         private void HandleEnterScene(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
-                GameFrameworkMessage.EnterScene protoMsg = msg.m_ProtoData as GameFrameworkMessage.EnterScene;
+                ScriptableFrameworkMessage.EnterScene protoMsg = msg.m_ProtoData as ScriptableFrameworkMessage.EnterScene;
                 if (null != protoMsg) {
                     ulong guid = headerMsg.m_Guid;
                     int sceneId = protoMsg.m_SceneId;
@@ -201,9 +201,9 @@ namespace ScriptableFramework
         }
         private void HandleChangeSceneRoom(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
-                GameFrameworkMessage.ChangeSceneRoom protoMsg = msg.m_ProtoData as GameFrameworkMessage.ChangeSceneRoom;
+                ScriptableFrameworkMessage.ChangeSceneRoom protoMsg = msg.m_ProtoData as ScriptableFrameworkMessage.ChangeSceneRoom;
                 if (null != protoMsg) {
                     ulong guid = headerMsg.m_Guid;
                     int sceneId = protoMsg.m_SceneId;
@@ -219,7 +219,7 @@ namespace ScriptableFramework
         }
         private void HandleRequestSceneRoomInfo(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
                 ulong guid = headerMsg.m_Guid;
                 byte[] originalMsgData = msg.m_OriginalMsgData;
@@ -232,7 +232,7 @@ namespace ScriptableFramework
         }
         private void HandleRequestSceneRoomList(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
                 ulong guid = headerMsg.m_Guid;
                 byte[] originalMsgData = msg.m_OriginalMsgData;
@@ -245,9 +245,9 @@ namespace ScriptableFramework
         }
         private void HandleQuitRoom(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
-                GameFrameworkMessage.QuitRoom protoMsg = msg.m_ProtoData as GameFrameworkMessage.QuitRoom;
+                ScriptableFrameworkMessage.QuitRoom protoMsg = msg.m_ProtoData as ScriptableFrameworkMessage.QuitRoom;
                 if (null != protoMsg) {
                     ulong guid = headerMsg.m_Guid;
                     bool is_quit_room = protoMsg.m_IsQuitRoom;
@@ -267,7 +267,7 @@ namespace ScriptableFramework
         }
         private void HandleGetMailList(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid getMailListMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid getMailListMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != getMailListMsg) {
                 if (m_GlobalProcessThread.CurActionNum > m_MaxGlobalActionNum) {
                     NodeMessage retMsg = new NodeMessage(LobbyMessageDefine.TooManyOperations, getMailListMsg.m_Guid);
@@ -280,9 +280,9 @@ namespace ScriptableFramework
         }
         private void HandleReadMail(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid readMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid readMailMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != readMailMsg) {
-                GameFrameworkMessage.Msg_CL_ReadMail protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_ReadMail;
+                ScriptableFrameworkMessage.Msg_CL_ReadMail protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_ReadMail;
                 if (null != protoData) {
                     m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.ReadMail, readMailMsg.m_Guid, protoData.m_MailGuid);
                 }
@@ -290,9 +290,9 @@ namespace ScriptableFramework
         }
         private void HandleReceiveMail(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid receiveMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid receiveMailMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != receiveMailMsg) {
-                GameFrameworkMessage.Msg_CL_ReceiveMail protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_ReceiveMail;
+                ScriptableFrameworkMessage.Msg_CL_ReceiveMail protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_ReceiveMail;
                 if (null != protoData) {
                     m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.ReceiveMail, receiveMailMsg.m_Guid, protoData.m_MailGuid);
                 }
@@ -300,9 +300,9 @@ namespace ScriptableFramework
         }
         private void HandleDeleteMail(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid deleteMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid deleteMailMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != deleteMailMsg) {
-                GameFrameworkMessage.Msg_CL_DeleteMail protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_DeleteMail;
+                ScriptableFrameworkMessage.Msg_CL_DeleteMail protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_DeleteMail;
                 if (null != protoData) {
                     m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.DeleteMail, deleteMailMsg.m_Guid, protoData.m_MailGuid);
                 }
@@ -310,9 +310,9 @@ namespace ScriptableFramework
         }
         private void HandleAddFriend(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
-                GameFrameworkMessage.Msg_CL_AddFriend protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_AddFriend;
+                ScriptableFrameworkMessage.Msg_CL_AddFriend protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_AddFriend;
                 if (null != protoData) {
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
                     if (null != userThread) {
@@ -323,9 +323,9 @@ namespace ScriptableFramework
         }
         private void HandleRemoveFriend(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
-                GameFrameworkMessage.Msg_CL_RemoveFriend protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_RemoveFriend;
+                ScriptableFrameworkMessage.Msg_CL_RemoveFriend protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_RemoveFriend;
                 if (null != protoData) {
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
                     if (null != userThread) {
@@ -336,9 +336,9 @@ namespace ScriptableFramework
         }
         private void HandleMarkBlack(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
-                GameFrameworkMessage.Msg_CL_MarkBlack protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_MarkBlack;
+                ScriptableFrameworkMessage.Msg_CL_MarkBlack protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_MarkBlack;
                 if (null != protoData) {
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
                     if (null != userThread) {
@@ -349,9 +349,9 @@ namespace ScriptableFramework
         }
         private void HandleUseItem(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
-                GameFrameworkMessage.Msg_CL_UseItem protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_UseItem;
+                ScriptableFrameworkMessage.Msg_CL_UseItem protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_UseItem;
                 if (null != protoData) {
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
                     if (null != userThread) {
@@ -362,9 +362,9 @@ namespace ScriptableFramework
         }
         private void HandleDiscardItem(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
-                GameFrameworkMessage.Msg_CL_DiscardItem protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_DiscardItem;
+                ScriptableFrameworkMessage.Msg_CL_DiscardItem protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CL_DiscardItem;
                 if (null != protoData) {
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
                     if (null != userThread) {
@@ -375,9 +375,9 @@ namespace ScriptableFramework
         }
         private void HandleStoryMessage(NodeMessage msg, ulong handle, uint seq)
         {
-            GameFrameworkMessage.NodeMessageWithGuid storyMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            ScriptableFrameworkMessage.NodeMessageWithGuid storyMsg = msg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithGuid;
             if (null != storyMsg) {
-                GameFrameworkMessage.Msg_CLC_StoryMessage protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CLC_StoryMessage;
+                ScriptableFrameworkMessage.Msg_CLC_StoryMessage protoData = msg.m_ProtoData as ScriptableFrameworkMessage.Msg_CLC_StoryMessage;
                 if (null != protoData) {
                     ulong guid = storyMsg.m_Guid;
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(guid);

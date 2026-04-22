@@ -21,22 +21,22 @@ story(main)
   };
   onmessage("set_map_image")
   {
-    sendgfxmessage("MainUI/Panel/Image/RawImage", "CallScript", "SetImage", $0);
+    sendgfxmessage("MainUI/Panel/Image/RawImage", "CallScript", "SetImage", arg(0));
   };
   onmessage("push_tip_info")
   {
-    sendgfxmessage("MainUI/Panel/TextBkg/ScrollView/Viewport/Content", "CallScript", "PushInfo", $0);
+    sendgfxmessage("MainUI/Panel/TextBkg/ScrollView/Viewport/Content", "CallScript", "PushInfo", arg(0));
   };
   onmessage("set_button_text")
   {
-  	@btn1_Text.text = $0;
-  	@btn2_Text.text = $1;
-  	@btn3_Text.text = $2;
-  	@btn4_Text.text = $3;
+  	@btn1_Text.text = arg(0);
+  	@btn2_Text.text = arg(1);
+  	@btn3_Text.text = arg(2);
+  	@btn4_Text.text = arg(3);
   };
   onnamespacedmessage("on_click")
   {
-  	log("MainUI on click {0}",$0);
-	  firemessage("on_main_ui_button", $0);
+  	log("MainUI on click {0}",arg(0));
+	  firemessage("on_main_ui_button", arg(0));
   };
 };

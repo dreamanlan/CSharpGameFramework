@@ -64,7 +64,7 @@ namespace ScriptableFramework
             }
             return r;
         }
-        public void SetVisible(UnityEngine.GameObject obj, bool visible, CharacterController cc)
+        public void SetVisible(UnityEngine.GameObject obj, bool visible)
         {
             obj.SetActive(visible);
         }

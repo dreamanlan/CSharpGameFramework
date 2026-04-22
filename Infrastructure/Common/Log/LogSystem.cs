@@ -26,6 +26,10 @@ namespace ScriptableFramework
                 return;
             if (!GlobalVariables.Instance.IsDevice || GlobalVariables.Instance.IsDebug) {
                 format = "Time:" + DateTime.Now.ToString("HH-mm-ss-fff:") + format;
+                if (null == args || args.Length == 0) {
+                    Output(GameLogType.Debug, format);
+                    return;
+                }
                 string str = string.Format("[Debug]:" + format, args);
                 Output(GameLogType.Debug, str);
             }
@@ -36,6 +40,11 @@ namespace ScriptableFramework
             if (!GlobalVariables.Instance.LoggerEnabled)
                 return;
             if (!GlobalVariables.Instance.IsDevice || GlobalVariables.Instance.IsDevelopment || GlobalVariables.Instance.IsDebug) {
+                format = "Time:" + DateTime.Now.ToString("HH-mm-ss-fff:") + format;
+                if (null == args || args.Length == 0) {
+                    Output(GameLogType.Info, format);
+                    return;
+                }
                 string str = string.Format("[Info]:" + format, args);
                 Output(GameLogType.Info, str);
             }
@@ -46,6 +55,10 @@ namespace ScriptableFramework
                 return;
             if (!GlobalVariables.Instance.IsDevice || GlobalVariables.Instance.IsDevelopment || GlobalVariables.Instance.IsDebug) {
                 format = "Time:" + DateTime.Now.ToString("HH-mm-ss-fff:") + format;
+                if (null == args || args.Length == 0) {
+                    Output(GameLogType.Warn, format);
+                    return;
+                }
                 string str = string.Format("[Warn]:" + format, args);
                 Output(GameLogType.Warn, str);
             }
@@ -56,6 +69,10 @@ namespace ScriptableFramework
                 return;
             if (!GlobalVariables.Instance.IsDevice || GlobalVariables.Instance.IsDevelopment || GlobalVariables.Instance.IsDebug) {
                 format = "Time:" + DateTime.Now.ToString("HH-mm-ss-fff:") + format;
+                if (null == args || args.Length == 0) {
+                    Output(GameLogType.Error, format);
+                    return;
+                }
                 string str = string.Format("[Error]:" + format, args);
                 Output(GameLogType.Error, str);
             }
@@ -67,6 +84,10 @@ namespace ScriptableFramework
             if (!GlobalVariables.Instance.IsDevice || GlobalVariables.Instance.IsDevelopment || GlobalVariables.Instance.IsDebug) {
                 if (!check) {
                     format = "Time:" + DateTime.Now.ToString("HH-mm-ss-fff:") + format;
+                    if (null == args || args.Length == 0) {
+                        Output(GameLogType.Assert, format);
+                        return;
+                    }
                     string str = string.Format("[Assert]:" + format, args);
                     Output(GameLogType.Assert, str);
                 }
@@ -84,6 +105,10 @@ namespace ScriptableFramework
         public static void GmLog(string format, params object[] args)
         {
             format = "Time:" + DateTime.Now.ToString("HH-mm-ss-fff:") + format;
+            if (null == args || args.Length == 0) {
+                Output(GameLogType.GM, format);
+                return;
+            }
             string str = string.Format("[GmLog]:" + format, args);
             Output(GameLogType.GM, str);
         }

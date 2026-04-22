@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
 
 public class ScriptAttrExpressionPlugin : ScriptPluginProxyBase, IAttrExpressionPlugin
 {

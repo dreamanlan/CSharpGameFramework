@@ -4,26 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
-using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiKeepAway : ISimpleStoryCommandPlugin
+public class AiKeepAway : ISimpleStoryApiPlugin
 {
-    public ISimpleStoryCommandPlugin Clone()
+    public void Init(DslCalculator calculator)
     {
-        return new AiKeepAway();
+        m_Calculator = calculator;
     }
 
-    public void ResetState()
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        m_KeepAwayStarted = false;
-    }
-
-    public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta)
-    {
-        var args = _params.Values;
+        var args = operands;
         if (!m_KeepAwayStarted) {
             m_KeepAwayStarted = true;
 
@@ -36,7 +31,7 @@ public class AiKeepAway : ISimpleStoryCommandPlugin
             AiStateInfo info = npc.GetAiStateInfo();
             EntityInfo target = PluginFramework.Instance.GetEntityById(info.Target);
             if (null != target && null != m_SkillInfo) {
-                info.Time += delta;
+                info.Time += (long)(Time.deltaTime * 1000);
                 if (info.Time > 100) {
                     info.Time = 0;
                 } else {
@@ -57,6 +52,7 @@ public class AiKeepAway : ISimpleStoryCommandPlugin
         return false;
     }
 
+    private DslCalculator m_Calculator = null;
     private int m_ObjId = 0;
     private SkillInfo m_SkillInfo = null;
     private float m_Ratio = 1.0f;

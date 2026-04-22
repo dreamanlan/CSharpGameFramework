@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ScriptableFramework;
-using GameFrameworkData;
+using ScriptableFrameworkData;
 using System.Text;
 
 namespace Lobby

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 using ScriptableFramework;
 
 namespace ScriptableFramework.Story
@@ -14,237 +15,240 @@ namespace ScriptableFramework.Story
         }
         public void Init()
         {
+            var registry = DslCalculatorHost.GetSharedApiRegistry();
+
             //register story commands
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "preload", "preload command", new StoryCommandFactoryHelper<Story.Commands.PreloadCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "startstory", "startstory command", new StoryCommandFactoryHelper<Story.Commands.StartStoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "stopstory", "stopstory command", new StoryCommandFactoryHelper<Story.Commands.StopStoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitstory", "waitstory command", new StoryCommandFactoryHelper<Story.Commands.WaitStoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "pausestory", "pausestory command", new StoryCommandFactoryHelper<Story.Commands.PauseStoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "resumestory", "resumestory command", new StoryCommandFactoryHelper<Story.Commands.ResumeStoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "firemessage", "firemessage command", new Story.Commands.FireMessageCommandFactory());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "fireconcurrentmessage", "fireconcurrentmessage command", new Story.Commands.FireConcurrentMessageCommandFactory());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessage", "waitallmessage command", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessagehandler", "waitallmessagehandler command", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "suspendallmessagehandler", "suspendallmessagehandler command", new StoryCommandFactoryHelper<Story.Commands.SuspendAllMessageHandlerCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "resumeallmessagehandler", "resumeallmessagehandler command", new StoryCommandFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendroomstorymessage", "sendroomstorymessage command", new StoryCommandFactoryHelper<Story.Commands.SendRoomStoryMessageCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendserverstorymessage", "sendserverstorymessage command", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendclientstorymessage", "sendclientstorymessage command", new StoryCommandFactoryHelper<DotnetStoryScript.CommonCommands.DummyCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "publishgfxevent", "publishgfxevent command", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessage", "sendgfxmessage command", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessagewithtag", "sendgfxmessagewithtag command", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessagewithgameobject", "sendgfxmessagewithgameobject command", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithGameObjectCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendskillmessage", "sendskillmessage command", new StoryCommandFactoryHelper<Story.Commands.SendSkillMessageCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "creategameobject", "creategameobject command", new StoryCommandFactoryHelper<Story.Commands.CreateGameObjectCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "settransform", "settransform command", new StoryCommandFactoryHelper<Story.Commands.SetTransformCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "addtransform", "addtransform command", new StoryCommandFactoryHelper<Story.Commands.AddTransformCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroygameobject", "destroygameobject command", new StoryCommandFactoryHelper<Story.Commands.DestroyGameObjectCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setparent", "setparent command", new StoryCommandFactoryHelper<Story.Commands.SetParentCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setactive", "setactive command", new StoryCommandFactoryHelper<Story.Commands.SetActiveCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setvisible", "setvisible command", new StoryCommandFactoryHelper<Story.Commands.SetVisibleCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "putonground", "putonground command", new StoryCommandFactoryHelper<Story.Commands.PutOnGroundCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setnavmeshagentenable", "setnavmeshagentenable command", new StoryCommandFactoryHelper<Story.Commands.SetNavmeshAgentEnableCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "addcomponent", "addcomponent command", new StoryCommandFactoryHelper<Story.Commands.AddComponentCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "removecomponent", "removecomponent command", new StoryCommandFactoryHelper<Story.Commands.RemoveComponentCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "installplugin", "installplugin command", new StoryCommandFactoryHelper<Story.Commands.InstallPluginCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "removeplugin", "removeplugin command", new StoryCommandFactoryHelper<Story.Commands.RemovePluginCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "openurl", "openurl command", new StoryCommandFactoryHelper<Story.Commands.OpenUrlCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "quit", "quit command", new StoryCommandFactoryHelper<Story.Commands.QuitCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "loadui", "loadui command", new StoryCommandFactoryHelper<Story.Commands.LoadUiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "bindui", "bindui command", new StoryCommandFactoryHelper<Story.Commands.BindUiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setactorscale", "setactorscale command", new StoryCommandFactoryHelper<Story.Commands.SetActorScaleCommand>());
+            registry.Register("preload", "preload command", new ExpressionFactoryHelper<Story.Commands.PreloadCommand>());
+            registry.Register("startstory", "startstory command", new ExpressionFactoryHelper<Story.Commands.StartStoryCommand>());
+            registry.Register("stopstory", "stopstory command", new ExpressionFactoryHelper<Story.Commands.StopStoryCommand>());
+            registry.Register("waitstory", "waitstory command", new ExpressionFactoryHelper<Story.Commands.WaitStoryCommand>());
+            registry.Register("pausestory", "pausestory command", new ExpressionFactoryHelper<Story.Commands.PauseStoryCommand>());
+            registry.Register("resumestory", "resumestory command", new ExpressionFactoryHelper<Story.Commands.ResumeStoryCommand>());
+            registry.Register("firemessage", "firemessage command", new ExpressionFactoryHelper<Story.Commands.FireMessageCommand>());
+            registry.Register("fireconcurrentmessage", "fireconcurrentmessage command", new ExpressionFactoryHelper<Story.Commands.FireConcurrentMessageCommand>());
+            registry.Register("waitallmessage", "waitallmessage command", new ExpressionFactoryHelper<Story.Commands.WaitAllMessageCommand>());
+            registry.Register("waitallmessagehandler", "waitallmessagehandler command", new ExpressionFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
+            registry.Register("suspendallmessagehandler", "suspendallmessagehandler command", new ExpressionFactoryHelper<Story.Commands.SuspendAllMessageHandlerCommand>());
+            registry.Register("resumeallmessagehandler", "resumeallmessagehandler command", new ExpressionFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
+            registry.Register("sendroomstorymessage", "sendroomstorymessage command", new ExpressionFactoryHelper<Story.Commands.SendRoomStoryMessageCommand>());
+            registry.Register("sendserverstorymessage", "sendserverstorymessage command", new ExpressionFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
+            registry.Register("sendclientstorymessage", "sendclientstorymessage command", new ExpressionFactoryHelper<Story.Commands.DummyCommand>());
+            registry.Register("publishgfxevent", "publishgfxevent command", new ExpressionFactoryHelper<Story.Commands.PublishGfxEventCommand>());
+            registry.Register("sendgfxmessage", "sendgfxmessage command", new ExpressionFactoryHelper<Story.Commands.SendGfxMessageCommand>());
+            registry.Register("sendgfxmessagewithtag", "sendgfxmessagewithtag command", new ExpressionFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
+            registry.Register("sendgfxmessagewithgameobject", "sendgfxmessagewithgameobject command", new ExpressionFactoryHelper<Story.Commands.SendGfxMessageWithGameObjectCommand>());
+            registry.Register("sendskillmessage", "sendskillmessage command", new ExpressionFactoryHelper<Story.Commands.SendSkillMessageCommand>());
+            registry.Register("creategameobject", "creategameobject command", new ExpressionFactoryHelper<Story.Commands.CreateGameObjectCommand>());
+            registry.Register("settransform", "settransform command", new ExpressionFactoryHelper<Story.Commands.SetTransformCommand>());
+            registry.Register("addtransform", "addtransform command", new ExpressionFactoryHelper<Story.Commands.AddTransformCommand>());
+            registry.Register("destroygameobject", "destroygameobject command", new ExpressionFactoryHelper<Story.Commands.DestroyGameObjectCommand>());
+            registry.Register("setparent", "setparent command", new ExpressionFactoryHelper<Story.Commands.SetParentCommand>());
+            registry.Register("setactive", "setactive command", new ExpressionFactoryHelper<Story.Commands.SetActiveCommand>());
+            registry.Register("setvisible", "setvisible command", new ExpressionFactoryHelper<Story.Commands.SetVisibleCommand>());
+            registry.Register("putonground", "putonground command", new ExpressionFactoryHelper<Story.Commands.PutOnGroundCommand>());
+            registry.Register("setnavmeshagentenable", "setnavmeshagentenable command", new ExpressionFactoryHelper<Story.Commands.SetNavMeshAgentEnabledCommand>());
+            registry.Register("setnavmeshagentenabled", "setnavmeshagentenabled command", new ExpressionFactoryHelper<Story.Commands.SetNavMeshAgentEnabledCommand>());
+            registry.Register("addcomponent", "addcomponent command", new ExpressionFactoryHelper<Story.Commands.AddComponentCommand>());
+            registry.Register("removecomponent", "removecomponent command", new ExpressionFactoryHelper<Story.Commands.RemoveComponentCommand>());
+            registry.Register("installplugin", "installplugin command", new ExpressionFactoryHelper<Story.Commands.InstallPluginCommand>());
+            registry.Register("removeplugin", "removeplugin command", new ExpressionFactoryHelper<Story.Commands.RemovePluginCommand>());
+            registry.Register("openurl", "openurl command", new ExpressionFactoryHelper<Story.Commands.OpenUrlCommand>());
+            registry.Register("quit", "quit command", new ExpressionFactoryHelper<Story.Commands.QuitCommand>());
+            registry.Register("loadui", "loadui command", new ExpressionFactoryHelper<Story.Commands.LoadUiCommand>());
+            registry.Register("bindui", "bindui command", new ExpressionFactoryHelper<Story.Commands.BindUiCommand>());
+            registry.Register("setactorscale", "setactorscale command", new ExpressionFactoryHelper<Story.Commands.SetActorScaleCommand>());
 
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "changescene", "changescene command", new StoryCommandFactoryHelper<Story.Commands.ChangeSceneCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "openbattle", "openbattle command", new StoryCommandFactoryHelper<Story.Commands.OpenBattleCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "closebattle", "closebattle command", new StoryCommandFactoryHelper<Story.Commands.CloseBattleCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "createscenelogic", "createscenelogic command", new StoryCommandFactoryHelper<Story.Commands.CreateSceneLogicCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroyscenelogic", "destroyscenelogic command", new StoryCommandFactoryHelper<Story.Commands.DestroySceneLogicCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "pausescenelogic", "pausescenelogic command", new StoryCommandFactoryHelper<Story.Commands.PauseSceneLogicCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "restarttimeout", "restarttimeout command", new StoryCommandFactoryHelper<Story.Commands.RestartTimeoutCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "highlightpromptwithdict", "highlightpromptwithdict command", new StoryCommandFactoryHelper<Story.Commands.HighlightPromptWithDictCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "highlightprompt", "highlightprompt command", new StoryCommandFactoryHelper<Story.Commands.HighlightPromptCommand>());
+            registry.Register("changescene", "changescene command", new ExpressionFactoryHelper<Story.Commands.ChangeSceneCommand>());
+            registry.Register("openbattle", "openbattle command", new ExpressionFactoryHelper<Story.Commands.OpenBattleCommand>());
+            registry.Register("closebattle", "closebattle command", new ExpressionFactoryHelper<Story.Commands.CloseBattleCommand>());
+            registry.Register("createscenelogic", "createscenelogic command", new ExpressionFactoryHelper<Story.Commands.CreateSceneLogicCommand>());
+            registry.Register("destroyscenelogic", "destroyscenelogic command", new ExpressionFactoryHelper<Story.Commands.DestroySceneLogicCommand>());
+            registry.Register("pausescenelogic", "pausescenelogic command", new ExpressionFactoryHelper<Story.Commands.PauseSceneLogicCommand>());
+            registry.Register("restarttimeout", "restarttimeout command", new ExpressionFactoryHelper<Story.Commands.RestartTimeoutCommand>());
+            registry.Register("highlightpromptwithdict", "highlightpromptwithdict command", new ExpressionFactoryHelper<Story.Commands.HighlightPromptWithDictCommand>());
+            registry.Register("highlightprompt", "highlightprompt command", new ExpressionFactoryHelper<Story.Commands.HighlightPromptCommand>());
 
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "blackboardset", "blackboardset command", new StoryCommandFactoryHelper<Story.Commands.BlackboardSetCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "blackboardclear", "blackboardclear command", new StoryCommandFactoryHelper<Story.Commands.BlackboardClearCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafollow", "camerafollow command", new StoryCommandFactoryHelper<Story.Commands.CameraFollowCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralook", "cameralook command", new StoryCommandFactoryHelper<Story.Commands.CameraLookCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookimmediately", "cameralookimmediately command", new StoryCommandFactoryHelper<Story.Commands.CameraLookImmediatelyCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralooktoward", "cameralooktoward command", new StoryCommandFactoryHelper<Story.Commands.CameraLookTowardCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafixedyaw", "camerafixedyaw command", new StoryCommandFactoryHelper<Story.Commands.CameraFixedYawCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerayaw", "camerayaw command", new StoryCommandFactoryHelper<Story.Commands.CameraYawCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraheight", "cameraheight command", new StoryCommandFactoryHelper<Story.Commands.CameraHeightCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameradistance", "cameradistance command", new StoryCommandFactoryHelper<Story.Commands.CameraDistanceCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerasetdistanceheight", "camerasetdistanceheight command", new StoryCommandFactoryHelper<Story.Commands.CameraSetDistanceHeightCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraresetdistanceheight", "cameraresetdistanceheight command", new StoryCommandFactoryHelper<Story.Commands.CameraResetDistanceHeightCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerasetfollowspeed", "camerasetfollowspeed command", new StoryCommandFactoryHelper<Story.Commands.CameraSetFollowSpeedCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraresetfollowspeed", "cameraresetfollowspeed command", new StoryCommandFactoryHelper<Story.Commands.CameraResetFollowSpeedCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafollowobj", "camerafollowobj command", new StoryCommandFactoryHelper<Story.Commands.CameraFollowObjCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookobj", "cameralookobj command", new StoryCommandFactoryHelper<Story.Commands.CameraLookObjCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookobjimmediately", "cameralookobjimmediately command", new StoryCommandFactoryHelper<Story.Commands.CameraLookObjImmediatelyCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralooktowardobj", "cameralooktowardobj command", new StoryCommandFactoryHelper<Story.Commands.CameraLookTowardObjCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookcopy", "cameralookcopy command", new StoryCommandFactoryHelper<Story.Commands.CameraLookCopyCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookobjcopy", "cameralookobjcopy command", new StoryCommandFactoryHelper<Story.Commands.CameraLookObjCopyCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraenable", "cameraenable command", new StoryCommandFactoryHelper<Story.Commands.CameraEnableCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "lockframe", "lockframe command", new StoryCommandFactoryHelper<Story.Commands.LockFrameCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "showdlg", "showdlg command", new StoryCommandFactoryHelper<Story.Commands.ShowDlgCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "areadetect", "areadetect command", new StoryCommandFactoryHelper<Story.Commands.AreaDetectCommand>());
+            registry.Register("blackboardset", "blackboardset command", new ExpressionFactoryHelper<Story.Commands.BlackboardSetCommand>());
+            registry.Register("blackboardclear", "blackboardclear command", new ExpressionFactoryHelper<Story.Commands.BlackboardClearCommand>());
+            registry.Register("camerafollow", "camerafollow command", new ExpressionFactoryHelper<Story.Commands.CameraFollowCommand>());
+            registry.Register("cameralook", "cameralook command", new ExpressionFactoryHelper<Story.Commands.CameraLookCommand>());
+            registry.Register("cameralookimmediately", "cameralookimmediately command", new ExpressionFactoryHelper<Story.Commands.CameraLookImmediatelyCommand>());
+            registry.Register("cameralooktoward", "cameralooktoward command", new ExpressionFactoryHelper<Story.Commands.CameraLookTowardCommand>());
+            registry.Register("camerafixedyaw", "camerafixedyaw command", new ExpressionFactoryHelper<Story.Commands.CameraFixedYawCommand>());
+            registry.Register("camerayaw", "camerayaw command", new ExpressionFactoryHelper<Story.Commands.CameraYawCommand>());
+            registry.Register("cameraheight", "cameraheight command", new ExpressionFactoryHelper<Story.Commands.CameraHeightCommand>());
+            registry.Register("cameradistance", "cameradistance command", new ExpressionFactoryHelper<Story.Commands.CameraDistanceCommand>());
+            registry.Register("camerasetdistanceheight", "camerasetdistanceheight command", new ExpressionFactoryHelper<Story.Commands.CameraSetDistanceHeightCommand>());
+            registry.Register("cameraresetdistanceheight", "cameraresetdistanceheight command", new ExpressionFactoryHelper<Story.Commands.CameraResetDistanceHeightCommand>());
+            registry.Register("camerasetfollowspeed", "camerasetfollowspeed command", new ExpressionFactoryHelper<Story.Commands.CameraSetFollowSpeedCommand>());
+            registry.Register("cameraresetfollowspeed", "cameraresetfollowspeed command", new ExpressionFactoryHelper<Story.Commands.CameraResetFollowSpeedCommand>());
+            registry.Register("camerafollowobj", "camerafollowobj command", new ExpressionFactoryHelper<Story.Commands.CameraFollowObjCommand>());
+            registry.Register("cameralookobj", "cameralookobj command", new ExpressionFactoryHelper<Story.Commands.CameraLookObjCommand>());
+            registry.Register("cameralookobjimmediately", "cameralookobjimmediately command", new ExpressionFactoryHelper<Story.Commands.CameraLookObjImmediatelyCommand>());
+            registry.Register("cameralooktowardobj", "cameralooktowardobj command", new ExpressionFactoryHelper<Story.Commands.CameraLookTowardObjCommand>());
+            registry.Register("cameralookcopy", "cameralookcopy command", new ExpressionFactoryHelper<Story.Commands.CameraLookCopyCommand>());
+            registry.Register("cameralookobjcopy", "cameralookobjcopy command", new ExpressionFactoryHelper<Story.Commands.CameraLookObjCopyCommand>());
+            registry.Register("cameraenable", "cameraenable command", new ExpressionFactoryHelper<Story.Commands.CameraEnableCommand>());
+            registry.Register("lockframe", "lockframe command", new ExpressionFactoryHelper<Story.Commands.LockFrameCommand>());
+            registry.Register("showdlg", "showdlg command", new ExpressionFactoryHelper<Story.Commands.ShowDlgCommand>());
+            registry.Register("areadetect", "areadetect command", new ExpressionFactoryHelper<Story.Commands.AreaDetectCommand>());
 
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "gameobjectanimation", "gameobjectanimation command", new StoryCommandFactoryHelper<Story.Commands.GameObjectAnimationCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "gameobjectanimationparam", "gameobjectanimationparam command", new StoryCommandFactoryHelper<Story.Commands.GameObjectAnimationParamCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "gameobjectcastskill", "gameobjectcastskill command", new StoryCommandFactoryHelper<Story.Commands.GameObjectCastSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "gameobjectstopskill", "gameobjectstopskill command", new StoryCommandFactoryHelper<Story.Commands.GameObjectStopSkillCommand>());
+            registry.Register("gameobjectanimation", "gameobjectanimation command", new ExpressionFactoryHelper<Story.Commands.GameObjectAnimationCommand>());
+            registry.Register("gameobjectanimationparam", "gameobjectanimationparam command", new ExpressionFactoryHelper<Story.Commands.GameObjectAnimationParamCommand>());
+            registry.Register("gameobjectcastskill", "gameobjectcastskill command", new ExpressionFactoryHelper<Story.Commands.GameObjectCastSkillCommand>());
+            registry.Register("gameobjectstopskill", "gameobjectstopskill command", new ExpressionFactoryHelper<Story.Commands.GameObjectStopSkillCommand>());
 
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "createnpc", "createnpc command", new StoryCommandFactoryHelper<Story.Commands.CreateNpcCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroynpc", "destroynpc command", new StoryCommandFactoryHelper<Story.Commands.DestroyNpcCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroynpcwithobjid", "destroynpcwithobjid command", new StoryCommandFactoryHelper<Story.Commands.DestroyNpcWithObjIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcface", "npcface command", new StoryCommandFactoryHelper<Story.Commands.NpcFaceCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcmove", "npcmove command", new StoryCommandFactoryHelper<Story.Commands.NpcMoveCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcmovewithwaypoints", "npcmovewithwaypoints command", new StoryCommandFactoryHelper<Story.Commands.NpcMoveWithWaypointsCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcstop", "npcstop command", new StoryCommandFactoryHelper<Story.Commands.NpcStopCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcattack", "npcattack command", new StoryCommandFactoryHelper<Story.Commands.NpcAttackCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetformation", "npcsetformation command", new StoryCommandFactoryHelper<Story.Commands.NpcSetFormationCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcenableai", "npcenableai command", new StoryCommandFactoryHelper<Story.Commands.NpcEnableAiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetai", "npcsetai command", new StoryCommandFactoryHelper<Story.Commands.NpcSetAiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetaitarget", "npcsetaitarget command", new StoryCommandFactoryHelper<Story.Commands.NpcSetAiTargetCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcanimation", "npcanimation command", new StoryCommandFactoryHelper<Story.Commands.NpcAnimationCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcanimationparam", "npcanimationparam command", new StoryCommandFactoryHelper<Story.Commands.NpcAnimationParamCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcaddimpact", "npcaddimpact command", new StoryCommandFactoryHelper<Story.Commands.NpcAddImpactCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcremoveimpact", "npcremoveimpact command", new StoryCommandFactoryHelper<Story.Commands.NpcRemoveImpactCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npccastskill", "npccastskill command", new StoryCommandFactoryHelper<Story.Commands.NpcCastSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcstopskill", "npcstopskill command", new StoryCommandFactoryHelper<Story.Commands.NpcStopSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npclisten", "npclisten command", new StoryCommandFactoryHelper<Story.Commands.NpcListenCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetcamp", "npcsetcamp command", new StoryCommandFactoryHelper<Story.Commands.NpcSetCampCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetsummonerid", "npcsetsummonerid command", new StoryCommandFactoryHelper<Story.Commands.NpcSetSummonerIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetsummonskillid", "npcsetsummonskillid command", new StoryCommandFactoryHelper<Story.Commands.NpcSetSummonSkillIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objface", "objface command", new StoryCommandFactoryHelper<Story.Commands.ObjFaceCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objmove", "objmove command", new StoryCommandFactoryHelper<Story.Commands.ObjMoveCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objmovewithwaypoints", "objmovewithwaypoints command", new StoryCommandFactoryHelper<Story.Commands.ObjMoveWithWaypointsCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objstop", "objstop command", new StoryCommandFactoryHelper<Story.Commands.ObjStopCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objattack", "objattack command", new StoryCommandFactoryHelper<Story.Commands.ObjAttackCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetformation", "objsetformation command", new StoryCommandFactoryHelper<Story.Commands.ObjSetFormationCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objenableai", "objenableai command", new StoryCommandFactoryHelper<Story.Commands.ObjEnableAiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetai", "objsetai command", new StoryCommandFactoryHelper<Story.Commands.ObjSetAiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetaitarget", "objsetaitarget command", new StoryCommandFactoryHelper<Story.Commands.ObjSetAiTargetCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objanimation", "objanimation command", new StoryCommandFactoryHelper<Story.Commands.ObjAnimationCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objanimationparam", "objanimationparam command", new StoryCommandFactoryHelper<Story.Commands.ObjAnimationParamCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objaddimpact", "objaddimpact command", new StoryCommandFactoryHelper<Story.Commands.ObjAddImpactCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objremoveimpact", "objremoveimpact command", new StoryCommandFactoryHelper<Story.Commands.ObjRemoveImpactCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objcastskill", "objcastskill command", new StoryCommandFactoryHelper<Story.Commands.ObjCastSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objstopskill", "objstopskill command", new StoryCommandFactoryHelper<Story.Commands.ObjStopSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objlisten", "objlisten command", new StoryCommandFactoryHelper<Story.Commands.ObjListenCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetcamp", "objsetcamp command", new StoryCommandFactoryHelper<Story.Commands.ObjSetCampCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonerid", "objsetsummonerid command", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonerIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonskillid", "objsetsummonskillid command", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonSkillIdCommand>());
+            registry.Register("createnpc", "createnpc command", new ExpressionFactoryHelper<Story.Commands.CreateNpcCommand>());
+            registry.Register("destroynpc", "destroynpc command", new ExpressionFactoryHelper<Story.Commands.DestroyNpcCommand>());
+            registry.Register("destroynpcwithobjid", "destroynpcwithobjid command", new ExpressionFactoryHelper<Story.Commands.DestroyNpcWithObjIdCommand>());
+            registry.Register("npcface", "npcface command", new ExpressionFactoryHelper<Story.Commands.NpcFaceCommand>());
+            registry.Register("npcmove", "npcmove command", new ExpressionFactoryHelper<Story.Commands.NpcMoveCommand>());
+            registry.Register("npcmovewithwaypoints", "npcmovewithwaypoints command", new ExpressionFactoryHelper<Story.Commands.NpcMoveWithWaypointsCommand>());
+            registry.Register("npcstop", "npcstop command", new ExpressionFactoryHelper<Story.Commands.NpcStopCommand>());
+            registry.Register("npcattack", "npcattack command", new ExpressionFactoryHelper<Story.Commands.NpcAttackCommand>());
+            registry.Register("npcsetformation", "npcsetformation command", new ExpressionFactoryHelper<Story.Commands.NpcSetFormationCommand>());
+            registry.Register("npcenableai", "npcenableai command", new ExpressionFactoryHelper<Story.Commands.NpcEnableAiCommand>());
+            registry.Register("npcsetai", "npcsetai command", new ExpressionFactoryHelper<Story.Commands.NpcSetAiCommand>());
+            registry.Register("npcsetaitarget", "npcsetaitarget command", new ExpressionFactoryHelper<Story.Commands.NpcSetAiTargetCommand>());
+            registry.Register("npcanimation", "npcanimation command", new ExpressionFactoryHelper<Story.Commands.NpcAnimationCommand>());
+            registry.Register("npcanimationparam", "npcanimationparam command", new ExpressionFactoryHelper<Story.Commands.NpcAnimationParamCommand>());
+            registry.Register("npcaddimpact", "npcaddimpact command", new ExpressionFactoryHelper<Story.Commands.NpcAddImpactCommand>());
+            registry.Register("npcremoveimpact", "npcremoveimpact command", new ExpressionFactoryHelper<Story.Commands.NpcRemoveImpactCommand>());
+            registry.Register("npccastskill", "npccastskill command", new ExpressionFactoryHelper<Story.Commands.NpcCastSkillCommand>());
+            registry.Register("npcstopskill", "npcstopskill command", new ExpressionFactoryHelper<Story.Commands.NpcStopSkillCommand>());
+            registry.Register("npclisten", "npclisten command", new ExpressionFactoryHelper<Story.Commands.NpcListenCommand>());
+            registry.Register("npcsetcamp", "npcsetcamp command", new ExpressionFactoryHelper<Story.Commands.NpcSetCampCommand>());
+            registry.Register("npcsetsummonerid", "npcsetsummonerid command", new ExpressionFactoryHelper<Story.Commands.NpcSetSummonerIdCommand>());
+            registry.Register("npcsetsummonskillid", "npcsetsummonskillid command", new ExpressionFactoryHelper<Story.Commands.NpcSetSummonSkillIdCommand>());
+            registry.Register("objface", "objface command", new ExpressionFactoryHelper<Story.Commands.ObjFaceCommand>());
+            registry.Register("objmove", "objmove command", new ExpressionFactoryHelper<Story.Commands.ObjMoveCommand>());
+            registry.Register("objmovewithwaypoints", "objmovewithwaypoints command", new ExpressionFactoryHelper<Story.Commands.ObjMoveWithWaypointsCommand>());
+            registry.Register("objstop", "objstop command", new ExpressionFactoryHelper<Story.Commands.ObjStopCommand>());
+            registry.Register("objattack", "objattack command", new ExpressionFactoryHelper<Story.Commands.ObjAttackCommand>());
+            registry.Register("objsetformation", "objsetformation command", new ExpressionFactoryHelper<Story.Commands.ObjSetFormationCommand>());
+            registry.Register("objenableai", "objenableai command", new ExpressionFactoryHelper<Story.Commands.ObjEnableAiCommand>());
+            registry.Register("objsetai", "objsetai command", new ExpressionFactoryHelper<Story.Commands.ObjSetAiCommand>());
+            registry.Register("objsetaitarget", "objsetaitarget command", new ExpressionFactoryHelper<Story.Commands.ObjSetAiTargetCommand>());
+            registry.Register("objanimation", "objanimation command", new ExpressionFactoryHelper<Story.Commands.ObjAnimationCommand>());
+            registry.Register("objanimationparam", "objanimationparam command", new ExpressionFactoryHelper<Story.Commands.ObjAnimationParamCommand>());
+            registry.Register("objaddimpact", "objaddimpact command", new ExpressionFactoryHelper<Story.Commands.ObjAddImpactCommand>());
+            registry.Register("objremoveimpact", "objremoveimpact command", new ExpressionFactoryHelper<Story.Commands.ObjRemoveImpactCommand>());
+            registry.Register("objcastskill", "objcastskill command", new ExpressionFactoryHelper<Story.Commands.ObjCastSkillCommand>());
+            registry.Register("objstopskill", "objstopskill command", new ExpressionFactoryHelper<Story.Commands.ObjStopSkillCommand>());
+            registry.Register("objlisten", "objlisten command", new ExpressionFactoryHelper<Story.Commands.ObjListenCommand>());
+            registry.Register("objsetcamp", "objsetcamp command", new ExpressionFactoryHelper<Story.Commands.ObjSetCampCommand>());
+            registry.Register("objsetsummonerid", "objsetsummonerid command", new ExpressionFactoryHelper<Story.Commands.ObjSetSummonerIdCommand>());
+            registry.Register("objsetsummonskillid", "objsetsummonskillid command", new ExpressionFactoryHelper<Story.Commands.ObjSetSummonSkillIdCommand>());
 
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sethp", "sethp command", new StoryCommandFactoryHelper<Story.Commands.SetHpCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setenergy", "setenergy command", new StoryCommandFactoryHelper<Story.Commands.SetEnergyCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objset", "objset command", new StoryCommandFactoryHelper<Story.Commands.ObjSetCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setlevel", "setlevel command", new StoryCommandFactoryHelper<Story.Commands.SetLevelCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setattr", "setattr command", new StoryCommandFactoryHelper<Story.Commands.SetAttrCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setunitid", "setunitid command", new StoryCommandFactoryHelper<Story.Commands.SetUnitIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setleaderid", "setleaderid command", new StoryCommandFactoryHelper<Story.Commands.SetLeaderIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "markcontrolbystory", "markcontrolbystory command", new StoryCommandFactoryHelper<Story.Commands.MarkControlByStoryCommand>());
+            registry.Register("sethp", "sethp command", new ExpressionFactoryHelper<Story.Commands.SetHpCommand>());
+            registry.Register("setenergy", "setenergy command", new ExpressionFactoryHelper<Story.Commands.SetEnergyCommand>());
+            registry.Register("objset", "objset command", new ExpressionFactoryHelper<Story.Commands.ObjSetCommand>());
+            registry.Register("setlevel", "setlevel command", new ExpressionFactoryHelper<Story.Commands.SetLevelCommand>());
+            registry.Register("setattr", "setattr command", new ExpressionFactoryHelper<Story.Commands.SetAttrCommand>());
+            registry.Register("setunitid", "setunitid command", new ExpressionFactoryHelper<Story.Commands.SetUnitIdCommand>());
+            registry.Register("setleaderid", "setleaderid command", new ExpressionFactoryHelper<Story.Commands.SetLeaderIdCommand>());
+            registry.Register("markcontrolbystory", "markcontrolbystory command", new ExpressionFactoryHelper<Story.Commands.MarkControlByStoryCommand>());
 
             //register value or functions
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "gettime", "gettime function", new StoryFunctionFactoryHelper<Story.Functions.GetTimeFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "gettimescale", "gettimescale function", new StoryFunctionFactoryHelper<Story.Functions.GetTimeScaleFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isactive", "isactive function", new StoryFunctionFactoryHelper<Story.Functions.IsActiveFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isreallyactive", "isreallyactive function", new StoryFunctionFactoryHelper<Story.Functions.IsReallyActiveFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isvisible", "isvisible function", new StoryFunctionFactoryHelper<Story.Functions.IsVisibleFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isnavmeshagentenabled", "isnavmeshagentenabled function", new StoryFunctionFactoryHelper<Story.Functions.IsNavmeshAgentEnabledFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcomponent", "getcomponent function", new StoryFunctionFactoryHelper<Story.Functions.GetComponentFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcomponentinparent", "getcomponentinparent function", new StoryFunctionFactoryHelper<Story.Functions.GetComponentInParentFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcomponentinchildren", "getcomponentinchildren function", new StoryFunctionFactoryHelper<Story.Functions.GetComponentInChildrenFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcomponents", "getcomponents function", new StoryFunctionFactoryHelper<Story.Functions.GetComponentsFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcomponentsinparent", "getcomponentsinparent function", new StoryFunctionFactoryHelper<Story.Functions.GetComponentsInParentFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcomponentsinchildren", "getcomponentsinchildren function", new StoryFunctionFactoryHelper<Story.Functions.GetComponentsInChildrenFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getgameobject", "getgameobject function", new StoryFunctionFactoryHelper<Story.Functions.GetGameObjectFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getparent", "getparent function", new StoryFunctionFactoryHelper<Story.Functions.GetParentFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "findchild", "findchild function", new StoryFunctionFactoryHelper<Story.Functions.FindChildFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getchildcount", "getchildcount function", new StoryFunctionFactoryHelper<Story.Functions.GetChildCountFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getchild", "getchild function", new StoryFunctionFactoryHelper<Story.Functions.GetChildFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getunitytype", "getunitytype function", new StoryFunctionFactoryHelper<Story.Functions.GetUnityTypeFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getunityuitype", "getunityuitype function", new StoryFunctionFactoryHelper<Story.Functions.GetUnityUiTypeFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getusertype", "getusertype function", new StoryFunctionFactoryHelper<Story.Functions.GetUserTypeFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getactor", "getactor function", new StoryFunctionFactoryHelper<Story.Functions.GetActorFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getentityinfo", "getentityinfo function", new StoryFunctionFactoryHelper<Story.Functions.GetEntityInfoFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getglobal", "getglobal function", new StoryFunctionFactoryHelper<Story.Functions.GetGlobalFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "pluginFramework", "pluginFramework function", new StoryFunctionFactoryHelper<Story.Functions.PluginFrameworkFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getentityview", "getentityview function", new StoryFunctionFactoryHelper<Story.Functions.GetEntityViewFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "dictget", "dictget function", new StoryFunctionFactoryHelper<Story.Functions.DictGetFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "dictformat", "dictformat function", new StoryFunctionFactoryHelper<Story.Functions.DictFormatFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isclient", "isclient function", new StoryFunctionFactoryHelper<Story.Functions.IsClientFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getsceneid", "getsceneid function", new StoryFunctionFactoryHelper<Story.Functions.GetSceneIdFunction>());
+            registry.Register("gettime", "gettime function", new ExpressionFactoryHelper<Story.Functions.GetTimeFunction>());
+            registry.Register("gettimescale", "gettimescale function", new ExpressionFactoryHelper<Story.Functions.GetTimeScaleFunction>());
+            registry.Register("isactive", "isactive function", new ExpressionFactoryHelper<Story.Functions.IsActiveFunction>());
+            registry.Register("isreallyactive", "isreallyactive function", new ExpressionFactoryHelper<Story.Functions.IsReallyActiveFunction>());
+            registry.Register("isvisible", "isvisible function", new ExpressionFactoryHelper<Story.Functions.IsVisibleFunction>());
+            registry.Register("isnavmeshagentenabled", "isnavmeshagentenabled function", new ExpressionFactoryHelper<Story.Functions.IsNavmeshAgentEnabledFunction>());
+            registry.Register("getcomponent", "getcomponent function", new ExpressionFactoryHelper<Story.Functions.GetComponentFunction>());
+            registry.Register("getcomponentinparent", "getcomponentinparent function", new ExpressionFactoryHelper<Story.Functions.GetComponentInParentFunction>());
+            registry.Register("getcomponentinchildren", "getcomponentinchildren function", new ExpressionFactoryHelper<Story.Functions.GetComponentInChildrenFunction>());
+            registry.Register("getcomponents", "getcomponents function", new ExpressionFactoryHelper<Story.Functions.GetComponentsFunction>());
+            registry.Register("getcomponentsinparent", "getcomponentsinparent function", new ExpressionFactoryHelper<Story.Functions.GetComponentsInParentFunction>());
+            registry.Register("getcomponentsinchildren", "getcomponentsinchildren function", new ExpressionFactoryHelper<Story.Functions.GetComponentsInChildrenFunction>());
+            registry.Register("getgameobject", "getgameobject function", new ExpressionFactoryHelper<Story.Functions.GetGameObjectFunction>());
+            registry.Register("getparent", "getparent function", new ExpressionFactoryHelper<Story.Functions.GetParentFunction>());
+            registry.Register("findchild", "findchild function", new ExpressionFactoryHelper<Story.Functions.FindChildFunction>());
+            registry.Register("getchildcount", "getchildcount function", new ExpressionFactoryHelper<Story.Functions.GetChildCountFunction>());
+            registry.Register("getchild", "getchild function", new ExpressionFactoryHelper<Story.Functions.GetChildFunction>());
+            registry.Register("getunitytype", "getunitytype function", new ExpressionFactoryHelper<Story.Functions.GetUnityTypeFunction>());
+            registry.Register("getunityuitype", "getunityuitype function", new ExpressionFactoryHelper<Story.Functions.GetUnityUiTypeFunction>());
+            registry.Register("getusertype", "getusertype function", new ExpressionFactoryHelper<Story.Functions.GetUserTypeFunction>());
+            registry.Register("getactor", "getactor function", new ExpressionFactoryHelper<Story.Functions.GetActorFunction>());
+            registry.Register("getentityinfo", "getentityinfo function", new ExpressionFactoryHelper<Story.Functions.GetEntityInfoFunction>());
+            registry.Register("getglobal", "getglobal function", new ExpressionFactoryHelper<Story.Functions.GetGlobalFunction>());
+            registry.Register("pluginFramework", "pluginFramework function", new ExpressionFactoryHelper<Story.Functions.PluginFrameworkFunction>());
+            registry.Register("getentityview", "getentityview function", new ExpressionFactoryHelper<Story.Functions.GetEntityViewFunction>());
+            registry.Register("dictget", "dictget function", new ExpressionFactoryHelper<Story.Functions.DictGetFunction>());
+            registry.Register("dictformat", "dictformat function", new ExpressionFactoryHelper<Story.Functions.DictFormatFunction>());
+            registry.Register("isclient", "isclient function", new ExpressionFactoryHelper<Story.Functions.IsClientFunction>());
+            registry.Register("getsceneid", "getsceneid function", new ExpressionFactoryHelper<Story.Functions.GetSceneIdFunction>());
 
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "blackboardget", "blackboardget function", new StoryFunctionFactoryHelper<Story.Functions.BlackboardGetFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getdialogitem", "getdialogitem function", new StoryFunctionFactoryHelper<Story.Functions.GetDialogItemFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "offsetspline", "offsetspline function", new StoryFunctionFactoryHelper<Story.Functions.OffsetSplineFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "offsetvector3", "offsetvector3 function", new StoryFunctionFactoryHelper<Story.Functions.OffsetVector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getactoricon", "getactoricon function", new StoryFunctionFactoryHelper<Story.Functions.GetActorIconFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getmonsterinfo", "getmonsterinfo function", new StoryFunctionFactoryHelper<Story.Functions.GetMonsterInfoFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getaidata", "getaidata function", new StoryFunctionFactoryHelper<Story.Functions.GetAiDataFunction>());
-            
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "npcidlist", "npcidlist function", new StoryFunctionFactoryHelper<Story.Functions.NpcIdListFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "combatnpccount", "combatnpccount function", new StoryFunctionFactoryHelper<Story.Functions.CombatNpcCountFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "npccount", "npccount function", new StoryFunctionFactoryHelper<Story.Functions.NpcCountFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "unitid2objid", "unitid2objid function", new StoryFunctionFactoryHelper<Story.Functions.UnitId2ObjIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objid2unitid", "objid2unitid function", new StoryFunctionFactoryHelper<Story.Functions.ObjId2UnitIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "unitid2uniqueid", "unitid2uniqueid function", new StoryFunctionFactoryHelper<Story.Functions.UnitId2UniqueIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objid2uniqueid", "objid2uniqueid function", new StoryFunctionFactoryHelper<Story.Functions.ObjId2UniqueIdFunction>());
-            
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "npcgetformation", "npcgetformation function", new StoryFunctionFactoryHelper<Story.Functions.NpcGetFormationFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "npcgetnpctype", "npcgetnpctype function", new StoryFunctionFactoryHelper<Story.Functions.NpcGetNpcTypeFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "npcgetsummonerid", "npcgetsummonerid function", new StoryFunctionFactoryHelper<Story.Functions.NpcGetSummonerIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "npcgetsummonskillid", "npcgetsummonskillid function", new StoryFunctionFactoryHelper<Story.Functions.NpcGetSummonSkillIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "npcfindimpactseqbyid", "npcfindimpactseqbyid function", new StoryFunctionFactoryHelper<Story.Functions.NpcFindImpactSeqByIdFunction>());
+            registry.Register("blackboardget", "blackboardget function", new ExpressionFactoryHelper<Story.Functions.BlackboardGetFunction>());
+            registry.Register("getdialogitem", "getdialogitem function", new ExpressionFactoryHelper<Story.Functions.GetDialogItemFunction>());
+            registry.Register("offsetspline", "offsetspline function", new ExpressionFactoryHelper<Story.Functions.OffsetSplineFunction>());
+            registry.Register("offsetvector3", "offsetvector3 function", new ExpressionFactoryHelper<Story.Functions.OffsetVector3Function>());
+            registry.Register("getactoricon", "getactoricon function", new ExpressionFactoryHelper<Story.Functions.GetActorIconFunction>());
+            registry.Register("getmonsterinfo", "getmonsterinfo function", new ExpressionFactoryHelper<Story.Functions.GetMonsterInfoFunction>());
+            registry.Register("getaidata", "getaidata function", new ExpressionFactoryHelper<Story.Functions.GetAiDataFunction>());
 
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objgetformation", "objgetformation function", new StoryFunctionFactoryHelper<Story.Functions.ObjGetFormationFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objgetnpctype", "objgetnpctype function", new StoryFunctionFactoryHelper<Story.Functions.ObjGetNpcTypeFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objgetsummonerid", "objgetsummonerid function", new StoryFunctionFactoryHelper<Story.Functions.ObjGetSummonerIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objgetsummonskillid", "objgetsummonskillid function", new StoryFunctionFactoryHelper<Story.Functions.ObjGetSummonSkillIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objfindimpactseqbyid", "objfindimpactseqbyid function", new StoryFunctionFactoryHelper<Story.Functions.ObjFindImpactSeqByIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isenemy", "isenemy function", new StoryFunctionFactoryHelper<Story.Functions.IsEnemyFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isfriend", "isfriend function", new StoryFunctionFactoryHelper<Story.Functions.IsFriendFunction>());
+            registry.Register("npcidlist", "npcidlist function", new ExpressionFactoryHelper<Story.Functions.NpcIdListFunction>());
+            registry.Register("combatnpccount", "combatnpccount function", new ExpressionFactoryHelper<Story.Functions.CombatNpcCountFunction>());
+            registry.Register("npccount", "npccount function", new ExpressionFactoryHelper<Story.Functions.NpcCountFunction>());
+            registry.Register("unitid2objid", "unitid2objid function", new ExpressionFactoryHelper<Story.Functions.UnitId2ObjIdFunction>());
+            registry.Register("objid2unitid", "objid2unitid function", new ExpressionFactoryHelper<Story.Functions.ObjId2UnitIdFunction>());
+            registry.Register("unitid2uniqueid", "unitid2uniqueid function", new ExpressionFactoryHelper<Story.Functions.UnitId2UniqueIdFunction>());
+            registry.Register("objid2uniqueid", "objid2uniqueid function", new ExpressionFactoryHelper<Story.Functions.ObjId2UniqueIdFunction>());
 
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getposition", "getposition function", new StoryFunctionFactoryHelper<Story.Functions.GetPositionFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getpositionx", "getpositionx function", new StoryFunctionFactoryHelper<Story.Functions.GetPositionXFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getpositiony", "getpositiony function", new StoryFunctionFactoryHelper<Story.Functions.GetPositionYFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getpositionz", "getpositionz function", new StoryFunctionFactoryHelper<Story.Functions.GetPositionZFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getrotation", "getrotation function", new StoryFunctionFactoryHelper<Story.Functions.GetRotationFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getrotationx", "getrotationx function", new StoryFunctionFactoryHelper<Story.Functions.GetRotationXFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getrotationy", "getrotationy function", new StoryFunctionFactoryHelper<Story.Functions.GetRotationYFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getrotationz", "getrotationz function", new StoryFunctionFactoryHelper<Story.Functions.GetRotationZFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getscale", "getscale function", new StoryFunctionFactoryHelper<Story.Functions.GetScaleFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getscalex", "getscalex function", new StoryFunctionFactoryHelper<Story.Functions.GetScaleXFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getscaley", "getscaley function", new StoryFunctionFactoryHelper<Story.Functions.GetScaleYFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getscalez", "getscalez function", new StoryFunctionFactoryHelper<Story.Functions.GetScaleZFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "position", "position function", new StoryFunctionFactoryHelper<DotnetStoryScript.CommonFunctions.Vector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "rotation", "rotation function", new StoryFunctionFactoryHelper<DotnetStoryScript.CommonFunctions.Vector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "scale", "scale function", new StoryFunctionFactoryHelper<DotnetStoryScript.CommonFunctions.Vector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcamp", "getcamp function", new StoryFunctionFactoryHelper<Story.Functions.GetCampFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "iscombatnpc", "iscombatnpc function", new StoryFunctionFactoryHelper<Story.Functions.IsCombatNpcFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "gethp", "gethp function", new StoryFunctionFactoryHelper<Story.Functions.GetHpFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getenergy", "getenergy function", new StoryFunctionFactoryHelper<Story.Functions.GetEnergyFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getmaxhp", "getmaxhp function", new StoryFunctionFactoryHelper<Story.Functions.GetMaxHpFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getmaxenergy", "getmaxenergy function", new StoryFunctionFactoryHelper<Story.Functions.GetMaxEnergyFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "calcoffset", "calcoffset function", new StoryFunctionFactoryHelper<Story.Functions.CalcOffsetFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "calcdir", "calcdir function", new StoryFunctionFactoryHelper<Story.Functions.CalcDirFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "objget", "objget function", new StoryFunctionFactoryHelper<Story.Functions.ObjGetFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "gettableid", "gettableid function", new StoryFunctionFactoryHelper<Story.Functions.GetTableIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getlevel", "getlevel function", new StoryFunctionFactoryHelper<Story.Functions.GetLevelFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getattr", "getattr function", new StoryFunctionFactoryHelper<Story.Functions.GetAttrFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "iscontrolbystory", "iscontrolbystory function", new StoryFunctionFactoryHelper<Story.Functions.IsControlByStoryFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "cancastskill", "cancastskill function", new StoryFunctionFactoryHelper<Story.Functions.CanCastSkillFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "isundercontrol", "isundercontrol function", new StoryFunctionFactoryHelper<Story.Functions.IsUnderControlFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getplayerid", "getplayerid function", new StoryFunctionFactoryHelper<Story.Functions.GetPlayerIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getplayerunitid", "getplayerunitid function", new StoryFunctionFactoryHelper<Story.Functions.GetPlayerUnitIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getleaderid", "getleaderid function", new StoryFunctionFactoryHelper<Story.Functions.GetLeaderIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getleadertableid", "getleadertableid function", new StoryFunctionFactoryHelper<Story.Functions.GetLeaderTableIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getmembercount", "getmembercount function", new StoryFunctionFactoryHelper<Story.Functions.GetMemberCountFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getmembertableid", "getmembertableid function", new StoryFunctionFactoryHelper<Story.Functions.GetMemberTableIdFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getmemberlevel", "getmemberlevel function", new StoryFunctionFactoryHelper<Story.Functions.GetMemberLevelFunction>());
+            registry.Register("npcgetformation", "npcgetformation function", new ExpressionFactoryHelper<Story.Functions.NpcGetFormationFunction>());
+            registry.Register("npcgetnpctype", "npcgetnpctype function", new ExpressionFactoryHelper<Story.Functions.NpcGetNpcTypeFunction>());
+            registry.Register("npcgetsummonerid", "npcgetsummonerid function", new ExpressionFactoryHelper<Story.Functions.NpcGetSummonerIdFunction>());
+            registry.Register("npcgetsummonskillid", "npcgetsummonskillid function", new ExpressionFactoryHelper<Story.Functions.NpcGetSummonSkillIdFunction>());
+            registry.Register("npcfindimpactseqbyid", "npcfindimpactseqbyid function", new ExpressionFactoryHelper<Story.Functions.NpcFindImpactSeqByIdFunction>());
 
-            LoadCustomCommandsAndFunctions();
+            registry.Register("objgetformation", "objgetformation function", new ExpressionFactoryHelper<Story.Functions.ObjGetFormationFunction>());
+            registry.Register("objgetnpctype", "objgetnpctype function", new ExpressionFactoryHelper<Story.Functions.ObjGetNpcTypeFunction>());
+            registry.Register("objgetsummonerid", "objgetsummonerid function", new ExpressionFactoryHelper<Story.Functions.ObjGetSummonerIdFunction>());
+            registry.Register("objgetsummonskillid", "objgetsummonskillid function", new ExpressionFactoryHelper<Story.Functions.ObjGetSummonSkillIdFunction>());
+            registry.Register("objfindimpactseqbyid", "objfindimpactseqbyid function", new ExpressionFactoryHelper<Story.Functions.ObjFindImpactSeqByIdFunction>());
+            registry.Register("isenemy", "isenemy function", new ExpressionFactoryHelper<Story.Functions.IsEnemyFunction>());
+            registry.Register("isfriend", "isfriend function", new ExpressionFactoryHelper<Story.Functions.IsFriendFunction>());
+
+            registry.Register("getposition", "getposition function", new ExpressionFactoryHelper<Story.Functions.GetPositionFunction>());
+            registry.Register("getpositionx", "getpositionx function", new ExpressionFactoryHelper<Story.Functions.GetPositionXFunction>());
+            registry.Register("getpositiony", "getpositiony function", new ExpressionFactoryHelper<Story.Functions.GetPositionYFunction>());
+            registry.Register("getpositionz", "getpositionz function", new ExpressionFactoryHelper<Story.Functions.GetPositionZFunction>());
+            registry.Register("getrotation", "getrotation function", new ExpressionFactoryHelper<Story.Functions.GetRotationFunction>());
+            registry.Register("getrotationx", "getrotationx function", new ExpressionFactoryHelper<Story.Functions.GetRotationXFunction>());
+            registry.Register("getrotationy", "getrotationy function", new ExpressionFactoryHelper<Story.Functions.GetRotationYFunction>());
+            registry.Register("getrotationz", "getrotationz function", new ExpressionFactoryHelper<Story.Functions.GetRotationZFunction>());
+            registry.Register("getscale", "getscale function", new ExpressionFactoryHelper<Story.Functions.GetScaleFunction>());
+            registry.Register("getscalex", "getscalex function", new ExpressionFactoryHelper<Story.Functions.GetScaleXFunction>());
+            registry.Register("getscaley", "getscaley function", new ExpressionFactoryHelper<Story.Functions.GetScaleYFunction>());
+            registry.Register("getscalez", "getscalez function", new ExpressionFactoryHelper<Story.Functions.GetScaleZFunction>());
+            registry.Register("position", "position function", new ExpressionFactoryHelper<Story.Functions.Vector3Exp>());
+            registry.Register("rotation", "rotation function", new ExpressionFactoryHelper<Story.Functions.Vector3Exp>());
+            registry.Register("scale", "scale function", new ExpressionFactoryHelper<Story.Functions.Vector3Exp>());
+            registry.Register("getcamp", "getcamp function", new ExpressionFactoryHelper<Story.Functions.GetCampFunction>());
+            registry.Register("iscombatnpc", "iscombatnpc function", new ExpressionFactoryHelper<Story.Functions.IsCombatNpcFunction>());
+            registry.Register("gethp", "gethp function", new ExpressionFactoryHelper<Story.Functions.GetHpFunction>());
+            registry.Register("getenergy", "getenergy function", new ExpressionFactoryHelper<Story.Functions.GetEnergyFunction>());
+            registry.Register("getmaxhp", "getmaxhp function", new ExpressionFactoryHelper<Story.Functions.GetMaxHpFunction>());
+            registry.Register("getmaxenergy", "getmaxenergy function", new ExpressionFactoryHelper<Story.Functions.GetMaxEnergyFunction>());
+            registry.Register("calcoffset", "calcoffset function", new ExpressionFactoryHelper<Story.Functions.CalcOffsetFunction>());
+            registry.Register("calcdir", "calcdir function", new ExpressionFactoryHelper<Story.Functions.CalcDirFunction>());
+            registry.Register("objget", "objget function", new ExpressionFactoryHelper<Story.Functions.ObjGetFunction>());
+            registry.Register("gettableid", "gettableid function", new ExpressionFactoryHelper<Story.Functions.GetTableIdFunction>());
+            registry.Register("getlevel", "getlevel function", new ExpressionFactoryHelper<Story.Functions.GetLevelFunction>());
+            registry.Register("getattr", "getattr function", new ExpressionFactoryHelper<Story.Functions.GetAttrFunction>());
+            registry.Register("iscontrolbystory", "iscontrolbystory function", new ExpressionFactoryHelper<Story.Functions.IsControlByStoryFunction>());
+            registry.Register("cancastskill", "cancastskill function", new ExpressionFactoryHelper<Story.Functions.CanCastSkillFunction>());
+            registry.Register("isundercontrol", "isundercontrol function", new ExpressionFactoryHelper<Story.Functions.IsUnderControlFunction>());
+            registry.Register("getplayerid", "getplayerid function", new ExpressionFactoryHelper<Story.Functions.GetPlayerIdFunction>());
+            registry.Register("getplayerunitid", "getplayerunitid function", new ExpressionFactoryHelper<Story.Functions.GetPlayerUnitIdFunction>());
+            registry.Register("getleaderid", "getleaderid function", new ExpressionFactoryHelper<Story.Functions.GetLeaderIdFunction>());
+            registry.Register("getleadertableid", "getleadertableid function", new ExpressionFactoryHelper<Story.Functions.GetLeaderTableIdFunction>());
+            registry.Register("getmembercount", "getmembercount function", new ExpressionFactoryHelper<Story.Functions.GetMemberCountFunction>());
+            registry.Register("getmembertableid", "getmembertableid function", new ExpressionFactoryHelper<Story.Functions.GetMemberTableIdFunction>());
+            registry.Register("getmemberlevel", "getmemberlevel function", new ExpressionFactoryHelper<Story.Functions.GetMemberLevelFunction>());
+
+            GmCommands.GmExpressionRegistrar.RegisterGmExpressions(registry);
         }
         public void Reset()
         {
@@ -252,9 +256,7 @@ namespace ScriptableFramework.Story
         }
         public void Reset(bool logIfTriggered)
         {
-            LoadCustomCommandsAndFunctions();
-
-            m_GlobalVariables.Clear();
+            m_ContextVariables.Clear();
             int count = m_StoryLogicInfos.Count;
             for (int index = count - 1; index >= 0; --index) {
                 StoryInstance info = m_StoryLogicInfos[index];
@@ -403,9 +405,9 @@ namespace ScriptableFramework.Story
         {
             get { return m_StoryLogicInfos; }
         }
-        public StrBoxedValueDict GlobalVariables
+        public StrBoxedValueDict ContextVariables
         {
-            get { return m_GlobalVariables; }
+            get { return m_ContextVariables; }
         }
         public StoryInstance GetStory(string storyId)
         {
@@ -433,7 +435,7 @@ namespace ScriptableFramework.Story
                     StopStory(info.StoryId);
                     m_StoryLogicInfos.Add(info);
                     info.Context = null;
-                    info.GlobalVariables = m_GlobalVariables;
+                    info.ContextVariables = m_ContextVariables;
                     info.Start();
 
                     LogSystem.Info("StartStory {0} scene {1}", info.StoryId, m_SceneId);
@@ -555,7 +557,7 @@ namespace ScriptableFramework.Story
                 StopStory(storyId);
                 m_StoryLogicInfos.Add(inst);
                 inst.Context = null;
-                inst.GlobalVariables = m_GlobalVariables;
+                inst.ContextVariables = m_ContextVariables;
                 inst.Start();
 
                 LogSystem.Info("StartStory {0}", storyId);
@@ -802,15 +804,6 @@ namespace ScriptableFramework.Story
             m_StoryInstancePool.TryGetValue(storyId, out info);
             return info;
         }
-        private void LoadCustomCommandsAndFunctions()
-        {
-            string valFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomFunctions.dsl");
-            string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomCommands.dsl");
-            Dsl.DslFile file1 = CustomCommandFunctionParser.LoadStory(valFile);
-            Dsl.DslFile file2 = CustomCommandFunctionParser.LoadStory(cmdFile);
-            CustomCommandFunctionParser.FirstParse(file1, file2);
-            CustomCommandFunctionParser.FinalParse(file1, file2);
-        }
         private void AddAiStoryInstanceInfoToPool(string storyId, AiStoryInstanceInfo info)
         {
             List<AiStoryInstanceInfo> infos;
@@ -855,7 +848,7 @@ namespace ScriptableFramework.Story
         private SimpleObjectPool<BoxedValueList> m_BoxedValueListPool = new SimpleObjectPool<BoxedValueList>();
 
         private int m_SceneId = 0;
-        private StrBoxedValueDict m_GlobalVariables = new StrBoxedValueDict();
+        private StrBoxedValueDict m_ContextVariables = new StrBoxedValueDict();
 
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
         private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();
@@ -872,8 +865,7 @@ namespace ScriptableFramework.Story
 
         public static void ThreadInitMask()
         {
-            StoryCommandManager.ThreadCommandGroupsMask = (ulong)((1 << (int)StoryCommandGroupDefine.GM) + (1 << (int)StoryCommandGroupDefine.GFX));
-            StoryFunctionManager.ThreadFunctionGroupsMask = (ulong)((1 << (int)StoryFunctionGroupDefine.GM) + (1 << (int)StoryFunctionGroupDefine.GFX));
+            //DslCalculator does not use thread masks
         }
     }
 }

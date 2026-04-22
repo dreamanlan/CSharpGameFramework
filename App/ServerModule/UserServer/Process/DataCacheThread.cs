@@ -7,8 +7,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Messenger;
 using ScriptableFramework;
-using GameFrameworkMessage;
-using GameFrameworkData;
+using ScriptableFrameworkMessage;
+using ScriptableFrameworkData;
 
 namespace ScriptableFramework
 {

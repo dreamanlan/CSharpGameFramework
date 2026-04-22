@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ScriptRuntime;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
 namespace ScriptableFramework.GmCommands
 {
@@ -27,13 +28,13 @@ namespace ScriptableFramework.GmCommands
                 return m_StoryLogicInfos.Count;
             }
         }
-        public StrBoxedValueDict GlobalVariables
+        public StrBoxedValueDict ContextVariables
         {
-            get { return m_GlobalVariables; }
+            get { return m_ContextVariables; }
         }
         public void Reset()
         {
-            m_GlobalVariables.Clear();
+            m_ContextVariables.Clear();
             int count = m_StoryLogicInfos.Count;
             for (int index = count - 1; index >= 0; --index) {
                 StoryInstance info = m_StoryLogicInfos[index];
@@ -66,7 +67,7 @@ namespace ScriptableFramework.GmCommands
                 StopStory(storyId);
                 m_StoryLogicInfos.Add(inst);
                 inst.Context = m_CurScene;
-                inst.GlobalVariables = m_GlobalVariables;
+                inst.ContextVariables = m_ContextVariables;
                 inst.Start();
 
                 LogSystem.Info("StartStory {0}", storyId);
@@ -177,7 +178,7 @@ namespace ScriptableFramework.GmCommands
             return info;
         }
 
-        private StrBoxedValueDict m_GlobalVariables = new StrBoxedValueDict();
+        private StrBoxedValueDict m_ContextVariables = new StrBoxedValueDict();
         private SimpleObjectPool<BoxedValueList> m_BoxedValueListPool = new SimpleObjectPool<BoxedValueList>();
 
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
@@ -191,17 +192,25 @@ namespace ScriptableFramework.GmCommands
             if (!s_IsInited) {
                 s_IsInited = true;
                 //register GM commands
-                StoryCommandManager.Instance.RegisterCommandFactory("setposition", "setposition command", new StoryCommandFactoryHelper<SetPositionCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("levelto", "levelto command", new StoryCommandFactoryHelper<LevelToCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("full", "full command", new StoryCommandFactoryHelper<FullCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("clearequipments", "clearequipments command", new StoryCommandFactoryHelper<ClearEquipmentsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("addequipment", "addequipment command", new StoryCommandFactoryHelper<AddEquipmentCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("clearskills", "clearskills command", new StoryCommandFactoryHelper<ClearSkillsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("addskill", "addskill command", new StoryCommandFactoryHelper<AddSkillCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("clearbuffs", "clearbuffs command", new StoryCommandFactoryHelper<ClearBuffsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("addbuff", "addbuff command", new StoryCommandFactoryHelper<AddBuffCommand>());
-
-                //register value or functions
+                var registry = DslCalculatorHost.GetSharedApiRegistry();
+                registry.Register("setposition", "setposition(objid, x, z) - set position",
+                    new ExpressionFactoryHelper<SetPositionCommand>());
+                registry.Register("levelto", "levelto(level) - level up to",
+                    new ExpressionFactoryHelper<LevelToCommand>());
+                registry.Register("full", "full() - full hp and energy",
+                    new ExpressionFactoryHelper<FullCommand>());
+                registry.Register("clearequipments", "clearequipments() - clear equipments",
+                    new ExpressionFactoryHelper<ClearEquipmentsCommand>());
+                registry.Register("addequipment", "addequipment(item_id) - add equipment",
+                    new ExpressionFactoryHelper<AddEquipmentCommand>());
+                registry.Register("clearskills", "clearskills() - clear skills",
+                    new ExpressionFactoryHelper<ClearSkillsCommand>());
+                registry.Register("addskill", "addskill(skill_id) - add skill",
+                    new ExpressionFactoryHelper<AddSkillCommand>());
+                registry.Register("clearbuffs", "clearbuffs() - clear buffs",
+                    new ExpressionFactoryHelper<ClearBuffsCommand>());
+                registry.Register("addbuff", "addbuff(impact_id) - add buff",
+                    new ExpressionFactoryHelper<AddBuffCommand>());
             }
         }
 

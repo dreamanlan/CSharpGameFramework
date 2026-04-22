@@ -1,53 +1,84 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// startstory(story_id);
+    /// startstory(story_id)[multiple(n)];
     /// </summary>
-    internal class StartStoryCommand : AbstractStoryCommand
+    internal sealed class StartStoryCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            StartStoryCommand cmd = new StartStoryCommand();
-            cmd.m_StoryId = m_StoryId.Clone();
-            cmd.m_Multiple = m_Multiple.Clone();
-            return cmd;
-        }
-        protected override void ResetState()
-        { }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_StoryId.Evaluate(instance, handler, iterator, args);
-            m_Multiple.Evaluate(instance, handler, iterator, args);
-        
-        }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
+                var storyId = m_StoryId.Calc().ToString();
+                var multiple = m_HaveMultiple ? m_Multiple.Calc().GetInt() : 0;
+                userThread.QueueAction(() => {
+                    if (multiple == 0)
+                        userThread.StorySystem.StartStory(storyId);
+                    else
+                        userThread.StorySystem.StartStories(storyId);
+                });
+            }
+            return BoxedValue.NullObject;
+        }
+        protected override bool Load(Dsl.FunctionData funcData)
+        {
+            if (funcData.GetParamNum() > 0) {
+                m_StoryId = Calculator.Load(funcData.GetParam(0));
+            }
+            return true;
+        }
+        protected override bool Load(Dsl.StatementData statementData)
+        {
+            if (statementData.GetFunctionNum() == 2) {
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
+                if (null != first && null != second) {
+                    Load(first);
+                    if (second.GetId() == "multiple" && second.GetParamNum() > 0) {
+                        m_HaveMultiple = true;
+                        m_Multiple = Calculator.Load(second.GetParam(0));
+                    }
+                }
+            }
+            return true;
+        }
 
-	            var storyId = m_StoryId.Value;
-	            var multiple = m_Multiple.Value;
-	            userThread.QueueAction(() => {
-	                if (multiple == 0)
-	                    userThread.StorySystem.StartStory(storyId);
-	                else
-	                    userThread.StorySystem.StartStories(storyId);
-	            });
-            }
-            return false;
-        }
-        protected override bool Load(Dsl.FunctionData callData)
+        private IExpression m_StoryId;
+        private IExpression m_Multiple;
+        private bool m_HaveMultiple = false;
+    }
+    /// <summary>
+    /// stopstory(story_id)[multiple(n)];
+    /// </summary>
+    internal sealed class StopStoryCommand : AbstractExpression
+    {
+        protected override BoxedValue DoCalc()
         {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_StoryId.InitFromDsl(callData.GetParam(0));
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
+            if (null != userThread) {
+                var storyId = m_StoryId.Calc().ToString();
+                var multiple = m_HaveMultiple ? m_Multiple.Calc().GetInt() : 0;
+                if (multiple == 0)
+                    userThread.StorySystem.MarkStoryTerminated(storyId);
+                else
+                    userThread.StorySystem.MarkStoriesTerminated(storyId);
+            }
+            return BoxedValue.NullObject;
+        }
+        protected override bool Load(Dsl.FunctionData funcData)
+        {
+            if (funcData.GetParamNum() > 0) {
+                m_StoryId = Calculator.Load(funcData.GetParam(0));
             }
             return true;
         }
@@ -56,172 +87,96 @@ namespace ScriptableFramework.Story.Commands
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
                 var second = statementData.Second.AsFunction;
-                if (!first.HaveStatement() && !second.HaveStatement()) {
+                if (null != first && null != second) {
                     Load(first);
-                    var call = second;
-                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple.InitFromDsl(call.GetParam(0));
+                    if (second.GetId() == "multiple" && second.GetParamNum() > 0) {
+                        m_HaveMultiple = true;
+                        m_Multiple = Calculator.Load(second.GetParam(0));
                     }
                 }
             }
             return true;
         }
-        private IStoryFunction<string> m_StoryId = new StoryFunction<string>();
-        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
+
+        private IExpression m_StoryId;
+        private IExpression m_Multiple;
+        private bool m_HaveMultiple = false;
     }
     /// <summary>
-    /// stopstory(story_id);
+    /// waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)][multiple(n)];
     /// </summary>
-    internal class StopStoryCommand : AbstractStoryCommand
+    internal sealed class WaitStoryCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        public override bool IsAsync { get { return true; } }
+
+        protected override IEnumerator DoCalc(AsyncCalcResult result)
         {
-            StopStoryCommand cmd = new StopStoryCommand();
-            cmd.m_StoryId = m_StoryId.Clone();
-            cmd.m_Multiple = m_Multiple.Clone();
-            return cmd;
-        }
-        protected override void ResetState()
-        { }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_StoryId.Evaluate(instance, handler, iterator, args);
-            m_Multiple.Evaluate(instance, handler, iterator, args);
-        }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
-            if (null != userThread) {
-                var multiple = m_Multiple.Value;
-	            if (multiple == 0)
-	                userThread.StorySystem.MarkStoryTerminated(m_StoryId.Value);
-	            else
-	                userThread.StorySystem.MarkStoriesTerminated(m_StoryId.Value);
+            if (Calculator.IsInSyncCalculation) {
+                yield break;
             }
-            return false;
-        }
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_StoryId.InitFromDsl(callData.GetParam(0));
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
+            if (userThread == null) {
+                result.Value = BoxedValue.NullObject;
+                yield break;
             }
-            return true;
-        }
-        protected override bool Load(Dsl.StatementData statementData)
-        {
-            if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First.AsFunction;
-                var second = statementData.Second.AsFunction;
-                if (!first.HaveStatement() && !second.HaveStatement()) {
-                    Load(first);
-                    var call = second;
-                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple.InitFromDsl(call.GetParam(0));
-                    }
-                }
-            }
-            return true;
-        }
-        private IStoryFunction<string> m_StoryId = new StoryFunction<string>();
-        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
-    }
-    /// <summary>
-    /// waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)];
-    /// </summary>
-    internal class WaitStoryCommand : AbstractStoryCommand
-    {
-        protected override IStoryCommand CloneCommand()
-        {
-            WaitStoryCommand cmd = new WaitStoryCommand();
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
-            }
-            cmd.m_SetVar = m_SetVar.Clone();
-            cmd.m_SetVal = m_SetVal.Clone();
-            cmd.m_TimeoutVal = m_TimeoutVal.Clone();
-            cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
-            cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
-            cmd.m_Multiple = m_Multiple.Clone();
-            cmd.m_HaveSet = m_HaveSet;
-            cmd.m_HaveMultiple = m_HaveMultiple;
-            return cmd;
-        }
-        protected override void ResetState()
-        {
-            m_CurTime = 0;
-        }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                m_StoryIds[i].Evaluate(instance, handler, iterator, args);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, handler, iterator, args);
-                m_SetVal.Evaluate(instance, handler, iterator, args);
-                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
-            }
-            if (m_HaveMultiple) {
-                m_Multiple.Evaluate(instance, handler, iterator, args);
-            }
-        }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            bool ret = false;
-            UserThread userThread = instance.Context as UserThread;
-            if (null != userThread) {
+
+            int multiple = m_HaveMultiple ? m_Multiple.Calc().GetInt() : 0;
+            int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+            long startTime = instance.CurrentTime;
+
+            while (true) {
                 int ct = 0;
                 for (int i = 0; i < m_StoryIds.Count; i++) {
-                    ct += userThread.StorySystem.CountStory(m_StoryIds[i].Value);
+                    string sid = m_StoryIds[i].Calc().ToString();
+                    if (multiple == 0)
+                        ct += userThread.StorySystem.CountStory(sid);
+                    else
+                        ct += userThread.StorySystem.CountStory(sid);
                 }
-	            int multiple = m_Multiple.Value;
                 if (ct <= 0) {
-	                if (m_HaveSet) {
-	                    string varName = m_SetVar.Value;
-	                    var varVal = m_SetVal.Value;
-	                    instance.SetVariable(varName, varVal);
-	                }
-	            } else {
-	                int timeout = m_TimeoutVal.Value;
-	                int curTime = m_CurTime;
-	                m_CurTime += (int)delta;
-	                if (timeout <= 0 || curTime <= timeout) {
-	                    ret = true;
-	                } else if (m_HaveSet) {
-	                    string varName = m_TimeoutSetVar.Value;
-	                    var varVal = m_TimeoutSetVal.Value;
-	                    instance.SetVariable(varName, varVal);
-	                }
-	            }
-			}
-            return ret;
-        }
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryFunction<string>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_StoryIds.Add(val);
+                    if (m_HaveSet) {
+                        string varName = m_SetVar.Calc().ToString();
+                        var varVal = m_SetVal.Calc();
+                        instance.SetVariable(varName, varVal);
+                    }
+                    break;
+                }
+                long curTime = instance.CurrentTime - startTime;
+                if (!StoryConfigManager.Instance.IsStorySkipped && (timeout <= 0 || curTime <= timeout)) {
+                    yield return null;
+                } else {
+                    if (m_HaveSet) {
+                        string varName = m_TimeoutSetVar.Calc().ToString();
+                        var varVal = m_TimeoutSetVal.Calc();
+                        instance.SetVariable(varName, varVal);
+                    }
+                    break;
+                }
             }
+            result.Value = BoxedValue.NullObject;
+        }
+
+        protected override bool Load(Dsl.FunctionData funcData)
+        {
+            LoadStoryIds(funcData);
             return true;
         }
+
         protected override bool Load(Dsl.StatementData statementData)
         {
             int ct = statementData.Functions.Count;
-            if (statementData.Functions.Count >= 2) {
+            if (ct >= 2) {
                 var first = statementData.First.AsFunction;
                 var second = statementData.Second.AsFunction;
                 if (ct == 2) {
-                    m_HaveMultiple = true;
+                    Load(first);
                     LoadMultiple(second);
                 } else if (ct == 3) {
                     var third = statementData.Third.AsFunction;
                     if (null != first && null != second && null != third) {
                         m_HaveSet = true;
-                        Load(first);
+                        LoadStoryIds(first);
                         LoadSet(second);
                         LoadTimeoutSet(third);
                     }
@@ -230,368 +185,279 @@ namespace ScriptableFramework.Story.Commands
                     var last = statementData.Last.AsFunction;
                     if (null != first && null != second && null != third && null != last) {
                         m_HaveSet = true;
-                        Load(first);
+                        LoadStoryIds(first);
                         LoadSet(second);
                         LoadTimeoutSet(third);
-                        m_HaveMultiple = true;
                         LoadMultiple(last);
                     }
                 }
             }
             return true;
         }
+
+        private void LoadStoryIds(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                m_StoryIds.Add(Calculator.Load(callData.GetParam(i)));
+            }
+        }
+
         private void LoadMultiple(Dsl.FunctionData callData)
         {
-            int num = callData.GetParamNum();
-            if (num >= 1 && callData.GetId() == "multiple") {
-                m_Multiple.InitFromDsl(callData.GetParam(0));
+            if (callData.GetId() == "multiple" && callData.GetParamNum() >= 1) {
+                m_HaveMultiple = true;
+                m_Multiple = Calculator.Load(callData.GetParam(0));
             }
         }
+
         private void LoadSet(Dsl.FunctionData callData)
         {
-            int num = callData.GetParamNum();
-            if (num >= 2 && callData.GetId() == "set") {
-                m_SetVar.InitFromDsl(callData.GetParam(0));
-                m_SetVal.InitFromDsl(callData.GetParam(1));
+            if (callData.GetId() == "set" && callData.GetParamNum() >= 2) {
+                m_SetVar = Calculator.Load(callData.GetParam(0));
+                m_SetVal = Calculator.Load(callData.GetParam(1));
             }
         }
+
         private void LoadTimeoutSet(Dsl.FunctionData callData)
         {
-            int num = callData.GetParamNum();
-            if (num >= 3 && callData.GetId() == "timeoutset") {
-                m_TimeoutVal.InitFromDsl(callData.GetParam(0));
-                m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
-                m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
+            if (callData.GetId() == "timeoutset" && callData.GetParamNum() >= 3) {
+                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
+                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
+                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
             }
         }
-        private List<IStoryFunction<string>> m_StoryIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
-        private IStoryFunction m_SetVal = new StoryFunction();
-        private IStoryFunction<int> m_TimeoutVal = new StoryFunction<int>();
-        private IStoryFunction<string> m_TimeoutSetVar = new StoryFunction<string>();
-        private IStoryFunction m_TimeoutSetVal = new StoryFunction();
-        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
+
+        private List<IExpression> m_StoryIds = new List<IExpression>();
+        private IExpression m_SetVar;
+        private IExpression m_SetVal;
+        private IExpression m_TimeoutVal;
+        private IExpression m_TimeoutSetVar;
+        private IExpression m_TimeoutSetVal;
+        private IExpression m_Multiple;
         private bool m_HaveMultiple = false;
         private bool m_HaveSet = false;
-        private int m_CurTime = 0;
     }
     /// <summary>
-    /// pausestory(storyid1,storyid2,...);
+    /// pausestory(storyid1,storyid2,...)[multiple(n)];
     /// </summary>
-    internal class PauseStoryCommand : AbstractStoryCommand
+    internal sealed class PauseStoryCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            PauseStoryCommand cmd = new PauseStoryCommand();
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
-            }
-            cmd.m_Multiple = m_Multiple.Clone();
-            return cmd;
-        }
-        protected override void ResetState()
-        {
-        }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                m_StoryIds[i].Evaluate(instance, handler, iterator, args);
-            }
-            m_Multiple.Evaluate(instance, handler, iterator, args);
-        }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                var multiple = m_Multiple.Value;
+                var multiple = m_HaveMultiple ? m_Multiple.Calc().GetInt() : 0;
                 if (multiple == 0) {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        userThread.StorySystem.PauseStory(m_StoryIds[i].Value, true);
+                        userThread.StorySystem.PauseStory(m_StoryIds[i].Calc().ToString(), true);
                     }
                 } else {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        userThread.StorySystem.PauseStories(m_StoryIds[i].Value, true);
+                        userThread.StorySystem.PauseStories(m_StoryIds[i].Calc().ToString(), true);
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-        protected override bool Load(Dsl.FunctionData callData)
+
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
+            int num = funcData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryFunction<string>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_StoryIds.Add(val);
+                m_StoryIds.Add(Calculator.Load(funcData.GetParam(i)));
             }
             return true;
         }
+
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
                 var second = statementData.Second.AsFunction;
-                if (!first.HaveStatement() && !second.HaveStatement()) {
+                if (null != first && null != second) {
                     Load(first);
-                    var call = second;
-                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple.InitFromDsl(call.GetParam(0));
+                    if (second.GetId() == "multiple" && second.GetParamNum() > 0) {
+                        m_HaveMultiple = true;
+                        m_Multiple = Calculator.Load(second.GetParam(0));
                     }
                 }
             }
             return true;
         }
-        private List<IStoryFunction<string>> m_StoryIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
+
+        private List<IExpression> m_StoryIds = new List<IExpression>();
+        private IExpression m_Multiple;
+        private bool m_HaveMultiple = false;
     }
     /// <summary>
-    /// resumestory(storyid1,storyid2,...);
+    /// resumestory(storyid1,storyid2,...)[multiple(n)];
     /// </summary>
-    internal class ResumeStoryCommand : AbstractStoryCommand
+    internal sealed class ResumeStoryCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            ResumeStoryCommand cmd = new ResumeStoryCommand();
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
-            }
-            cmd.m_Multiple = m_Multiple.Clone();
-            return cmd;
-        }
-        protected override void ResetState()
-        {
-        }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                m_StoryIds[i].Evaluate(instance, handler, iterator, args);
-            }
-            m_Multiple.Evaluate(instance, handler, iterator, args);
-        }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                var multiple = m_Multiple.Value;
+                var multiple = m_HaveMultiple ? m_Multiple.Calc().GetInt() : 0;
                 if (multiple == 0) {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        userThread.StorySystem.PauseStory(m_StoryIds[i].Value, false);
+                        userThread.StorySystem.PauseStory(m_StoryIds[i].Calc().ToString(), false);
                     }
                 } else {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        userThread.StorySystem.PauseStories(m_StoryIds[i].Value, false);
+                        userThread.StorySystem.PauseStories(m_StoryIds[i].Calc().ToString(), false);
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-        protected override bool Load(Dsl.FunctionData callData)
+
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
+            int num = funcData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryFunction<string>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_StoryIds.Add(val);
+                m_StoryIds.Add(Calculator.Load(funcData.GetParam(i)));
             }
             return true;
         }
+
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
                 var second = statementData.Second.AsFunction;
-                if (!first.HaveStatement() && !second.HaveStatement()) {
+                if (null != first && null != second) {
                     Load(first);
-                    var call = second;
-                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple.InitFromDsl(call.GetParam(0));
+                    if (second.GetId() == "multiple" && second.GetParamNum() > 0) {
+                        m_HaveMultiple = true;
+                        m_Multiple = Calculator.Load(second.GetParam(0));
                     }
                 }
             }
             return true;
         }
-        private List<IStoryFunction<string>> m_StoryIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<int> m_Multiple = new StoryFunction<int>();
+
+        private List<IExpression> m_StoryIds = new List<IExpression>();
+        private IExpression m_Multiple;
+        private bool m_HaveMultiple = false;
     }
     /// <summary>
     /// firemessage(msgid,arg1,arg2,...);
     /// </summary>
-    internal class FireMessageCommand : AbstractStoryCommand
+    internal sealed class FireMessageCommand : SimpleExpressionBase
     {
-        public FireMessageCommand(bool isConcurrent)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            m_IsConcurrent = isConcurrent;
-        }
-        protected override IStoryCommand CloneCommand()
-        {
-            FireMessageCommand cmd = new FireMessageCommand(m_IsConcurrent);
-            cmd.m_MsgId = m_MsgId.Clone();
-            for (int i = 0; i < m_MsgArgs.Count; ++i) {
-                IStoryFunction val = m_MsgArgs[i];
-                cmd.m_MsgArgs.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_MsgId.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_MsgArgs.Count; ++i) {
-                IStoryFunction val = m_MsgArgs[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            if (operands.Count < 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                string msgId = m_MsgId.Value;
+                string msgId = operands[0].ToString();
                 var args = userThread.StorySystem.NewBoxedValueList();
-                for (int i = 0; i < m_MsgArgs.Count; ++i) {
-                    IStoryFunction val = m_MsgArgs[i];
-                    args.Add(val.Value);
+                for (int i = 1; i < operands.Count; ++i) {
+                    args.Add(operands[i]);
                 }
-                if (m_IsConcurrent)
-                    userThread.StorySystem.SendConcurrentMessage(msgId, args);
-                else
-                    userThread.StorySystem.SendMessage(msgId, args);
+                userThread.StorySystem.SendMessage(msgId, args);
             }
-            return false;
-        }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_MsgId.InitFromDsl(callData.GetParam(0));
-            }
-            for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_MsgArgs.Add(val);
-            }
-            return true;
-        }
-
-        private IStoryFunction<string> m_MsgId = new StoryFunction<string>();
-        private List<IStoryFunction> m_MsgArgs = new List<IStoryFunction>();
-        private bool m_IsConcurrent = false;
-    }
-    internal sealed class FireMessageCommandFactory : IStoryCommandFactory
-    {
-        public IStoryCommand Create()
-        {
-            return new FireMessageCommand(false);
+            return BoxedValue.NullObject;
         }
     }
-    internal sealed class FireConcurrentMessageCommandFactory : IStoryCommandFactory
+    /// <summary>
+    /// fireconcurrentmessage(msgid,arg1,arg2,...);
+    /// </summary>
+    internal sealed class FireConcurrentMessageCommand : SimpleExpressionBase
     {
-        public IStoryCommand Create()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            return new FireMessageCommand(true);
+            if (operands.Count < 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
+            if (null != userThread) {
+                string msgId = operands[0].ToString();
+                var args = userThread.StorySystem.NewBoxedValueList();
+                for (int i = 1; i < operands.Count; ++i) {
+                    args.Add(operands[i]);
+                }
+                userThread.StorySystem.SendConcurrentMessage(msgId, args);
+            }
+            return BoxedValue.NullObject;
         }
     }
     /// <summary>
     /// waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal class WaitAllMessageCommand : AbstractStoryCommand
+    internal sealed class WaitAllMessageCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
-        {
-            WaitAllMessageCommand cmd = new WaitAllMessageCommand();
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
-            }
-            cmd.m_SetVar = m_SetVar.Clone();
-            cmd.m_SetVal = m_SetVal.Clone();
-            cmd.m_TimeoutVal = m_TimeoutVal.Clone();
-            cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
-            cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
-            cmd.m_HaveSet = m_HaveSet;
-            return cmd;
-        }
+        public override bool IsAsync { get { return true; } }
 
-        protected override void ResetState()
+        protected override IEnumerator DoCalc(AsyncCalcResult result)
         {
-            m_CurTime = 0;
-            m_StartTime = 0;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
+            if (Calculator.IsInSyncCalculation) {
+                yield break;
             }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, handler, iterator, args);
-                m_SetVal.Evaluate(instance, handler, iterator, args);
-                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
+            if (userThread == null) {
+                result.Value = BoxedValue.NullObject;
+                yield break;
             }
-        }
 
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            bool ret = false;
-            UserThread userThread = instance.Context as UserThread;
-            if (null != userThread) {
-                if (m_StartTime <= 0) {
-                    long startTime = ScriptableFramework.TimeUtility.GetLocalMilliseconds();
-                    m_StartTime = startTime;
-                }
+            int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+            long startTime = ScriptableFramework.TimeUtility.GetLocalMilliseconds();
+            long storyStartTime = instance.CurrentTime;
+
+            while (true) {
                 bool triggered = false;
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    long time = instance.GetMessageTriggerTime(m_MsgIds[i].Value);
-                    if (time > m_StartTime) {
+                    long time = instance.GetMessageTriggerTime(m_MsgIds[i].Calc().ToString());
+                    if (time > startTime) {
                         triggered = true;
                         break;
                     }
                 }
                 if (triggered) {
-                    string varName = m_SetVar.Value;
-                    var varVal = m_SetVal.Value;
-                    instance.SetVariable(varName, varVal);
-                } else {
-                    int curTime = m_CurTime;
-                    m_CurTime += (int)delta;
-                    if (curTime <= m_TimeoutVal.Value) {
-                        ret = true;
-                    } else {
-                        string varName = m_TimeoutSetVar.Value;
-                        var varVal = m_TimeoutSetVal.Value;
+                    if (m_HaveSet) {
+                        string varName = m_SetVar.Calc().ToString();
+                        var varVal = m_SetVal.Calc();
                         instance.SetVariable(varName, varVal);
                     }
+                    break;
+                }
+                long curTime = instance.CurrentTime - storyStartTime;
+                if (!StoryConfigManager.Instance.IsStorySkipped && (timeout <= 0 || curTime <= timeout)) {
+                    yield return null;
+                } else {
+                    if (m_HaveSet) {
+                        string varName = m_TimeoutSetVar.Calc().ToString();
+                        var varVal = m_TimeoutSetVal.Calc();
+                        instance.SetVariable(varName, varVal);
+                    }
+                    break;
                 }
             }
-            return ret;
+            result.Value = BoxedValue.NullObject;
         }
 
-        protected override bool Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
-            for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryFunction<string>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_MsgIds.Add(val);
-            }
+            LoadMsgIds(funcData);
             return true;
         }
 
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First.AsFunction;
-                Dsl.FunctionData second = statementData.Second.AsFunction;
-                Dsl.FunctionData third = statementData.Third.AsFunction;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
+                var third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
-
-                    Load(first);
+                    LoadMsgIds(first);
                     LoadSet(second);
                     LoadTimeoutSet(third);
                 }
@@ -599,123 +465,104 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private void LoadSet(Dsl.FunctionData callData)
+        private void LoadMsgIds(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
-            if (num >= 2) {
-                m_SetVar.InitFromDsl(callData.GetParam(0));
-                m_SetVal.InitFromDsl(callData.GetParam(1));
+            for (int i = 0; i < num; ++i) {
+                m_MsgIds.Add(Calculator.Load(callData.GetParam(i)));
+            }
+        }
+
+        private void LoadSet(Dsl.FunctionData callData)
+        {
+            if (callData.GetParamNum() >= 2) {
+                m_SetVar = Calculator.Load(callData.GetParam(0));
+                m_SetVal = Calculator.Load(callData.GetParam(1));
             }
         }
 
         private void LoadTimeoutSet(Dsl.FunctionData callData)
         {
-            int num = callData.GetParamNum();
-            if (num >= 3) {
-                m_TimeoutVal.InitFromDsl(callData.GetParam(0));
-                m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
-                m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
+            if (callData.GetParamNum() >= 3) {
+                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
+                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
+                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
             }
         }
 
-        private List<IStoryFunction<string>> m_MsgIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
-        private IStoryFunction m_SetVal = new StoryFunction();
-        private IStoryFunction<int> m_TimeoutVal = new StoryFunction<int>();
-        private IStoryFunction<string> m_TimeoutSetVar = new StoryFunction<string>();
-        private IStoryFunction m_TimeoutSetVal = new StoryFunction();
+        private List<IExpression> m_MsgIds = new List<IExpression>();
+        private IExpression m_SetVar;
+        private IExpression m_SetVal;
+        private IExpression m_TimeoutVal;
+        private IExpression m_TimeoutSetVar;
+        private IExpression m_TimeoutSetVal;
         private bool m_HaveSet = false;
-        private int m_CurTime = 0;
-        private long m_StartTime = 0;
     }
     /// <summary>
     /// waitallmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal class WaitAllMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class WaitAllMessageHandlerCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
-        {
-            WaitAllMessageHandlerCommand cmd = new WaitAllMessageHandlerCommand();
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
-            }
-            cmd.m_SetVar = m_SetVar.Clone();
-            cmd.m_SetVal = m_SetVal.Clone();
-            cmd.m_TimeoutVal = m_TimeoutVal.Clone();
-            cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
-            cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
-            cmd.m_HaveSet = m_HaveSet;
-            return cmd;
-        }
+        public override bool IsAsync { get { return true; } }
 
-        protected override void ResetState()
+        protected override IEnumerator DoCalc(AsyncCalcResult result)
         {
-            m_CurTime = 0;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
+            if (Calculator.IsInSyncCalculation) {
+                yield break;
             }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, handler, iterator, args);
-                m_SetVal.Evaluate(instance, handler, iterator, args);
-                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
+            if (userThread == null) {
+                result.Value = BoxedValue.NullObject;
+                yield break;
             }
-        }
 
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            bool ret = false;
-            UserThread userThread = instance.Context as UserThread;
-            if (null != userThread) {
+            int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+            long startTime = instance.CurrentTime;
+
+            while (true) {
                 int ct = 0;
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    ct += userThread.StorySystem.CountMessage(m_MsgIds[i].Value);
+                    ct += userThread.StorySystem.CountMessage(m_MsgIds[i].Calc().ToString());
                 }
                 if (ct <= 0) {
-                    string varName = m_SetVar.Value;
-                    var varVal = m_SetVal.Value;
-                    instance.SetVariable(varName, varVal);
-                } else {
-                    int curTime = m_CurTime;
-                    m_CurTime += (int)delta;
-                    if (curTime <= m_TimeoutVal.Value) {
-                        ret = true;
-                    } else {
-                        string varName = m_TimeoutSetVar.Value;
-                        var varVal = m_TimeoutSetVal.Value;
+                    if (m_HaveSet) {
+                        string varName = m_SetVar.Calc().ToString();
+                        var varVal = m_SetVal.Calc();
                         instance.SetVariable(varName, varVal);
                     }
+                    break;
+                }
+                long curTime = instance.CurrentTime - startTime;
+                if (!StoryConfigManager.Instance.IsStorySkipped && (timeout <= 0 || curTime <= timeout)) {
+                    yield return null;
+                } else {
+                    if (m_HaveSet) {
+                        string varName = m_TimeoutSetVar.Calc().ToString();
+                        var varVal = m_TimeoutSetVal.Calc();
+                        instance.SetVariable(varName, varVal);
+                    }
+                    break;
                 }
             }
-            return ret;
+            result.Value = BoxedValue.NullObject;
         }
 
-        protected override bool Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
-            for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryFunction<string>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_MsgIds.Add(val);
-            }
+            LoadMsgIds(funcData);
             return true;
         }
 
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First.AsFunction;
-                Dsl.FunctionData second = statementData.Second.AsFunction;
-                Dsl.FunctionData third = statementData.Third.AsFunction;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
+                var third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
-
-                    Load(first);
+                    LoadMsgIds(first);
                     LoadSet(second);
                     LoadTimeoutSet(third);
                 }
@@ -723,173 +570,90 @@ namespace ScriptableFramework.Story.Commands
             return true;
         }
 
-        private void LoadSet(Dsl.FunctionData callData)
+        private void LoadMsgIds(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
-            if (num >= 2) {
-                m_SetVar.InitFromDsl(callData.GetParam(0));
-                m_SetVal.InitFromDsl(callData.GetParam(1));
+            for (int i = 0; i < num; ++i) {
+                m_MsgIds.Add(Calculator.Load(callData.GetParam(i)));
+            }
+        }
+
+        private void LoadSet(Dsl.FunctionData callData)
+        {
+            if (callData.GetParamNum() >= 2) {
+                m_SetVar = Calculator.Load(callData.GetParam(0));
+                m_SetVal = Calculator.Load(callData.GetParam(1));
             }
         }
 
         private void LoadTimeoutSet(Dsl.FunctionData callData)
         {
-            int num = callData.GetParamNum();
-            if (num >= 3) {
-                m_TimeoutVal.InitFromDsl(callData.GetParam(0));
-                m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
-                m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
+            if (callData.GetParamNum() >= 3) {
+                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
+                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
+                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
             }
         }
 
-        private List<IStoryFunction<string>> m_MsgIds = new List<IStoryFunction<string>>();
-        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
-        private IStoryFunction m_SetVal = new StoryFunction();
-        private IStoryFunction<int> m_TimeoutVal = new StoryFunction<int>();
-        private IStoryFunction<string> m_TimeoutSetVar = new StoryFunction<string>();
-        private IStoryFunction m_TimeoutSetVal = new StoryFunction();
+        private List<IExpression> m_MsgIds = new List<IExpression>();
+        private IExpression m_SetVar;
+        private IExpression m_SetVal;
+        private IExpression m_TimeoutVal;
+        private IExpression m_TimeoutSetVar;
+        private IExpression m_TimeoutSetVal;
         private bool m_HaveSet = false;
-        private int m_CurTime = 0;
     }
     /// <summary>
     /// pauseallmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    public class SuspendAllMessageHandlerCommand : AbstractStoryCommand
+    public sealed class SuspendAllMessageHandlerCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            SuspendAllMessageHandlerCommand cmd = new SuspendAllMessageHandlerCommand();
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
-            }
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                for (int i = 0; i < m_MsgIds.Count; i++) {
-                    userThread.StorySystem.SuspendMessageHandler(m_MsgIds[i].Value, true);
+                for (int i = 0; i < operands.Count; i++) {
+                    userThread.StorySystem.SuspendMessageHandler(operands[i].ToString(), true);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryFunction<string>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_MsgIds.Add(val);
-            }
-            return true;
-        }
-
-        private List<IStoryFunction<string>> m_MsgIds = new List<IStoryFunction<string>>();
     }
     /// <summary>
     /// resumeallmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    public class ResumeAllMessageHandlerCommand : AbstractStoryCommand
+    public sealed class ResumeAllMessageHandlerCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            ResumeAllMessageHandlerCommand cmd = new ResumeAllMessageHandlerCommand();
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
-            }
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                for (int i = 0; i < m_MsgIds.Count; i++) {
-                    userThread.StorySystem.SuspendMessageHandler(m_MsgIds[i].Value, false);
+                for (int i = 0; i < operands.Count; i++) {
+                    userThread.StorySystem.SuspendMessageHandler(operands[i].ToString(), false);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            for (int i = 0; i < num; ++i) {
-                IStoryFunction<string> val = new StoryFunction<string>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_MsgIds.Add(val);
-            }
-            return true;
-        }
-
-        private List<IStoryFunction<string>> m_MsgIds = new List<IStoryFunction<string>>();
     }
     /// <summary>
     /// sendserverstorymessage(msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
-    internal class SendServerStoryMessageCommand : AbstractStoryCommand
+    internal sealed class SendServerStoryMessageCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            SendServerStoryMessageCommand cmd = new SendServerStoryMessageCommand();
-            cmd.m_HaveUserGuid = m_HaveUserGuid;
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_Msg = m_Msg.Clone();
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                cmd.m_Args.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Msg.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                string _msg = m_Msg.Value;
+                string _msg = m_Msg.Calc().ToString();
 
                 Msg_LRL_StoryMessage msg = new Msg_LRL_StoryMessage();
                 msg.MsgId = _msg;
 
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryFunction val = m_Args[i];
-                    var v = val.Value;
+                    var v = m_Args[i].Calc();
                     if (v.IsNullObject) {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
                         arg.val_type = Msg_LRL_StoryMessage.ArgType.NULL;
@@ -913,26 +677,24 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserGuid) {
-                    ulong userGuid = m_UserGuid.Value;
+                    ulong userGuid = m_UserGuid.Calc().GetULong();
                     msg.UserGuid = userGuid;
                     userThread.SendServerMessage(msg);
                 } else {
                     userThread.SendServerMessage(msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
-        protected override bool Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
+            int num = funcData.GetParamNum();
             if (num > 0) {
-                m_Msg.InitFromDsl(callData.GetParam(0));
+                m_Msg = Calculator.Load(funcData.GetParam(0));
             }
-            for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_Args.Add(val);
+            for (int i = 1; i < num; ++i) {
+                m_Args.Add(Calculator.Load(funcData.GetParam(i)));
             }
             return true;
         }
@@ -940,8 +702,8 @@ namespace ScriptableFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First.AsFunction;
-                Dsl.FunctionData second = statementData.Second.AsFunction;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -953,57 +715,33 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
+                m_UserGuid = Calculator.Load(callData.GetParam(0));
                 m_HaveUserGuid = true;
             }
         }
 
         private bool m_HaveUserGuid = false;
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
-        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private IExpression m_UserGuid;
+        private IExpression m_Msg;
+        private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
     /// sendclientstorymessage(msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
-    internal class SendClientStoryMessageCommand : AbstractStoryCommand
+    internal sealed class SendClientStoryMessageCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            SendClientStoryMessageCommand cmd = new SendClientStoryMessageCommand();
-            cmd.m_HaveUserGuid = m_HaveUserGuid;
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_Msg = m_Msg.Clone();
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                cmd.m_Args.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Msg.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                string _msg = m_Msg.Value;
+                string _msg = m_Msg.Calc().ToString();
 
                 Msg_CLC_StoryMessage msg = new Msg_CLC_StoryMessage();
                 msg.m_MsgId = _msg;
 
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryFunction val = m_Args[i];
-                    var v = val.Value;
+                    var v = m_Args[i].Calc();
                     if (v.IsNullObject) {
                         Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
                         arg.val_type = LobbyArgType.NULL;
@@ -1027,25 +765,23 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserGuid) {
-                    ulong userGuid = m_UserGuid.Value;
+                    ulong userGuid = m_UserGuid.Calc().GetULong();
                     userThread.NotifyUser(userGuid, LobbyMessageDefine.Msg_CLC_StoryMessage, msg);
                 } else {
                     userThread.NotifyAllUser(LobbyMessageDefine.Msg_CLC_StoryMessage, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
-        protected override bool Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
+            int num = funcData.GetParamNum();
             if (num > 0) {
-                m_Msg.InitFromDsl(callData.GetParam(0));
+                m_Msg = Calculator.Load(funcData.GetParam(0));
             }
-            for (int i = 1; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_Args.Add(val);
+            for (int i = 1; i < num; ++i) {
+                m_Args.Add(Calculator.Load(funcData.GetParam(i)));
             }
             return true;
         }
@@ -1053,8 +789,8 @@ namespace ScriptableFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First.AsFunction;
-                Dsl.FunctionData second = statementData.Second.AsFunction;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1066,53 +802,28 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
+                m_UserGuid = Calculator.Load(callData.GetParam(0));
                 m_HaveUserGuid = true;
             }
         }
 
         private bool m_HaveUserGuid = false;
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
-        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private IExpression m_UserGuid;
+        private IExpression m_Msg;
+        private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
     /// publishgfxevent(ev_name,group,arg1,arg2,...)[touser(userid)];
     /// </summary>
-    internal class PublishGfxEventCommand : AbstractStoryCommand
+    internal sealed class PublishGfxEventCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            PublishGfxEventCommand cmd = new PublishGfxEventCommand();
-            cmd.m_HaveUserGuid = m_HaveUserGuid;
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_EventName = m_EventName.Clone();
-            cmd.m_Group = m_Group.Clone();
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                cmd.m_Args.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_EventName.Evaluate(instance, handler, iterator, args);
-            m_Group.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                string evname = m_EventName.Value;
-                string group = m_Group.Value;
+                string evname = m_EventName.Calc().ToString();
+                string group = m_Group.Calc().ToString();
 
                 Msg_LC_PublishEvent msg = new Msg_LC_PublishEvent();
                 msg.group = group;
@@ -1120,8 +831,7 @@ namespace ScriptableFramework.Story.Commands
                 msg.is_logic_event = false;
 
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryFunction val = m_Args[i];
-                    var v = val.Value;
+                    var v = m_Args[i].Calc();
                     if (v.IsNullObject) {
                         Msg_LC_PublishEvent.EventArg arg = new Msg_LC_PublishEvent.EventArg();
                         arg.val_type = LobbyArgType.NULL;
@@ -1145,26 +855,24 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserGuid) {
-                    ulong userGuid = m_UserGuid.Value;
+                    ulong userGuid = m_UserGuid.Calc().GetULong();
                     userThread.NotifyUser(userGuid, LobbyMessageDefine.Msg_LC_PublishEvent, msg);
                 } else {
                     userThread.NotifyAllUser(LobbyMessageDefine.Msg_LC_PublishEvent, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
-        protected override bool Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
+            int num = funcData.GetParamNum();
             if (num > 1) {
-                m_EventName.InitFromDsl(callData.GetParam(0));
-                m_Group.InitFromDsl(callData.GetParam(1));
+                m_EventName = Calculator.Load(funcData.GetParam(0));
+                m_Group = Calculator.Load(funcData.GetParam(1));
             }
-            for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_Args.Add(val);
+            for (int i = 2; i < num; ++i) {
+                m_Args.Add(Calculator.Load(funcData.GetParam(i)));
             }
             return true;
         }
@@ -1172,8 +880,8 @@ namespace ScriptableFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First.AsFunction;
-                Dsl.FunctionData second = statementData.Second.AsFunction;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1185,54 +893,29 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
+                m_UserGuid = Calculator.Load(callData.GetParam(0));
                 m_HaveUserGuid = true;
             }
         }
 
         private bool m_HaveUserGuid = false;
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_EventName = new StoryFunction<string>();
-        private IStoryFunction<string> m_Group = new StoryFunction<string>();
-        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private IExpression m_UserGuid;
+        private IExpression m_EventName;
+        private IExpression m_Group;
+        private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
     /// sendgfxmessage(objname,msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
-    internal class SendGfxMessageCommand : AbstractStoryCommand
+    internal sealed class SendGfxMessageCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            SendGfxMessageCommand cmd = new SendGfxMessageCommand();
-            cmd.m_HaveUserGuid = m_HaveUserGuid;
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_ObjName = m_ObjName.Clone();
-            cmd.m_Msg = m_Msg.Clone();
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                cmd.m_Args.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_ObjName.Evaluate(instance, handler, iterator, args);
-            m_Msg.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                string objname = m_ObjName.Value;
-                string _msg = m_Msg.Value;
+                string objname = m_ObjName.Calc().ToString();
+                string _msg = m_Msg.Calc().ToString();
 
                 Msg_LC_SendGfxMessage msg = new Msg_LC_SendGfxMessage();
                 msg.is_with_tag = false;
@@ -1240,8 +923,7 @@ namespace ScriptableFramework.Story.Commands
                 msg.msg = _msg;
 
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryFunction val = m_Args[i];
-                    var v = val.Value;
+                    var v = m_Args[i].Calc();
                     if (v.IsNullObject) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.NULL;
@@ -1265,26 +947,24 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserGuid) {
-                    ulong userGuid = m_UserGuid.Value;
+                    ulong userGuid = m_UserGuid.Calc().GetULong();
                     userThread.NotifyUser(userGuid, LobbyMessageDefine.Msg_LC_SendGfxMessage, msg);
                 } else {
                     userThread.NotifyAllUser(LobbyMessageDefine.Msg_LC_SendGfxMessage, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
-        protected override bool Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
+            int num = funcData.GetParamNum();
             if (num > 1) {
-                m_ObjName.InitFromDsl(callData.GetParam(0));
-                m_Msg.InitFromDsl(callData.GetParam(1));
+                m_ObjName = Calculator.Load(funcData.GetParam(0));
+                m_Msg = Calculator.Load(funcData.GetParam(1));
             }
-            for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_Args.Add(val);
+            for (int i = 2; i < num; ++i) {
+                m_Args.Add(Calculator.Load(funcData.GetParam(i)));
             }
             return true;
         }
@@ -1292,8 +972,8 @@ namespace ScriptableFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First.AsFunction;
-                Dsl.FunctionData second = statementData.Second.AsFunction;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1305,54 +985,29 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
+                m_UserGuid = Calculator.Load(callData.GetParam(0));
                 m_HaveUserGuid = true;
             }
         }
 
         private bool m_HaveUserGuid = false;
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_ObjName = new StoryFunction<string>();
-        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
-        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private IExpression m_UserGuid;
+        private IExpression m_ObjName;
+        private IExpression m_Msg;
+        private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
     /// sendgfxmessagewithtag(tagname,msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
-    internal class SendGfxMessageWithTagCommand : AbstractStoryCommand
+    internal sealed class SendGfxMessageWithTagCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            SendGfxMessageWithTagCommand cmd = new SendGfxMessageWithTagCommand();
-            cmd.m_HaveUserGuid = m_HaveUserGuid;
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_ObjTag = m_ObjTag.Clone();
-            cmd.m_Msg = m_Msg.Clone();
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                cmd.m_Args.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_ObjTag.Evaluate(instance, handler, iterator, args);
-            m_Msg.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryFunction val = m_Args[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                string objname = m_ObjTag.Value;
-                string _msg = m_Msg.Value;
+                string objname = m_ObjTag.Calc().ToString();
+                string _msg = m_Msg.Calc().ToString();
 
                 Msg_LC_SendGfxMessage msg = new Msg_LC_SendGfxMessage();
                 msg.is_with_tag = true;
@@ -1360,8 +1015,7 @@ namespace ScriptableFramework.Story.Commands
                 msg.msg = _msg;
 
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryFunction val = m_Args[i];
-                    var v = val.Value;
+                    var v = m_Args[i].Calc();
                     if (v.IsNullObject) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.NULL;
@@ -1385,26 +1039,24 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserGuid) {
-                    ulong userGuid = m_UserGuid.Value;
+                    ulong userGuid = m_UserGuid.Calc().GetULong();
                     userThread.NotifyUser(userGuid, LobbyMessageDefine.Msg_LC_SendGfxMessage, msg);
                 } else {
                     userThread.NotifyAllUser(LobbyMessageDefine.Msg_LC_SendGfxMessage, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
-        protected override bool Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            int num = callData.GetParamNum();
+            int num = funcData.GetParamNum();
             if (num > 1) {
-                m_ObjTag.InitFromDsl(callData.GetParam(0));
-                m_Msg.InitFromDsl(callData.GetParam(1));
+                m_ObjTag = Calculator.Load(funcData.GetParam(0));
+                m_Msg = Calculator.Load(funcData.GetParam(1));
             }
-            for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_Args.Add(val);
+            for (int i = 2; i < num; ++i) {
+                m_Args.Add(Calculator.Load(funcData.GetParam(i)));
             }
             return true;
         }
@@ -1412,8 +1064,8 @@ namespace ScriptableFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First.AsFunction;
-                Dsl.FunctionData second = statementData.Second.AsFunction;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1425,57 +1077,34 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
+                m_UserGuid = Calculator.Load(callData.GetParam(0));
                 m_HaveUserGuid = true;
             }
         }
 
         private bool m_HaveUserGuid = false;
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_ObjTag = new StoryFunction<string>();
-        private IStoryFunction<string> m_Msg = new StoryFunction<string>();
-        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private IExpression m_UserGuid;
+        private IExpression m_ObjTag;
+        private IExpression m_Msg;
+        private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
     /// highlightprompt(userguid,dictid,arg1,arg2,...);
     /// </summary>
-    internal class HighlightPromptCommand : AbstractStoryCommand
+    internal sealed class HighlightPromptCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            HighlightPromptCommand cmd = new HighlightPromptCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_DictId = m_DictId.Clone();
-            for (int i = 0; i < m_DictArgs.Count; ++i) {
-                IStoryFunction val = m_DictArgs[i];
-                cmd.m_DictArgs.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_DictId.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_DictArgs.Count; ++i) {
-                IStoryFunction val = m_DictArgs[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            UserThread userThread = instance.Context as UserThread;
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance?.Context as UserThread;
             if (null != userThread) {
-                ulong userGuid = m_UserGuid.Value;
-                string dictId = m_DictId.Value;
+                ulong userGuid = operands[0].GetULong();
+                string dictId = operands[1].ToString();
                 ArrayList arglist = new ArrayList();
-                for (int i = 0; i < m_DictArgs.Count; ++i) {
-                    IStoryFunction val = m_DictArgs[i];
-                    arglist.Add(val.Value.GetObject());
+                for (int i = 2; i < operands.Count; ++i) {
+                    arglist.Add(operands[i].GetObject());
                 }
                 object[] args = arglist.ToArray();
 
@@ -1490,26 +1119,7 @@ namespace ScriptableFramework.Story.Commands
                     userThread.NotifyAllUser(LobbyMessageDefine.Msg_LC_HighlightPrompt, builder);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_DictId.InitFromDsl(callData.GetParam(1));
-            }
-            for (int i = 2; i < callData.GetParamNum(); ++i) {
-                StoryFunction val = new StoryFunction();
-                val.InitFromDsl(callData.GetParam(i));
-                m_DictArgs.Add(val);
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_DictId = new StoryFunction<string>();
-        private List<IStoryFunction> m_DictArgs = new List<IStoryFunction>();
     }
 }

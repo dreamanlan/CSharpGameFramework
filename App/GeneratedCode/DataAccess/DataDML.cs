@@ -9,7 +9,7 @@ using System.Text;
 using System.Data;
 using System.Data.Common;
 using MySql.Data.MySqlClient;
-using GameFrameworkData;
+using ScriptableFrameworkData;
 using ScriptableFramework;
 
 namespace ScriptableFramework

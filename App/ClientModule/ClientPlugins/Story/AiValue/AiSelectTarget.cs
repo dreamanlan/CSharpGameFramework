@@ -4,24 +4,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
-using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiSelectTarget : ISimpleStoryFunctionPlugin
+public class AiSelectTarget : ISimpleStoryApiPlugin
 {
-    public void SetProxy(StoryFunctionResult result)
+    public void Init(DslCalculator calculator)
     {
-        m_Proxy = result;
+        m_Calculator = calculator;
     }
-    public ISimpleStoryFunctionPlugin Clone()
+
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        return new AiSelectTarget();
-    }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params)
-    {
-        var args = _params.Values;
+        var args = operands;
         int objId = args[0].GetInt();
         float dist = args[1].GetFloat();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
@@ -38,9 +35,10 @@ public class AiSelectTarget : ISimpleStoryFunctionPlugin
                     npc.GetAiStateInfo().Target = entity.GetId();
                 }
             }
-            m_Proxy.Value = BoxedValue.FromObject(entity);
+            result.Value = BoxedValue.FromObject(entity);
         }
+        return false;
     }
 
-    private StoryFunctionResult m_Proxy = null;
+    private DslCalculator m_Calculator = null;
 }

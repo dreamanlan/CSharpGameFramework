@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using DotnetStoryScript;
 
 namespace ScriptableFramework
@@ -52,8 +52,8 @@ namespace ScriptableFramework
             m_GmStorySystem.Init(this);
             m_EntityController.Init(this, m_EntityMgr);
 
-            m_CommandDocs = StoryCommandManager.Instance.GenCommandDocs();
-            m_FunctionDocs = StoryFunctionManager.Instance.GenFunctionDocs();
+            m_CommandDocs = new SortedList<string, string>();
+            m_FunctionDocs = new SortedList<string, string>();
         }
 
         public void Reset()
@@ -199,7 +199,7 @@ namespace ScriptableFramework
                 //Read scene-related data such as blocking
 
                 LogSys.Log(ServerLogType.DEBUG, "Scene {0} start Preloading.", resId);
-                                
+
                 m_SceneState = SceneState.Preloading;
             } catch (Exception ex) {
                 LogSystem.Error("Scene.LoadData throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
@@ -388,7 +388,7 @@ namespace ScriptableFramework
             get { return m_IsStoryState; }
             set { m_IsStoryState = value; }
         }
-        
+
         private const long c_PreloadingTickInterval = 1000;
         private long m_LastPreloadingTickTime = 0;
 
@@ -429,7 +429,7 @@ namespace ScriptableFramework
         private Queue<TableConfig.LevelMonster> m_ReloadMonstersQueue = new Queue<TableConfig.LevelMonster>();
         private TableConfig.LevelMonster[] m_PreparedReloadMonsters = new TableConfig.LevelMonster[c_MaxReloadMonsterNum];
         private int m_PreparedReloadMonsterCount = 0;
-        
+
         private List<EntityInfo> m_EntitiesForAi = new List<EntityInfo>();
 
         private const int c_MaxReloadMonsterNum = 32;

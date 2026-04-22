@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
 
 internal sealed class PluginProxyMethodInfo
 {
@@ -157,8 +156,6 @@ public static class PluginProxyCodeGen
         sb.AppendLine();
         sb.AppendFormat("{0}using ScriptableFramework;", GetIndentString());
         sb.AppendLine();
-        sb.AppendFormat("{0}using ScriptableFramework.Plugin;", GetIndentString());
-        sb.AppendLine();
         sb.AppendLine();
         sb.AppendFormat("{0}namespace ScriptableFramework", GetIndentString());
         sb.AppendLine();
@@ -251,9 +248,7 @@ public static class PluginProxyCodeGen
         sb.AppendLine();
         sb.AppendFormat("{0}using ScriptableFramework;", GetIndentString());
         sb.AppendLine();
-        sb.AppendFormat("{0}using ScriptableFramework.Plugin;", GetIndentString());
-        sb.AppendLine();
-        if (!string.IsNullOrEmpty(type.Namespace) && type.Namespace != "ScriptableFramework" && type.Namespace != "ScriptableFramework.Plugin") {
+        if (!string.IsNullOrEmpty(type.Namespace) && type.Namespace != "ScriptableFramework") {
             sb.AppendFormat("{0}using {1};", GetIndentString(), type.Namespace);
             sb.AppendLine();
         }

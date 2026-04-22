@@ -5,17 +5,14 @@ story(local_main)
   	startstory("skill_main");
     startstory("auto_story");
   };
-  onmessage("open_battle")
+  onmessage("open_battle")params($sceneId)
   {
     log("open_battle");
-    $sceneId = $0;
     openbattle($sceneId);
     firemessage("set_map_image", "UITexture/Map1");
   };
-  onmessage("on_battle_closed")
+  onmessage("on_battle_closed")params($objId,$unitId)
   {
-    $objId = $0;
-    $unitId = $1;
     setleaderid($objId);
     camerafollow($unitId);
     publishgfxevent("loading_complete", "ui");

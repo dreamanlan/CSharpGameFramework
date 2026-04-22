@@ -18,6 +18,9 @@ namespace DotnetStoryScript
 
         protected override IEnumerator DoCalc(AsyncCalcResult result)
         {
+            if (Calculator.IsInSyncCalculation) {
+                yield break;
+            }
             int ms = m_Time.Calc().GetInt();
             var storyInst = Calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
@@ -97,6 +100,9 @@ namespace DotnetStoryScript
 
         protected override IEnumerator DoCalc(AsyncCalcResult result)
         {
+            if (Calculator.IsInSyncCalculation) {
+                yield break;
+            }
             int ms = m_Time.Calc().GetInt();
             var sw = System.Diagnostics.Stopwatch.StartNew();
             while (sw.ElapsedMilliseconds < ms) {

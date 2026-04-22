@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using Messenger;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptableFramework.DataCache;
 
 internal class DataOpSystem

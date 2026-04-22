@@ -16,12 +16,12 @@ story(main)
   {
     publishgfxevent("ui_hide","ui");
     @window.SetActive(changetype(1,"bool"));
-  };  
+  };
   onnamespacedmessage("on_click")
   {
   	log("LoginDlg on click");
-  	$user=listget($1,0,"");
-  	$pass=listget($1,1,"");
+  	$user=listget(arg(1),0,"");
+  	$pass=listget(arg(1),1,"");
   	if($user=="" || $pass==""){
     	highlightprompt(0,"Err_LoginNameOrPass");
   	}else{

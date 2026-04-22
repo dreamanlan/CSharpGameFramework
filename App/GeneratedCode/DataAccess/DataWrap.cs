@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
-using GameFrameworkData;
+using ScriptableFrameworkData;
 using ScriptableFramework;
 
 namespace ScriptableFramework

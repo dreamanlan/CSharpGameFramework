@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+
 using DotnetSkillScript;
 using DotnetStoryScript;
 
@@ -14,7 +14,7 @@ public enum PluginType
 
 public class PluginProxyHelper : MonoBehaviour
 {
-	internal void Awake () 
+	internal void Awake ()
     {
         PluginProxy.NativeProxy = m_NativePluginProxy;
         PluginProxy.ScriptProxy = m_ScriptPluginProxy;
@@ -90,24 +90,14 @@ internal class NativePluginProxy : IPluginProxy
         SkillTrigerManager.Instance.RegisterTrigerFactory(name, new NativeSkillTriggerFactory(implClass), true);
     }
 
-    public void RegisterStoryCommand(string name, string doc, string implClass)
+    public void RegisterStoryApi(string name, string doc, string implClass)
     {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new NativeStoryCommandFactory(implClass), true);
+        DslCalculatorHost.GetSharedApiRegistry().Register(name, doc, new NativeStoryApiFactory(implClass));
     }
 
-    public void RegisterStoryFunction(string name, string doc, string implClass)
+    public void RegisterSimpleStoryApi(string name, string doc, string implClass)
     {
-        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new NativeStoryFunctionFactory(implClass), true);
-    }
-
-    public void RegisterSimpleStoryCommand(string name, string doc, string implClass)
-    {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new NativeSimpleStoryCommandFactory(implClass), true);
-    }
-
-    public void RegisterSimpleStoryFunction(string name, string doc, string implClass)
-    {
-        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new NativeSimpleStoryFunctionFactory(implClass), true);
+        DslCalculatorHost.GetSharedApiRegistry().Register(name, doc, new NativeSimpleStoryApiFactory(implClass));
     }
 
     public void InstallStartupPlugin(string name, string implClass)
@@ -143,24 +133,14 @@ internal class ScriptPluginProxy : IPluginProxy
         SkillTrigerManager.Instance.RegisterTrigerFactory(name, new ScriptSkillTriggerFactory(implClass), true);
     }
 
-    public void RegisterStoryCommand(string name, string doc, string implClass)
+    public void RegisterStoryApi(string name, string doc, string implClass)
     {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new ScriptStoryCommandFactory(implClass), true);
+        DslCalculatorHost.GetSharedApiRegistry().Register(name, doc, new ScriptStoryApiFactory(implClass));
     }
 
-    public void RegisterStoryFunction(string name, string doc, string implClass)
+    public void RegisterSimpleStoryApi(string name, string doc, string implClass)
     {
-        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryFunctionFactory(implClass), true);
-    }
-
-    public void RegisterSimpleStoryCommand(string name, string doc, string implClass)
-    {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new ScriptSimpleStoryCommandFactory(implClass), true);
-    }
-
-    public void RegisterSimpleStoryFunction(string name, string doc, string implClass)
-    {
-        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryFunctionFactory(implClass), true);
+        DslCalculatorHost.GetSharedApiRegistry().Register(name, doc, new ScriptSimpleStoryApiFactory(implClass));
     }
 
     public void InstallStartupPlugin(string name, string implClass)

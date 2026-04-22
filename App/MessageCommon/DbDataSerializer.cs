@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using ScriptableFramework;
 
-namespace GameFrameworkData
+namespace ScriptableFrameworkData
 {
     internal static class DbDataSerializer
     {

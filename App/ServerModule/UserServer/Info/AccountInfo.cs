@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using ScriptableFramework;
-using GameFrameworkData;
+using ScriptableFrameworkData;
 
 namespace ScriptableFramework
 {

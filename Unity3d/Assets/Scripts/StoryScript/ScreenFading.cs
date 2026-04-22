@@ -135,8 +135,9 @@ public class ScreenFading : MonoBehaviour
     }
 
     // message
-    void DimScreen(long time)
+    void DimScreen(object timeObj)
     {
+        int time = Converter.CastTo<int>(timeObj);
         m_IsActive = true;
         m_NeedDeactive = false;
         m_TotalTime = time / 1000.0f;
@@ -145,8 +146,9 @@ public class ScreenFading : MonoBehaviour
         m_EndColor = Color.black;
         m_ElapseTime = 0.0f;
     }
-    void LightScreen(long time)
+    void LightScreen(object timeObj)
     {
+        int time = Converter.CastTo<int>(timeObj);
         m_IsActive = true;
         m_NeedDeactive = false;
         m_TotalTime = time / 1000.0f;

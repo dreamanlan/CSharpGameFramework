@@ -2,7 +2,8 @@
   "profiles": {
     "UserServer": {
       "commandName": "Project",
-      "workingDirectory": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\ServerEnv\\bin"
+      "workingDirectory": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\ServerEnv\\bin",
+      "nativeDebugging": true
     }
   }
 }

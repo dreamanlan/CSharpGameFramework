@@ -5,7 +5,7 @@ using System.Text;
 using Lidgren.Network;
 using ScriptRuntime;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 public class MsgPingHandler
 {

@@ -11,17 +11,14 @@ namespace DotnetStoryScript
         {
             bool ret = false;
             result = null;
-            if (null != statementData)
-            {
+            if (null != statementData) {
                 var first = statementData.First;
-                if (first.HaveId() && first.IsValue)
-                {
+                if (first.HaveId() && first.IsValue) {
                     //Convert command line style to function style
                     var func = new Dsl.FunctionData();
                     func.Name = first.AsValue;
                     func.SetParamClass((int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES);
-                    for (int i = 1; i < statementData.GetFunctionNum(); ++i)
-                    {
+                    for (int i = 1; i < statementData.GetFunctionNum(); ++i) {
                         var fd = statementData.GetFunction(i);
                         func.AddParam(fd);
                     }

@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using Lidgren.Network;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework
 {

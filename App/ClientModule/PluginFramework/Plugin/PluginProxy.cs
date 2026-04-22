@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ScriptableFramework.Plugin
+namespace ScriptableFramework
 {
     public interface IPluginProxy
     {
         void RegisterAttrExpression(string name, string implClass);
         void RegisterSkillTrigger(string name, string implClass);
-        void RegisterStoryCommand(string name, string doc, string implClass);
-        void RegisterStoryFunction(string name, string doc, string implClass);
-        void RegisterSimpleStoryCommand(string name, string doc, string implClass);
-        void RegisterSimpleStoryFunction(string name, string doc, string implClass);
+        void RegisterStoryApi(string name, string doc, string implClass);
+        void RegisterSimpleStoryApi(string name, string doc, string implClass);
         void InstallStartupPlugin(string objpath, string implClass);
         void RemoveStartupPlugin(string objpath, string implClass);
         void InstallTickPlugin(string objpath, string implClass);

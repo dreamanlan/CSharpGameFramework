@@ -31,6 +31,14 @@
             "fileVersion": "0.0.0.0"
           }
         }
+      },
+      "ScriptFrameworkLibrary/1.0.0.0": {
+        "runtime": {
+          "ScriptFrameworkLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
       }
     }
   },
@@ -46,6 +54,11 @@
       "sha512": ""
     },
     "Dsl/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ScriptFrameworkLibrary/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

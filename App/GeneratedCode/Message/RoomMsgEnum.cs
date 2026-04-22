@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GameFrameworkMessage
+namespace ScriptableFrameworkMessage
 {
 	public enum RoomMessageDefine
 	{

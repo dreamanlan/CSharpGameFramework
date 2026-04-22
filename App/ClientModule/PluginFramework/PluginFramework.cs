@@ -6,7 +6,9 @@ using ScriptableFramework.GmCommands;
 using ScriptableFramework.Story;
 using ScriptableFramework.Skill;
 using ScriptableFramework.Network;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
+using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
 namespace ScriptableFramework
 {
@@ -131,8 +133,7 @@ namespace ScriptableFramework
             Utility.EventSystem.Subscribe<string>("gm_execscript", "gm", ExecScript);
             Utility.EventSystem.Subscribe<string>("gm_execcommand", "gm", ExecCommand);
 
-            m_CommandDocs = DotnetStoryScript.StoryCommandManager.Instance.GenCommandDocs();
-            m_FunctionDocs = DotnetStoryScript.StoryFunctionManager.Instance.GenFunctionDocs();
+            m_StoryDocs = DslCalculatorHost.GetSharedApiRegistry().ApiDocs;
         }
         public void Release()
         {
@@ -269,7 +270,7 @@ namespace ScriptableFramework
             } else {
                 Utility.SendMessage("GameRoot", "OnLoadSceneComplete", lvl.id);
 
-                GameFrameworkMessage.Msg_CR_Enter build = new GameFrameworkMessage.Msg_CR_Enter();
+                ScriptableFrameworkMessage.Msg_CR_Enter build = new ScriptableFrameworkMessage.Msg_CR_Enter();
                 NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_Enter, build);
                 LogSystem.Warn("send Msg_CR_Enter to roomserver");
             }
@@ -351,7 +352,7 @@ namespace ScriptableFramework
 
             m_EntityManager.Reset();
 
-            GameFrameworkMessage.Msg_CR_Enter build = new GameFrameworkMessage.Msg_CR_Enter();
+            ScriptableFrameworkMessage.Msg_CR_Enter build = new ScriptableFrameworkMessage.Msg_CR_Enter();
             NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_Enter, build);
             LogSystem.Warn("RefreshRoomScene send Msg_CR_Enter to roomserver");
         }
@@ -940,13 +941,9 @@ namespace ScriptableFramework
         {
             get { return m_SceneContextInfo; }
         }
-        public SortedList<string, string> CommandDocs
+        public SortedList<string, string> StoryDocs
         {
-            get { return m_CommandDocs; }
-        }
-        public SortedList<string, string> FunctionDocs
-        {
-            get { return m_FunctionDocs; }
+            get { return m_StoryDocs; }
         }
 
         #region delay action process (In order not to trigger jit compilation, repackage it here)
@@ -1123,7 +1120,7 @@ namespace ScriptableFramework
         private Queue<int> m_NpcOnAttackedToDeadQueue = new Queue<int>();
 
         private List<EntityInfo> m_EntitiesForAi = new List<EntityInfo>();
-        private SortedList<string, string> m_CommandDocs;
+        private SortedList<string, string> m_StoryDocs;
         private SortedList<string, string> m_FunctionDocs;
     }
 }

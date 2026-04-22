@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using GameFrameworkData;
+using ScriptableFrameworkData;
 using System.Threading;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace Lobby
 {
@@ -75,14 +75,14 @@ namespace Lobby
         internal void HighlightPrompt(UserInfo user, int dictId, params object[] args)
         {
             //0--null 1--int 2--float 3--string      
-            GameFrameworkMessage.Msg_CLC_StoryMessage protoData = new GameFrameworkMessage.Msg_CLC_StoryMessage();
+            ScriptableFrameworkMessage.Msg_CLC_StoryMessage protoData = new ScriptableFrameworkMessage.Msg_CLC_StoryMessage();
             protoData.m_MsgId = string.Format("highlightprompt{0}", args.Length);
-            GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg item0 = new GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
+            ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg item0 = new ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
             item0.val_type = LobbyArgType.INT;
             item0.str_val = dictId.ToString();
             protoData.m_Args.Add(item0);
             for (int i = 0; i < args.Length; ++i) {
-                GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg item = new GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
+                ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg item = new ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
                 item.val_type = LobbyArgType.STRING;
                 item.str_val = args[i].ToString();
                 protoData.m_Args.Add(item);
@@ -94,11 +94,11 @@ namespace Lobby
         internal void SendStoryMessage(UserInfo user, string msgId, params object[] args)
         {
             //0--null 1--int 2--float 3--string
-            GameFrameworkMessage.Msg_CLC_StoryMessage protoData = new GameFrameworkMessage.Msg_CLC_StoryMessage();
+            ScriptableFrameworkMessage.Msg_CLC_StoryMessage protoData = new ScriptableFrameworkMessage.Msg_CLC_StoryMessage();
             protoData.m_MsgId = msgId;
             for (int i = 0; i < args.Length; ++i) {
                 object arg = args[i];
-                GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg item = new GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
+                ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg item = new ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
                 if (null != arg) {
                     if (arg is int) {
                         item.val_type = LobbyArgType.INT;

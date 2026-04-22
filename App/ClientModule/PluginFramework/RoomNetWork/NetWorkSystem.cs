@@ -5,7 +5,7 @@ using Lidgren.Network;
 using System.Threading;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptableFramework;
 
 namespace ScriptableFramework.Network

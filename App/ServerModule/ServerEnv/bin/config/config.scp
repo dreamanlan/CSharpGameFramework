@@ -9,49 +9,49 @@ gmPortalId = 11;
 
 function(log)
 {
-	print(""+$0);
-	writeString(logFile,""+$0);
+	print(""+arg(0));
+	writeString(logFile,""+arg(0));
 };
 
 function(setState)
 {
-	stateName=$0;
-	log("×´Ì¬Ãû£º"+$0);
+	stateName=arg(0);
+	log("çŠ¶æ€åï¼š"+arg(0));
 };
 
 function(handleIni)
 {
-	@iniFile = $0;
-	@stateIni=createIniReader(@iniFile);
-	@num=@stateIni.getInfoCount();
-	for(@ix=0;@ix<@num;++@ix)
+	$iniFile = arg(0);
+	$stateIni=createIniReader($iniFile);
+	$num=$stateIni.getInfoCount();
+	for($ix=0;$ix<$num;++$ix)
 	{
-		@section=@stateIni.getSection(@ix);
-		@key=@stateIni.getKey(@ix);
-		@value=@stateIni.getValue(@ix);
-		if(@section!=""){
-			stringMap.insert(@section+"$$"+@key,@value);
+		$section=$stateIni.getSection($ix);
+		$key=$stateIni.getKey($ix);
+		$value=$stateIni.getValue($ix);
+		if($section!=""){
+			stringMap.insert($section+"$$"+$key,$value);
 		}else{
-			stringMap.insert(@key,@value);
+			stringMap.insert($key,$value);
 		};
-	};	
+	};
 };
 
 function(handleState)
 {
 	if(stateName!="")
 	{
-		@rIndex=stateTable.findRow(2,0,stateName);
-		if(@rIndex>=2)
+		$rIndex=stateTable.findRow(2,0,stateName);
+		if($rIndex>=2)
 		{
-			@colNum=stateTable.getColumnCount();
-			for(@i=1;@i<@colNum;++@i)
+			$colNum=stateTable.getColumnCount();
+			for($i=1;$i<$colNum;++$i)
 			{
-				@stateFile=stateTable.getCell(@rIndex,@i);
-				if(@stateFile!="")
+				$stateFile=stateTable.getCell($rIndex,$i);
+				if($stateFile!="")
 				{
-					log("´¦Àí×´Ì¬ÎÄ¼ş£º"+@stateFile);
-					handleIni(@stateFile);
+					log("å¤„ç†çŠ¶æ€æ–‡ä»¶ï¼š"+$stateFile);
+					handleIni($stateFile);
 				};
 			};
 		};
@@ -61,207 +61,207 @@ function(handleState)
 function(main)
 {
 	stringMap.initMap(1000);
-	@ip0=readString("./etc/ip.txt",0);
-	if(@ip0=="")
+	$ip0=readString("./etc/ip.txt",0);
+	if($ip0=="")
 	{
-		log("ÕÒ²»µ½µ±Ç°»úÆ÷IP£¡");		
+		log("æ‰¾ä¸åˆ°å½“å‰æœºå™¨IPï¼");
 	};
-	log("µ±Ç°»úÆ÷ÍâÍøIP£º"+@ip0);
-	
-	@rIndex=cfgTable.findByIP0(0,@ip0);
-	if(@rIndex>=0)
+	log("å½“å‰æœºå™¨å¤–ç½‘IPï¼š"+$ip0);
+
+	$rIndex=cfgTable.findByIP0(0,$ip0);
+	if($rIndex>=0)
 	{
-		log("µ±Ç°»úÆ÷ÅäÖÃĞĞ:"+@rIndex);
+		log("å½“å‰æœºå™¨é…ç½®è¡Œ:"+$rIndex);
 	}
 	else
 	{
-		log("ÕÒ²»µ½µ±Ç°»úÆ÷ÅäÖÃ£¡");
+		log("æ‰¾ä¸åˆ°å½“å‰æœºå™¨é…ç½®ï¼");
 		return 0;
 	};
-	@sname=cfgTable.getServerName(@rIndex);
-	log("µ±Ç°SERVERÃû£º"+@sname);
-	@sid=cfgTable.getServerID(@rIndex);
-	@zid=cfgTable.getZoneID(@rIndex);
-	@bid=cfgTable.getBigworldID(@rIndex);
-	@wid=cfgTable.getWorldID(@rIndex);
-	log("µ±Ç°»úÆ÷ĞÅÏ¢£º[serverid,zoneid,bigworldid,worldid]:"+@sid+","+@zid+","+@bid+","+@wid);
-	stringMap.insert("worldid",""+@wid);	
-	//¹«¹²ÅäÖÃÏî£¨center ip/center port£©
-	@rIndex=cfgTable.findByID(0,@zid,@bid,@bid,0);
-	if(@rIndex>=0)
+	$sname=cfgTable.getServerName($rIndex);
+	log("å½“å‰SERVERåï¼š"+$sname);
+	$sid=cfgTable.getServerID($rIndex);
+	$zid=cfgTable.getZoneID($rIndex);
+	$bid=cfgTable.getBigworldID($rIndex);
+	$wid=cfgTable.getWorldID($rIndex);
+	log("å½“å‰æœºå™¨ä¿¡æ¯ï¼š[serverid,zoneid,bigworldid,worldid]:"+$sid+","+$zid+","+$bid+","+$wid);
+	stringMap.insert("worldid",""+$wid);
+	//å…¬å…±é…ç½®é¡¹ï¼ˆcenter ip/center portï¼‰
+	$rIndex=cfgTable.findByID(0,$zid,$bid,$bid,0);
+	if($rIndex>=0)
 	{
-			log("bigworld center»úÆ÷ÅäÖÃĞĞ:"+@rIndex);
+		log("bigworld centeræœºå™¨é…ç½®è¡Œ:"+$rIndex);
 	}
 	else
 	{
-		log("ÕÒ²»µ½bigworld center»úÆ÷ÅäÖÃ£¡");
+		log("æ‰¾ä¸åˆ°bigworld centeræœºå™¨é…ç½®ï¼");
 		return 0;
 	};
-	@bigworldip1 = cfgTable.getIP1(@rIndex);
-	@bigworldport = cfgTable.getValueByKey(@rIndex,"¶Ë¿Ú");
-	@rIndex=cfgTable.findByID(0,@zid,@bid,@wid,0);
-	if(@rIndex>=0)
+	$bigworldip1 = cfgTable.getIP1($rIndex);
+	$bigworldport = cfgTable.getValueByKey($rIndex,"ç«¯å£");
+	$rIndex=cfgTable.findByID(0,$zid,$bid,$wid,0);
+	if($rIndex>=0)
 	{
-			log("center»úÆ÷ÅäÖÃĞĞ:"+@rIndex);
+		log("centeræœºå™¨é…ç½®è¡Œ:"+$rIndex);
 	}
 	else
 	{
-		log("ÕÒ²»µ½center»úÆ÷ÅäÖÃ£¡");
+		log("æ‰¾ä¸åˆ°centeræœºå™¨é…ç½®ï¼");
 		return 0;
 	};
-	@ip1 = cfgTable.getIP1(@rIndex);
-	@port = cfgTable.getValueByKey(@rIndex,"¶Ë¿Ú");
-	@rIndex=cfgTable.findByID(0,@zid,@bid,@bid,gmPortalId);
-	if(@rIndex>0){
-	  @gmIp = cfgTable.getIP0(@rIndex);
-	  if(serverType=="nodejs"){
-	    stringMap.insert("voiceip",@gmIp);
-	    log("voiceip:"+@gmIp);
-	  };
-	};	
+	$ip1 = cfgTable.getIP1($rIndex);
+	$port = cfgTable.getValueByKey($rIndex,"ç«¯å£");
+	$rIndex=cfgTable.findByID(0,$zid,$bid,$bid,gmPortalId);
+	if($rIndex>0){
+		$gmIp = cfgTable.getIP0($rIndex);
+		if(serverType=="nodejs"){
+			stringMap.insert("voiceip",$gmIp);
+			log("voiceip:"+$gmIp);
+		};
+	};
 	if(serverType=="center"){
 		stringMap.insert("ip","0.0.0.0");
 		if(argv(0)=="bigworld"){
-			stringMap.insert("port",@bigworldport);
-			log("i'm bigworld, center port:"+@bigworldport);
+			stringMap.insert("port",$bigworldport);
+			log("i'm bigworld, center port:"+$bigworldport);
 		}else{
-			stringMap.insert("port",@port);
-			log("center port:"+@port);
+			stringMap.insert("port",$port);
+			log("center port:"+$port);
 		};
 	}elseif(serverType=="lobby" || serverType=="roomserver"){
-		stringMap.insert("ip",@bigworldip1);
-		stringMap.insert("port",@bigworldport);
-		log("center ip/port:"+@bigworldip1+"/"+@bigworldport);
+		stringMap.insert("ip",$bigworldip1);
+		stringMap.insert("port",$bigworldport);
+		log("center ip/port:"+$bigworldip1+"/"+$bigworldport);
 	}else{
-		stringMap.insert("ip",@ip1);
-		stringMap.insert("port",@port);
-		log("center ip/port:"+@ip1+"/"+@port);
+		stringMap.insert("ip",$ip1);
+		stringMap.insert("port",$port);
+		log("center ip/port:"+$ip1+"/"+$port);
 	};
-	//²»Í¬ÀàĞÍServerµÄÅäÖÃ£¨name/listen ip/listen port£©
+	//ä¸åŒç±»å‹Serverçš„é…ç½®ï¼ˆname/listen ip/listen portï¼‰
 	if(serverType=="center"){
-	  stringMap.insert("name","Center");
+		stringMap.insert("name","Center");
 	}elseif(serverType=="lobby"){
-	  stringMap.insert("name","Lobby");
+		stringMap.insert("name","Lobby");
 	}elseif(serverType=="userserver"){
-	  stringMap.insert("name","UserSvr");
+		stringMap.insert("name","UserSvr");
 	}elseif(serverType=="datacache"){
-	  stringMap.insert("name","DataCache");
+		stringMap.insert("name","DataCache");
 	}elseif(serverType=="nodejs"){
-	  @sid = toint(argv(1));
-	  if(@sid>=firstNodeJsId && @sid<firstRoomServerId){
-	    stringMap.insert("name","NodeJs"+(@sid-firstNodeJsId+1));
-	    stringMap.insert("nodejsport",""+(@sid-firstNodeJsId+9001));
-	  }else{
-	    stringMap.insert("name","NodeJs1");
-	    stringMap.insert("nodejsport","9001");
-	  };
+		$sid = toint(argv(1));
+		if($sid>=firstNodeJsId && $sid<firstRoomServerId){
+			stringMap.insert("name","NodeJs"+($sid-firstNodeJsId+1));
+			stringMap.insert("nodejsport",""+($sid-firstNodeJsId+9001));
+		}else{
+			stringMap.insert("name","NodeJs1");
+			stringMap.insert("nodejsport","9001");
+		};
 	}elseif(serverType=="roomserver"){
-	  @portSid = toint(argv(0));
-	  if(@sid<firstRoomServerId){
-	    @sid = firstRoomServerId;
-	  };
-	  if(@portSid>=firstRoomServerId){
-	    stringMap.insert("name","RoomSvr"+(@sid-firstRoomServerId+@portSid-firstRoomServerId+1));
-		  stringMap.insert("ServerPort",""+(@portSid-firstRoomServerId+9521));
-	  }else{
-	    stringMap.insert("name","RoomSvr1");
-    	if(@bid==@wid){
-  		  stringMap.insert("ServerPort","9529");
-    	}else{
-  		  stringMap.insert("ServerPort","9528");
-  		};
-	  };
-		stringMap.insert("ServerIp",@ip0);
+		$portSid = toint(argv(0));
+		if($sid<firstRoomServerId){
+			$sid = firstRoomServerId;
+		};
+		if($portSid>=firstRoomServerId){
+			stringMap.insert("name","RoomSvr"+($sid-firstRoomServerId+$portSid-firstRoomServerId+1));
+			stringMap.insert("ServerPort",""+($portSid-firstRoomServerId+9521));
+		}else{
+			stringMap.insert("name","RoomSvr1");
+			if($bid==$wid){
+				stringMap.insert("ServerPort","9529");
+			}else{
+				stringMap.insert("ServerPort","9528");
+			};
+		};
+		stringMap.insert("ServerIp",$ip0);
 	};
 	log("serverType:"+serverType);
-			
-	//¼ÓÔØ¶ÔÓ¦ÀàĞÍ·şÎñÆ÷µÄiniÎÄ¼şÅäÖÃ
+
+	//åŠ è½½å¯¹åº”ç±»å‹æœåŠ¡å™¨çš„iniæ–‡ä»¶é…ç½®
 	handleIni("./config/DiffConf/"+serverType+".ini");
-	
-	//lobbyÌØ¶¨µÄÅäÖÃ±íÅäÖÃĞÅÏ¢
-	@rIndex=cfgTable.findByID(0,@zid,@bid,@bid,1);
-	if(@rIndex>=0)
+
+	//lobbyç‰¹å®šçš„é…ç½®è¡¨é…ç½®ä¿¡æ¯
+	$rIndex=cfgTable.findByID(0,$zid,$bid,$bid,1);
+	if($rIndex>=0)
 	{
-			log("lobby»úÆ÷ÅäÖÃĞĞ:"+@rIndex);
+		log("lobbyæœºå™¨é…ç½®è¡Œ:"+$rIndex);
 	}
 	else
 	{
-		log("ÕÒ²»µ½lobby»úÆ÷ÅäÖÃ£¡");
+		log("æ‰¾ä¸åˆ°lobbyæœºå™¨é…ç½®ï¼");
 		return 0;
 	};
 	if(serverType=="lobby"){
-  	@startServerTime=cfgTable.getValueByKey(@rIndex,"¿ª·şÊ±¼ä");
-	  stringMap.insert("StartServerTime",@startServerTime);
-  	@logVer=cfgTable.getValueByKey(@rIndex,"ÈÕÖ¾°æ±¾");
-	  stringMap.insert("LogNormVersion",@logVer);
-  	@shopMask=cfgTable.getValueByKey(@rIndex,"ÉÌµêÑÚÂë");
-	  stringMap.insert("shopmask",@shopMask);
-	};	
-	//userserverÌØ¶¨µÄÅäÖÃ±íÅäÖÃĞÅÏ¢
-	@rIndex=cfgTable.findByID(0,@zid,@bid,@wid,2);
-	if(@rIndex>=0)
+  		$startServerTime=cfgTable.getValueByKey($rIndex,"å¼€æœæ—¶é—´");
+		stringMap.insert("StartServerTime",$startServerTime);
+  		$logVer=cfgTable.getValueByKey($rIndex,"æ—¥å¿—ç‰ˆæœ¬");
+		stringMap.insert("LogNormVersion",$logVer);
+  		$shopMask=cfgTable.getValueByKey($rIndex,"å•†åº—æ©ç ");
+		stringMap.insert("shopmask",$shopMask);
+	};
+	//userserverç‰¹å®šçš„é…ç½®è¡¨é…ç½®ä¿¡æ¯
+	$rIndex=cfgTable.findByID(0,$zid,$bid,$wid,2);
+	if($rIndex>=0)
 	{
-			log("userserver»úÆ÷ÅäÖÃĞĞ:"+@rIndex);
+		log("userserveræœºå™¨é…ç½®è¡Œ:"+$rIndex);
 	}
 	else
 	{
-		log("ÕÒ²»µ½userserver»úÆ÷ÅäÖÃ£¡");
+		log("æ‰¾ä¸åˆ°userserveræœºå™¨é…ç½®ï¼");
 		return 0;
 	};
 	log("serverType:"+serverType);
 	if(serverType=="userserver"){
-  	@startServerTime=cfgTable.getValueByKey(@rIndex,"¿ª·şÊ±¼ä");
-	  stringMap.insert("StartServerTime",@startServerTime);
-  	@logVer=cfgTable.getValueByKey(@rIndex,"ÈÕÖ¾°æ±¾");
-	  stringMap.insert("LogNormVersion",@logVer);
-  	@shopMask=cfgTable.getValueByKey(@rIndex,"ÉÌµêÑÚÂë");
-	  stringMap.insert("shopmask",@shopMask);	 	  
-	  
-    stringMap.insert("centernum","2");
-    stringMap.insert("ip0",@ip1);
-    stringMap.insert("port0",@port);
-    stringMap.insert("worldid0",""+@wid);
-    stringMap.insert("name0","UserSvr");
-    stringMap.insert("ip1",@bigworldip1);
-    stringMap.insert("port1",@bigworldport);
-    stringMap.insert("worldid1",""+@bid);
-    stringMap.insert("name1","UserSvr"+@wid);
+		$startServerTime=cfgTable.getValueByKey($rIndex,"å¼€æœæ—¶é—´");
+		stringMap.insert("StartServerTime",$startServerTime);
+		$logVer=cfgTable.getValueByKey($rIndex,"æ—¥å¿—ç‰ˆæœ¬");
+		stringMap.insert("LogNormVersion",$logVer);
+		$shopMask=cfgTable.getValueByKey($rIndex,"å•†åº—æ©ç ");
+		stringMap.insert("shopmask",$shopMask);
+
+		stringMap.insert("centernum","2");
+		stringMap.insert("ip0",$ip1);
+		stringMap.insert("port0",$port);
+		stringMap.insert("worldid0",""+$wid);
+		stringMap.insert("name0","UserSvr");
+		stringMap.insert("ip1",$bigworldip1);
+		stringMap.insert("port1",$bigworldport);
+		stringMap.insert("worldid1",""+$bid);
+		stringMap.insert("name1","UserSvr"+$wid);
 	};
-	//nodeÓÃµ½µÄuserserverÅäÖÃĞĞÉÏµÄĞÅÏ¢
+	//nodeç”¨åˆ°çš„userserveré…ç½®è¡Œä¸Šçš„ä¿¡æ¯
 	if(serverType=="nodejs"){
-  	@clientLog=cfgTable.getValueByKey(@rIndex,"¿Í»§¶ËÈÕÖ¾");
-	  stringMap.insert("enableclientlog",@clientLog);
-  	@shopMask=cfgTable.getValueByKey(@rIndex,"ÉÌµêÑÚÂë");
-	  stringMap.insert("shopmask",@shopMask);
+		$clientLog=cfgTable.getValueByKey($rIndex,"å®¢æˆ·ç«¯æ—¥å¿—");
+		stringMap.insert("enableclientlog",$clientLog);
+		$shopMask=cfgTable.getValueByKey($rIndex,"å•†åº—æ©ç ");
+		stringMap.insert("shopmask",$shopMask);
 	};
-	//datacacheÌØ¶¨µÄÅäÖÃ±íÅäÖÃĞÅÏ¢
-	if(serverType=="datacache"){	  
-  	@rIndex=cfgTable.findByID(0,@zid,@bid,@wid,3);
-  	if(@rIndex>=0)
-  	{
-  			log("datacache»úÆ÷ÅäÖÃĞĞ:"+@rIndex);
-  	}
-  	else
-  	{
-  		log("ÕÒ²»µ½datacache»úÆ÷ÅäÖÃ£¡");
-  		return 0;
-  	};
-  	@dbIp = cfgTable.getValueByKey(@rIndex,"DB");
-		stringMap.insert("Server",@dbIp);
+	//datacacheç‰¹å®šçš„é…ç½®è¡¨é…ç½®ä¿¡æ¯
+	if(serverType=="datacache"){
+		$rIndex=cfgTable.findByID(0,$zid,$bid,$wid,3);
+		if($rIndex>=0)
+		{
+			log("datacacheæœºå™¨é…ç½®è¡Œ:"+$rIndex);
+		}
+		else
+		{
+			log("æ‰¾ä¸åˆ°datacacheæœºå™¨é…ç½®ï¼");
+			return 0;
+		};
+		$dbIp = cfgTable.getValueByKey($rIndex,"DB");
+		stringMap.insert("Server",$dbIp);
 	};
-  
-	stateName=cfgTable.getValueByKey(@rIndex,"×´Ì¬");
-	
+
+	stateName=cfgTable.getValueByKey($rIndex,"çŠ¶æ€");
+
 	handleState();
-	
+
 	/*
 	if(serverType=="datacache"){
-	  @db = stringMap.find("Database");
-	  stringMap.insert("Database",@db+"_"+@wid);
+		$db = stringMap.find("Database");
+		stringMap.insert("Database",$db+"_"+$wid);
 	};
 	*/
-	
-	log("ÅäÖÃÏî´¦ÀíÍê³É£º");
+
+	log("é…ç½®é¡¹å¤„ç†å®Œæˆï¼š");
 	stringMap.listMap(logFile);
 	return 1;
 };

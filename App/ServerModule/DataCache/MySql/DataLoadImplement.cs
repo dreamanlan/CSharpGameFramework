@@ -7,8 +7,8 @@ using ScriptableFramework;
 using ScriptableFramework.DataCache;
 using MySql.Data.MySqlClient;
 using System.Data.Common;
-using GameFrameworkMessage;
-using GameFrameworkData;
+using ScriptableFrameworkMessage;
+using ScriptableFrameworkData;
 
 internal static class DataLoadImplement
 {

@@ -55,7 +55,7 @@ namespace ScriptableFramework
         private void SetVisible(bool visible)
         {
             if (null != m_Actor) {
-                ResourceSystem.Instance.SetVisible(m_Actor, visible, null);
+                ResourceSystem.Instance.SetVisible(m_Actor, visible);
             }
         }
         private void CreateActor(int objId, string model)

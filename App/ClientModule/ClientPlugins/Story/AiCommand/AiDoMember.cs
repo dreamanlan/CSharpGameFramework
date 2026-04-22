@@ -4,27 +4,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using ScriptableFramework;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 
-public class AiDoMember : ISimpleStoryCommandPlugin
+public class AiDoMember : ISimpleStoryApiPlugin
 {
-    public ISimpleStoryCommandPlugin Clone()
+    public void Init(DslCalculator calculator)
     {
-        return new AiDoMember();
+        m_Calculator = calculator;
     }
 
-    public void ResetState()
+    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        m_ParamReaded = false;
-        m_EnableLearning = false;
-    }
-
-    public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryFunctionParams _params, long delta)
-    {
-        var args = _params.Values;
+        var args = operands;
         if (!m_ParamReaded) {
             m_ParamReaded = true;
             m_ObjId = args[0];
@@ -40,9 +35,9 @@ public class AiDoMember : ISimpleStoryCommandPlugin
                     info.ChangeToState((int)AiStateId.Combat);
                     return true;
                 case (int)AiStateId.Combat:
-                    return CombatHandler(npc, info, delta);
+                    return CombatHandler(npc, info, (long)(Time.deltaTime * 1000));
                 case (int)AiStateId.Gohome:
-                    return GohomeHandler(npc, info, delta);
+                    return GohomeHandler(npc, info, (long)(Time.deltaTime * 1000));
             }
         }
         return false;
@@ -166,6 +161,7 @@ public class AiDoMember : ISimpleStoryCommandPlugin
         return ret;
     }
 
+    private DslCalculator m_Calculator = null;
     private int m_ObjId = 0;
     private bool m_EnableLearning = false;
     private bool m_ParamReaded = false;

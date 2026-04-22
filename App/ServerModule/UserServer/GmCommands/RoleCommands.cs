@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotnetStoryScript;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.GmCommands
 {

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using ScriptableFramework;
 using CSharpCenterClient;
 using Messenger;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace RoomServer
 {

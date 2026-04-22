@@ -1,117 +1,151 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotnetStoryScript;
-using GameFrameworkMessage;
+using DotnetStoryScript.DslExpression;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.GmCommands
 {
-    internal class EnableCalculatorLogCommand : SimpleStoryCommandBase<EnableCalculatorLogCommand, StoryFunctionParam<int, int, int>>
+    internal sealed class EnableCalculatorLogCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int, int, int> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            int val1 = _params.Param1Value;
-            int val2 = _params.Param2Value;
-            int val3 = _params.Param3Value;
+            if (operands.Count < 3)
+                throw new Exception("Expected: enablecalculatorlog(val1, val2, val3)");
+
+            int val1 = operands[0].GetInt();
+            int val2 = operands[1].GetInt();
+            int val3 = operands[2].GetInt();
             GlobalVariables.s_EnableCalculatorLog = val1 != 0;
             GlobalVariables.s_EnableCalculatorDetailLog = val2 != 0;
             GlobalVariables.s_EnableCalculatorOperatorLog = val3 != 0;
-            return false;
+            return BoxedValue.NullObject;
         }
     }
     //---------------------------------------------------------------------------------------------------------------
-    internal class DoResetDslCommand : SimpleStoryCommandBase<DoResetDslCommand, StoryFunctionParam<string>>
+    internal sealed class DoResetDslCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            string val = _params.Param1Value;
+            if (operands.Count < 1)
+                throw new Exception("Expected: resetdsl(val)");
+
+            string val = operands[0].ToString();
             if (Network.NetworkSystem.Instance.CanSendMessage) {
                 Msg_CR_GmCommand cmdMsg = new Msg_CR_GmCommand();
                 cmdMsg.type = 0;
                 Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_GmCommand, cmdMsg);
             }
-            return false;
+            return BoxedValue.NullObject;
         }
     }
-    internal class DoScpCommand : SimpleStoryCommandBase<DoScpCommand, StoryFunctionParam<string>>
+    internal sealed class DoScpCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            string val = _params.Param1Value;
+            if (operands.Count < 1)
+                throw new Exception("Expected: scp(val)");
+
+            string val = operands[0].ToString();
             if (Network.NetworkSystem.Instance.CanSendMessage) {
                 Msg_CR_GmCommand cmdMsg = new Msg_CR_GmCommand();
                 cmdMsg.type = 1;
                 cmdMsg.content = val;
                 Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_GmCommand, cmdMsg);
             }
-            return false;
+            return BoxedValue.NullObject;
         }
     }
-    internal class DoGmCommand : SimpleStoryCommandBase<DoGmCommand, StoryFunctionParam<string>>
+    internal sealed class DoGmCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            string val = _params.Param1Value;
-            //ChatMessageSender.SendGmCommand(val);
+            if (operands.Count < 1)
+                throw new Exception("Expected: gm(val)");
+
+            string val = operands[0].ToString();
             if (Network.NetworkSystem.Instance.CanSendMessage) {
                 Msg_CR_GmCommand cmdMsg = new Msg_CR_GmCommand();
                 cmdMsg.type = 2;
                 cmdMsg.content = val;
                 Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_GmCommand, cmdMsg);
             }
-            return false;
+            return BoxedValue.NullObject;
         }
     }
-    internal class SetDebugCommand : SimpleStoryCommandBase<SetDebugCommand, StoryFunctionParam<int>>
+    internal sealed class SetDebugCommand : SimpleExpressionBase
     {
-        protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            int val = _params.Param1Value;
+            if (operands.Count < 1)
+                throw new Exception("Expected: setdebug(flag)");
+
+            int val = operands[0].GetInt();
             GlobalVariables.Instance.IsDebug = val != 0;
             Msg_CR_SwitchDebug msg = new Msg_CR_SwitchDebug();
             msg.is_debug = val != 0;
             Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_SwitchDebug, msg);
-            return false;
+            return BoxedValue.NullObject;
         }
     }
-  internal class AllocMemoryCommand : SimpleStoryCommandBase<AllocMemoryCommand, StoryFunctionParam<string,int>>
-  {
-    protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string,int> _params, long delta)
+    internal sealed class AllocMemoryCommand : SimpleExpressionBase
     {
-      string key = _params.Param1Value;
-      int size = _params.Param2Value;
-      byte[] m = new byte[size];
-      if (instance.GlobalVariables.ContainsKey(key)) {
-        instance.GlobalVariables[key] = m;
-      } else {
-        instance.GlobalVariables.Add(key, m);
-      }
-      return false;
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count < 2)
+                throw new Exception("Expected: allocmemory(key, size)");
+
+            string key = operands[0].ToString();
+            int size = operands[1].GetInt();
+
+            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            if (storyInst != null) {
+                BoxedValue m = BoxedValue.FromObject(new byte[size]);
+                var globals = storyInst.ContextVariables;
+                if (globals.ContainsKey(key)) {
+                    globals[key] = m;
+                } else {
+                    globals.Add(key, m);
+                }
+            }
+            return BoxedValue.NullObject;
+        }
     }
-  }
-  internal class FreeMemoryCommand : SimpleStoryCommandBase<FreeMemoryCommand, StoryFunctionParam<string>>
-  {
-    protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<string> _params, long delta)
+    internal sealed class FreeMemoryCommand : SimpleExpressionBase
     {
-      string key = _params.Param1Value;
-      if (instance.GlobalVariables.ContainsKey(key)) {
-        instance.GlobalVariables.Remove(key);
-        GC.Collect();
-      } else {
-        GC.Collect();
-      }
-      return false;
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count < 1)
+                throw new Exception("Expected: freememory(key)");
+
+            string key = operands[0].ToString();
+
+            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            if (storyInst != null) {
+                var globals = storyInst.ContextVariables;
+                if (globals.ContainsKey(key)) {
+                    globals.Remove(key);
+                    GC.Collect();
+                } else {
+                    GC.Collect();
+                }
+            }
+            return BoxedValue.NullObject;
+        }
     }
-  }
-  internal class ConsumeCpuCommand : SimpleStoryCommandBase<ConsumeCpuCommand, StoryFunctionParam<int>>
-  {
-    protected override bool ExecCommand(StoryInstance instance, StoryFunctionParam<int> _params, long delta)
+    internal sealed class ConsumeCpuCommand : SimpleExpressionBase
     {
-      int time = _params.Param1Value;
-      long startTime = TimeUtility.GetElapsedTimeUs();
-      while (startTime + time > TimeUtility.GetElapsedTimeUs()) {
-      }
-      return false;
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count < 1)
+                throw new Exception("Expected: consumecpu(time_us)");
+
+            int time = operands[0].GetInt();
+            long startTime = TimeUtility.GetElapsedTimeUs();
+            while (startTime + (long)time > TimeUtility.GetElapsedTimeUs()) {
+            }
+            return BoxedValue.NullObject;
+        }
     }
-  }
-  //---------------------------------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------------------------
 }

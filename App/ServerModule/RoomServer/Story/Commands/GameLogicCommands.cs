@@ -1,124 +1,63 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 using ScriptRuntime;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// blackboardclear();
     /// </summary>
-    public class BlackboardClearCommand : AbstractStoryCommand
+    public class BlackboardClearCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            BlackboardClearCommand cmd = new BlackboardClearCommand();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-        
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 scene.SceneContext.BlackBoard.ClearVariables();
             }
-            return false;
-        }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            return true;
+            return BoxedValue.NullObject;
         }
     }
     /// <summary>
     /// blackboardset(name,value);
     /// </summary>
-    public class BlackboardSetCommand : AbstractStoryCommand
+    public class BlackboardSetCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            BlackboardSetCommand cmd = new BlackboardSetCommand();
-            cmd.m_AttrName = m_AttrName.Clone();
-            cmd.m_Value = m_Value.Clone();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_AttrName.Evaluate(instance, handler, iterator, args);
-            m_Value.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                string name = m_AttrName.Value;
-                object value = m_Value.Value.GetObject();
+                string name = operands[0].ToString();
+                object value = operands[1].GetObject();
                 scene.SceneContext.BlackBoard.SetVariable(name, value);
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_AttrName.InitFromDsl(callData.GetParam(0));
-                m_Value.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<string> m_AttrName = new StoryFunction<string>();
-        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// camerafollow(npc_unit_id1,npc_unit_id2,...)[touser(userid)];
     /// </summary>
-    public class CameraFollowCommand : AbstractStoryCommand
+    public class CameraFollowCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            CameraFollowCommand cmd = new CameraFollowCommand();
-            cmd.m_HaveUserId = m_HaveUserId;
-            cmd.m_UserId = m_UserId.Clone();
-            for (int i = 0; i < m_UnitIds.Count; i++) {
-                cmd.m_UnitIds.Add(m_UnitIds[i].Clone());
-            }
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserId)
-                m_UserId.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_UnitIds.Count; i++) {
-                m_UnitIds[i].Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 for (int i = 0; i < m_UnitIds.Count; i++) {
-                    int unitId = m_UnitIds[i].Value;
+                    int unitId = m_UnitIds[i].Calc().GetInt();
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                     if (null != entity && (!entity.IsDead() || entity.IsBorning)) {
-                        Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
+                        Msg_RC_SendGfxMessage msg = new ScriptableFrameworkMessage.Msg_RC_SendGfxMessage();
                         msg.name = "GameRoot";
                         msg.msg = "CameraFollow";
                         msg.is_with_tag = false;
@@ -128,7 +67,7 @@ namespace ScriptableFramework.Story.Commands
                         msg.args.Add(arg);
 
                         if (m_HaveUserId) {
-                            int userId = m_UserId.Value;
+                            int userId = m_UserId.Calc().GetInt();
                             EntityInfo user = scene.GetEntityById(userId);
                             if (null != user) {
                                 User us = user.CustomData as User;
@@ -143,16 +82,14 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
         protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryFunction<int> val = new StoryFunction<int>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_UnitIds.Add(val);
+                m_UnitIds.Add(Calculator.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -173,52 +110,31 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId.InitFromDsl(callData.GetParam(0));
+                m_UserId = Calculator.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
-        private List<IStoryFunction<int>> m_UnitIds = new List<IStoryFunction<int>>();
+        private IExpression m_UserId;
+        private List<IExpression> m_UnitIds = new List<IExpression>();
     }
     /// <summary>
     /// camerafollowrange(npc_unit_id_begin,npc_unit_id_end)[touser(userid)];
     /// </summary>
-    public class CameraFollowRangeCommand : AbstractStoryCommand
+    public class CameraFollowRangeCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            CameraFollowRangeCommand cmd = new CameraFollowRangeCommand();
-            cmd.m_HaveUserId = m_HaveUserId;
-            cmd.m_UserId = m_UserId.Clone();
-            cmd.m_BeginUnitId = m_BeginUnitId.Clone();
-            cmd.m_EndUnitId = m_EndUnitId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserId)
-                m_UserId.Evaluate(instance, handler, iterator, args);
-            m_BeginUnitId.Evaluate(instance, handler, iterator, args);
-            m_EndUnitId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int beginUnitId = m_BeginUnitId.Value;
-                int endUnitId = m_EndUnitId.Value;
+                int beginUnitId = m_BeginUnitId.Calc().GetInt();
+                int endUnitId = m_EndUnitId.Calc().GetInt();
                 for (int unitId = beginUnitId; unitId <= endUnitId; ++unitId) {
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                     if (null != entity && (!entity.IsDead() || entity.IsBorning)) {
-                        Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
+                        Msg_RC_SendGfxMessage msg = new ScriptableFrameworkMessage.Msg_RC_SendGfxMessage();
                         msg.name = "GameRoot";
                         msg.msg = "CameraFollow";
                         msg.is_with_tag = false;
@@ -228,7 +144,7 @@ namespace ScriptableFramework.Story.Commands
                         msg.args.Add(arg);
 
                         if (m_HaveUserId) {
-                            int userId = m_UserId.Value;
+                            int userId = m_UserId.Calc().GetInt();
                             EntityInfo user = scene.GetEntityById(userId);
                             if (null != user) {
                                 User us = user.CustomData as User;
@@ -243,15 +159,15 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
         protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_BeginUnitId.InitFromDsl(callData.GetParam(0));
-                m_EndUnitId.InitFromDsl(callData.GetParam(1));
+                m_BeginUnitId = Calculator.Load(callData.GetParam(0));
+                m_EndUnitId = Calculator.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -272,54 +188,35 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId.InitFromDsl(callData.GetParam(0));
+                m_UserId = Calculator.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
-        private IStoryFunction<int> m_BeginUnitId = new StoryFunction<int>();
-        private IStoryFunction<int> m_EndUnitId = new StoryFunction<int>();
+        private IExpression m_UserId;
+        private IExpression m_BeginUnitId;
+        private IExpression m_EndUnitId;
     }
     /// <summary>
     /// cameralookat(npc_unit_id)[touser(userid)];
     /// or
     /// cameralookat(vector3(x,y,z))[touser(userid)];
     /// </summary>
-    public class CameraLookCommand : AbstractStoryCommand
+    public class CameraLookCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            CameraLookCommand cmd = new CameraLookCommand();
-            cmd.m_HaveUserId = m_HaveUserId;
-            cmd.m_UserId = m_UserId.Clone();
-            cmd.m_Arg = m_Arg.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserId)
-                m_UserId.Evaluate(instance, handler, iterator, args);
-            m_Arg.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var obj = m_Arg.Value;
+                var obj = m_Arg.Calc();
                 if (obj.IsInteger) {
                     int unitId = obj.GetInt();
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                     if (null != entity) {
                         Vector3 pos = entity.GetMovementStateInfo().GetPosition3D();
-                        Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
+                        Msg_RC_SendGfxMessage msg = new ScriptableFrameworkMessage.Msg_RC_SendGfxMessage();
                         msg.name = "GameRoot";
                         msg.msg = "CameraLook";
                         msg.is_with_tag = false;
@@ -335,7 +232,7 @@ namespace ScriptableFramework.Story.Commands
                         msg.args.Add(arg);
 
                         if (m_HaveUserId) {
-                            int userId = m_UserId.Value;
+                            int userId = m_UserId.Calc().GetInt();
                             EntityInfo user = scene.GetEntityById(userId);
                             if (null != user) {
                                 User us = user.CustomData as User;
@@ -349,7 +246,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 } else {
                     Vector3 pos = obj.As<Vector3Obj>();
-                    Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
+                    Msg_RC_SendGfxMessage msg = new ScriptableFrameworkMessage.Msg_RC_SendGfxMessage();
                     msg.name = "GameRoot";
                     msg.msg = "CameraLook";
                     msg.is_with_tag = false;
@@ -365,7 +262,7 @@ namespace ScriptableFramework.Story.Commands
                     msg.args.Add(arg);
 
                     if (m_HaveUserId) {
-                        int userId = m_UserId.Value;
+                        int userId = m_UserId.Calc().GetInt();
                         EntityInfo user = scene.GetEntityById(userId);
                         if (null != user) {
                             User us = user.CustomData as User;
@@ -378,14 +275,14 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
         protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Arg.InitFromDsl(callData.GetParam(0));
+                m_Arg = Calculator.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -406,49 +303,32 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId.InitFromDsl(callData.GetParam(0));
+                m_UserId = Calculator.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
-        private IStoryFunction m_Arg = new StoryFunction();
+        private IExpression m_UserId;
+        private IExpression m_Arg;
     }
     /// <summary>
     /// camerafollowpath()[touser(userid)];
     /// </summary>
-    public class CameraFollowPathCommand : AbstractStoryCommand
+    public class CameraFollowPathCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            CameraFollowPathCommand cmd = new CameraFollowPathCommand();
-            cmd.m_HaveUserId = m_HaveUserId;
-            cmd.m_UserId = m_UserId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserId)
-                m_UserId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
+                Msg_RC_SendGfxMessage msg = new ScriptableFrameworkMessage.Msg_RC_SendGfxMessage();
                 msg.name = "GameRoot";
                 msg.msg = "CameraFollowPath";
                 msg.is_with_tag = false;
 
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Value;
+                    int userId = m_UserId.Calc().GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -460,12 +340,11 @@ namespace ScriptableFramework.Story.Commands
                     scene.NotifyAllUser(RoomMessageDefine.Msg_RC_SendGfxMessage, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
         protected override bool Load(Dsl.FunctionData callData)
         {
-            int num = callData.GetParamNum();
             return true;
         }
 
@@ -485,49 +364,30 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId.InitFromDsl(callData.GetParam(0));
+                m_UserId = Calculator.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
+        private IExpression m_UserId;
     }
     /// <summary>
     /// lockframe(scale)[touser(userid)];
     /// </summary>
-    public class LockFrameCommand : AbstractStoryCommand
+    public class LockFrameCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            LockFrameCommand cmd = new LockFrameCommand();
-            cmd.m_HaveUserId = m_HaveUserId;
-            cmd.m_UserId = m_UserId.Clone();
-            cmd.m_Scale = m_Scale.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserId)
-                m_UserId.Evaluate(instance, handler, iterator, args);
-            m_Scale.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                float scale = m_Scale.Value;
+                float scale = m_Scale.Calc().GetFloat();
                 Msg_RC_LockFrame msg = new Msg_RC_LockFrame();
                 msg.scale = scale;
 
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Value;
+                    int userId = m_UserId.Calc().GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -539,14 +399,14 @@ namespace ScriptableFramework.Story.Commands
                     scene.NotifyAllUser(RoomMessageDefine.Msg_RC_LockFrame, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
         protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Scale.InitFromDsl(callData.GetParam(0));
+                m_Scale = Calculator.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -567,106 +427,53 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId.InitFromDsl(callData.GetParam(0));
+                m_UserId = Calculator.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
-        private IStoryFunction<float> m_Scale = new StoryFunction<float>();
+        private IExpression m_UserId;
+        private IExpression m_Scale;
     }
     /// <summary>
     /// setleaderid([objid,]leaderid);
     /// </summary>
-    public class SetLeaderIdCommand : AbstractStoryCommand
+    public class SetLeaderIdCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            SetLeaderIdCommand cmd = new SetLeaderIdCommand();
-            cmd.m_ParamNum = m_ParamNum;
-            cmd.m_ObjId = m_ObjId.Clone();
-            cmd.m_LeaderId = m_LeaderId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_ParamNum > 1) {
-                m_ObjId.Evaluate(instance, handler, iterator, args);
-            }
-            m_LeaderId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            if (operands.Count <= 0)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int leaderId = m_LeaderId.Value;
-                if (m_ParamNum > 1) {
-                    int objId = m_ObjId.Value;
+                if (operands.Count > 1) {
+                    int objId = operands[0].GetInt();
+                    int leaderId = operands[1].GetInt();
                     EntityInfo npc = scene.GetEntityById(objId);
                     if (null != npc) {
                         npc.GetAiStateInfo().LeaderId = leaderId;
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            m_ParamNum = callData.GetParamNum();
-            if (m_ParamNum > 1) {
-                m_ObjId.InitFromDsl(callData.GetParam(0));
-                m_LeaderId.InitFromDsl(callData.GetParam(1));
-            } else if (m_ParamNum > 0) {
-                m_LeaderId.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private int m_ParamNum = 0;
-        private IStoryFunction<int> m_ObjId = new StoryFunction<int>();
-        private IStoryFunction<int> m_LeaderId = new StoryFunction<int>();
     }
     /// <summary>
     /// showdlg(storyDlgId)[touser(userid)];
     /// </summary>
-    public class ShowDlgCommand : AbstractStoryCommand
+    public class ShowDlgCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            ShowDlgCommand cmd = new ShowDlgCommand();
-            cmd.m_HaveUserId = m_HaveUserId;
-            cmd.m_UserId = m_UserId.Clone();
-            cmd.m_StoryDlgId = m_StoryDlgId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            if (m_HaveUserId)
-                m_UserId.Evaluate(instance, handler, iterator, args);
-            m_StoryDlgId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 Msg_RC_ShowDlg msg = new Msg_RC_ShowDlg();
-                msg.dialog_id = m_StoryDlgId.Value;
+                msg.dialog_id = m_StoryDlgId.Calc().GetInt();
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Value;
+                    int userId = m_UserId.Calc().GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -678,14 +485,14 @@ namespace ScriptableFramework.Story.Commands
                     scene.NotifyAllUser(RoomMessageDefine.Msg_RC_ShowDlg, msg);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
         protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_StoryDlgId.InitFromDsl(callData.GetParam(0));
+                m_StoryDlgId = Calculator.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -706,60 +513,31 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId.InitFromDsl(callData.GetParam(0));
+                m_UserId = Calculator.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
 
         private bool m_HaveUserId = false;
-        private IStoryFunction<int> m_UserId = new StoryFunction<int>();
-        private IStoryFunction<int> m_StoryDlgId = new StoryFunction<int>();
+        private IExpression m_UserId;
+        private IExpression m_StoryDlgId;
     }
     /// <summary>
     /// areadetect(pos,radius,type,callback)[set(var,val)];
     /// </summary>
-    public class AreaDetectCommand : AbstractStoryCommand
+    public class AreaDetectCommand : AbstractExpression
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue DoCalc()
         {
-            AreaDetectCommand cmd = new AreaDetectCommand();
-            cmd.m_Pos = m_Pos.Clone();
-            cmd.m_Radius = m_Radius.Clone();
-            cmd.m_Type = m_Type.Clone();
-            cmd.m_EventName = m_EventName.Clone();
-            cmd.m_SetVar = m_SetVar.Clone();
-            cmd.m_SetVal = m_SetVal.Clone();
-            cmd.m_ElseSetVal = m_ElseSetVal.Clone();
-            cmd.m_HaveSet = m_HaveSet;
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_Pos.Evaluate(instance, handler, iterator, args);
-            m_Radius.Evaluate(instance, handler, iterator, args);
-            m_Type.Evaluate(instance, handler, iterator, args);
-            m_EventName.Evaluate(instance, handler, iterator, args);
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, handler, iterator, args);
-                m_SetVal.Evaluate(instance, handler, iterator, args);
-                m_ElseSetVal.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            Scene scene = instance.Context as Scene;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 bool triggered = false;
-                Vector3 pos = m_Pos.Value;
-                float radius = m_Radius.Value;
-                string type = m_Type.Value;
-                string eventName = m_EventName.Value;
+                Vector3Obj posObj = m_Pos.Calc();
+                Vector3 pos = posObj.Value;
+                float radius = m_Radius.Calc().GetFloat();
+                string type = m_Type.Calc().ToString();
+                string eventName = m_EventName.Calc().ToString();
                 if (type == "user") {
                     scene.KdTree.QueryWithFunc(pos, radius, (float distSqr, KdTreeObject kdObj) => {
                         if (kdObj.Object.EntityType != (int)EntityTypeEnum.Hero) {
@@ -779,26 +557,28 @@ namespace ScriptableFramework.Story.Commands
                         return true;
                     });
                 }
-                string varName = m_SetVar.Value;
-                var varVal = m_SetVal.Value;
-                var elseVal = m_ElseSetVal.Value;
-                if (triggered) {
-                    instance.SetVariable(varName, varVal);
-                } else {
-                    instance.SetVariable(varName, elseVal);
+                if (m_HaveSet) {
+                    string varName = m_SetVar.Calc().ToString();
+                    var varVal = m_SetVal.Calc();
+                    var elseVal = m_ElseSetVal.Calc();
+                    if (triggered) {
+                        instance.SetVariable(varName, varVal);
+                    } else {
+                        instance.SetVariable(varName, elseVal);
+                    }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
 
         protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 3) {
-                m_Pos.InitFromDsl(callData.GetParam(0));
-                m_Radius.InitFromDsl(callData.GetParam(1));
-                m_Type.InitFromDsl(callData.GetParam(2));
-                m_EventName.InitFromDsl(callData.GetParam(3));
+                m_Pos = Calculator.Load(callData.GetParam(0));
+                m_Radius = Calculator.Load(callData.GetParam(1));
+                m_Type = Calculator.Load(callData.GetParam(2));
+                m_EventName = Calculator.Load(callData.GetParam(3));
             }
             return true;
         }
@@ -810,7 +590,6 @@ namespace ScriptableFramework.Story.Commands
                 Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     m_HaveSet = true;
-
                     Load(first);
                     LoadSet(second);
                 }
@@ -822,19 +601,19 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
-                m_SetVar.InitFromDsl(callData.GetParam(0));
-                m_SetVal.InitFromDsl(callData.GetParam(1));
-                m_ElseSetVal.InitFromDsl(callData.GetParam(2));
+                m_SetVar = Calculator.Load(callData.GetParam(0));
+                m_SetVal = Calculator.Load(callData.GetParam(1));
+                m_ElseSetVal = Calculator.Load(callData.GetParam(2));
             }
         }
 
-        private IStoryFunction<Vector3> m_Pos = new StoryFunction<Vector3>();
-        private IStoryFunction<float> m_Radius = new StoryFunction<float>();
-        private IStoryFunction<string> m_Type = new StoryFunction<string>();
-        private IStoryFunction<string> m_EventName = new StoryFunction<string>();
-        private IStoryFunction<string> m_SetVar = new StoryFunction<string>();
-        private IStoryFunction m_SetVal = new StoryFunction();
-        private IStoryFunction m_ElseSetVal = new StoryFunction();
+        private IExpression m_Pos;
+        private IExpression m_Radius;
+        private IExpression m_Type;
+        private IExpression m_EventName;
+        private IExpression m_SetVar;
+        private IExpression m_SetVal;
+        private IExpression m_ElseSetVal;
         private bool m_HaveSet = false;
     }
 }

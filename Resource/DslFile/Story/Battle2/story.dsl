@@ -53,9 +53,9 @@ story(battle_main)
     wait(5000);
     publishgfxevent("ui_show_paopao","ui",getleaderid(),"史前，或许还没有人类或者不能称之为人类的时候，最早降临地球的那些智慧生物，被称为神");
   };
-  onmessage("move_to")
+  onmessage("move_to")params($x,$y,$z)
   {
-  	npcmove(1000,vector3($0,$1,$2));
+  	npcmove(1000,vector3($x,$y,$z));
   };
   onmessage("all_killed")
   {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ScriptableFramework.Plugin;
+using ScriptableFramework;
 using ScriptableFramework.AttrCalc;
 
 public class NativeAttrPluginFactory : IAttrExpressionFactory

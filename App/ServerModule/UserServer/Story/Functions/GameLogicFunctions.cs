@@ -1,730 +1,264 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ScriptRuntime;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 using ScriptableFramework;
 
 namespace ScriptableFramework.Story.Functions
 {
-    internal sealed class GetMemberCountFunction : IStoryFunction
+    internal sealed class GetMemberCountFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetMemberCountFunction val = new GetMemberCountFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 0)
+                return 0;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_UserGuid.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        m_Value = ui.MemberInfos.Count; 
+                ulong userGuid = operands[0].GetULong();
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    return ui.MemberInfos.Count;
+                }
+            }
+            return 0;
+        }
+    }
+    internal sealed class GetMemberInfoFunction : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance.Context as UserThread;
+            if (null != userThread) {
+                ulong userGuid = operands[0].GetULong();
+                int index = operands[1].GetInt();
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    if (index >= 0 && index < ui.MemberInfos.Count) {
+                        return BoxedValue.FromObject(ui.MemberInfos[index]);
                     }
                 }
             }
+            return BoxedValue.NullObject;
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class GetMemberInfoFunction : IStoryFunction
+    internal sealed class GetFriendCountFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Index.InitFromDsl(callData.GetParam(1));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetMemberInfoFunction val = new GetMemberInfoFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_Index = m_Index.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Index.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 0)
+                return 0;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_UserGuid.HaveValue && m_Index.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    int index = m_Index.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        if (index >= 0 && index < ui.MemberInfos.Count) {
-                            m_Value = BoxedValue.FromObject(ui.MemberInfos[index]);
-                        } else {
-                            m_Value = BoxedValue.NullObject;
-                        }
-                    }
+                ulong userGuid = operands[0].GetULong();
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    return ui.FriendInfos.Count;
                 }
             }
+            return 0;
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<int> m_Index = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class GetFriendCountFunction : IStoryFunction
+    internal sealed class GetFriendInfoFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetFriendCountFunction val = new GetFriendCountFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_UserGuid.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        m_Value = ui.FriendInfos.Count;
-                    }
-                }
-            }
-        }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
-    }
-    internal sealed class GetFriendInfoFunction : IStoryFunction
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Index.InitFromDsl(callData.GetParam(1));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetFriendInfoFunction val = new GetFriendInfoFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_Index = m_Index.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Index.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            UserThread userThread = instance.Context as UserThread;
-            if (null != userThread) {
-                if (m_UserGuid.HaveValue && m_Index.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    var id = m_Index.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        if (id.Type == BoxedValue.c_ULongType) {
-                            ulong guid = id.GetULong();
-                            m_Value = BoxedValue.FromObject(ui.FriendInfos.Find(fi => fi.FriendGuid == guid));
-                        } else {
-                            try {
-                                int index = id.GetInt();
-                                if (index >= 0 && index < ui.MemberInfos.Count) {
-                                    m_Value = BoxedValue.FromObject(ui.FriendInfos[index]);
-                                } else {
-                                    m_Value = BoxedValue.NullObject;
-                                }
-                            } catch {
-                                m_Value = BoxedValue.NullObject;
+                ulong userGuid = operands[0].GetULong();
+                var id = operands[1];
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    if (id.Type == BoxedValue.c_ULongType) {
+                        ulong guid = id.GetULong();
+                        return BoxedValue.FromObject(ui.FriendInfos.Find(fi => fi.FriendGuid == guid));
+                    } else {
+                        try {
+                            int index = id.GetInt();
+                            if (index >= 0 && index < ui.FriendInfos.Count) {
+                                return BoxedValue.FromObject(ui.FriendInfos[index]);
                             }
+                        } catch {
                         }
                     }
                 }
             }
+            return BoxedValue.NullObject;
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction m_Index = new StoryFunction();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class GetItemCountFunction : IStoryFunction
+    internal sealed class GetItemCountFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetItemCountFunction val = new GetItemCountFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 0)
+                return 0;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_UserGuid.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        m_Value = ui.ItemBag.ItemCount;
-                    } else {
-                        m_Value = 0;
-                    }
+                ulong userGuid = operands[0].GetULong();
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    return ui.ItemBag.ItemCount;
                 }
             }
+            return 0;
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class GetFreeItemCountFunction : IStoryFunction
+    internal sealed class GetFreeItemCountFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetFreeItemCountFunction val = new GetFreeItemCountFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 0)
+                return 0;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_UserGuid.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        m_Value = ui.ItemBag.GetFreeCount();
-                    } else {
-                        m_Value = 0;
-                    }
+                ulong userGuid = operands[0].GetULong();
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    return ui.ItemBag.GetFreeCount();
                 }
             }
+            return 0;
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class GetItemInfoFunction : IStoryFunction
+    internal sealed class GetItemInfoFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Index.InitFromDsl(callData.GetParam(1));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetItemInfoFunction val = new GetItemInfoFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_Index = m_Index.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Index.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_UserGuid.HaveValue && m_Index.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    var id = m_Index.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        if (id.Type == BoxedValue.c_ULongType) {
-                            ulong guid = id.GetULong();
-                            m_Value = BoxedValue.FromObject(ui.ItemBag.GetItemData(guid));
-                        } else {
-                            try {
-                                int index = id.GetInt();
-                                if (index >= 0 && index < ui.MemberInfos.Count) {
-                                    m_Value = BoxedValue.FromObject(ui.FriendInfos[index]);
-                                } else {
-                                    m_Value = BoxedValue.NullObject;
-                                }
-                            } catch {
-                                m_Value = BoxedValue.NullObject;
+                ulong userGuid = operands[0].GetULong();
+                var id = operands[1];
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    if (id.Type == BoxedValue.c_ULongType) {
+                        ulong guid = id.GetULong();
+                        return BoxedValue.FromObject(ui.ItemBag.GetItemData(guid));
+                    } else {
+                        try {
+                            int index = id.GetInt();
+                            if (index >= 0 && index < ui.ItemBag.ItemCount) {
+                                return BoxedValue.FromObject(ui.ItemBag.ItemInfos[index]);
                             }
+                        } catch {
                         }
                     }
                 }
             }
+            return BoxedValue.NullObject;
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction m_Index = new StoryFunction();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class FindItemInfoFunction : IStoryFunction
+    internal sealed class FindItemInfoFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Index.InitFromDsl(callData.GetParam(1));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            FindItemInfoFunction val = new FindItemInfoFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_Index = m_Index.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Index.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_UserGuid.HaveValue && m_Index.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    var id = m_Index.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        if (id.Type == BoxedValue.c_ULongType) {
-                            ulong guid = id.GetULong();
-                            m_Value = BoxedValue.FromObject(ui.ItemBag.GetItemData(guid));
-                        } else {
-                            try {
-                                int itemId = id.GetInt();
-                                m_Value = BoxedValue.FromObject(ui.ItemBag.GetItemData(itemId));
-                            } catch {
-                                m_Value = BoxedValue.NullObject;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction m_Index = new StoryFunction();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
-    }
-    internal sealed class CalcItemNumFunction : IStoryFunction
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_ItemId.InitFromDsl(callData.GetParam(1));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            CalcItemNumFunction val = new CalcItemNumFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_ItemId = m_ItemId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_ItemId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            UserThread userThread = instance.Context as UserThread;
-            if (null != userThread) {
-                if (m_UserGuid.HaveValue && m_ItemId.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        int itemId = m_ItemId.Value;
-                        m_Value = ui.ItemBag.GetItemNum(itemId);
+                ulong userGuid = operands[0].GetULong();
+                var id = operands[1];
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    if (id.Type == BoxedValue.c_ULongType) {
+                        ulong guid = id.GetULong();
+                        return BoxedValue.FromObject(ui.ItemBag.GetItemData(guid));
                     } else {
-                        m_Value = 0;
-                    }
-                }
-            }
-        }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<int> m_ItemId = new StoryFunction<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
-    }
-    internal sealed class GetUserDataFunction : IStoryFunction
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 3) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Key.InitFromDsl(callData.GetParam(1));
-                m_Type.InitFromDsl(callData.GetParam(2));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetUserDataFunction val = new GetUserDataFunction();
-            val.m_UserGuid = m_UserGuid.Clone();
-            val.m_Key = m_Key.Clone();
-            val.m_Type = m_Type.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Key.Evaluate(instance, handler, iterator, args);
-            m_Type.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            UserThread userThread = instance.Context as UserThread;
-            if (null != userThread) {
-                if (m_UserGuid.HaveValue && m_Key.HaveValue && m_Type.HaveValue) {
-                    ulong userGuid = m_UserGuid.Value;
-                    string key = m_Key.Value;
-                    string type = m_Type.Value;
-                    m_HaveValue = true;
-                    UserInfo ui = userThread.GetUserInfo(userGuid);
-                    if (null != ui) {
-                        if (type == "int") {
-                            int v;
-                            ui.IntDatas.TryGetValue(key, out v);
-                            m_Value = v;
-                        } else if (type == "float") {
-                            float v;
-                            ui.FloatDatas.TryGetValue(key, out v);
-                            m_Value = v;
-                        } else {
-                            string v;
-                            ui.StringDatas.TryGetValue(key, out v);
-                            m_Value = v;
+                        try {
+                            int itemId = id.GetInt();
+                            return BoxedValue.FromObject(ui.ItemBag.GetItemData(itemId));
+                        } catch {
                         }
-                    } else {
-                        m_Value = 0;
                     }
                 }
             }
+            return BoxedValue.NullObject;
         }
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_Key = new StoryFunction<string>();
-        private IStoryFunction<string> m_Type = new StoryFunction<string>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
     }
-    internal sealed class GetGlobalDataFunction : IStoryFunction
+    internal sealed class CalcItemNumFunction : SimpleExpressionBase
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 2) {
-                m_Key.InitFromDsl(callData.GetParam(0));
-                m_Type.InitFromDsl(callData.GetParam(1));
-            }
-        }
-        public IStoryFunction Clone()
-        {
-            GetGlobalDataFunction val = new GetGlobalDataFunction();
-            val.m_Key = m_Key.Clone();
-            val.m_Type = m_Type.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;        
-            m_Key.Evaluate(instance, handler, iterator, args);
-            m_Type.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
+            if (operands.Count <= 1)
+                return 0;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                if (m_Key.HaveValue && m_Type.HaveValue) {
-                    string key = m_Key.Value;
-                    string type = m_Type.Value;
-                    m_HaveValue = true;
+                ulong userGuid = operands[0].GetULong();
+                int itemId = operands[1].GetInt();
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
+                    return ui.ItemBag.GetItemNum(itemId);
+                }
+            }
+            return 0;
+        }
+    }
+    internal sealed class GetUserDataFunction : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count <= 2)
+                return 0;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance.Context as UserThread;
+            if (null != userThread) {
+                ulong userGuid = operands[0].GetULong();
+                string key = operands[1].ToString();
+                string type = operands[2].ToString();
+                UserInfo ui = userThread.GetUserInfo(userGuid);
+                if (null != ui) {
                     if (type == "int") {
-                        m_Value = GlobalData.Instance.GetInt(key);
+                        int v;
+                        ui.IntDatas.TryGetValue(key, out v);
+                        return v;
                     } else if (type == "float") {
-                        m_Value = GlobalData.Instance.GetFloat(key);
+                        float v;
+                        ui.FloatDatas.TryGetValue(key, out v);
+                        return v;
                     } else {
-                        m_Value = GlobalData.Instance.GetStr(key);
+                        string v;
+                        ui.StringDatas.TryGetValue(key, out v);
+                        return v;
                     }
                 }
             }
+            return 0;
         }
-        private IStoryFunction<string> m_Key = new StoryFunction<string>();
-        private IStoryFunction<string> m_Type = new StoryFunction<string>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
+    }
+    internal sealed class GetGlobalDataFunction : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count <= 1)
+                return 0;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
+            UserThread userThread = instance.Context as UserThread;
+            if (null != userThread) {
+                string key = operands[0].ToString();
+                string type = operands[1].ToString();
+                if (type == "int") {
+                    return GlobalData.Instance.GetInt(key);
+                } else if (type == "float") {
+                    return GlobalData.Instance.GetFloat(key);
+                } else {
+                    return GlobalData.Instance.GetStr(key);
+                }
+            }
+            return 0;
+        }
     }
 }

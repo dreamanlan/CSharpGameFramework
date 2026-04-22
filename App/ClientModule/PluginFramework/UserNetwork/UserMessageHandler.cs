@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using ScriptableFramework;
 using ScriptableFramework.Story;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using LitJson;
 
 namespace ScriptableFramework.Network
@@ -36,28 +36,28 @@ namespace ScriptableFramework.Network
         }
         private void LobbyMessageHandler()
         {
-            RegisterMsgHandler(LobbyMessageDefine.QueueingCountResult, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.QueueingCountResult), HandleQueueingCountResult);
-            RegisterMsgHandler(LobbyMessageDefine.UserHeartbeat, typeof(GameFrameworkMessage.NodeMessageWithGuid), HandleUserHeartbeat);
-            RegisterMsgHandler(LobbyMessageDefine.TooManyOperations, typeof(GameFrameworkMessage.NodeMessageWithGuid), HandleTooManyOperations);
-            RegisterMsgHandler(LobbyMessageDefine.VersionVerifyResult, null, typeof(GameFrameworkMessage.VersionVerifyResult), HandleVersionVerifyResult);
-            RegisterMsgHandler(LobbyMessageDefine.AccountLoginResult, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.AccountLoginResult), HandleAccountLoginResult);
-            RegisterMsgHandler(LobbyMessageDefine.RequestNicknameResult, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.RequestNicknameResult), HandleRequestNicknameResult);
-            RegisterMsgHandler(LobbyMessageDefine.ChangeNameResult, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.ChangeNameResult), HandleChangeNameResult);
-            RegisterMsgHandler(LobbyMessageDefine.RoleEnterResult, typeof(GameFrameworkMessage.NodeMessageWithAccountAndGuid), typeof(GameFrameworkMessage.RoleEnterResult), HandleRoleEnterResult);
-            RegisterMsgHandler(LobbyMessageDefine.EnterSceneResult, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.EnterSceneResult), HandleEnterSceneResult);
-            RegisterMsgHandler(LobbyMessageDefine.ServerShutdown, typeof(GameFrameworkMessage.NodeMessageWithGuid), HandleServerShutdown);
-            RegisterMsgHandler(LobbyMessageDefine.GmCode, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.GmCode), HandleGmCode);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_NotifyNewMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_NotifyNewMail), HandleNewMail);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncMailList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncMailList), HandleMailList);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_LackOfSpace, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_LackOfSpace), HandleLackOfSpace);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncFriendList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncFriendList), HandleSyncFriendList);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_AddFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_AddFriend), HandleAddFriend);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_RemoveFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_RemoveFriend), HandleRemoveFriend);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_MarkBlack, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_MarkBlack), HandleMarkBlack);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncRoleInfo, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncRoleInfo), HandleSyncRoleInfo);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncMemberList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncMemberList), HandleSyncMemberList);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncItemList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncItemList), HandleSyncItemList);
-            RegisterMsgHandler(LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
+            RegisterMsgHandler(LobbyMessageDefine.QueueingCountResult, typeof(ScriptableFrameworkMessage.NodeMessageWithAccount), typeof(ScriptableFrameworkMessage.QueueingCountResult), HandleQueueingCountResult);
+            RegisterMsgHandler(LobbyMessageDefine.UserHeartbeat, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), HandleUserHeartbeat);
+            RegisterMsgHandler(LobbyMessageDefine.TooManyOperations, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), HandleTooManyOperations);
+            RegisterMsgHandler(LobbyMessageDefine.VersionVerifyResult, null, typeof(ScriptableFrameworkMessage.VersionVerifyResult), HandleVersionVerifyResult);
+            RegisterMsgHandler(LobbyMessageDefine.AccountLoginResult, typeof(ScriptableFrameworkMessage.NodeMessageWithAccount), typeof(ScriptableFrameworkMessage.AccountLoginResult), HandleAccountLoginResult);
+            RegisterMsgHandler(LobbyMessageDefine.RequestNicknameResult, typeof(ScriptableFrameworkMessage.NodeMessageWithAccount), typeof(ScriptableFrameworkMessage.RequestNicknameResult), HandleRequestNicknameResult);
+            RegisterMsgHandler(LobbyMessageDefine.ChangeNameResult, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.ChangeNameResult), HandleChangeNameResult);
+            RegisterMsgHandler(LobbyMessageDefine.RoleEnterResult, typeof(ScriptableFrameworkMessage.NodeMessageWithAccountAndGuid), typeof(ScriptableFrameworkMessage.RoleEnterResult), HandleRoleEnterResult);
+            RegisterMsgHandler(LobbyMessageDefine.EnterSceneResult, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.EnterSceneResult), HandleEnterSceneResult);
+            RegisterMsgHandler(LobbyMessageDefine.ServerShutdown, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), HandleServerShutdown);
+            RegisterMsgHandler(LobbyMessageDefine.GmCode, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.GmCode), HandleGmCode);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_NotifyNewMail, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_NotifyNewMail), HandleNewMail);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncMailList, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_SyncMailList), HandleMailList);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_LackOfSpace, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_LackOfSpace), HandleLackOfSpace);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncFriendList, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_SyncFriendList), HandleSyncFriendList);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_AddFriend, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_AddFriend), HandleAddFriend);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_RemoveFriend, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_RemoveFriend), HandleRemoveFriend);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_MarkBlack, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_MarkBlack), HandleMarkBlack);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncRoleInfo, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_SyncRoleInfo), HandleSyncRoleInfo);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncMemberList, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_SyncMemberList), HandleSyncMemberList);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncItemList, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_LC_SyncItemList), HandleSyncItemList);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(ScriptableFrameworkMessage.NodeMessageWithGuid), typeof(ScriptableFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
         }
 
         private void SelectServer(string serverAddress)
@@ -82,7 +82,7 @@ namespace ScriptableFramework.Network
                     ConnectIfNotOpen();
                 } else {
                     NodeMessage loginMsg = new NodeMessage(LobbyMessageDefine.AccountLogin, m_AccountId);
-                    GameFrameworkMessage.AccountLogin protoMsg = new GameFrameworkMessage.AccountLogin();
+                    ScriptableFrameworkMessage.AccountLogin protoMsg = new ScriptableFrameworkMessage.AccountLogin();
                     loginMsg.m_ProtoData = protoMsg;
                     protoMsg.m_AccountId = account;
                     protoMsg.m_Password = passwd;
@@ -125,7 +125,7 @@ namespace ScriptableFramework.Network
             } else {
                 try {
                     NodeMessage sendMsg = new NodeMessage(LobbyMessageDefine.ChangeName, m_Guid);
-                    GameFrameworkMessage.ChangeName protoMsg = new GameFrameworkMessage.ChangeName();
+                    ScriptableFrameworkMessage.ChangeName protoMsg = new ScriptableFrameworkMessage.ChangeName();
                     sendMsg.m_ProtoData = protoMsg;
                     protoMsg.m_Nickname = nickname;
                     SendMessage(sendMsg);
@@ -138,7 +138,7 @@ namespace ScriptableFramework.Network
         {
             try {
                 NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, accountId);
-                GameFrameworkMessage.RoleEnter protoData = new GameFrameworkMessage.RoleEnter();
+                ScriptableFrameworkMessage.RoleEnter protoData = new ScriptableFrameworkMessage.RoleEnter();
                 protoData.m_Nickname = nickname;
                 msg.m_ProtoData = protoData;
                 SendMessage(msg);
@@ -149,14 +149,14 @@ namespace ScriptableFramework.Network
         ////////////////////////////////////////////////////////////////////////////////
         private void HandleTooManyOperations(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.TooManyOperations tooManyOperations = lobbyMsg.m_ProtoData as GameFrameworkMessage.TooManyOperations;
+            ScriptableFrameworkMessage.TooManyOperations tooManyOperations = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.TooManyOperations;
             if (null != tooManyOperations) {
                 PluginFramework.Instance.HighlightPrompt("Tip_TooManyOperations");
             }
         }
         private void HandleVersionVerifyResult(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.VersionVerifyResult verifyResult = lobbyMsg.m_ProtoData as GameFrameworkMessage.VersionVerifyResult;
+            ScriptableFrameworkMessage.VersionVerifyResult verifyResult = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.VersionVerifyResult;
             if (null == verifyResult)
                 return;
             int ret = verifyResult.m_Result;
@@ -174,7 +174,7 @@ namespace ScriptableFramework.Network
                 }
                 //Send login message to server
                 NodeMessage loginMsg = new NodeMessage(LobbyMessageDefine.AccountLogin, m_AccountId);
-                GameFrameworkMessage.AccountLogin protoMsg = new GameFrameworkMessage.AccountLogin();
+                ScriptableFrameworkMessage.AccountLogin protoMsg = new ScriptableFrameworkMessage.AccountLogin();
                 loginMsg.m_ProtoData = protoMsg;
                 protoMsg.m_AccountId = m_AccountId;
                 protoMsg.m_Password = m_Password;
@@ -187,10 +187,10 @@ namespace ScriptableFramework.Network
         }
         private void HandleAccountLoginResult(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.AccountLoginResult protoData = lobbyMsg.m_ProtoData as GameFrameworkMessage.AccountLoginResult;
+            ScriptableFrameworkMessage.AccountLoginResult protoData = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.AccountLoginResult;
             if (null == protoData)
                 return;
-            GameFrameworkMessage.AccountLoginResult.AccountLoginResultEnum ret = protoData.m_Result;
+            ScriptableFrameworkMessage.AccountLoginResult.AccountLoginResultEnum ret = protoData.m_Result;
             ulong userGuid = protoData.m_UserGuid;
             UserNetworkSystem.Instance.IsQueueing = false;
             if (m_HasLoggedOn) {//Reconnection processing
@@ -198,7 +198,7 @@ namespace ScriptableFramework.Network
                     //Login successful, request player character from server
                     m_Guid = userGuid;
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
-                    GameFrameworkMessage.RoleEnter protoMsg = new GameFrameworkMessage.RoleEnter();
+                    ScriptableFrameworkMessage.RoleEnter protoMsg = new ScriptableFrameworkMessage.RoleEnter();
                     msg.m_ProtoData = protoMsg;
                     SendMessage(msg);
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.Queueing ||
@@ -213,7 +213,7 @@ namespace ScriptableFramework.Network
                     m_Guid = userGuid;
                     //Login successful, request player character from server
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
-                    GameFrameworkMessage.RoleEnter protoMsg = new GameFrameworkMessage.RoleEnter();
+                    ScriptableFrameworkMessage.RoleEnter protoMsg = new ScriptableFrameworkMessage.RoleEnter();
                     protoMsg.m_Nickname = string.Empty;
                     msg.m_ProtoData = protoMsg;
                     SendMessage(msg);
@@ -243,14 +243,14 @@ namespace ScriptableFramework.Network
         }
         private void HandleRequestNicknameResult(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.RequestNicknameResult protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.RequestNicknameResult;
+            ScriptableFrameworkMessage.RequestNicknameResult protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.RequestNicknameResult;
             if (null == protoMsg)
                 return;
             GfxStorySystem.Instance.SendMessage("show_nickname", BoxedValue.FromObject(protoMsg.m_Nicknames));
         }
         private void HandleChangeNameResult(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.ChangeNameResult protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.ChangeNameResult;
+            ScriptableFrameworkMessage.ChangeNameResult protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.ChangeNameResult;
             if (null == protoMsg)
                 return;
             ChangeNameResult.ChangeNameResultEnum ret = protoMsg.m_Result;
@@ -262,8 +262,8 @@ namespace ScriptableFramework.Network
         }
         private void HandleRoleEnterResult(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.NodeMessageWithAccountAndGuid headerData = lobbyMsg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithAccountAndGuid;
-            GameFrameworkMessage.RoleEnterResult protoData = lobbyMsg.m_ProtoData as GameFrameworkMessage.RoleEnterResult;
+            ScriptableFrameworkMessage.NodeMessageWithAccountAndGuid headerData = lobbyMsg.m_NodeHeader as ScriptableFrameworkMessage.NodeMessageWithAccountAndGuid;
+            ScriptableFrameworkMessage.RoleEnterResult protoData = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.RoleEnterResult;
             if (null != protoData) {
                 RoleEnterResult.RoleEnterResultEnum ret = protoData.Result;
                 m_Guid = headerData.m_Guid;
@@ -274,7 +274,7 @@ namespace ScriptableFramework.Network
                     PluginFramework.Instance.HighlightPrompt("Tip_WaitOffline");
                     Thread.Sleep(2000);
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
-                    GameFrameworkMessage.RoleEnter data = new GameFrameworkMessage.RoleEnter();
+                    ScriptableFrameworkMessage.RoleEnter data = new ScriptableFrameworkMessage.RoleEnter();
                     msg.m_ProtoData = data;
                     SendMessage(msg);
                     LogSystem.Info("Retry RoleEnter {0} {1}", m_AccountId, m_Guid);
@@ -298,7 +298,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleEnterSceneResult(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.EnterSceneResult protoData = lobbyMsg.m_ProtoData as GameFrameworkMessage.EnterSceneResult;
+            ScriptableFrameworkMessage.EnterSceneResult protoData = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.EnterSceneResult;
             if (null != protoData) {
                 GeneralOperationResult result = (GeneralOperationResult)protoData.result;
                 if (GeneralOperationResult.LC_Succeed == result) {
@@ -321,7 +321,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleGmCode(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.GmCode protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.GmCode;
+            ScriptableFrameworkMessage.GmCode protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.GmCode;
             if (null != protoMsg) {
                 //PluginFramework.Instance.ExecCode(protoMsg.m_Content);
             }
@@ -331,20 +331,20 @@ namespace ScriptableFramework.Network
         }
         private void HandleMailList(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_SyncMailList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncMailList;
+            ScriptableFrameworkMessage.Msg_LC_SyncMailList protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_SyncMailList;
             if (null != protoMsg) {
                 ClientInfo.Instance.Mails = protoMsg.m_Mails;
             }
         }
         private void HandleLackOfSpace(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_LackOfSpace protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_LackOfSpace;
+            ScriptableFrameworkMessage.Msg_LC_LackOfSpace protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_LackOfSpace;
             if (null != protoMsg) {
             }
         }
         private void HandleSyncFriendList(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_SyncFriendList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncFriendList;
+            ScriptableFrameworkMessage.Msg_LC_SyncFriendList protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_SyncFriendList;
             if (null != protoMsg) {
                 ClientInfo.Instance.RoleData.Friends.Clear();
                 ClientInfo.Instance.RoleData.Friends.AddRange(protoMsg.m_Friends);
@@ -352,7 +352,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleAddFriend(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_AddFriend protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_AddFriend;
+            ScriptableFrameworkMessage.Msg_LC_AddFriend protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_AddFriend;
             if (null != protoMsg) {
                 FriendInfoForMessage friendInfo = ClientInfo.Instance.RoleData.Friends.Find(fi => fi.FriendGuid == protoMsg.m_FriendInfo.FriendGuid);
                 ClientInfo.Instance.RoleData.Friends.Remove(friendInfo);
@@ -361,7 +361,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleRemoveFriend(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_RemoveFriend protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_RemoveFriend;
+            ScriptableFrameworkMessage.Msg_LC_RemoveFriend protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_RemoveFriend;
             if (null != protoMsg) {
                 FriendInfoForMessage friendInfo = ClientInfo.Instance.RoleData.Friends.Find(fi => fi.FriendGuid == protoMsg.m_FriendGuid);
                 ClientInfo.Instance.RoleData.Friends.Remove(friendInfo);
@@ -369,7 +369,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleMarkBlack(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_MarkBlack protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_MarkBlack;
+            ScriptableFrameworkMessage.Msg_LC_MarkBlack protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_MarkBlack;
             if (null != protoMsg) {
                 FriendInfoForMessage friendInfo = ClientInfo.Instance.RoleData.Friends.Find(fi => fi.FriendGuid == protoMsg.m_FriendGuid);
                 if (null != friendInfo) {
@@ -379,7 +379,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleSyncRoleInfo(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_SyncRoleInfo protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncRoleInfo;
+            ScriptableFrameworkMessage.Msg_LC_SyncRoleInfo protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_SyncRoleInfo;
             if (null != protoMsg) {
                 ClientInfo.Instance.RoleData.HeroId = protoMsg.HeroId;
                 ClientInfo.Instance.RoleData.Level = protoMsg.Level;
@@ -389,7 +389,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleSyncMemberList(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_SyncMemberList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncMemberList;
+            ScriptableFrameworkMessage.Msg_LC_SyncMemberList protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_SyncMemberList;
             if (null != protoMsg) {
                 ClientInfo.Instance.RoleData.Members.Clear();
                 ClientInfo.Instance.RoleData.Members.AddRange(protoMsg.m_Members);
@@ -397,7 +397,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleSyncItemList(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_LC_SyncItemList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncItemList;
+            ScriptableFrameworkMessage.Msg_LC_SyncItemList protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_LC_SyncItemList;
             if (null != protoMsg) {
                 ClientInfo.Instance.RoleData.Items.Clear();
                 ClientInfo.Instance.RoleData.Items.AddRange(protoMsg.m_Items);
@@ -405,7 +405,7 @@ namespace ScriptableFramework.Network
         }
         private void HandleStoryMessage(NodeMessage lobbyMsg)
         {
-            GameFrameworkMessage.Msg_CLC_StoryMessage protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_CLC_StoryMessage;
+            ScriptableFrameworkMessage.Msg_CLC_StoryMessage protoMsg = lobbyMsg.m_ProtoData as ScriptableFrameworkMessage.Msg_CLC_StoryMessage;
             if (null != protoMsg) {
                 try {
                     string msgId = protoMsg.m_MsgId;
@@ -443,7 +443,7 @@ namespace ScriptableFramework.Network
             try {
                 NodeMessage msg = new NodeMessage(LobbyMessageDefine.EnterScene);
                 msg.SetHeaderWithGuid(m_Guid);
-                GameFrameworkMessage.EnterScene protoData = new GameFrameworkMessage.EnterScene();
+                ScriptableFrameworkMessage.EnterScene protoData = new ScriptableFrameworkMessage.EnterScene();
                 protoData.m_SceneId = sceneId;
                 protoData.m_RoomId = roomId;
                 msg.m_ProtoData = protoData;
@@ -459,7 +459,7 @@ namespace ScriptableFramework.Network
                 } else {
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.ChangeSceneRoom);
                     msg.SetHeaderWithGuid(m_Guid);
-                    GameFrameworkMessage.ChangeSceneRoom protoData = new GameFrameworkMessage.ChangeSceneRoom();
+                    ScriptableFrameworkMessage.ChangeSceneRoom protoData = new ScriptableFrameworkMessage.ChangeSceneRoom();
                     protoData.m_SceneId = sceneId;
                     protoData.m_RoomId = roomId;
                     msg.m_ProtoData = protoData;

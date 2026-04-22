@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Lidgren.Network;
 using Messenger;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using ScriptableFramework;
 
 namespace ScriptableFramework

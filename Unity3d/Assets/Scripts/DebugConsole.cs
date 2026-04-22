@@ -767,21 +767,9 @@ public class DebugConsole : MonoBehaviour
             output.AppendLine(" ");
         }
         else {
-            output.AppendLine(":: Story Command List ::");
+            output.AppendLine(":: Story Api List ::");
 
-            foreach (var pair in PluginFramework.Instance.CommandDocs) {
-                if (pair.Key.Contains(filter) || pair.Value.Contains(filter)) {
-                    output.Append("[");
-                    output.Append(pair.Key);
-                    output.Append("]:");
-                    output.AppendLine(pair.Value);
-                }
-            }
-
-            output.AppendLine(" ");
-            output.AppendLine(":: Story Function List ::");
-
-            foreach (var pair in PluginFramework.Instance.FunctionDocs) {
+            foreach (var pair in PluginFramework.Instance.StoryDocs) {
                 if (pair.Key.Contains(filter) || pair.Value.Contains(filter)) {
                     output.Append("[");
                     output.Append(pair.Key);

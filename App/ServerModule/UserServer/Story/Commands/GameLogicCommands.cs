@@ -1,67 +1,34 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DotnetStoryScript;
+using DotnetStoryScript.DslExpression;
 using ScriptRuntime;
 using ScriptableFramework;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// sendmail(guid, title, content, sender, levelDemand, validPeriod, money, gold, item1, item1num, item2, item2num, ...);
     /// </summary>
-    internal class SendMailCommand : AbstractStoryCommand
+    internal sealed class SendMailCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            SendMailCommand cmd = new SendMailCommand();
-            cmd.m_Receiver = m_Receiver.Clone();
-            cmd.m_Title = m_Title.Clone();
-            cmd.m_Content = m_Content.Clone();
-            cmd.m_Sender = m_Sender.Clone();
-            cmd.m_LevelDemand = m_LevelDemand.Clone();
-            cmd.m_ValidPeriod = m_ValidPeriod.Clone();
-            cmd.m_Money = m_Money.Clone();
-            cmd.m_Gold = m_Gold.Clone();
-            for (int i = 0; i < m_MailItems.Count; ++i) {
-                IStoryFunction<int> val = m_MailItems[i];
-                cmd.m_MailItems.Add(val.Clone());
-            }
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_Receiver.Evaluate(instance, handler, iterator, args);
-            m_Title.Evaluate(instance, handler, iterator, args);
-            m_Content.Evaluate(instance, handler, iterator, args);
-            m_Sender.Evaluate(instance, handler, iterator, args);
-            m_LevelDemand.Evaluate(instance, handler, iterator, args);
-            m_ValidPeriod.Evaluate(instance, handler, iterator, args);
-            m_Money.Evaluate(instance, handler, iterator, args);
-            m_Gold.Evaluate(instance, handler, iterator, args);
-            for (int i = 0; i < m_MailItems.Count; ++i) {
-                IStoryFunction<int> val = m_MailItems[i];
-                val.Evaluate(instance, handler, iterator, args);
-            }
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 7)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong receiver = m_Receiver.Value;
-                string title = m_Title.Value;
-                string content = m_Content.Value;
-                string sender = m_Sender.Value;
-                int levelDemand = m_LevelDemand.Value;
-                int validPeriod = m_ValidPeriod.Value;
-                int money = m_Money.Value;
-                int gold = m_Gold.Value;
+                ulong receiver = operands[0].GetULong();
+                string title = operands[1].ToString();
+                string content = operands[2].ToString();
+                string sender = operands[3].ToString();
+                int levelDemand = operands[4].GetInt();
+                int validPeriod = operands[5].GetInt();
+                int money = operands[6].GetInt();
+                int gold = operands[7].GetInt();
 
                 TableMailInfoWrap mailInfo = new TableMailInfoWrap();
                 mailInfo.Receiver = (long)receiver;
@@ -72,9 +39,9 @@ namespace ScriptableFramework.Story.Commands
                 mailInfo.Gold = gold;
                 mailInfo.LevelDemand = levelDemand;
 
-                for (int i = 0; i < m_MailItems.Count - 1; i += 2) {
-                    int itemId = m_MailItems[i].Value;
-                    int itemNum = m_MailItems[i + 1].Value;
+                for (int i = 8; i < operands.Count - 1; i += 2) {
+                    int itemId = operands[i].GetInt();
+                    int itemNum = operands[i + 1].GetInt();
 
                     MailItem mailItem = new MailItem();
                     mailItem.m_ItemId = itemId;
@@ -88,115 +55,45 @@ namespace ScriptableFramework.Story.Commands
                     globalProcess.QueueAction(globalProcess.SendWholeMail, mailInfo, validPeriod);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 7) {
-                m_Receiver.InitFromDsl(callData.GetParam(0));
-                m_Title.InitFromDsl(callData.GetParam(1));
-                m_Content.InitFromDsl(callData.GetParam(2));
-                m_Sender.InitFromDsl(callData.GetParam(3));
-                m_LevelDemand.InitFromDsl(callData.GetParam(4));
-                m_ValidPeriod.InitFromDsl(callData.GetParam(5));
-                m_Money.InitFromDsl(callData.GetParam(6));
-                m_Gold.InitFromDsl(callData.GetParam(7));
-            }
-            for (int i = 8; i < callData.GetParamNum(); ++i) {
-                StoryFunction<int> val = new StoryFunction<int>();
-                val.InitFromDsl(callData.GetParam(i));
-                m_MailItems.Add(val);
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_Receiver = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_Title = new StoryFunction<string>();
-        private IStoryFunction<string> m_Content = new StoryFunction<string>();
-        private IStoryFunction<string> m_Sender = new StoryFunction<string>();
-        private IStoryFunction<int> m_LevelDemand = new StoryFunction<int>();
-        private IStoryFunction<int> m_ValidPeriod = new StoryFunction<int>();
-        private IStoryFunction<int> m_Money = new StoryFunction<int>();
-        private IStoryFunction<int> m_Gold = new StoryFunction<int>();
-        private List<IStoryFunction<int>> m_MailItems = new List<IStoryFunction<int>>();
     }
     /// <summary>
     /// clearmembers(guid);
     /// </summary>
-    internal class ClearMembersCommand : AbstractStoryCommand
+    internal sealed class ClearMembersCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            ClearMembersCommand cmd = new ClearMembersCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 0)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
+                ulong guid = operands[0].GetULong();
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     ui.MemberInfos.Clear();
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// addmember(guid, tableid, level);
     /// </summary>
-    internal class AddMemberCommand : AbstractStoryCommand
+    internal sealed class AddMemberCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            AddMemberCommand cmd = new AddMemberCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_TableId = m_TableId.Clone();
-            cmd.m_Level = m_Level.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_TableId.Evaluate(instance, handler, iterator, args);
-            m_Level.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 2)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
-                int tableId = m_TableId.Value;
-                int level = m_Level.Value;
+                ulong guid = operands[0].GetULong();
+                int tableId = operands[1].GetInt();
+                int level = operands[2].GetInt();
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     MemberInfo mi = new MemberInfo();
@@ -206,52 +103,23 @@ namespace ScriptableFramework.Story.Commands
                     ui.MemberInfos.Add(mi);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_TableId.InitFromDsl(callData.GetParam(1));
-                m_Level.InitFromDsl(callData.GetParam(2));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<int> m_TableId = new StoryFunction<int>();
-        private IStoryFunction<int> m_Level = new StoryFunction<int>();
     }
     /// <summary>
     /// removemember(guid, id_or_guid);
     /// </summary>
-    internal class RemoveMemberCommand : AbstractStoryCommand
+    internal sealed class RemoveMemberCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            RemoveMemberCommand cmd = new RemoveMemberCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_MemberId = m_MemberId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_MemberId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
-                var id = m_MemberId.Value;
+                ulong guid = operands[0].GetULong();
+                var id = operands[1];
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     if (id.Type == BoxedValue.c_ULongType) {
@@ -277,243 +145,108 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_MemberId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction m_MemberId = new StoryFunction();
     }
     /// <summary>
     /// syncmembers(guid);
     /// </summary>
-    internal class SyncMembersCommand : AbstractStoryCommand
+    internal sealed class SyncMembersCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            SyncMembersCommand cmd = new SyncMembersCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 0)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
+                ulong guid = operands[0].GetULong();
                 userThread.SyncMembers(guid);
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// clearitems(guid);
     /// </summary>
-    internal class ClearItemsCommand : AbstractStoryCommand
+    internal sealed class ClearItemsCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            ClearItemsCommand cmd = new ClearItemsCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 0)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
+                ulong guid = operands[0].GetULong();
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     ui.ItemBag.Reset();
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// additem(guid, itemid, num);
     /// </summary>
-    internal class AddItemCommand : AbstractStoryCommand
+    internal sealed class AddItemCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            AddItemCommand cmd = new AddItemCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_ItemId = m_ItemId.Clone();
-            cmd.m_ItemNum = m_ItemNum.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_ItemId.Evaluate(instance, handler, iterator, args);
-            m_ItemNum.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 2)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
-                int itemId = m_ItemId.Value;
-                int itemNum = m_ItemNum.Value;
+                ulong guid = operands[0].GetULong();
+                int itemId = operands[1].GetInt();
+                int itemNum = operands[2].GetInt();
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     ui.ItemBag.AddItemData(itemId, itemNum);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_ItemId.InitFromDsl(callData.GetParam(1));
-                m_ItemNum.InitFromDsl(callData.GetParam(2));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<int> m_ItemId = new StoryFunction<int>();
-        private IStoryFunction<int> m_ItemNum = new StoryFunction<int>();
     }
     /// <summary>
     /// reduceitem(guid, itemid, num);
     /// </summary>
-    internal class ReduceItemCommand : AbstractStoryCommand
+    internal sealed class ReduceItemCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            ReduceItemCommand cmd = new ReduceItemCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_ItemId = m_ItemId.Clone();
-            cmd.m_ItemNum = m_ItemNum.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_ItemId.Evaluate(instance, handler, iterator, args);
-            m_ItemNum.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 2)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
-                int itemId = m_ItemId.Value;
-                int itemNum = m_ItemNum.Value;
+                ulong guid = operands[0].GetULong();
+                int itemId = operands[1].GetInt();
+                int itemNum = operands[2].GetInt();
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     ui.ItemBag.ReduceItemData(itemId, itemNum);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_ItemId.InitFromDsl(callData.GetParam(1));
-                m_ItemNum.InitFromDsl(callData.GetParam(2));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<int> m_ItemId = new StoryFunction<int>();
-        private IStoryFunction<int> m_ItemNum = new StoryFunction<int>();
     }
     /// <summary>
     /// removeitem(guid, id_or_guid);
     /// </summary>
-    internal class RemoveItemCommand : AbstractStoryCommand
+    internal sealed class RemoveItemCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            RemoveItemCommand cmd = new RemoveItemCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_ItemId = m_ItemId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_ItemId.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
-                var id = m_ItemId.Value;
+                ulong guid = operands[0].GetULong();
+                var id = operands[1];
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     if (id.Type == BoxedValue.c_ULongType) {
@@ -529,88 +262,40 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_ItemId.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction m_ItemId = new StoryFunction();
     }
     /// <summary>
     /// syncitems(guid);
     /// </summary>
-    internal class SyncItemsCommand : AbstractStoryCommand
+    internal sealed class SyncItemsCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            SyncItemsCommand cmd = new SyncItemsCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 0)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
+                ulong guid = operands[0].GetULong();
                 userThread.SyncItems(guid);
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// clearuserdatas(guid);
     /// </summary>
-    internal class ClearUserDatasCommand : AbstractStoryCommand
+    internal sealed class ClearUserDatasCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            ClearUserDatasCommand cmd = new ClearUserDatasCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 0)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
+                ulong guid = operands[0].GetULong();
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     ui.IntDatas.Clear();
@@ -618,51 +303,24 @@ namespace ScriptableFramework.Story.Commands
                     ui.StringDatas.Clear();
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
     }
     /// <summary>
     /// adduserdata(guid, key, val);
     /// </summary>
-    internal class AddUserDataCommand : AbstractStoryCommand
+    internal sealed class AddUserDataCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            AddUserDataCommand cmd = new AddUserDataCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_Key = m_Key.Clone();
-            cmd.m_Value = m_Value.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Key.Evaluate(instance, handler, iterator, args);
-            m_Value.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 2)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
-                string key = m_Key.Value;
-                var val = m_Value.Value;
+                ulong guid = operands[0].GetULong();
+                string key = operands[1].ToString();
+                var val = operands[2];
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     if (val.IsInteger) {
@@ -688,55 +346,24 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Key.InitFromDsl(callData.GetParam(1));
-                m_Value.InitFromDsl(callData.GetParam(2));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_Key = new StoryFunction<string>();
-        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// removeuserdata(guid, key, type);
     /// </summary>
-    internal class RemoveUserDataCommand : AbstractStoryCommand
+    internal sealed class RemoveUserDataCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            RemoveUserDataCommand cmd = new RemoveUserDataCommand();
-            cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_Key = m_Key.Clone();
-            cmd.m_Type = m_Type.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_UserGuid.Evaluate(instance, handler, iterator, args);
-            m_Key.Evaluate(instance, handler, iterator, args);
-            m_Type.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 2)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                ulong guid = m_UserGuid.Value;
-                string key = m_Key.Value;
-                string type = m_Type.Value;
+                ulong guid = operands[0].GetULong();
+                string key = operands[1].ToString();
+                string type = operands[2].ToString();
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     if (type == "int") {
@@ -748,88 +375,38 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 2) {
-                m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Key.InitFromDsl(callData.GetParam(1));
-                m_Type.InitFromDsl(callData.GetParam(2));
-            }
-            return true;
-        }
-
-        private IStoryFunction<ulong> m_UserGuid = new StoryFunction<ulong>();
-        private IStoryFunction<string> m_Key = new StoryFunction<string>();
-        private IStoryFunction<string> m_Type = new StoryFunction<string>();
     }
     /// <summary>
-    /// clearglobaldatas(guid);
+    /// clearglobaldatas();
     /// </summary>
-    internal class ClearGlobalDatasCommand : AbstractStoryCommand
+    internal sealed class ClearGlobalDatasCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            ClearGlobalDatasCommand cmd = new ClearGlobalDatasCommand();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-        
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 GlobalData.Instance.Clear();
             }
-            return false;
-        }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-            }
-            return true;
+            return BoxedValue.NullObject;
         }
     }
     /// <summary>
     /// addglobaldata(key, val);
     /// </summary>
-    internal class AddGlobalDataCommand : AbstractStoryCommand
+    internal sealed class AddGlobalDataCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            AddGlobalDataCommand cmd = new AddGlobalDataCommand();
-            cmd.m_Key = m_Key.Clone();
-            cmd.m_Value = m_Value.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_Key.Evaluate(instance, handler, iterator, args);
-            m_Value.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                string key = m_Key.Value;
-                var val = m_Value.Value;
+                string key = operands[0].ToString();
+                var val = operands[1];
                 if (val.IsInteger) {
                     int v = val.GetInt();
                     GlobalData.Instance.AddInt(key, v);
@@ -843,72 +420,32 @@ namespace ScriptableFramework.Story.Commands
                     GlobalData.Instance.AddStr(key, v);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_Key.InitFromDsl(callData.GetParam(0));
-                m_Value.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<string> m_Key = new StoryFunction<string>();
-        private IStoryFunction m_Value = new StoryFunction();
     }
     /// <summary>
     /// removeglobaldata(key, type);
     /// </summary>
-    internal class RemoveGlobalDataCommand : AbstractStoryCommand
+    internal sealed class RemoveGlobalDataCommand : SimpleExpressionBase
     {
-        protected override IStoryCommand CloneCommand()
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
-            RemoveGlobalDataCommand cmd = new RemoveGlobalDataCommand();
-            cmd.m_Key = m_Key.Clone();
-            cmd.m_Type = m_Type.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_Key.Evaluate(instance, handler, iterator, args);
-            m_Type.Evaluate(instance, handler, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
+            if (operands.Count <= 1)
+                return BoxedValue.NullObject;
+            var instance = Calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
-                string key = m_Key.Value;
-                string type = m_Type.Value;
-                if (type=="int") {
+                string key = operands[0].ToString();
+                string type = operands[1].ToString();
+                if (type == "int") {
                     GlobalData.Instance.RemoveInt(key);
-                } else if (type=="float") {
+                } else if (type == "float") {
                     GlobalData.Instance.RemoveFloat(key);
                 } else {
                     GlobalData.Instance.RemoveStr(key);
                 }
             }
-            return false;
+            return BoxedValue.NullObject;
         }
-
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_Key.InitFromDsl(callData.GetParam(0));
-                m_Type.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-
-        private IStoryFunction<string> m_Key = new StoryFunction<string>();
-        private IStoryFunction<string> m_Type = new StoryFunction<string>();
     }
 }

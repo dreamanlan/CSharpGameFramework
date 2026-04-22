@@ -188,8 +188,8 @@ Dsl/Story/Common/autorun_empty.dsl
 Dsl/Story/Common/autorun_empty.dsl.meta
 Dsl/Story/Common/CustomCommands.dsl
 Dsl/Story/Common/CustomCommands.dsl.meta
-Dsl/Story/Common/CustomValues.dsl
-Dsl/Story/Common/CustomValues.dsl.meta
+Dsl/Story/Common/CustomFunctions.dsl
+Dsl/Story/Common/CustomFunctions.dsl.meta
 Dsl/Story/Common/localmain.dsl
 Dsl/Story/Common/localmain.dsl.meta
 Dsl/Story/Common/skillstory.dsl

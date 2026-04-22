@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 using DotnetStoryScript;
 
 namespace ScriptableFramework
@@ -255,8 +255,9 @@ namespace ScriptableFramework
             m_StorySystem.LoadStory("UserServer/main.dsl");
             m_StorySystem.StartStory("user_main");
 
-            m_CommandDocs = StoryCommandManager.Instance.GenCommandDocs();
-            m_FunctionDocs = StoryFunctionManager.Instance.GenFunctionDocs();
+            var apiDocs = DslCalculatorHost.GetSharedApiRegistry().ApiDocs;
+            m_CommandDocs = apiDocs;
+            m_FunctionDocs = apiDocs;
         }
         protected override void OnTick()
         {

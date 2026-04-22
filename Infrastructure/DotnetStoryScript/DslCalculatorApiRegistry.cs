@@ -1291,10 +1291,10 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 1) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
                 var queue = operands[0].As<Queue<BoxedValue>>();
-                if (null != stack) {
+                if (null != stack && stack.Count > 0) {
                     r = stack.Peek();
                 }
-                else if (null != queue) {
+                else if (null != queue && queue.Count > 0) {
                     r = queue.Peek();
                 }
             }

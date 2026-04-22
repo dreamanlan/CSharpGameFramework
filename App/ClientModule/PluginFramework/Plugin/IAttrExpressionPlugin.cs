@@ -5,7 +5,7 @@ using System.Text;
 using ScriptableFramework;
 using ScriptableFramework.AttrCalc;
 
-namespace ScriptableFramework.Plugin
+namespace ScriptableFramework
 {
     public interface IAttrExpressionPlugin
     {

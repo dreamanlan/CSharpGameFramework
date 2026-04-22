@@ -1,4 +1,4 @@
-﻿using GameFrameworkMessage;
+﻿using ScriptableFrameworkMessage;
 using System;
 using System.Collections.Generic;
 

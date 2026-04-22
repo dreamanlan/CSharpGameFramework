@@ -10,24 +10,24 @@ story(story_main)
     @skillIds(0);
   };
   onmessage("start")
-  {    
+  {
     preload();
     wait(1000);
     publishgfxevent("loading_complete", "ui");
     log("scene2");
-    
+
     @myNpcPos = vector3(5,0,7);
-    @myNpcDir = 1.57;        
+    @myNpcDir = 1.57;
   };
-  onmessage("move_to")
+  onmessage("move_to")params($x,$y,$z)
   {
-  	npcmove(1000,vector3($0,$1,$2));
+  	npcmove(1000,vector3($x,$y,$z));
   };
-  onmessage("reload")
+  onmessage("reload")params($leaderTableId,$targetTableId,$skillIds)
   {
-    @leaderTableId = $0;
-    @targetTableId = $1;
-    @skillIds = $2;
+    @leaderTableId = $leaderTableId;
+    @targetTableId = $targetTableId;
+    @skillIds = $skillIds;
     publishgfxevent("ui_remove_skill_buttons","ui");
     wait(1000);
     destroynpc(1000);
@@ -45,8 +45,8 @@ story(story_main)
     };
     camerafollow(1000);
   };
-  onmessage("objkilled")
+  onmessage("objkilled")params($id,$enemy,$friend,$trigger)
   {
-    log("objkilled:id={0},enemy={1},friend={2},trigger={3}",$0,$1,$2,$3);
+    log("objkilled:id={0},enemy={1},friend={2},trigger={3}",$id,$enemy,$friend,$trigger);
   };
 };

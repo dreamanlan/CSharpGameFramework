@@ -1566,7 +1566,7 @@ namespace StoryScript.DslExpression
                             ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
                             instance = ClientGmStorySystem.Instance.GetStory("main");
                         }
-                        instance.SetVariable(name, BoxedValue.FromObject(val.GetObject()));
+                        instance.SetVariable(name, ScriptableFramework.BoxedValue.FromObject(val.GetObject()));
                         ret = val;
                     }
                 }
@@ -1577,7 +1577,7 @@ namespace StoryScript.DslExpression
                         ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
                         instance = ClientGmStorySystem.Instance.GetStory("main");
                     }
-                    BoxedValue bv;
+                    ScriptableFramework.BoxedValue bv;
                     instance.TryGetVariable(name, out bv);
                     ret = BoxedValue.FromObject(bv.GetObject());
                 }
@@ -1585,71 +1585,65 @@ namespace StoryScript.DslExpression
             return ret;
         }
     }
-    internal class StoryFunctionExp : AbstractExpression
+    /// <summary>
+    /// callstory("msgId", arg1, arg2, ...);
+    /// or
+    /// callstory(apiOrMsgId(arg1, arg2, ...));
+    /// </summary>
+    internal sealed class CallStoryExp : AbstractExpression
     {
         protected override BoxedValue DoCalc()
         {
-            var instance = ClientGmStorySystem.Instance.GetStory("main");
-            if (null == instance) {
-                string txt = "script(main){onmessage(\"start\"){};};";
-                ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
-                ClientGmStorySystem.Instance.StartStory("main");
-                instance = ClientGmStorySystem.Instance.GetStory("main");
+            if (null != m_Api) {
+                return m_Api.Calc();
             }
-            var handler = instance.GetMessageHandler("start");
-            object ret = null;
-            foreach (var exp in m_Values) {
-                exp.Evaluate(instance, handler, BoxedValue.NullObject, null);
-                if (exp.HaveValue) {
-                    ret = exp.Value.GetObject();
+            else {
+                string msgId = m_MsgId;
+                if (string.IsNullOrEmpty(m_MsgId))
+                    msgId = null != m_Func ? m_Func.Calc().ToString() : string.Empty;
+                var args = ClientGmStorySystem.Instance.NewBoxedValueList();
+                for (int i = 0; i < m_Args.Count; ++i) {
+                    var v = m_Args[i].Calc();
+                    args.Add(ScriptableFramework.BoxedValue.FromObject(v.GetObject()));
+                }
+                ClientGmStorySystem.Instance.SendMessage(msgId, args);
+                return BoxedValue.NullObject;
+            }
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                var p0 = callData.GetParam(0);
+                var func = p0 as Dsl.FunctionData;
+                if (null != func) {
+                    var f = func.GetId();
+                    if (DslCalculatorHost.GetSharedApiRegistry().TryGetFactory(f, out var factory)) {
+                        m_Api = factory.Create();
+                        m_Api.Load(p0, Calculator);
+                    }
+                    else {
+                        m_MsgId = f;
+                        for (int i = 0; i < func.GetParamNum(); ++i) {
+                            m_Args.Add(Calculator.Load(func.GetParam(i)));
+                        }
+                    }
+                }
+                else {
+                    m_Func = Calculator.Load(p0);
+                    for (int i = 1; i < callData.GetParamNum(); ++i) {
+                        m_Args.Add(Calculator.Load(callData.GetParam(i)));
+                    }
                 }
             }
-            return BoxedValue.FromObject(ret);
-        }
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            for (int ix = 0; ix < num; ++ix) {
-                Dsl.ISyntaxComponent param = callData.GetParam(ix);
-                var exp = DotnetStoryScript.StoryFunctionManager.Instance.CreateFunction(param);
-                m_Values.Add(exp);
-            }
             return true;
         }
 
-        private List<DotnetStoryScript.IStoryFunction> m_Values = new List<DotnetStoryScript.IStoryFunction>();
-    }
-    internal class StoryCommandExp : AbstractExpression
-    {
-        protected override BoxedValue DoCalc()
-        {
-            var instance = ClientGmStorySystem.Instance.GetStory("main");
-            if (null == instance) {
-                string txt = "script(main){onmessage(\"start\"){};};";
-                ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
-                instance = ClientGmStorySystem.Instance.GetStory("main");
-            }
-            var handler = instance.GetMessageHandler("start");
-            foreach (var cmd in m_Commands) {
-                cmd.Reset();
-            }
-            foreach (var cmd in m_Commands) {
-                cmd.Execute(instance, handler, 0, BoxedValue.NullObject, null);
-            }
-            return BoxedValue.NullObject;
-        }
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            for (int ix = 0; ix < num; ++ix) {
-                Dsl.ISyntaxComponent param = callData.GetParam(ix);
-                var cmd = DotnetStoryScript.StoryCommandManager.Instance.CreateCommand(param);
-                m_Commands.Add(cmd);
-            }
-            return true;
-        }
+        private IExpression m_Api;
 
-        private List<DotnetStoryScript.IStoryCommand> m_Commands = new List<DotnetStoryScript.IStoryCommand>();
+        private string m_MsgId = string.Empty;
+        private IExpression m_Func;
+        private List<IExpression> m_Args = new List<IExpression>();
     }
 #endif
     public sealed class UnityEditorApi
@@ -1706,8 +1700,7 @@ namespace StoryScript.DslExpression
             calculator.Register("strlen", "strlen(str) api", new ExpressionFactoryHelper<StrLenExp>());
 #if USE_GM_STORY
             calculator.Register("storyvar", "storyvar(name,val) or storyvar(name) api", new ExpressionFactoryHelper<StoryVarExp>());
-            calculator.Register("storyfunction", "storyfunction(code1,code2,...) api", new ExpressionFactoryHelper<StoryFunctionExp>());
-            calculator.Register("storycommand", "storycommand(code1,code2,...) api", new ExpressionFactoryHelper<StoryCommandExp>());
+            calculator.Register("callstory", "callstory(msgId...) or callstory(apiOrMsgId(...)) api", new ExpressionFactoryHelper<CallStoryExp>());
 #endif
         }
     }

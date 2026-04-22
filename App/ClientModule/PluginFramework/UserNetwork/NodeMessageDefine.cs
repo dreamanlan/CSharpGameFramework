@@ -1,6 +1,6 @@
 using System;
 using LitJson;
-using GameFrameworkMessage;
+using ScriptableFrameworkMessage;
 
 namespace ScriptableFramework.Network
 {
