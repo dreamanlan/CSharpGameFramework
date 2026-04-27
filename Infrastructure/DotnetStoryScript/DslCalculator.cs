@@ -4108,7 +4108,7 @@ namespace DotnetStoryScript.DslExpression
             Dsl.DslFile file = new Dsl.DslFile();
             ScriptableDslHelper.ForDslCalculator.SetCallbacks(file);
             string path = dslFile;
-            if (file.Load(path, OnLog)) {
+            if (file.Load(path, LogError)) {
                 foreach (Dsl.ISyntaxComponent info in file.DslInfos) {
                     LoadDsl(info);
                 }
@@ -4609,13 +4609,30 @@ namespace DotnetStoryScript.DslExpression
                                             newCall.Params.Add(param1);
                                             return Load(newCall);
                                         }
+                                        else {
+                                            //error
+                                            Log("DslCalculator error, compound statements within an expression cannot be abbreviated to the brace-less form, return statements must be enclosed in parentheses, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
+                                            return null;
+                                        }
                                     }
                                     else if (param0 is Dsl.FunctionData fd) {
-                                        Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                        newCall.LowerOrderFunction = fd;
-                                        newCall.SetStatementParamClass();
-                                        newCall.Params.Add(param1);
-                                        return Load(newCall);
+                                        if (fd.IsOperatorParamClass() || fd.IsTernaryOperatorParamClass()) {
+                                            //error
+                                            Log("DslCalculator error, compound statements within an expression cannot be abbreviated to the brace-less form, return statements must be enclosed in parentheses, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
+                                            return null;
+                                        }
+                                        else {
+                                            Dsl.FunctionData newCall = new Dsl.FunctionData();
+                                            newCall.LowerOrderFunction = fd;
+                                            newCall.SetStatementParamClass();
+                                            newCall.Params.Add(param1);
+                                            return Load(newCall);
+                                        }
+                                    }
+                                    else {
+                                        //error
+                                        Log("DslCalculator error, compound statements within an expression cannot be abbreviated to the brace-less form, return statements must be enclosed in parentheses, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
+                                        return null;
                                     }
                                 }
                             }
@@ -4808,6 +4825,11 @@ namespace DotnetStoryScript.DslExpression
             if (null != OnLog) {
                 OnLog(string.Format("{0}", arg));
             }
+        }
+        private void LogError(string error)
+        {
+            error = DslSyntaxTransformer.TranslateDslSyntaxError(error);
+            Log(error);
         }
         internal int AllocGlobalVariableIndex(string name)
         {

@@ -28,5 +28,13 @@ namespace DotnetStoryScript
             }
             return ret;
         }
+        public static string TranslateDslSyntaxError(string error)
+        {
+            //[error] expecting OP_TOKEN_QUESTION_COLON but found OP_TOKEN_0, last token return line 1, cur token ` line 1
+            if (error.Contains("OP_TOKEN_0")) {
+                return $"DslCalculator error, compound statements within an expression cannot be abbreviated to the brace-less form, return statements must be enclosed in parentheses ({error})";
+            }
+            return error;
+        }
     }
 }
