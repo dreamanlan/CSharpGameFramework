@@ -3625,6 +3625,10 @@ namespace DotnetStoryScript.DslExpression
             Register("call", "call(func_name,arg1,arg2,...) api", new ExpressionFactoryHelper<CallExp>());
             Register("return", "return([val]) api", new ExpressionFactoryHelper<ReturnExp>());
             Register("redirect", "redirect(arg1,arg2,...) api", new ExpressionFactoryHelper<RedirectExp>());
+            Register("propset", "propset(varname,val) - set variable",new ExpressionFactoryHelper<PropSetExp>());
+            Register("propget", "propget(varname[,defval]) - get variable",new ExpressionFactoryHelper<PropGetExp>());
+            Register("propexists", "propexists(varname) - check variable", new ExpressionFactoryHelper<PropExistsExp>());
+            Register("funcexists", "funcexists(funcname) - check function", new ExpressionFactoryHelper<FuncExistsExp>());
             Register("await", "await(\"func_name\", arg1, arg2, ...) api, call async function", new ExpressionFactoryHelper<AwaitExp>());
             Register("awaitwhile", "awaitwhile(\"func_name\", arg1, arg2, ...) api, loop call sync function while result is true", new ExpressionFactoryHelper<AwaitWhileExp>());
             Register("awaituntil", "awaituntil(\"func_name\", arg1, arg2, ...) api, loop call sync function until result is true", new ExpressionFactoryHelper<AwaitUntilExp>());

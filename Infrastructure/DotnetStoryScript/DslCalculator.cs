@@ -4116,7 +4116,8 @@ namespace DotnetStoryScript.DslExpression
         }
         public void LoadDsl(Dsl.ISyntaxComponent info)
         {
-            if (info.GetId() != "script")
+            string fid = info.GetId();
+            if (fid != "script" && fid != "func")
                 return;
             var func = info as Dsl.FunctionData;
             string id;

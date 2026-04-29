@@ -94,10 +94,6 @@ namespace DotnetStoryScript
                 new ExpressionFactoryHelper<PrintExp>());
             registry.Register("printf", "printf(fmt...) - print a log message",
                 new ExpressionFactoryHelper<PrintfExp>());
-            registry.Register("propset", "propset(var,val) - set variable",
-                new ExpressionFactoryHelper<PropSetExp>());
-            registry.Register("propget", "propget(var[,defval]) - get variable",
-                new ExpressionFactoryHelper<PropGetExp>());
             registry.Register("suspend", "suspend() - suspend the current coroutine",
                 new ExpressionFactoryHelper<SuspendExp>());
             registry.Register("terminate", "terminate() - terminate the current story instance",
