@@ -1413,6 +1413,116 @@ namespace DotnetStoryScript.DslExpression
             return v;
         }
     }
+    internal sealed class IsObjectExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsObject);
+        }
+    }
+    internal sealed class IsStringExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsString);
+        }
+    }
+    internal sealed class IsBooleanExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsBoolean);
+        }
+    }
+    internal sealed class IsCharExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsChar);
+        }
+    }
+    internal sealed class IsIntegerExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsInteger);
+        }
+    }
+    internal sealed class IsSignedIntegerExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsSignedInteger);
+        }
+    }
+    internal sealed class IsUnsignedIntegerExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsUnsignedInteger);
+        }
+    }
+    internal sealed class IsNumberExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsNumber);
+        }
+    }
+    internal sealed class IsTupleExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsTuple);
+        }
+    }
+    internal sealed class BoxedValueTypeExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.From(-1);
+            }
+            return BoxedValue.From(operands[0].Type);
+        }
+    }
+    internal sealed class BoxedValueTypeNameExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.EmptyString;
+            }
+            return BoxedValue.FromString(operands[0].GetTypeName());
+        }
+    }
     internal sealed class ItofExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)

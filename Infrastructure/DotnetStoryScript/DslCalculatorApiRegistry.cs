@@ -3567,6 +3567,17 @@ namespace DotnetStoryScript.DslExpression
             Register("float", "float(v) api", new ExpressionFactoryHelper<FloatExp>());
             Register("double", "double(v) api", new ExpressionFactoryHelper<DoubleExp>());
             Register("decimal", "decimal(v) api", new ExpressionFactoryHelper<DecimalExp>());
+            Register("isobject", "isobject(v)", new ExpressionFactoryHelper<IsObjectExp>());
+            Register("isstring", "isstring(v)", new ExpressionFactoryHelper<IsStringExp>());
+            Register("isboolean", "isboolean(v)", new ExpressionFactoryHelper<IsBooleanExp>());
+            Register("ischar", "ischar(v)", new ExpressionFactoryHelper<IsCharExp>());
+            Register("isinteger", "isinteger(v)", new ExpressionFactoryHelper<IsIntegerExp>());
+            Register("issignedinteger", "issignedinteger(v)", new ExpressionFactoryHelper<IsSignedIntegerExp>());
+            Register("isunsignedinteger", "isunsignedinteger(v)", new ExpressionFactoryHelper<IsUnsignedIntegerExp>());
+            Register("isnumber", "isnumber(v)", new ExpressionFactoryHelper<IsNumberExp>());
+            Register("istuple", "istuple(v)", new ExpressionFactoryHelper<IsTupleExp>());
+            Register("boxedvaluetype", "boxedvaluetype(v)", new ExpressionFactoryHelper<BoxedValueTypeExp>());
+            Register("boxedvaluetypename", "boxedvaluetypename(v)", new ExpressionFactoryHelper<BoxedValueTypeNameExp>());
             Register("ftoi", "ftoi(v) api", new ExpressionFactoryHelper<FtoiExp>());
             Register("itof", "itof(v) api", new ExpressionFactoryHelper<ItofExp>());
             Register("ftou", "ftou(v) api", new ExpressionFactoryHelper<FtouExp>());
