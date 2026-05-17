@@ -1413,6 +1413,15 @@ namespace DotnetStoryScript.DslExpression
             return v;
         }
     }
+    internal sealed class DateTimeExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            DateTime v1 = operands[0].GetDateTime();
+            BoxedValue v = v1;
+            return v;
+        }
+    }
     internal sealed class IsObjectExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -1491,6 +1500,16 @@ namespace DotnetStoryScript.DslExpression
                 return BoxedValue.FromBool(false);
             }
             return BoxedValue.FromBool(operands[0].IsNumber);
+        }
+    }
+    internal sealed class IsDateTimeExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1) {
+                return BoxedValue.FromBool(false);
+            }
+            return BoxedValue.FromBool(operands[0].IsDateTime);
         }
     }
     internal sealed class IsTupleExp : SimpleExpressionBase

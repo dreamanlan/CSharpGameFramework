@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 using System.Linq;
 using ScriptableFramework;
 using DotnetStoryScript;
+using System.Data;
 
 #region interpreter
 #pragma warning disable 8600,8601,8602,8603,8604,8618,8619,8620,8625
@@ -669,6 +670,39 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count != 0)
                 throw new Exception("Expected: shorttimestr() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToShortTimeString());
+            return r;
+        }
+    }
+    internal sealed class NowExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 0)
+                throw new Exception("Expected: now() api");
+            var r = BoxedValue.FromDateTime(DateTime.Now);
+            return r;
+        }
+    }
+    internal sealed class ParseDateTimeExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1)
+                throw new Exception("Expected: parsedatetime(str) api");
+            DateTime.TryParse(operands[0].ToString(), out var dt);
+            var r = BoxedValue.FromDateTime(dt);
+            return r;
+        }
+    }
+    internal sealed class FormatDateTimeExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 2)
+                throw new Exception("Expected: formatdatetime(str,datetime) api");
+            string fmt = operands[0].ToString();
+            DateTime dt = operands[1].GetDateTime();
+            var r = BoxedValue.FromString(dt.ToString(fmt));
             return r;
         }
     }
@@ -3567,6 +3601,7 @@ namespace DotnetStoryScript.DslExpression
             Register("float", "float(v) api", new ExpressionFactoryHelper<FloatExp>());
             Register("double", "double(v) api", new ExpressionFactoryHelper<DoubleExp>());
             Register("decimal", "decimal(v) api", new ExpressionFactoryHelper<DecimalExp>());
+            Register("datetime", "datetime(v) api", new ExpressionFactoryHelper<DateTimeExp>());
             Register("isobject", "isobject(v)", new ExpressionFactoryHelper<IsObjectExp>());
             Register("isstring", "isstring(v)", new ExpressionFactoryHelper<IsStringExp>());
             Register("isboolean", "isboolean(v)", new ExpressionFactoryHelper<IsBooleanExp>());
@@ -3575,6 +3610,7 @@ namespace DotnetStoryScript.DslExpression
             Register("issignedinteger", "issignedinteger(v)", new ExpressionFactoryHelper<IsSignedIntegerExp>());
             Register("isunsignedinteger", "isunsignedinteger(v)", new ExpressionFactoryHelper<IsUnsignedIntegerExp>());
             Register("isnumber", "isnumber(v)", new ExpressionFactoryHelper<IsNumberExp>());
+            Register("isdatetime", "isdatetime(v)", new ExpressionFactoryHelper<IsDateTimeExp>());
             Register("istuple", "istuple(v)", new ExpressionFactoryHelper<IsTupleExp>());
             Register("boxedvaluetype", "boxedvaluetype(v)", new ExpressionFactoryHelper<BoxedValueTypeExp>());
             Register("boxedvaluetypename", "boxedvaluetypename(v)", new ExpressionFactoryHelper<BoxedValueTypeNameExp>());
@@ -3679,6 +3715,9 @@ namespace DotnetStoryScript.DslExpression
             Register("longtimestr", "longtimestr() api", new ExpressionFactoryHelper<LongTimeStrExp>());
             Register("shortdatestr", "shortdatestr() api", new ExpressionFactoryHelper<ShortDateStrExp>());
             Register("shorttimestr", "shorttimestr() api", new ExpressionFactoryHelper<ShortTimeStrExp>());
+            Register("now", "now() api", new ExpressionFactoryHelper<NowExp>());
+            Register("parsedatetime", "parsedatetime(str) api", new ExpressionFactoryHelper<ParseDateTimeExp>());
+            Register("formatdatetime", "formatdatetime(fmt,datetime) api", new ExpressionFactoryHelper<FormatDateTimeExp>());
             Register("isnullorempty", "isnullorempty(str) api", new ExpressionFactoryHelper<IsNullOrEmptyExp>());
             Register("tuple", "(v1,v2,...) or tuple(v1,v2,...) object", new ExpressionFactoryHelper<TupleExp>());
             Register("tupleset", "(var1,var2,...) = (v1,v2,...) or tupleset((var1,var2,...), (v1,v2,...))", new ExpressionFactoryHelper<TupleSetExp>());

@@ -1000,14 +1000,15 @@ namespace ScriptableFramework
         public const int c_FloatType = 12;
         public const int c_DoubleType = 13;
         public const int c_DecimalType = 14;
-        public const int c_Tuple1Type = 15;
-        public const int c_Tuple2Type = 16;
-        public const int c_Tuple3Type = 17;
-        public const int c_Tuple4Type = 18;
-        public const int c_Tuple5Type = 19;
-        public const int c_Tuple6Type = 20;
-        public const int c_Tuple7Type = 21;
-        public const int c_Tuple8Type = 22;
+        public const int c_DateTimeType = 15;
+        public const int c_Tuple1Type = 16;
+        public const int c_Tuple2Type = 17;
+        public const int c_Tuple3Type = 18;
+        public const int c_Tuple4Type = 19;
+        public const int c_Tuple5Type = 20;
+        public const int c_Tuple6Type = 21;
+        public const int c_Tuple7Type = 22;
+        public const int c_Tuple8Type = 23;
 
         [StructLayout(LayoutKind.Explicit)]
         public struct UnionValue
@@ -1038,6 +1039,8 @@ namespace ScriptableFramework
             public double DoubleVal;
             [FieldOffset(0)]
             public decimal DecimalVal;
+            [FieldOffset(0)]
+            public DateTime DateTimeVal;
         }
 
         public TupleValue1 Tuple1Val
@@ -1200,6 +1203,14 @@ namespace ScriptableFramework
         public static implicit operator decimal(BoxedValue v)
         {
             return v.GetDecimal();
+        }
+        public static implicit operator BoxedValue(DateTime v)
+        {
+            return BoxedValue.From(v);
+        }
+        public static implicit operator DateTime(BoxedValue v)
+        {
+            return v.GetDateTime();
         }
         public static implicit operator BoxedValue(TupleValue1 v)
         {
@@ -1518,6 +1529,12 @@ namespace ScriptableFramework
                 return Type == c_FloatType || Type == c_DoubleType || Type == c_DecimalType;
             }
         }
+        public bool IsDateTime
+        {
+            get {
+                return Type == c_DateTimeType;
+            }
+        }
         public bool IsTuple
         {
             get {
@@ -1644,6 +1661,11 @@ namespace ScriptableFramework
             Type = c_DecimalType;
             Union.DecimalVal = v;
         }
+        public void Set(DateTime v)
+        {
+            Type = c_DateTimeType;
+            Union.DateTimeVal = v;
+        }
         public void Set(TupleValue1 v)
         {
             Type = c_Tuple1Type;
@@ -1724,6 +1746,8 @@ namespace ScriptableFramework
                 Set((double)val);
             else if (t == typeof(decimal))
                 Set((decimal)val);
+            else if (t == typeof(DateTime))
+                Set((DateTime)val);
             else if (t == typeof(TupleValue1))
                 Set((TupleValue1)val);
             else if (t == typeof(TupleValue2))
@@ -1802,6 +1826,10 @@ namespace ScriptableFramework
         public decimal GetDecimal()
         {
             return ToDecimal();
+        }
+        public DateTime GetDateTime()
+        {
+            return ToDateTime();
         }
         public TupleValue1 GetTuple1()
         {
@@ -2176,6 +2204,9 @@ namespace ScriptableFramework
                 case c_DecimalType:
                     Union.DecimalVal = other.Union.DecimalVal;
                     break;
+                case c_DateTimeType:
+                    Union.DateTimeVal = other.Union.DateTimeVal;
+                    break;
                 case c_Tuple1Type:
                     Tuple1Val = other.Tuple1Val;
                     break;
@@ -2244,6 +2275,8 @@ namespace ScriptableFramework
                     return Union.DoubleVal == other.Union.DoubleVal;
                 case c_DecimalType:
                     return Union.DecimalVal == other.Union.DecimalVal;
+                case c_DateTimeType:
+                    return Union.DateTimeVal == other.Union.DateTimeVal;
                 case c_Tuple1Type:
                     return Tuple1Val == other.Tuple1Val;
                 case c_Tuple2Type:
@@ -2297,6 +2330,8 @@ namespace ScriptableFramework
                     return Union.DoubleVal.GetHashCode();
                 case c_DecimalType:
                     return Union.DecimalVal.GetHashCode();
+                case c_DateTimeType:
+                    return Union.DateTimeVal.GetHashCode();
                 case c_Tuple1Type:
                     return Tuple1Val.GetHashCode();
                 case c_Tuple2Type:
@@ -2349,6 +2384,8 @@ namespace ScriptableFramework
                     return Union.DoubleVal.ToString();
                 case c_DecimalType:
                     return Union.DecimalVal.ToString();
+                case c_DateTimeType:
+                    return Union.DateTimeVal.ToString();
                 case c_Tuple1Type:
                     return Tuple1Val.ToString();
                 case c_Tuple2Type:
@@ -2401,6 +2438,8 @@ namespace ScriptableFramework
                     return Union.DoubleVal;
                 case c_DecimalType:
                     return Union.DecimalVal;
+                case c_DateTimeType:
+                    return Union.DateTimeVal;
                 case c_Tuple1Type:
                     return Tuple1Val;
                 case c_Tuple2Type:
@@ -2471,6 +2510,8 @@ namespace ScriptableFramework
                     return Union.DoubleVal != 0;
                 case c_DecimalType:
                     return Union.DecimalVal != 0;
+                case c_DateTimeType:
+                    return Union.DateTimeVal.Ticks != 0;
             }
             return false;
         }
@@ -2523,6 +2564,8 @@ namespace ScriptableFramework
                     return (char)(long)Union.DoubleVal;
                 case c_DecimalType:
                     return (char)(int)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (char)Union.DateTimeVal.Ticks;
             }
             return '\0';
         }
@@ -2556,6 +2599,8 @@ namespace ScriptableFramework
                     return (sbyte)Union.DoubleVal;
                 case c_DecimalType:
                     return (sbyte)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (sbyte)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         sbyte.TryParse(StringVal, out v);
@@ -2599,6 +2644,8 @@ namespace ScriptableFramework
                     return (short)Union.DoubleVal;
                 case c_DecimalType:
                     return (short)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (short)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         short.TryParse(StringVal, out v);
@@ -2642,6 +2689,8 @@ namespace ScriptableFramework
                     return (int)Union.DoubleVal;
                 case c_DecimalType:
                     return (int)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (int)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         int.TryParse(StringVal, out v);
@@ -2685,6 +2734,8 @@ namespace ScriptableFramework
                     return (long)Union.DoubleVal;
                 case c_DecimalType:
                     return (long)Union.DecimalVal;
+                case c_DateTimeType:
+                    return Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         long.TryParse(StringVal, out v);
@@ -2728,6 +2779,8 @@ namespace ScriptableFramework
                     return (byte)Union.DoubleVal;
                 case c_DecimalType:
                     return (byte)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (byte)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         byte.TryParse(StringVal, out v);
@@ -2771,6 +2824,8 @@ namespace ScriptableFramework
                     return (ushort)Union.DoubleVal;
                 case c_DecimalType:
                     return (ushort)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (ushort)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         ushort.TryParse(StringVal, out v);
@@ -2814,6 +2869,8 @@ namespace ScriptableFramework
                     return (uint)Union.DoubleVal;
                 case c_DecimalType:
                     return (uint)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (uint)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         uint.TryParse(StringVal, out v);
@@ -2857,6 +2914,8 @@ namespace ScriptableFramework
                     return (ulong)Union.DoubleVal;
                 case c_DecimalType:
                     return (ulong)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (ulong)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         ulong.TryParse(StringVal, out v);
@@ -2900,6 +2959,8 @@ namespace ScriptableFramework
                     return (float)Union.DoubleVal;
                 case c_DecimalType:
                     return (float)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (float)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         float.TryParse(StringVal, out v);
@@ -2943,6 +3004,8 @@ namespace ScriptableFramework
                     return Union.DoubleVal;
                 case c_DecimalType:
                     return (double)Union.DecimalVal;
+                case c_DateTimeType:
+                    return (double)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         double.TryParse(StringVal, out v);
@@ -2986,6 +3049,8 @@ namespace ScriptableFramework
                     return (decimal)Union.DoubleVal;
                 case c_DecimalType:
                     return Union.DecimalVal;
+                case c_DateTimeType:
+                    return (decimal)Union.DateTimeVal.Ticks;
                 case c_StringType:
                     if (null != StringVal) {
                         decimal.TryParse(StringVal, out v);
@@ -2998,6 +3063,39 @@ namespace ScriptableFramework
                     return v;
             }
             return v;
+        }
+        private DateTime ToDateTime()
+        {
+            switch (Type) {
+                case c_BoolType:
+                case c_CharType:
+                case c_SByteType:
+                case c_ShortType:
+                case c_IntType:
+                case c_LongType:
+                case c_ByteType:
+                case c_UShortType:
+                case c_UIntType:
+                case c_ULongType:
+                case c_FloatType:
+                case c_DoubleType:
+                case c_DecimalType:
+                    return new DateTime(ToLong());
+                case c_DateTimeType:
+                    return Union.DateTimeVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        DateTime.TryParse(StringVal, out var v);
+                        return v;
+                    }
+                    break;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        return GenericValueConverter.CastTo<DateTime>(ObjectVal);
+                    }
+                    break;
+            }
+            return new DateTime();
         }
         private TupleValue1 ToTuple1()
         {
@@ -3184,6 +3282,12 @@ namespace ScriptableFramework
             bv.Set(v);
             return bv;
         }
+        public static BoxedValue From(DateTime v)
+        {
+            BoxedValue bv = new BoxedValue();
+            bv.Set(v);
+            return bv;
+        }
         public static BoxedValue From(TupleValue1 v)
         {
             BoxedValue bv = new BoxedValue();
@@ -3259,6 +3363,12 @@ namespace ScriptableFramework
             return bv;
         }
         public static BoxedValue FromNumber(double v)
+        {
+            BoxedValue bv = new BoxedValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static BoxedValue FromDateTime(DateTime v)
         {
             BoxedValue bv = new BoxedValue();
             bv.Set(v);
