@@ -3669,7 +3669,7 @@ namespace DotnetStoryScript.DslExpression
             Register("collectioncall", "collectioncall api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionCallExp>());
             Register("collectionset", "collectionset api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionSetExp>());
             Register("collectionget", "collectionget api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionGetExp>());
-            Register("linq", "linq(list,method,arg1,arg2,...) statement, internal implementation, using obj.method(arg1,arg2,...) syntax, method can be where/filter/select/map/top/take/skip/distinct/concat/groupby/orderby/orderbydesc/aggregate/reduce/any/all/count/first/last/tolist/sum/min/max/average, iterator is $$", new ExpressionFactoryHelper<LinqExp>());
+            Register("linq", "linq(list,method,arg1,arg2,...) statement, internal implementation, using obj.method(arg1,arg2,...) syntax, method can be where/filter/select/map/top/take/skip/distinct/concat/groupby/orderby/orderbydesc/aggregate/reduce/any/all/count/first/last/tolist/sum/min/max/average, iterator is $$ (An additional iterator $$acc for aggregate/reduce operators)", new ExpressionFactoryHelper<LinqExp>());
             Register("isnull", "isnull(obj) api", new ExpressionFactoryHelper<IsNullExp>());
             Register("null", "null() api", new ExpressionFactoryHelper<NullExp>());
             Register("equalsnull", "equalsnull(obj) api", new ExpressionFactoryHelper<EqualsNullExp>());
