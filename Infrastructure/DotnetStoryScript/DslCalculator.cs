@@ -3811,103 +3811,6 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal sealed class LinqExp : AbstractExpression
-    {
-        protected override BoxedValue DoCalc()
-        {
-            BoxedValue v = 0;
-            var list = m_List.Calc().GetObject();
-            var method = m_Method.Calc().GetString();
-            IEnumerable obj = list as IEnumerable;
-            if (null != obj && !string.IsNullOrEmpty(method)) {
-                if (method == "orderby" || method == "orderbydesc") {
-                    bool desc = method == "orderbydesc";
-                    List<BoxedValue> results = new List<BoxedValue>();
-                    var enumer = obj.GetEnumerator();
-                    while (enumer.MoveNext()) {
-                        var val = BoxedValue.FromObject(enumer.Current);
-                        results.Add(val);
-                    }
-                    results.Sort((BoxedValue o1, BoxedValue o2) => {
-                        Calculator.SetVariable("$$", o1);
-                        var r1 = BoxedValue.NullObject;
-                        for (int index = 0; index < m_Expressions.Count; ++index) {
-                            r1 = m_Expressions[index].Calc();
-                        }
-                        Calculator.SetVariable("$$", o2);
-                        var r2 = BoxedValue.NullObject;
-                        for (int index = 0; index < m_Expressions.Count; ++index) {
-                            r2 = m_Expressions[index].Calc();
-                        }
-                        int r = 0;
-                        if (r1.IsString && r2.IsString) {
-                            r = r1.GetString().CompareTo(r2.GetString());
-                        }
-                        else {
-                            double rd1 = r1.GetDouble();
-                            double rd2 = r2.GetDouble();
-                            r = rd1.CompareTo(rd2);
-                        }
-                        if (desc)
-                            r = -r;
-                        return r;
-                    });
-                    v = BoxedValue.FromObject(results);
-                }
-                else if (method == "where") {
-                    List<BoxedValue> results = new List<BoxedValue>();
-                    IEnumerator enumer = obj.GetEnumerator();
-                    while (enumer.MoveNext()) {
-                        var val = BoxedValue.FromObject(enumer.Current);
-
-                        Calculator.SetVariable("$$", val);
-                        BoxedValue r = BoxedValue.NullObject;
-                        for (int index = 0; index < m_Expressions.Count; ++index) {
-                            r = m_Expressions[index].Calc();
-                        }
-                        if (r.GetLong() != 0) {
-                            results.Add(val);
-                        }
-                    }
-                    v = BoxedValue.FromObject(results);
-                }
-                else if (method == "top") {
-                    BoxedValue r = BoxedValue.NullObject;
-                    for (int index = 0; index < m_Expressions.Count; ++index) {
-                        r = m_Expressions[index].Calc();
-                    }
-                    long ct = r.GetLong();
-                    List<BoxedValue> results = new List<BoxedValue>();
-                    IEnumerator enumer = obj.GetEnumerator();
-                    while (enumer.MoveNext()) {
-                        var val = BoxedValue.FromObject(enumer.Current);
-                        if (ct > 0) {
-                            results.Add(val);
-                            --ct;
-                        }
-                    }
-                    v = BoxedValue.FromObject(results);
-                }
-            }
-            return v;
-        }
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            Dsl.ISyntaxComponent list = callData.GetParam(0);
-            m_List = Calculator.Load(list);
-            Dsl.ISyntaxComponent method = callData.GetParam(1);
-            m_Method = Calculator.Load(method);
-            for (int i = 2; i < callData.GetParamNum(); ++i) {
-                Dsl.ISyntaxComponent param = callData.GetParam(i);
-                m_Expressions.Add(Calculator.Load(param));
-            }
-            return true;
-        }
-
-        private IExpression m_List;
-        private IExpression m_Method;
-        private List<IExpression> m_Expressions = new List<IExpression>();
-    }
     internal sealed class IsNullExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -4828,7 +4731,7 @@ namespace DotnetStoryScript.DslExpression
                                         //obj[member](a,b,...) -> collectioncall(obj,member,a,b,...)
                                         string apiName;
                                         string member = innerCall.GetParamId(0);
-                                        if (member == "orderby" || member == "orderbydesc" || member == "where" || member == "top") {
+                                        if (m_ApiRegistry.LinqOperatorRegistry.IsLinqMethod(member)) {
                                             apiName = "linq";
                                         }
                                         else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD) {

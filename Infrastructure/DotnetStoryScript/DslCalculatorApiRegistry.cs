@@ -3521,6 +3521,11 @@ namespace DotnetStoryScript.DslExpression
             get { return m_ApiDocs; }
         }
 
+        public LinqOperatorRegistry LinqOperatorRegistry
+        {
+            get { return m_LinqOperatorRegistry; }
+        }
+
         public void Register(string name, string doc, IExpressionFactory factory)
         {
             if (m_ApiFactories.ContainsKey(name)) {
@@ -3544,6 +3549,8 @@ namespace DotnetStoryScript.DslExpression
 
         public void Init()
         {
+            m_LinqOperatorRegistry.RegisterPredefined();
+
             Register("args", "args() api", new ExpressionFactoryHelper<ArgsGet>());
             Register("arg", "arg(ix) api", new ExpressionFactoryHelper<ArgGet>());
             Register("argnum", "argnum() api", new ExpressionFactoryHelper<ArgNumGet>());
@@ -3662,7 +3669,7 @@ namespace DotnetStoryScript.DslExpression
             Register("collectioncall", "collectioncall api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionCallExp>());
             Register("collectionset", "collectionset api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionSetExp>());
             Register("collectionget", "collectionget api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionGetExp>());
-            Register("linq", "linq(list,method,arg1,arg2,...) statement, internal implementation, using obj.method(arg1,arg2,...) syntax, method can be orderby/orderbydesc/where/top, iterator is $$", new ExpressionFactoryHelper<LinqExp>());
+            Register("linq", "linq(list,method,arg1,arg2,...) statement, internal implementation, using obj.method(arg1,arg2,...) syntax, method can be where/filter/select/map/top/take/skip/distinct/concat/groupby/orderby/orderbydesc/aggregate/reduce/any/all/count/first/last/tolist/sum/min/max/average, iterator is $$", new ExpressionFactoryHelper<LinqExp>());
             Register("isnull", "isnull(obj) api", new ExpressionFactoryHelper<IsNullExp>());
             Register("null", "null() api", new ExpressionFactoryHelper<NullExp>());
             Register("equalsnull", "equalsnull(obj) api", new ExpressionFactoryHelper<EqualsNullExp>());
@@ -3821,6 +3828,7 @@ namespace DotnetStoryScript.DslExpression
             Register("calcmd5", "calcmd5(file) api", new ExpressionFactoryHelper<CalcMd5Exp>());
         }
 
+        private LinqOperatorRegistry m_LinqOperatorRegistry = new LinqOperatorRegistry();
         private Dictionary<string, IExpressionFactory> m_ApiFactories = new Dictionary<string, IExpressionFactory>();
         private SortedList<string, string> m_ApiDocs = new SortedList<string, string>();
     }
