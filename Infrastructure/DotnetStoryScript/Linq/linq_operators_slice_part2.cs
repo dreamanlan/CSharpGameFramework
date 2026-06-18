@@ -185,10 +185,10 @@ namespace DotnetStoryScript.DslExpression
         }
     }
 
-    internal sealed class GroupingObject
+    public sealed class GroupingObject
     {
-        public BoxedValue key { get; set; }
-        public LinqStreamWrapper values { get; set; }
+        public BoxedValue Key { get; set; }
+        public LinqStreamWrapper Values { get; set; }
     }
 
     internal sealed class OpGroupByOperator : ILinqAsyncOperator
@@ -214,7 +214,7 @@ namespace DotnetStoryScript.DslExpression
             _results = new List<BoxedValue>();
             foreach (var kp in dict) {
                 var innerIterator = new BufferedListIterator(kp.Value);
-                _results.Add(BoxedValue.FromObject(new GroupingObject { key = kp.Key, values = new LinqStreamWrapper(innerIterator) }));
+                _results.Add(BoxedValue.FromObject(new GroupingObject { Key = kp.Key, Values = new LinqStreamWrapper(innerIterator) }));
             }
         }
 
