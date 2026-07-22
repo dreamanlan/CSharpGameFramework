@@ -3427,7 +3427,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: wait(time) api");
+                throw new Exception("Expected: sleep(time) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var time = operands[0].GetInt();
