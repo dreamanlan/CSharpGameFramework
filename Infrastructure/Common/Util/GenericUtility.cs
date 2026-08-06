@@ -1872,6 +1872,17 @@ namespace ScriptableFramework
             return ToObject();
         }
 
+        public int TupleLength
+        {
+            get {
+                return GetTupleLength(this);
+            }
+        }
+        public BoxedValue GetTupleValue(int index)
+        {
+            return GetTupleValue(this, index);
+        }
+
         public T CastTo<T>()
         {
             Type t = typeof(T);
@@ -3385,6 +3396,157 @@ namespace ScriptableFramework
             BoxedValue bv = new BoxedValue();
             bv.SetObject(v);
             return bv;
+        }
+
+        private static int GetTupleLength(BoxedValue v)
+        {
+            switch (v.Type) {
+                case c_Tuple1Type:
+                    return 1;
+                case c_Tuple2Type:
+                    return 2;
+                case c_Tuple3Type:
+                    return 3;
+                case c_Tuple4Type:
+                    return 4;
+                case c_Tuple5Type:
+                    return 5;
+                case c_Tuple6Type:
+                    return 6;
+                case c_Tuple7Type:
+                    return 7;
+                case c_Tuple8Type: {
+                        return GetTupleLength(v.Tuple8Val);
+                    }
+            }
+            return 0;
+        }
+        private static int GetTupleLength(TupleValue8 v)
+        {
+            var rest = v.Rest.Item1;
+            if (rest.IsTuple)
+                return 7 + GetTupleLength(rest);
+            else
+                return 8;
+        }
+        private static BoxedValue GetTupleValue(BoxedValue v, int index)
+        {
+            if (index >= 0) {
+                switch (index) {
+                    case 0:
+                        switch (v.Type) {
+                            case c_Tuple1Type:
+                                return v.Tuple1Val.Item1;
+                            case c_Tuple2Type:
+                                return v.Tuple2Val.Item1;
+                            case c_Tuple3Type:
+                                return v.Tuple3Val.Item1;
+                            case c_Tuple4Type:
+                                return v.Tuple4Val.Item1;
+                            case c_Tuple5Type:
+                                return v.Tuple5Val.Item1;
+                            case c_Tuple6Type:
+                                return v.Tuple6Val.Item1;
+                            case c_Tuple7Type:
+                                return v.Tuple7Val.Item1;
+                            case c_Tuple8Type:
+                                return v.Tuple8Val.Item1;
+                        }
+                        break;
+                    case 1:
+                        switch (v.Type) {
+                            case c_Tuple2Type:
+                                return v.Tuple2Val.Item2;
+                            case c_Tuple3Type:
+                                return v.Tuple3Val.Item2;
+                            case c_Tuple4Type:
+                                return v.Tuple4Val.Item2;
+                            case c_Tuple5Type:
+                                return v.Tuple5Val.Item2;
+                            case c_Tuple6Type:
+                                return v.Tuple6Val.Item2;
+                            case c_Tuple7Type:
+                                return v.Tuple7Val.Item2;
+                            case c_Tuple8Type:
+                                return v.Tuple8Val.Item2;
+                        }
+                        break;
+                    case 2:
+                        switch (v.Type) {
+                            case c_Tuple3Type:
+                                return v.Tuple3Val.Item3;
+                            case c_Tuple4Type:
+                                return v.Tuple4Val.Item3;
+                            case c_Tuple5Type:
+                                return v.Tuple5Val.Item3;
+                            case c_Tuple6Type:
+                                return v.Tuple6Val.Item3;
+                            case c_Tuple7Type:
+                                return v.Tuple7Val.Item3;
+                            case c_Tuple8Type:
+                                return v.Tuple8Val.Item3;
+                        }
+                        break;
+                    case 3:
+                        switch (v.Type) {
+                            case c_Tuple4Type:
+                                return v.Tuple4Val.Item4;
+                            case c_Tuple5Type:
+                                return v.Tuple5Val.Item4;
+                            case c_Tuple6Type:
+                                return v.Tuple6Val.Item4;
+                            case c_Tuple7Type:
+                                return v.Tuple7Val.Item4;
+                            case c_Tuple8Type:
+                                return v.Tuple8Val.Item4;
+                        }
+                        break;
+                    case 4:
+                        switch (v.Type) {
+                            case c_Tuple5Type:
+                                return v.Tuple5Val.Item5;
+                            case c_Tuple6Type:
+                                return v.Tuple6Val.Item5;
+                            case c_Tuple7Type:
+                                return v.Tuple7Val.Item5;
+                            case c_Tuple8Type:
+                                return v.Tuple8Val.Item5;
+                        }
+                        break;
+                    case 5:
+                        switch (v.Type) {
+                            case c_Tuple6Type:
+                                return v.Tuple6Val.Item6;
+                            case c_Tuple7Type:
+                                return v.Tuple7Val.Item6;
+                            case c_Tuple8Type:
+                                return v.Tuple8Val.Item6;
+                        }
+                        break;
+                    case 6:
+                        switch (v.Type) {
+                            case c_Tuple7Type:
+                                return v.Tuple7Val.Item7;
+                            case c_Tuple8Type:
+                                return v.Tuple8Val.Item7;
+                        }
+                        break;
+                    default:
+                        if (v.Type == c_Tuple8Type) {
+                            return GetTupleValue(v.Tuple8Val, index);
+                        }
+                        break;
+                }
+            }
+            return BoxedValue.NullObject;
+        }
+        private static BoxedValue GetTupleValue(TupleValue8 v, int index)
+        {
+            var rest = v.Rest.Item1;
+            if (rest.IsTuple)
+                return GetTupleValue(v, index - 7);
+            else
+                return rest;
         }
 
         public static BoxedValue NullObject
