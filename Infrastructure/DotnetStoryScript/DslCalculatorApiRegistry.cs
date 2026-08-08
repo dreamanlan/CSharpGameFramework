@@ -2620,7 +2620,7 @@ namespace DotnetStoryScript.DslExpression
                         var v = operands[1];
                         encoding = GetEncoding(v);
                     }
-                    return BoxedValue.FromObject(File.ReadAllLines(path, encoding));
+                    return BoxedValue.FromObject(SharedFileReader.ReadAllLines(path, encoding));
                 }
             }
             return BoxedValue.FromObject(new string[0]);
@@ -2668,7 +2668,7 @@ namespace DotnetStoryScript.DslExpression
                         var v = operands[1];
                         encoding = GetEncoding(v);
                     }
-                    return File.ReadAllText(path, encoding);
+                    return SharedFileReader.ReadAllText(path, encoding);
                 }
             }
             return BoxedValue.NullObject;
@@ -2976,7 +2976,7 @@ namespace DotnetStoryScript.DslExpression
                         var str = v.AsString;
                         if (!string.IsNullOrEmpty(str)) {
                             str = Environment.ExpandEnvironmentVariables(str);
-                            input = File.ReadAllLines(str);
+                            input = SharedFileReader.ReadAllLines(str);
                         }
                     }
                 }
@@ -3156,7 +3156,7 @@ namespace DotnetStoryScript.DslExpression
                             var str = v.AsString;
                             if (!string.IsNullOrEmpty(str)) {
                                 str = Environment.ExpandEnvironmentVariables(str);
-                                input = File.ReadAllLines(str);
+                                input = SharedFileReader.ReadAllLines(str);
                             }
                         }
                     }
@@ -3524,6 +3524,32 @@ namespace DotnetStoryScript.DslExpression
             else {
                 return string.Empty;
             }
+        }
+    }
+    internal static class SharedFileReader
+    {
+        internal static string ReadAllText(string path, Encoding encoding)
+        {
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var reader = new StreamReader(stream, encoding)) {
+                return reader.ReadToEnd();
+            }
+        }
+        internal static string[] ReadAllLines(string path, Encoding encoding)
+        {
+            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var reader = new StreamReader(stream, encoding)) {
+                var list = new List<string>();
+                string line;
+                while ((line = reader.ReadLine()) != null) {
+                    list.Add(line);
+                }
+                return list.ToArray();
+            }
+        }
+        internal static string[] ReadAllLines(string path)
+        {
+            return ReadAllLines(path, Encoding.UTF8);
         }
     }
     public sealed class DslCalculatorApiRegistry

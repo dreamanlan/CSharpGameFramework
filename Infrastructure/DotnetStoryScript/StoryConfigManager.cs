@@ -63,7 +63,7 @@ namespace DotnetStoryScript
                 Dsl.DslFile dataFile = new Dsl.DslFile();
                 ScriptableDslHelper.ForStoryInstance.SetCallbacks(dataFile);
                 var bytes = new byte[Dsl.DslFile.c_BinaryIdentity.Length];
-                using (var fs = File.OpenRead(file)) {
+                using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
                     fs.Read(bytes, 0, bytes.Length);
                     fs.Close();
                 }
