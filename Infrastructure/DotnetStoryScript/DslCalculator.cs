@@ -245,6 +245,14 @@ namespace DotnetStoryScript.DslExpression
                 return Encoding.UTF8;
             }
         }
+        protected static Encoding GetEncoding(BoxedValue v, string fullPath)
+        {
+            return BomHelper.GetEncoding(v, fullPath);
+        }
+        protected static Encoding GetEncodingForWrite(BoxedValue v, string fullPath)
+        {
+            return BomHelper.GetEncodingForWrite(v, fullPath);
+        }
         public static bool TryParseNumeric(string str, out BoxedValue val)
         {
             string type = string.Empty;

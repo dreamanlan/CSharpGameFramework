@@ -2618,7 +2618,7 @@ namespace DotnetStoryScript.DslExpression
                     Encoding encoding = Encoding.UTF8;
                     if (operands.Count >= 2) {
                         var v = operands[1];
-                        encoding = GetEncoding(v);
+                        encoding = GetEncoding(v, path);
                     }
                     return BoxedValue.FromObject(SharedFileReader.ReadAllLines(path, encoding));
                 }
@@ -2640,7 +2640,7 @@ namespace DotnetStoryScript.DslExpression
                     Encoding encoding = Encoding.UTF8;
                     if (operands.Count >= 3) {
                         var v = operands[2];
-                        encoding = GetEncoding(v);
+                        encoding = GetEncodingForWrite(v, path);
                     }
                     var strs = new List<string>();
                     foreach (var line in lines) {
@@ -2666,7 +2666,7 @@ namespace DotnetStoryScript.DslExpression
                     Encoding encoding = Encoding.UTF8;
                     if (operands.Count >= 2) {
                         var v = operands[1];
-                        encoding = GetEncoding(v);
+                        encoding = GetEncoding(v, path);
                     }
                     return SharedFileReader.ReadAllText(path, encoding);
                 }
@@ -2688,7 +2688,7 @@ namespace DotnetStoryScript.DslExpression
                     Encoding encoding = Encoding.UTF8;
                     if (operands.Count >= 3) {
                         var v = operands[2];
-                        encoding = GetEncoding(v);
+                        encoding = GetEncodingForWrite(v, path);
                     }
                     File.WriteAllText(path, text, encoding);
                     return true;
