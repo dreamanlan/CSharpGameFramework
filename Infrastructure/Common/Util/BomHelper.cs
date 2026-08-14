@@ -11,22 +11,47 @@ namespace ScriptableFramework
     public static class BomHelper
     {
         /// <summary>
-        /// Returns true if the file at fullPath starts with UTF-8 BOM (EF BB BF).
-        /// Returns false if file is shorter than 3 bytes, missing BOM, or not accessible.
+        /// Returns true if the file at fullPath starts with any BOM
+        /// (UTF-8 / UTF-16 LE&amp;BE / UTF-32 LE&amp;BE).
+        /// Returns false if file has no BOM, is too short, or is not accessible.
         /// </summary>
-        public static bool HasUtf8Bom(string fullPath)
+        public static bool HasBom(string fullPath)
+        {
+            return GetBomBytes(fullPath) != null;
+        }
+
+        /// <summary>
+        /// Returns the BOM byte sequence found at the start of the file, or null if no BOM.
+        /// Detects UTF-8 (EF BB BF), UTF-16 LE (FF FE), UTF-16 BE (FE FF),
+        /// UTF-32 LE (FF FE 00 00), UTF-32 BE (00 00 FE FF).
+        /// Detection order matters: UTF-32 LE BOM starts with the UTF-16 LE BOM prefix.
+        /// </summary>
+        public static byte[] GetBomBytes(string fullPath)
         {
             try {
                 using (var fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                    if (fs.Length < 3)
-                        return false;
-                    byte[] head = new byte[3];
-                    int read = fs.Read(head, 0, 3);
-                    return read == 3 && head[0] == 0xEF && head[1] == 0xBB && head[2] == 0xBF;
+                    if (fs.Length < 2)
+                        return null;
+                    int bomLen = (int)Math.Min(4, fs.Length);
+                    byte[] head = new byte[bomLen];
+                    int read = fs.Read(head, 0, bomLen);
+                    // Order matters: UTF-32 BOMs must be checked before UTF-16 BOMs
+                    // because UTF-32 LE (FF FE 00 00) starts with UTF-16 LE (FF FE).
+                    if (read >= 4 && head[0] == 0x00 && head[1] == 0x00 && head[2] == 0xFE && head[3] == 0xFF)
+                        return new byte[] { 0x00, 0x00, 0xFE, 0xFF };
+                    if (read >= 4 && head[0] == 0xFF && head[1] == 0xFE && head[2] == 0x00 && head[3] == 0x00)
+                        return new byte[] { 0xFF, 0xFE, 0x00, 0x00 };
+                    if (read >= 3 && head[0] == 0xEF && head[1] == 0xBB && head[2] == 0xBF)
+                        return new byte[] { 0xEF, 0xBB, 0xBF };
+                    if (read >= 2 && head[0] == 0xFE && head[1] == 0xFF)
+                        return new byte[] { 0xFE, 0xFF };
+                    if (read >= 2 && head[0] == 0xFF && head[1] == 0xFE)
+                        return new byte[] { 0xFF, 0xFE };
+                    return null;
                 }
             }
             catch {
-                return false;
+                return null;
             }
         }
 
@@ -114,28 +139,50 @@ namespace ScriptableFramework
         }
 
         /// <summary>
-        /// Detect whether the file at fullPath starts with any BOM (UTF-8/UTF-16/UTF-32).
-        /// Returns true if any BOM is found, false otherwise.
+        /// Returns an encoding for writing without BOM. If the file exists and has a
+        /// BOM-capable encoding (UTF-8/UTF-16/UTF-32), returns that encoding without BOM.
+        /// If the file does not exist or the encoding is not BOM-capable, returns
+        /// UTF-8 without BOM.
         /// </summary>
-        private static bool HasAnyBom(string fullPath)
+        public static Encoding GetEncodingForWriteNoBom(string fullPath)
         {
-            try {
-                using (var fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
-                    if (fs.Length < 2) return false;
-                    int bomLen = (int)Math.Min(4, fs.Length);
-                    byte[] head = new byte[bomLen];
-                    int read = fs.Read(head, 0, bomLen);
-                    if (read >= 4 && head[0] == 0x00 && head[1] == 0x00 && head[2] == 0xFE && head[3] == 0xFF) return true;
-                    if (read >= 4 && head[0] == 0xFF && head[1] == 0xFE && head[2] == 0x00 && head[3] == 0x00) return true;
-                    if (read >= 3 && head[0] == 0xEF && head[1] == 0xBB && head[2] == 0xBF) return true;
-                    if (read >= 2 && head[0] == 0xFE && head[1] == 0xFF) return true;
-                    if (read >= 2 && head[0] == 0xFF && head[1] == 0xFE) return true;
-                    return false;
-                }
+            if (!File.Exists(fullPath)) {
+                return new UTF8Encoding(false);
             }
-            catch {
-                return false;
+            Encoding enc = GetEncodingPreservingBom(fullPath, defaultBom: false);
+            if (enc is UTF8Encoding) {
+                return new UTF8Encoding(false);
             }
+            if (enc is UnicodeEncoding unicode) {
+                bool bigEndian = unicode.GetPreamble().Length >= 2 && unicode.GetPreamble()[0] == 0xFE;
+                return new UnicodeEncoding(bigEndian, false);
+            }
+            if (enc is UTF32Encoding utf32) {
+                bool bigEndian = utf32.GetPreamble().Length >= 4 && utf32.GetPreamble()[0] == 0x00;
+                return new UTF32Encoding(bigEndian, false);
+            }
+            // Non-BOM-capable encoding: fall back to UTF-8 without BOM
+            return new UTF8Encoding(false);
+        }
+
+        /// <summary>
+        /// Returns the BOM bytes to prepend for a file without BOM, based on detected encoding.
+        /// UTF-8 files get UTF-8 BOM; UTF-16/UTF-32 files get the matching BOM.
+        /// Unrecognizable encodings default to UTF-8 BOM for backward compatibility.
+        /// </summary>
+        public static byte[] GetBomToAdd(string fullPath)
+        {
+            Encoding enc = GetEncodingPreservingBom(fullPath, defaultBom: false);
+            if (enc is UnicodeEncoding unicode) {
+                bool bigEndian = unicode.GetPreamble().Length >= 2 && unicode.GetPreamble()[0] == 0xFE;
+                return bigEndian ? new byte[] { 0xFE, 0xFF } : new byte[] { 0xFF, 0xFE };
+            }
+            if (enc is UTF32Encoding utf32) {
+                bool bigEndian = utf32.GetPreamble().Length >= 4 && utf32.GetPreamble()[0] == 0x00;
+                return bigEndian ? new byte[] { 0x00, 0x00, 0xFE, 0xFF } : new byte[] { 0xFF, 0xFE, 0x00, 0x00 };
+            }
+            // UTF-8 or fallback: use UTF-8 BOM
+            return new byte[] { 0xEF, 0xBB, 0xBF };
         }
 
         /// <summary>
@@ -217,7 +264,7 @@ namespace ScriptableFramework
                 bool currentEmit = utf8.GetPreamble().Length > 0;
                 if (currentEmit == emitBom) return utf8;
                 if (!bomExplicit && File.Exists(fullPath)) {
-                    bool fileHasBom = HasAnyBom(fullPath);
+                    bool fileHasBom = HasBom(fullPath);
                     emitBom = fileHasBom;
                 }
                 return new UTF8Encoding(emitBom);
@@ -227,7 +274,7 @@ namespace ScriptableFramework
                 bool currentEmit = unicode.GetPreamble().Length > 0;
                 if (currentEmit == emitBom) return unicode;
                 if (!bomExplicit && File.Exists(fullPath)) {
-                    emitBom = HasAnyBom(fullPath);
+                    emitBom = HasBom(fullPath);
                 }
                 return new UnicodeEncoding(bigEndian, emitBom);
             }
@@ -236,7 +283,7 @@ namespace ScriptableFramework
                 bool currentEmit = utf32.GetPreamble().Length > 0;
                 if (currentEmit == emitBom) return utf32;
                 if (!bomExplicit && File.Exists(fullPath)) {
-                    emitBom = HasAnyBom(fullPath);
+                    emitBom = HasBom(fullPath);
                 }
                 return new UTF32Encoding(bigEndian, emitBom);
             }

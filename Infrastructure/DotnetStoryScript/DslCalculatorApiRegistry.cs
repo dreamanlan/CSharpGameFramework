@@ -1956,12 +1956,12 @@ namespace DotnetStoryScript.DslExpression
             return DslCalculator.FileEchoOn;
         }
     }
-    internal sealed class DirectoryExistExp : SimpleExpressionBase
+    internal sealed class DirectoryExistsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: direxist(dir) api");
+                throw new Exception("Expected: direxists(dir) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -1971,17 +1971,32 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal sealed class FileExistExp : SimpleExpressionBase
+    internal sealed class FileExistsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: fileexist(file) api");
+                throw new Exception("Expected: fileexists(file) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
                 file = Environment.ExpandEnvironmentVariables(file);
                 ret = File.Exists(file);
+            }
+            return ret;
+        }
+    }
+    internal sealed class PathExistsExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            if (operands.Count != 1)
+                throw new Exception("Expected: pathexists(dir) api");
+            var ret = BoxedValue.NullObject;
+            if (operands.Count >= 1) {
+                var path = operands[0].AsString;
+                path = Environment.ExpandEnvironmentVariables(path);
+                ret = Directory.Exists(path) || File.Exists(path);
             }
             return ret;
         }
@@ -3828,8 +3843,12 @@ namespace DotnetStoryScript.DslExpression
             Register("quotepath", "quotepath(path[,only_needed,single_quote]) api", new ExpressionFactoryHelper<QuotePathExp>());
             Register("echo", "echo(fmt,arg1,arg2,...) api, Console.WriteLine", new ExpressionFactoryHelper<EchoExp>());
             Register("fileecho", "fileecho(bool) or fileecho() api", new ExpressionFactoryHelper<FileEchoExp>());
-            Register("direxist", "direxist(dir) api", new ExpressionFactoryHelper<DirectoryExistExp>());
-            Register("fileexist", "fileexist(file) api", new ExpressionFactoryHelper<FileExistExp>());
+            Register("direxist", "direxist(dir) api", new ExpressionFactoryHelper<DirectoryExistsExp>());
+            Register("fileexist", "fileexist(file) api", new ExpressionFactoryHelper<FileExistsExp>());
+            Register("pathexist", "pathexist(path) api", new ExpressionFactoryHelper<PathExistsExp>());
+            Register("direxists", "direxists(dir) api", new ExpressionFactoryHelper<DirectoryExistsExp>());
+            Register("fileexists", "fileexists(file) api", new ExpressionFactoryHelper<FileExistsExp>());
+            Register("pathexists", "pathexists(path) api", new ExpressionFactoryHelper<PathExistsExp>());
             Register("listdirs", "listdirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListDirectoriesExp>());
             Register("listfiles", "listfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListFilesExp>());
             Register("listalldirs", "listalldirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListAllDirectoriesExp>());
