@@ -2688,7 +2688,7 @@ namespace DotnetStoryScript.DslExpression
         private bool m_IsAsync = false;
         private List<IExpression> m_Expressions = new List<IExpression>();
     }
-    internal sealed class ForeachExp : AbstractExpression
+    internal sealed class ForEachValueExp : AbstractExpression
     {
         public override bool IsAsync { get { return m_IsAsync; } }
         protected override BoxedValue DoCalc()
@@ -2798,14 +2798,14 @@ namespace DotnetStoryScript.DslExpression
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            //the handling of the simple syntax 'foreach(exp1,exp2,...) func(args);'
+            //the handling of the simple syntax 'foreachvalue(exp1,exp2,...) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
                 var secondV = statementData.Second.AsValue;
                 var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = statementData.Second.GetId();
-                if (firstId == "foreach" && !first.HaveStatement() && !first.HaveExternScript() &&
+                if (firstId == "foreachvalue" && !first.HaveStatement() && !first.HaveExternScript() &&
                         !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     int num = first.GetParamNum();
                     if (num > 0) {
