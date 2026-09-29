@@ -50,10 +50,6 @@ namespace DotnetStoryScript
             public bool CanSkip { get { return m_Info.CanSkip; } set { m_Info.CanSkip = value; } }
         }
 
-        public delegate bool StoryCommandDebuggerDelegation(StoryInstance instance, string msgId, IExpression expression, long delta);
-
-        public StoryCommandDebuggerDelegation OnExecDebugger;
-
         public string StoryId
         {
             get { return m_StoryId; }
