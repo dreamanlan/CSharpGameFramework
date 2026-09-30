@@ -50,71 +50,59 @@ namespace DotnetStoryScript
             public bool CanSkip { get { return m_Info.CanSkip; } set { m_Info.CanSkip = value; } }
         }
 
-        public string StoryId
-        {
+        public string StoryId {
             get { return m_StoryId; }
             set { m_StoryId = value; }
         }
 
-        public string Namespace
-        {
+        public string Namespace {
             get { return m_Namespace; }
             set { m_Namespace = value; }
         }
 
-        public Dsl.ISyntaxComponent Config
-        {
+        public Dsl.ISyntaxComponent Config {
             get { return m_Config; }
         }
 
-        public DslCalculator Calculator
-        {
+        public DslCalculator Calculator {
             get { return m_Calculator; }
         }
 
-        public bool IsDebug
-        {
+        public bool IsDebug {
             get { return m_IsDebug; }
             set { m_IsDebug = value; }
         }
 
-        public bool IsTerminated
-        {
+        public bool IsTerminated {
             get { return m_IsTerminated; }
             set { m_IsTerminated = value; }
         }
 
-        public bool IsPaused
-        {
+        public bool IsPaused {
             get { return m_IsPaused; }
             set { m_IsPaused = value; }
         }
 
-        public bool IsInTick
-        {
+        public bool IsInTick {
             get { return m_IsInTick; }
         }
 
-        internal CoroutineInfo CurrentCoroutine
-        {
+        internal CoroutineInfo CurrentCoroutine {
             get { return m_CurrentCoroutine; }
             set { m_CurrentCoroutine = value; }
         }
 
-        public object Context
-        {
+        public object Context {
             get => m_Context;
             set => m_Context = value;
         }
 
-        public StrBoxedValueDict ContextVariables
-        {
+        public StrBoxedValueDict ContextVariables {
             get { return m_ContextVariables; }
             set { m_ContextVariables = value; }
         }
 
-        public StrBoxedValueDict InstanceVariables
-        {
+        public StrBoxedValueDict InstanceVariables {
             get { return m_InstanceVariables; }
         }
 
@@ -380,6 +368,25 @@ namespace DotnetStoryScript
 
         public void Reset(bool logIfTriggered)
         {
+            if (m_IsResetting) {
+                return;
+            }
+            if (m_IsInTick) {
+                m_ResetPending = true;
+                return;
+            }
+            m_IsResetting = true;
+            m_ResetPending = false;
+            try {
+                ResetCore();
+            }
+            finally {
+                m_IsResetting = false;
+            }
+        }
+
+        private void ResetCore()
+        {
             m_IsTerminated = false;
             m_IsPaused = false;
             StopAllCoroutines();
@@ -396,11 +403,14 @@ namespace DotnetStoryScript
             m_Message2TriggerTimes.Clear();
             m_MessageCount = 0;
             m_ConcurrentMessageCount = 0;
-            m_Calculator?.Clear();
+            m_Calculator?.ResetRuntimeState();
         }
 
         public void Start()
         {
+            if (m_IsResetting || m_ResetPending) {
+                return;
+            }
             m_LastTickTime = 0;
             m_CurTime = 0;
 
@@ -460,6 +470,10 @@ namespace DotnetStoryScript
 
         public void SendMessage(string msgId, BoxedValueList args)
         {
+            if (m_IsResetting || m_ResetPending) {
+                m_BoxedValueListPool.Recycle(args);
+                return;
+            }
             MessageInfo msgInfo = m_MessageInfoPool.Alloc();
             msgInfo.m_MsgId = msgId;
             msgInfo.m_Args = args;
@@ -470,8 +484,12 @@ namespace DotnetStoryScript
                 ++m_MessageCount;
             }
             else {
-                // Ignore unprocessed messages
+                // Recycle unprocessed messages.
+                m_BoxedValueListPool.Recycle(msgInfo.m_Args);
+                msgInfo.Clear();
+                m_MessageInfoPool.Recycle(msgInfo);
             }
+
         }
 
         public void SendConcurrentMessage(string msgId)
@@ -506,6 +524,10 @@ namespace DotnetStoryScript
 
         public void SendConcurrentMessage(string msgId, BoxedValueList args)
         {
+            if (m_IsResetting || m_ResetPending) {
+                m_BoxedValueListPool.Recycle(args);
+                return;
+            }
             MessageInfo msgInfo = m_MessageInfoPool.Alloc();
             msgInfo.m_MsgId = msgId;
             msgInfo.m_Args = args;
@@ -518,8 +540,12 @@ namespace DotnetStoryScript
                 ++m_ConcurrentMessageCount;
             }
             else {
-                // Ignore unprocessed messages
+                // Recycle unprocessed messages.
+                m_BoxedValueListPool.Recycle(msgInfo.m_Args);
+                msgInfo.Clear();
+                m_MessageInfoPool.Recycle(msgInfo);
             }
+
         }
 
         public int CountMessage(string msgId)
@@ -591,6 +617,9 @@ namespace DotnetStoryScript
 
         public void Tick(long curTime)
         {
+            if (m_IsInTick || m_IsResetting) {
+                return;
+            }
             if (m_IsPaused) {
                 m_LastTickTime = curTime;
                 return;
@@ -616,11 +645,13 @@ namespace DotnetStoryScript
             }
             finally {
                 m_IsInTick = false;
+                if (m_ResetPending) {
+                    Reset(false);
+                }
             }
         }
 
-        public long CurrentTime
-        {
+        public long CurrentTime {
             get { return m_CurTime; }
         }
 
@@ -630,13 +661,19 @@ namespace DotnetStoryScript
             foreach (var pair in m_MessageQueues) {
                 string msgId = pair.Key;
                 Queue<MessageInfo> queue = pair.Value;
-                for (int msgCt = 0; msgCt < c_MaxMsgCountPerTick && queue.Count > 0; ++msgCt) {
+                for (int msgCt = 0; msgCt < c_MaxMsgCountPerTick && queue.Count > 0 && !m_ResetPending; ++msgCt) {
                     MessageInfo info = queue.Dequeue();
                     --m_MessageCount;
-                    UpdateMessageTriggerTime(info.m_MsgId, curTime);
-                    TriggerMessage(msgId, info.m_Args, false);
-                    info.Clear();
-                    m_MessageInfoPool.Recycle(info);
+                    try {
+                        UpdateMessageTriggerTime(info.m_MsgId, curTime);
+                        TriggerMessage(msgId, info.m_Args, false);
+                    }
+                    finally {
+                        m_BoxedValueListPool.Recycle(info.m_Args);
+                        info.Clear();
+                        m_MessageInfoPool.Recycle(info);
+                    }
+
                 }
             }
         }
@@ -646,19 +683,28 @@ namespace DotnetStoryScript
             const int c_MaxConcurrentMsgCountPerTick = 16;
             foreach (var pair in m_ConcurrentMessageQueues) {
                 Queue<MessageInfo> queue = pair.Value;
-                for (int concurrentMsgCt = 0; concurrentMsgCt < c_MaxConcurrentMsgCountPerTick && queue.Count > 0; ++concurrentMsgCt) {
+                for (int concurrentMsgCt = 0; concurrentMsgCt < c_MaxConcurrentMsgCountPerTick && queue.Count > 0 && !m_ResetPending; ++concurrentMsgCt) {
                     MessageInfo info = queue.Dequeue();
                     --m_ConcurrentMessageCount;
-                    UpdateMessageTriggerTime(info.m_MsgId, curTime);
-                    TriggerMessage(info.m_MsgId, info.m_Args, true);
-                    info.Clear();
-                    m_MessageInfoPool.Recycle(info);
+                    try {
+                        UpdateMessageTriggerTime(info.m_MsgId, curTime);
+                        TriggerMessage(info.m_MsgId, info.m_Args, true);
+                    }
+                    finally {
+                        m_BoxedValueListPool.Recycle(info.m_Args);
+                        info.Clear();
+                        m_MessageInfoPool.Recycle(info);
+                    }
+
                 }
             }
         }
 
         private void TriggerMessage(string msgId, BoxedValueList args, bool isConcurrent)
         {
+            if (m_IsResetting || m_ResetPending) {
+                return;
+            }
             string funcName;
             if (!m_HandlerFunctionNames.TryGetValue(msgId, out funcName)) {
                 return;
@@ -696,12 +742,17 @@ namespace DotnetStoryScript
         private void TickCoroutines(List<CoroutineInfo> coroutines, long delta)
         {
             var calculator = m_Calculator;
-            for (int i = coroutines.Count - 1; i >= 0; --i) {
+            var previousContext = new AsyncTaskRuntimeContext();
+            calculator.SaveAsyncContext(previousContext);
+            var previousCoroutine = m_CurrentCoroutine;
+            for (int i = coroutines.Count - 1; i >= 0 && !m_ResetPending; --i) {
                 var coroutine = coroutines[i];
-                if (coroutine.IsSuspended) {
+                if (coroutine.AsyncResult.IsCompleted) {
+                    DisposeCoroutineEnumerators(coroutine);
+                    coroutines.RemoveAt(i);
                     continue;
                 }
-                if (coroutine.AsyncResult.IsCompleted) {
+                if (coroutine.IsSuspended) {
                     continue;
                 }
                 try {
@@ -710,7 +761,7 @@ namespace DotnetStoryScript
 
                     var stack = coroutine.EnumeratorStack;
                     bool yieldNull = false;
-                    while (stack.Count > 0 && !yieldNull) {
+                    while (stack.Count > 0 && !yieldNull && !m_ResetPending) {
                         var top = stack.Peek();
                         bool hasMore = top.MoveNext();
                         if (hasMore) {
@@ -722,6 +773,10 @@ namespace DotnetStoryScript
                         }
                         else {
                             stack.Pop();
+                            var disp = top as IDisposable;
+                            if (null != disp) {
+                                disp.Dispose();
+                            }
                         }
                     }
 
@@ -735,7 +790,8 @@ namespace DotnetStoryScript
                 }
                 finally {
                     calculator.SaveAsyncContext(coroutine.AsyncContext);
-                    m_CurrentCoroutine = null;
+                    calculator.SetAsyncContext(previousContext);
+                    m_CurrentCoroutine = previousCoroutine;
                 }
                 if (coroutine.AsyncResult.IsCompleted) {
                     DisposeCoroutineEnumerators(coroutine);
@@ -746,12 +802,25 @@ namespace DotnetStoryScript
 
         private void DisposeCoroutineEnumerators(CoroutineInfo coroutine)
         {
-            while (coroutine.EnumeratorStack.Count > 0) {
-                var top = coroutine.EnumeratorStack.Pop();
-                var disp = top as IDisposable;
-                if (null != disp) {
-                    try { disp.Dispose(); } catch { }
+            var calculator = m_Calculator;
+            var previousContext = new AsyncTaskRuntimeContext();
+            calculator.SaveAsyncContext(previousContext);
+            var previousCoroutine = m_CurrentCoroutine;
+            try {
+                m_CurrentCoroutine = coroutine;
+                calculator.SetAsyncContext(coroutine.AsyncContext);
+                while (coroutine.EnumeratorStack.Count > 0) {
+                    var top = coroutine.EnumeratorStack.Pop();
+                    var disp = top as IDisposable;
+                    if (null != disp) {
+                        try { disp.Dispose(); } catch { }
+                    }
                 }
+            }
+            finally {
+                calculator.SaveAsyncContext(coroutine.AsyncContext);
+                calculator.SetAsyncContext(previousContext);
+                m_CurrentCoroutine = previousCoroutine;
             }
         }
 
@@ -831,6 +900,8 @@ namespace DotnetStoryScript
         private bool m_IsTerminated = false;
         private bool m_IsPaused = false;
         private bool m_IsInTick = false;
+        private bool m_ResetPending = false;
+        private bool m_IsResetting = false;
         private CoroutineInfo m_CurrentCoroutine = null;
         private int m_MessageCount = 0;
         private int m_ConcurrentMessageCount = 0;
@@ -850,8 +921,7 @@ namespace DotnetStoryScript
         /// <summary>
         /// Public indexer for C# access to story instance properties
         /// </summary>
-        public BoxedValue this[string name]
-        {
+        public BoxedValue this[string name] {
             get {
                 if (m_PropertyDict[name] is BoxedValue val)
                     return val;
@@ -873,8 +943,7 @@ namespace DotnetStoryScript
         // Explicit IDictionary implementation - enables 'this.name' syntax in DSL
         // Delegate to m_PropertyDict which already implements IDictionary
         bool IDictionary.Contains(object key) => m_PropertyDict.Contains(key);
-        object IDictionary.this[object key]
-        {
+        object IDictionary.this[object key] {
             get => m_PropertyDict[key];
             set => m_PropertyDict[key] = value;
         }

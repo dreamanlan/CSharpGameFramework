@@ -6,17 +6,19 @@ using ScriptableFramework;
 namespace DotnetStoryScript.DslExpression
 {
     // High-performance stream pulling contract synced with DslCalculator states
-    public abstract class LinqIterator
+    public abstract class LinqIterator : IDisposable
     {
         public abstract bool MoveNext();
         public abstract IEnumerator MoveNext(AsyncCalcResult result);
         public abstract BoxedValue Current { get; }
+        public virtual void Dispose() { }
     }
 
-    public sealed class LinqStreamWrapper
+    public sealed class LinqStreamWrapper : IDisposable
     {
         public LinqIterator Iterator { get; private set; }
         public LinqStreamWrapper(LinqIterator iterator) { Iterator = iterator; }
+        public void Dispose() { Iterator?.Dispose(); }
     }
 
     // Explicitly typed operator interface natively wired with DslCalculator reference
@@ -50,6 +52,9 @@ namespace DotnetStoryScript.DslExpression
             m_AsyncOps[name] = op;
             if (op.IsTerminal) {
                 m_TerminalOps.Add(name);
+            }
+            else {
+                m_TerminalOps.Remove(name);
             }
         }
         public void RegisterPredefined()
@@ -89,17 +94,27 @@ namespace DotnetStoryScript.DslExpression
                 return BoxedValue.NullObject;
             }
 
-            var op = Calculator.ApiRegistry.LinqOperatorRegistry.GetOperator(method);
-            if (null == op) {
-                return BoxedValue.NullObject;
-            }
+            bool ownershipTransferred = false;
+            try {
+                var op = Calculator.ApiRegistry.LinqOperatorRegistry.GetOperator(method);
+                if (null == op) {
+                    return BoxedValue.NullObject;
+                }
 
-            if (Calculator.ApiRegistry.LinqOperatorRegistry.IsTerminalOperator(method)) {
-                // Inject the native DslCalculator reference directly
-                return op.ExecuteSyncTerminal(src, m_Expressions, this.Calculator);
-            }
+                if (Calculator.ApiRegistry.LinqOperatorRegistry.IsTerminalOperator(method)) {
+                    // Terminal consumption retains ownership until completion.
+                    return op.ExecuteSyncTerminal(src, m_Expressions, this.Calculator);
+                }
 
-            return BoxedValue.FromObject(new LinqStreamWrapper(op.CreateIterator(src, m_Expressions, this.Calculator)));
+                var value = BoxedValue.FromObject(new LinqStreamWrapper(op.CreateIterator(src, m_Expressions, this.Calculator)));
+                ownershipTransferred = true;
+                return value;
+            }
+            finally {
+                if (!ownershipTransferred) {
+                    src.Dispose();
+                }
+            }
         }
 
         // ============================================================================
@@ -110,8 +125,13 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue rawVal;
             if (m_List.IsAsync) {
                 var _ei = m_List.Calc(result);
-                while (_ei.MoveNext()) {
-                    yield return _ei.Current;
+                try {
+                    while (_ei.MoveNext()) {
+                        yield return _ei.Current;
+                    }
+                }
+                finally {
+                    (_ei as IDisposable)?.Dispose();
                 }
                 rawVal = result.Value;
             }
@@ -131,21 +151,35 @@ namespace DotnetStoryScript.DslExpression
                 yield break;
             }
 
-            var op = Calculator.ApiRegistry.LinqOperatorRegistry.GetOperator(method);
-            if (null == op) {
-                result.Value = BoxedValue.NullObject;
-                yield break;
-            }
-
-            if (Calculator.ApiRegistry.LinqOperatorRegistry.IsTerminalOperator(method)) {
-                var _eiTerminal = op.ExecuteAsyncTerminal(src, m_Expressions, result, this.Calculator);
-                while (_eiTerminal.MoveNext()) {
-                    yield return _eiTerminal.Current;
+            bool ownershipTransferred = false;
+            try {
+                var op = Calculator.ApiRegistry.LinqOperatorRegistry.GetOperator(method);
+                if (null == op) {
+                    result.Value = BoxedValue.NullObject;
+                    yield break;
                 }
-                yield break;
-            }
 
-            result.Value = BoxedValue.FromObject(new LinqStreamWrapper(op.CreateIterator(src, m_Expressions, this.Calculator)));
+                if (Calculator.ApiRegistry.LinqOperatorRegistry.IsTerminalOperator(method)) {
+                    var _eiTerminal = op.ExecuteAsyncTerminal(src, m_Expressions, result, this.Calculator);
+                    try {
+                        while (_eiTerminal.MoveNext()) {
+                            yield return _eiTerminal.Current;
+                        }
+                    }
+                    finally {
+                        (_eiTerminal as IDisposable)?.Dispose();
+                    }
+                    yield break;
+                }
+
+                result.Value = BoxedValue.FromObject(new LinqStreamWrapper(op.CreateIterator(src, m_Expressions, this.Calculator)));
+                ownershipTransferred = true;
+            }
+            finally {
+                if (!ownershipTransferred) {
+                    src.Dispose();
+                }
+            }
         }
 
         private LinqIterator GetSourceIterator(object raw)
@@ -190,11 +224,32 @@ namespace DotnetStoryScript.DslExpression
         private IEnumerator _enumerator;
         public SyncEnumerableAdapter(IEnumerator enumerator) { _enumerator = enumerator; }
         public override BoxedValue Current => BoxedValue.FromObject(_enumerator.Current);
-        public override bool MoveNext() { return _enumerator.MoveNext(); }
+        public override bool MoveNext()
+        {
+            if (null == _enumerator) {
+                return false;
+            }
+            bool moved = false;
+            try {
+                moved = _enumerator.MoveNext();
+                return moved;
+            }
+            finally {
+                if (!moved) {
+                    Dispose();
+                }
+            }
+        }
         public override IEnumerator MoveNext(AsyncCalcResult result)
         {
-            result.Value = BoxedValue.FromBool(_enumerator.MoveNext());
+            result.Value = BoxedValue.FromBool(MoveNext());
             yield break;
+        }
+        public override void Dispose()
+        {
+            var enumerator = _enumerator;
+            _enumerator = null;
+            (enumerator as IDisposable)?.Dispose();
         }
     }
 }

@@ -23,58 +23,76 @@ namespace DotnetStoryScript.DslExpression
         {
             long ct = 0;
             BoxedValue prev = calcContext.GetVariable("$$");
-            while (src.MoveNext()) {
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    if (Enumerable.First(exprs).Calc().GetLong() != 0) {
+            try {
+                while (src.MoveNext()) {
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        if (Enumerable.First(exprs).Calc().GetLong() != 0) {
+                            ct++;
+                        }
+                    }
+                    else {
                         ct++;
                     }
                 }
-                else {
-                    ct++;
-                }
+                return BoxedValue.From((int)ct);
             }
-            calcContext.SetVariable("$$", prev);
-            return BoxedValue.From((int)ct);
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
         }
 
         public IEnumerator ExecuteAsyncTerminal(LinqIterator src, List<IExpression> exprs, AsyncCalcResult result, DslCalculator calcContext)
         {
             long ct = 0;
             BoxedValue prev = calcContext.GetVariable("$$");
-            while (true) {
-                var _eiSrc = src.MoveNext(result);
-                while (_eiSrc.MoveNext()) {
-                    yield return _eiSrc.Current;
-                }
-                if (!result.Value.GetBool()) {
-                    break;
-                }
-
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    var condExpr = Enumerable.First(exprs);
-                    BoxedValue condRes;
-                    if (condExpr.IsAsync) {
-                        var _eiCalc = condExpr.Calc(result);
-                        while (_eiCalc.MoveNext()) {
-                            yield return _eiCalc.Current;
+            try {
+                while (true) {
+                    var _eiSrc = src.MoveNext(result);
+                    try {
+                        while (_eiSrc.MoveNext()) {
+                            yield return _eiSrc.Current;
                         }
-                        condRes = result.Value;
+                    }
+                    finally {
+                        (_eiSrc as IDisposable)?.Dispose();
+                    }
+                    if (!result.Value.GetBool()) {
+                        break;
+                    }
+
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        var condExpr = Enumerable.First(exprs);
+                        BoxedValue condRes;
+                        if (condExpr.IsAsync) {
+                            var _eiCalc = condExpr.Calc(result);
+                            try {
+                                while (_eiCalc.MoveNext()) {
+                                    yield return _eiCalc.Current;
+                                }
+                            }
+                            finally {
+                                (_eiCalc as IDisposable)?.Dispose();
+                            }
+                            condRes = result.Value;
+                        }
+                        else {
+                            condRes = condExpr.Calc();
+                        }
+                        if (condRes.GetLong() != 0) {
+                            ct++;
+                        }
                     }
                     else {
-                        condRes = condExpr.Calc();
-                    }
-                    if (condRes.GetLong() != 0) {
                         ct++;
                     }
                 }
-                else {
-                    ct++;
-                }
+                result.Value = BoxedValue.From((int)ct);
             }
-            calcContext.SetVariable("$$", prev);
-            result.Value = BoxedValue.From((int)ct);
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
         }
     }
 }

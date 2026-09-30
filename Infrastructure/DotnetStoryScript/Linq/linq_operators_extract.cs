@@ -25,57 +25,71 @@ namespace DotnetStoryScript.DslExpression
         public BoxedValue ExecuteSyncTerminal(LinqIterator src, List<IExpression> exprs, DslCalculator calcContext)
         {
             BoxedValue prev = calcContext.GetVariable("$$");
-            while (src.MoveNext()) {
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    if (Enumerable.First(exprs).Calc().GetLong() != 0) {
-                        calcContext.SetVariable("$$", prev);
+            try {
+                while (src.MoveNext()) {
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        if (Enumerable.First(exprs).Calc().GetLong() != 0) {
+                            return src.Current;
+                        }
+                    }
+                    else {
                         return src.Current;
                     }
                 }
-                else {
-                    calcContext.SetVariable("$$", prev);
-                    return src.Current;
-                }
+                return BoxedValue.NullObject;
             }
-            calcContext.SetVariable("$$", prev);
-            return BoxedValue.NullObject;
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
         }
 
         public IEnumerator ExecuteAsyncTerminal(LinqIterator src, List<IExpression> exprs, AsyncCalcResult result, DslCalculator calcContext)
         {
             BoxedValue prev = calcContext.GetVariable("$$");
-            while (true) {
-                var _eiSrc = src.MoveNext(result);
-                while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
-                if (!result.Value.GetBool()) break;
+            try {
+                while (true) {
+                    var _eiSrc = src.MoveNext(result);
+                    try {
+                        while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
+                    }
+                    finally {
+                        (_eiSrc as IDisposable)?.Dispose();
+                    }
+                    if (!result.Value.GetBool()) break;
 
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    var condExpr = Enumerable.First(exprs);
-                    BoxedValue condRes;
-                    if (condExpr.IsAsync) {
-                        var _eiCalc = condExpr.Calc(result);
-                        while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
-                        condRes = result.Value;
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        var condExpr = Enumerable.First(exprs);
+                        BoxedValue condRes;
+                        if (condExpr.IsAsync) {
+                            var _eiCalc = condExpr.Calc(result);
+                            try {
+                                while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
+                            }
+                            finally {
+                                (_eiCalc as IDisposable)?.Dispose();
+                            }
+                            condRes = result.Value;
+                        }
+                        else {
+                            condRes = condExpr.Calc();
+                        }
+                        if (condRes.GetLong() != 0) {
+                            result.Value = src.Current;
+                            yield break;
+                        }
                     }
                     else {
-                        condRes = condExpr.Calc();
-                    }
-                    if (condRes.GetLong() != 0) {
-                        calcContext.SetVariable("$$", prev);
                         result.Value = src.Current;
                         yield break;
                     }
                 }
-                else {
-                    calcContext.SetVariable("$$", prev);
-                    result.Value = src.Current;
-                    yield break;
-                }
+                result.Value = BoxedValue.NullObject;
             }
-            calcContext.SetVariable("$$", prev);
-            result.Value = BoxedValue.NullObject;
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
         }
     }
 
@@ -89,52 +103,70 @@ namespace DotnetStoryScript.DslExpression
         {
             BoxedValue last = BoxedValue.NullObject;
             BoxedValue prev = calcContext.GetVariable("$$");
-            while (src.MoveNext()) {
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    if (Enumerable.First(exprs).Calc().GetLong() != 0) {
+            try {
+                while (src.MoveNext()) {
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        if (Enumerable.First(exprs).Calc().GetLong() != 0) {
+                            last = src.Current;
+                        }
+                    }
+                    else {
                         last = src.Current;
                     }
                 }
-                else {
-                    last = src.Current;
-                }
+                return last;
             }
-            calcContext.SetVariable("$$", prev);
-            return last;
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
         }
 
         public IEnumerator ExecuteAsyncTerminal(LinqIterator src, List<IExpression> exprs, AsyncCalcResult result, DslCalculator calcContext)
         {
             BoxedValue last = BoxedValue.NullObject;
             BoxedValue prev = calcContext.GetVariable("$$");
-            while (true) {
-                var _eiSrc = src.MoveNext(result);
-                while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
-                if (!result.Value.GetBool()) break;
+            try {
+                while (true) {
+                    var _eiSrc = src.MoveNext(result);
+                    try {
+                        while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
+                    }
+                    finally {
+                        (_eiSrc as IDisposable)?.Dispose();
+                    }
+                    if (!result.Value.GetBool()) break;
 
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    var condExpr = Enumerable.First(exprs);
-                    BoxedValue condRes;
-                    if (condExpr.IsAsync) {
-                        var _eiCalc = condExpr.Calc(result);
-                        while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
-                        condRes = result.Value;
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        var condExpr = Enumerable.First(exprs);
+                        BoxedValue condRes;
+                        if (condExpr.IsAsync) {
+                            var _eiCalc = condExpr.Calc(result);
+                            try {
+                                while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
+                            }
+                            finally {
+                                (_eiCalc as IDisposable)?.Dispose();
+                            }
+                            condRes = result.Value;
+                        }
+                        else {
+                            condRes = condExpr.Calc();
+                        }
+                        if (condRes.GetLong() != 0) {
+                            last = src.Current;
+                        }
                     }
                     else {
-                        condRes = condExpr.Calc();
-                    }
-                    if (condRes.GetLong() != 0) {
                         last = src.Current;
                     }
                 }
-                else {
-                    last = src.Current;
-                }
+                result.Value = last;
             }
-            calcContext.SetVariable("$$", prev);
-            result.Value = last;
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
         }
     }
 
@@ -158,7 +190,12 @@ namespace DotnetStoryScript.DslExpression
             var list = new List<BoxedValue>();
             while (true) {
                 var _eiSrc = src.MoveNext(result);
-                while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
+                try {
+                    while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
+                }
+                finally {
+                    (_eiSrc as IDisposable)?.Dispose();
+                }
                 if (!result.Value.GetBool()) break;
                 list.Add(src.Current);
             }

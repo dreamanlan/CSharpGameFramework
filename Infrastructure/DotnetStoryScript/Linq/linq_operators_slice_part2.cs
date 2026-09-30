@@ -30,6 +30,21 @@ namespace DotnetStoryScript.DslExpression
         private LinqIterator _src; private List<IExpression> _exprs; private LinqIterator _secondSrc = null; private bool _onFirst = true;
         public ItrConcat(LinqIterator src, List<IExpression> exprs, DslCalculator calcContext) { _src = src; _exprs = exprs; }
         public override BoxedValue Current => _onFirst ? _src.Current : _secondSrc.Current;
+        public override void Dispose()
+        {
+            var src = _src;
+            var secondSrc = _secondSrc;
+            _src = null;
+            _secondSrc = null;
+            try {
+                src?.Dispose();
+            }
+            finally {
+                if (!ReferenceEquals(src, secondSrc)) {
+                    secondSrc?.Dispose();
+                }
+            }
+        }
         private void InitSecond(BoxedValue val)
         {
             if (_secondSrc == null) {
@@ -40,6 +55,9 @@ namespace DotnetStoryScript.DslExpression
         }
         public override bool MoveNext()
         {
+            if (null == _src) {
+                return false;
+            }
             if (_onFirst) {
                 if (_src.MoveNext()) return true;
                 _onFirst = false;
@@ -49,16 +67,30 @@ namespace DotnetStoryScript.DslExpression
         }
         public override IEnumerator MoveNext(AsyncCalcResult result)
         {
+            if (null == _src) {
+                result.Value = BoxedValue.FromBool(false);
+                yield break;
+            }
             if (_onFirst) {
                 var _eiSrc = _src.MoveNext(result);
-                while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
+                try {
+                    while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
+                }
+                finally {
+                    (_eiSrc as IDisposable)?.Dispose();
+                }
                 if (result.Value.GetBool()) yield break;
                 _onFirst = false;
                 if (_exprs.Count > 0) {
                     var firstExpr = Enumerable.First(_exprs);
                     if (firstExpr.IsAsync) {
                         var _eiCalc = firstExpr.Calc(result);
-                        while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
+                        try {
+                            while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
+                        }
+                        finally {
+                            (_eiCalc as IDisposable)?.Dispose();
+                        }
                         InitSecond(result.Value);
                     }
                     else InitSecond(firstExpr.Calc());
@@ -66,7 +98,12 @@ namespace DotnetStoryScript.DslExpression
             }
             if (_secondSrc != null) {
                 var _eiSec = _secondSrc.MoveNext(result);
-                while (_eiSec.MoveNext()) yield return _eiSec.Current;
+                try {
+                    while (_eiSec.MoveNext()) yield return _eiSec.Current;
+                }
+                finally {
+                    (_eiSec as IDisposable)?.Dispose();
+                }
                 yield break;
             }
             result.Value = BoxedValue.FromBool(false);
@@ -111,6 +148,13 @@ namespace DotnetStoryScript.DslExpression
         private List<BoxedValue> _list; private int _idx = -1; private bool _initialized = false;
         public ItrOrderBy(LinqIterator src, List<IExpression> exprs, DslCalculator calcContext, bool desc) { _src = src; _exprs = exprs; _calc = calcContext; _desc = desc; }
         public override BoxedValue Current => _list[_idx];
+        public override void Dispose()
+        {
+            var src = _src;
+            _src = null;
+            _list = null;
+            src?.Dispose();
+        }
 
         private int CompareKeys(BoxedValue[] a, BoxedValue[] b)
         {
@@ -131,19 +175,26 @@ namespace DotnetStoryScript.DslExpression
 
         public override bool MoveNext()
         {
+            if (null == _src) {
+                return false;
+            }
             if (!_initialized) {
                 var keyed = new List<KeyedItem>();
                 BoxedValue prev = _calc.GetVariable("$$");
-                while (_src.MoveNext()) {
-                    BoxedValue item = _src.Current;
-                    var keys = new BoxedValue[_exprs.Count];
-                    _calc.SetVariable("$$", item);
-                    for (int i = 0; i < _exprs.Count; i++) {
-                        keys[i] = _exprs[i].Calc();
+                try {
+                    while (_src.MoveNext()) {
+                        BoxedValue item = _src.Current;
+                        var keys = new BoxedValue[_exprs.Count];
+                        _calc.SetVariable("$$", item);
+                        for (int i = 0; i < _exprs.Count; i++) {
+                            keys[i] = _exprs[i].Calc();
+                        }
+                        keyed.Add(new KeyedItem { Item = item, Keys = keys });
                     }
-                    keyed.Add(new KeyedItem { Item = item, Keys = keys });
                 }
-                _calc.SetVariable("$$", prev);
+                finally {
+                    _calc.SetVariable("$$", prev);
+                }
                 FinalizeSort(keyed);
                 _initialized = true;
             }
@@ -152,30 +203,48 @@ namespace DotnetStoryScript.DslExpression
 
         public override IEnumerator MoveNext(AsyncCalcResult result)
         {
+            if (null == _src) {
+                result.Value = BoxedValue.FromBool(false);
+                yield break;
+            }
             if (!_initialized) {
                 var keyed = new List<KeyedItem>();
                 BoxedValue prev = _calc.GetVariable("$$");
-                while (true) {
-                    var _eiSrc = _src.MoveNext(result);
-                    while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
-                    if (!result.Value.GetBool()) break;
-                    BoxedValue item = _src.Current;
-                    var keys = new BoxedValue[_exprs.Count];
-                    _calc.SetVariable("$$", item);
-                    for (int i = 0; i < _exprs.Count; i++) {
-                        var exp = _exprs[i];
-                        if (exp.IsAsync) {
-                            var _eiCalc = exp.Calc(result);
-                            while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
-                            keys[i] = result.Value;
+                try {
+                    while (true) {
+                        var _eiSrc = _src.MoveNext(result);
+                        try {
+                            while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
                         }
-                        else {
-                            keys[i] = exp.Calc();
+                        finally {
+                            (_eiSrc as IDisposable)?.Dispose();
                         }
+                        if (!result.Value.GetBool()) break;
+                        BoxedValue item = _src.Current;
+                        var keys = new BoxedValue[_exprs.Count];
+                        _calc.SetVariable("$$", item);
+                        for (int i = 0; i < _exprs.Count; i++) {
+                            var exp = _exprs[i];
+                            if (exp.IsAsync) {
+                                var _eiCalc = exp.Calc(result);
+                                try {
+                                    while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
+                                }
+                                finally {
+                                    (_eiCalc as IDisposable)?.Dispose();
+                                }
+                                keys[i] = result.Value;
+                            }
+                            else {
+                                keys[i] = exp.Calc();
+                            }
+                        }
+                        keyed.Add(new KeyedItem { Item = item, Keys = keys });
                     }
-                    keyed.Add(new KeyedItem { Item = item, Keys = keys });
                 }
-                _calc.SetVariable("$$", prev);
+                finally {
+                    _calc.SetVariable("$$", prev);
+                }
                 FinalizeSort(keyed);
                 _initialized = true;
             }
@@ -208,6 +277,13 @@ namespace DotnetStoryScript.DslExpression
         private List<BoxedValue> _results; private int _idx = -1; private bool _initialized = false;
         public ItrGroupBy(LinqIterator src, List<IExpression> exprs, DslCalculator calcContext) { _src = src; _exprs = exprs; _calc = calcContext; }
         public override BoxedValue Current => _results[_idx];
+        public override void Dispose()
+        {
+            var src = _src;
+            _src = null;
+            _results = null;
+            src?.Dispose();
+        }
 
         private void BuildResults(Dictionary<BoxedValue, List<BoxedValue>> dict)
         {
@@ -220,18 +296,25 @@ namespace DotnetStoryScript.DslExpression
 
         public override bool MoveNext()
         {
+            if (null == _src) {
+                return false;
+            }
             if (!_initialized) {
                 if (_exprs.Count == 0) { _results = new List<BoxedValue>(); }
                 else {
                     var firstExpr = Enumerable.First(_exprs);
                     var dict = new Dictionary<BoxedValue, List<BoxedValue>>();
                     BoxedValue prev = _calc.GetVariable("$$");
-                    while (_src.MoveNext()) {
-                        _calc.SetVariable("$$", _src.Current); BoxedValue k = firstExpr.Calc();
-                        if (!dict.TryGetValue(k, out var l)) dict[k] = l = new List<BoxedValue>();
-                        l.Add(_src.Current);
+                    try {
+                        while (_src.MoveNext()) {
+                            _calc.SetVariable("$$", _src.Current); BoxedValue k = firstExpr.Calc();
+                            if (!dict.TryGetValue(k, out var l)) dict[k] = l = new List<BoxedValue>();
+                            l.Add(_src.Current);
+                        }
                     }
-                    _calc.SetVariable("$$", prev);
+                    finally {
+                        _calc.SetVariable("$$", prev);
+                    }
                     BuildResults(dict);
                 }
                 _initialized = true;
@@ -241,30 +324,48 @@ namespace DotnetStoryScript.DslExpression
 
         public override IEnumerator MoveNext(AsyncCalcResult result)
         {
+            if (null == _src) {
+                result.Value = BoxedValue.FromBool(false);
+                yield break;
+            }
             if (!_initialized) {
                 if (_exprs.Count == 0) { _results = new List<BoxedValue>(); }
                 else {
                     var firstExpr = Enumerable.First(_exprs);
                     var dict = new Dictionary<BoxedValue, List<BoxedValue>>();
                     BoxedValue prev = _calc.GetVariable("$$");
-                    while (true) {
-                        var _eiSrc = _src.MoveNext(result);
-                        while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
-                        if (!result.Value.GetBool()) break;
-                        _calc.SetVariable("$$", _src.Current);
-                        BoxedValue k;
-                        if (firstExpr.IsAsync) {
-                            var _eiCalc = firstExpr.Calc(result);
-                            while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
-                            k = result.Value;
+                    try {
+                        while (true) {
+                            var _eiSrc = _src.MoveNext(result);
+                            try {
+                                while (_eiSrc.MoveNext()) yield return _eiSrc.Current;
+                            }
+                            finally {
+                                (_eiSrc as IDisposable)?.Dispose();
+                            }
+                            if (!result.Value.GetBool()) break;
+                            _calc.SetVariable("$$", _src.Current);
+                            BoxedValue k;
+                            if (firstExpr.IsAsync) {
+                                var _eiCalc = firstExpr.Calc(result);
+                                try {
+                                    while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
+                                }
+                                finally {
+                                    (_eiCalc as IDisposable)?.Dispose();
+                                }
+                                k = result.Value;
+                            }
+                            else {
+                                k = firstExpr.Calc();
+                            }
+                            if (!dict.TryGetValue(k, out var l)) dict[k] = l = new List<BoxedValue>();
+                            l.Add(_src.Current);
                         }
-                        else {
-                            k = firstExpr.Calc();
-                        }
-                        if (!dict.TryGetValue(k, out var l)) dict[k] = l = new List<BoxedValue>();
-                        l.Add(_src.Current);
                     }
-                    _calc.SetVariable("$$", prev);
+                    finally {
+                        _calc.SetVariable("$$", prev);
+                    }
                     BuildResults(dict);
                 }
                 _initialized = true;

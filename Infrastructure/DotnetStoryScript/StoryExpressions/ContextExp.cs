@@ -171,18 +171,28 @@ namespace DotnetStoryScript
             if (dict != null) {
                 var jsonData = new LitJson.JsonData();
                 var e = dict.GetEnumerator();
-                while (e.MoveNext()) {
-                    string key = e.Key?.ToString();
-                    if (!string.IsNullOrEmpty(key))
-                        jsonData[key] = ToJson(e.Value);
+                try {
+                    while (e.MoveNext()) {
+                        string key = e.Key?.ToString();
+                        if (!string.IsNullOrEmpty(key))
+                            jsonData[key] = ToJson(e.Value);
+                    }
+                }
+                finally {
+                    (e as System.IDisposable)?.Dispose();
                 }
                 return jsonData;
             }
-            else if (enumer != null) {
+            else if (enumer != null && !(obj is string)) {
                 var jsonData = new LitJson.JsonData();
                 var e = enumer.GetEnumerator();
-                while (e.MoveNext())
-                    jsonData.Add(ToJson(e.Current));
+                try {
+                    while (e.MoveNext())
+                        jsonData.Add(ToJson(e.Current));
+                }
+                finally {
+                    (e as System.IDisposable)?.Dispose();
+                }
                 return jsonData;
             }
             else if (obj == null) {

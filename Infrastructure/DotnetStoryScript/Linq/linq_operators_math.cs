@@ -28,26 +28,30 @@ namespace DotnetStoryScript.DslExpression
         public BoxedValue ExecuteSyncTerminal(LinqIterator src, List<IExpression> exprs, DslCalculator calcContext)
         {
             double sum = 0;
-            double min = double.MaxValue;
-            double max = double.MinValue;
+            double min = double.PositiveInfinity;
+            double max = double.NegativeInfinity;
             long ct = 0;
             BoxedValue prev = calcContext.GetVariable("$$");
 
-            while (src.MoveNext()) {
-                BoxedValue v = src.Current;
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    v = Enumerable.First(exprs).Calc();
+            try {
+                while (src.MoveNext()) {
+                    BoxedValue v = src.Current;
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        v = Enumerable.First(exprs).Calc();
+                    }
+
+                    double val = v.GetDouble();
+
+                    ct++;
+                    sum += val;
+                    if (val < min) { min = val; }
+                    if (val > max) { max = val; }
                 }
-
-                double val = v.GetDouble();
-
-                ct++;
-                sum += val;
-                if (val < min) { min = val; }
-                if (val > max) { max = val; }
             }
-            calcContext.SetVariable("$$", prev);
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
 
             if (ct == 0) {
                 return BoxedValue.NullObject;
@@ -61,44 +65,58 @@ namespace DotnetStoryScript.DslExpression
         public IEnumerator ExecuteAsyncTerminal(LinqIterator src, List<IExpression> exprs, AsyncCalcResult result, DslCalculator calcContext)
         {
             double sum = 0;
-            double min = double.MaxValue;
-            double max = double.MinValue;
+            double min = double.PositiveInfinity;
+            double max = double.NegativeInfinity;
             long ct = 0;
             BoxedValue prev = calcContext.GetVariable("$$");
 
-            while (true) {
-                var _eiSrc = src.MoveNext(result);
-                while (_eiSrc.MoveNext()) {
-                    yield return _eiSrc.Current;
-                }
-                if (!result.Value.GetBool()) {
-                    break;
-                }
-
-                BoxedValue v = src.Current;
-                if (exprs.Count > 0) {
-                    calcContext.SetVariable("$$", src.Current);
-                    var mathExpr = Enumerable.First(exprs);
-                    if (mathExpr.IsAsync) {
-                        var _eiCalc = mathExpr.Calc(result);
-                        while (_eiCalc.MoveNext()) {
-                            yield return _eiCalc.Current;
+            try {
+                while (true) {
+                    var _eiSrc = src.MoveNext(result);
+                    try {
+                        while (_eiSrc.MoveNext()) {
+                            yield return _eiSrc.Current;
                         }
-                        v = result.Value;
                     }
-                    else {
-                        v = mathExpr.Calc();
+                    finally {
+                        (_eiSrc as IDisposable)?.Dispose();
                     }
+                    if (!result.Value.GetBool()) {
+                        break;
+                    }
+
+                    BoxedValue v = src.Current;
+                    if (exprs.Count > 0) {
+                        calcContext.SetVariable("$$", src.Current);
+                        var mathExpr = Enumerable.First(exprs);
+                        if (mathExpr.IsAsync) {
+                            var _eiCalc = mathExpr.Calc(result);
+                            try {
+                                while (_eiCalc.MoveNext()) {
+                                    yield return _eiCalc.Current;
+                                }
+                                v = result.Value;
+                            }
+                            finally {
+                                (_eiCalc as IDisposable)?.Dispose();
+                            }
+                        }
+                        else {
+                            v = mathExpr.Calc();
+                        }
+                    }
+
+                    double val = v.GetDouble();
+
+                    ct++;
+                    sum += val;
+                    if (val < min) { min = val; }
+                    if (val > max) { max = val; }
                 }
-
-                double val = v.GetDouble();
-
-                ct++;
-                sum += val;
-                if (val < min) { min = val; }
-                if (val > max) { max = val; }
             }
-            calcContext.SetVariable("$$", prev);
+            finally {
+                calcContext.SetVariable("$$", prev);
+            }
 
             if (ct == 0) {
                 result.Value = BoxedValue.NullObject;
