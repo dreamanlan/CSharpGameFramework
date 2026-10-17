@@ -25,6 +25,99 @@ namespace DotnetStoryScript
         void SetProperty(int dispId, BoxedValue val);
         BoxedValue InvokeMethod(int dispId, List<BoxedValue> args);
     }
+    // Fills omitted trailing arguments with parameter default values so DSL
+    // calls can leave out parameters that have defaults (C# optional params).
+    // Only reflection APIs available on .NET 4.7 and netstandard are used.
+    internal static class OptionalArgsHelper
+    {
+        private static readonly object s_NoDefault = new object();
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<MethodInfo, object[]> s_Cache =
+            new System.Runtime.CompilerServices.ConditionalWeakTable<MethodInfo, object[]>();
+
+        // Pads args for a delegate invoke using the delegate's method defaults.
+        internal static object[] PadDefaultArgs(Delegate d, object[] args)
+        {
+            if (null == d)
+                return args;
+            var defaults = s_Cache.GetValue(d.Method, BuildDefaults);
+            return Pad(defaults, args);
+        }
+        // Pads args for a Type.InvokeMember call: picks the overload with the
+        // fewest parameters whose missing tail all have default values.
+        internal static object[] PadInvokeMemberArgs(Type t, string method, BindingFlags flags, object[] args)
+        {
+            var mis = t.GetMember(method, flags);
+            MethodInfo best = null;
+            int bestLen = int.MaxValue;
+            foreach (var mi in mis) {
+                var info = mi as MethodInfo;
+                if (null == info)
+                    continue;
+                var pis = info.GetParameters();
+                if (pis.Length <= args.Length)
+                    continue;
+                bool canPad = true;
+                for (int i = args.Length; i < pis.Length; ++i) {
+                    if (!pis[i].HasDefaultValue) {
+                        canPad = false;
+                        break;
+                    }
+                }
+                if (canPad && pis.Length < bestLen) {
+                    best = info;
+                    bestLen = pis.Length;
+                }
+            }
+            if (null != best) {
+                var defaults = s_Cache.GetValue(best, BuildDefaults);
+                return Pad(defaults, args);
+            }
+            return args;
+        }
+        private static object[] Pad(object[] defaults, object[] args)
+        {
+            if (null == defaults || defaults.Length == 0 || args.Length >= defaults.Length)
+                return args;
+            for (int i = args.Length; i < defaults.Length; ++i) {
+                if (object.ReferenceEquals(defaults[i], s_NoDefault))
+                    return args; // a missing tail parameter has no default value
+            }
+            var padded = new object[defaults.Length];
+            Array.Copy(args, padded, args.Length);
+            for (int i = args.Length; i < defaults.Length; ++i) {
+                padded[i] = defaults[i];
+            }
+            return padded;
+        }
+        private static object[] BuildDefaults(MethodInfo mi)
+        {
+            var pis = mi.GetParameters();
+            var defaults = new object[pis.Length];
+            for (int i = 0; i < pis.Length; ++i) {
+                var pi = pis[i];
+                object v = s_NoDefault;
+                if (pi.HasDefaultValue) {
+                    var dv = pi.DefaultValue;
+                    if (dv is System.Reflection.Missing) {
+                        // [Optional] without a value, not usable for a direct invoke.
+                    }
+                    else if (null == dv || pi.ParameterType.IsInstanceOfType(dv)) {
+                        v = dv;
+                    }
+                    else {
+                        // Raw metadata constants can carry a different type
+                        // (e.g. int for a decimal default), convert once here.
+                        var cv = Converter.CastTo(pi.ParameterType, dv);
+                        if (null != cv && pi.ParameterType.IsInstanceOfType(cv)) {
+                            v = cv;
+                        }
+                    }
+                }
+                defaults[i] = v;
+            }
+            return defaults;
+        }
+    }
 }
 namespace DotnetStoryScript.DslExpression
 {
@@ -3576,13 +3669,13 @@ namespace DotnetStoryScript.DslExpression
                     if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict && bvDict.TryGetValue(bvMethod, out var val) && val.IsObject && val.ObjectVal is Delegate) {
                         var d = val.ObjectVal as Delegate;
                         if (null != d) {
-                            ret = BoxedValue.FromObject(d.DynamicInvoke(_args));
+                            ret = BoxedValue.FromObject(d.DynamicInvoke(OptionalArgsHelper.PadDefaultArgs(d, _args)));
                         }
                     }
                     else if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
                         var d = dict[method] as Delegate;
                         if (null != d) {
-                            ret = BoxedValue.FromObject(d.DynamicInvoke(_args));
+                            ret = BoxedValue.FromObject(d.DynamicInvoke(OptionalArgsHelper.PadDefaultArgs(d, _args)));
                         }
                     }
                     else {
@@ -3590,6 +3683,7 @@ namespace DotnetStoryScript.DslExpression
                         if (null != t) {
                             try {
                                 BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                                _args = OptionalArgsHelper.PadInvokeMemberArgs(t, method, flags, _args);
                                 CastArgsForCall(t, method, flags, _args);
                                 ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
@@ -3602,6 +3696,7 @@ namespace DotnetStoryScript.DslExpression
                             if (null != t) {
                                 try {
                                     BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                                    _args = OptionalArgsHelper.PadInvokeMemberArgs(t, method, flags, _args);
                                     CastArgsForCall(t, method, flags, _args);
                                     ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
@@ -3809,13 +3904,13 @@ namespace DotnetStoryScript.DslExpression
                 if (null != dict && dict is Dictionary<BoxedValue, BoxedValue> bvDict && bvDict.TryGetValue(bvMethod, out var val)) {
                     var d = val.As<Delegate>();
                     if (null != d) {
-                        ret = BoxedValue.FromObject(d.DynamicInvoke(_args));
+                        ret = BoxedValue.FromObject(d.DynamicInvoke(OptionalArgsHelper.PadDefaultArgs(d, _args)));
                     }
                 }
                 else if (null != dict && dict.Contains(methodObj)) {
                     var d = dict[methodObj] as Delegate;
                     if (null != d) {
-                        ret = BoxedValue.FromObject(d.DynamicInvoke(_args));
+                        ret = BoxedValue.FromObject(d.DynamicInvoke(OptionalArgsHelper.PadDefaultArgs(d, _args)));
                     }
                 }
                 else {
@@ -3825,7 +3920,7 @@ namespace DotnetStoryScript.DslExpression
                         if (index >= 0 && index < list.Count) {
                             var d = list[index] as Delegate;
                             if (null != d) {
-                                ret = BoxedValue.FromObject(d.DynamicInvoke(_args));
+                                ret = BoxedValue.FromObject(d.DynamicInvoke(OptionalArgsHelper.PadDefaultArgs(d, _args)));
                             }
                         }
                     }
@@ -3841,7 +3936,7 @@ namespace DotnetStoryScript.DslExpression
                                     if (index == 0) {
                                         var d = e.Current as Delegate;
                                         if (null != d) {
-                                            ret = BoxedValue.FromObject(d.DynamicInvoke(_args));
+                                            ret = BoxedValue.FromObject(d.DynamicInvoke(OptionalArgsHelper.PadDefaultArgs(d, _args)));
                                         }
                                         break;
                                     }
