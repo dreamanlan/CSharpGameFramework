@@ -151,8 +151,17 @@ namespace DotnetStoryScript.DslExpression
                 var list = operands[1].As<IList>();
                 if (null != sep && null != list) {
                     string[] strs = new string[list.Count];
-                    for (int i = 0; i < list.Count; ++i) {
-                        strs[i] = list[i].ToString();
+                    for (int i = 0; i < list.Count; i++) {
+                        var elem = list[i];
+                        if (null != elem) {
+                            var s = elem.ToString();
+                            if (null == s) {
+                                strs[i] = string.Empty;
+                            }
+                            else {
+                                strs[i] = s;
+                            }
+                        }
                     }
                     r = string.Join(sep, strs);
                 }
@@ -168,20 +177,39 @@ namespace DotnetStoryScript.DslExpression
                 throw new Exception("Expected: stringsplit(str,sep_list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
-                var str = operands[0].AsString;
-                var seps = operands[1].As<IList>();
-                if (null != str && null != seps) {
-                    char[] cs = new char[seps.Count];
-                    for (int i = 0; i < seps.Count; ++i) {
-                        string sep = seps[i].ToString();
-                        if (sep.Length > 0) {
-                            cs[i] = sep[0];
+                string str = operands[0].AsString;
+                string sepStr = operands[1].AsString;
+                if (!string.IsNullOrEmpty(sepStr)) {
+                    r = BoxedValue.FromObject(str.Split(new string[] { sepStr }, StringSplitOptions.RemoveEmptyEntries));
+                }
+                else {
+                    IList seps = operands[1].As<IList>();
+                    if (str != null && seps != null) {
+                        bool isChar = true;
+                        List<string> strs = new List<string>();
+                        List<char> cs = new List<char>();
+                        for (int i = 0; i < seps.Count; i++) {
+                            var _sep = seps[i];
+                            if (null != _sep) {
+                                string sep = _sep.ToString();
+                                if (!string.IsNullOrEmpty(sep)) {
+                                    strs.Add(sep);
+                                    if (sep.Length == 1) {
+                                        cs.Add(sep[0]);
+                                    }
+                                    else {
+                                        isChar = false;
+                                    }
+                                }
+                            }
+                        }
+                        if (isChar) {
+                            r = BoxedValue.FromObject(str.Split(cs.ToArray(), StringSplitOptions.RemoveEmptyEntries));
                         }
                         else {
-                            cs[i] = '\0';
+                            r = BoxedValue.FromObject(str.Split(strs.ToArray(), StringSplitOptions.RemoveEmptyEntries));
                         }
                     }
-                    r = BoxedValue.FromObject(str.Split(cs));
                 }
             }
             return r;
@@ -196,7 +224,9 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                r = str.Trim();
+                if (str != null) {
+                    r = str.Trim();
+                }
             }
             return r;
         }
@@ -210,7 +240,9 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                r = str.TrimStart();
+                if (str != null) {
+                    r = str.TrimStart();
+                }
             }
             return r;
         }
@@ -224,7 +256,9 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                r = str.TrimEnd();
+                if (str != null) {
+                    r = str.TrimEnd();
+                }
             }
             return r;
         }
@@ -238,7 +272,9 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                r = str.ToLower();
+                if (str != null) {
+                    r = str.ToLower();
+                }
             }
             return r;
         }
@@ -252,7 +288,9 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                r = str.ToUpper();
+                if (str != null) {
+                    r = str.ToUpper();
+                }
             }
             return r;
         }
@@ -323,21 +361,23 @@ namespace DotnetStoryScript.DslExpression
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
-                r = true;
-                for (int i = 1; i < operands.Count; ++i) {
-                    var list = operands[i].As<IList>();
-                    if (null != list) {
-                        foreach (var o in list) {
-                            var key = o as string;
+                if (null != str) {
+                    r = true;
+                    for (int i = 1; i < operands.Count; ++i) {
+                        var list = operands[i].As<IList>();
+                        if (null != list) {
+                            foreach (var o in list) {
+                                var key = o as string;
+                                if (!string.IsNullOrEmpty(key) && !str.Contains(key)) {
+                                    return false;
+                                }
+                            }
+                        }
+                        else {
+                            var key = operands[i].AsString;
                             if (!string.IsNullOrEmpty(key) && !str.Contains(key)) {
                                 return false;
                             }
-                        }
-                    }
-                    else {
-                        var key = operands[i].AsString;
-                        if (!string.IsNullOrEmpty(key) && !str.Contains(key)) {
-                            return false;
                         }
                     }
                 }
@@ -354,21 +394,23 @@ namespace DotnetStoryScript.DslExpression
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
-                r = true;
-                for (int i = 1; i < operands.Count; ++i) {
-                    var list = operands[i].As<IList>();
-                    if (null != list) {
-                        foreach (var o in list) {
-                            var key = o as string;
+                if (null != str) {
+                    r = true;
+                    for (int i = 1; i < operands.Count; ++i) {
+                        var list = operands[i].As<IList>();
+                        if (null != list) {
+                            foreach (var o in list) {
+                                var key = o as string;
+                                if (!string.IsNullOrEmpty(key) && str.Contains(key)) {
+                                    return false;
+                                }
+                            }
+                        }
+                        else {
+                            var key = operands[i].AsString;
                             if (!string.IsNullOrEmpty(key) && str.Contains(key)) {
                                 return false;
                             }
-                        }
-                    }
-                    else {
-                        var key = operands[i].AsString;
-                        if (!string.IsNullOrEmpty(key) && str.Contains(key)) {
-                            return false;
                         }
                     }
                 }
@@ -384,13 +426,26 @@ namespace DotnetStoryScript.DslExpression
                 throw new Exception("Expected: stringcontainsany(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
-                r = true;
                 string str = operands[0].AsString;
-                for (int i = 1; i < operands.Count; ++i) {
-                    var list = operands[i].As<IList>();
-                    if (null != list) {
-                        foreach (var o in list) {
-                            var key = o as string;
+                if (null != str) {
+                    r = true;
+                    for (int i = 1; i < operands.Count; ++i) {
+                        var list = operands[i].As<IList>();
+                        if (null != list) {
+                            foreach (var o in list) {
+                                var key = o as string;
+                                if (!string.IsNullOrEmpty(key)) {
+                                    if (str.Contains(key)) {
+                                        return true;
+                                    }
+                                    else {
+                                        r = false;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            var key = operands[i].AsString;
                             if (!string.IsNullOrEmpty(key)) {
                                 if (str.Contains(key)) {
                                     return true;
@@ -398,17 +453,6 @@ namespace DotnetStoryScript.DslExpression
                                 else {
                                     r = false;
                                 }
-                            }
-                        }
-                    }
-                    else {
-                        var key = operands[i].AsString;
-                        if (!string.IsNullOrEmpty(key)) {
-                            if (str.Contains(key)) {
-                                return true;
-                            }
-                            else {
-                                r = false;
                             }
                         }
                     }
@@ -425,13 +469,26 @@ namespace DotnetStoryScript.DslExpression
                 throw new Exception("Expected: stringnotcontainsany(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
-                r = true;
                 string str = operands[0].AsString;
-                for (int i = 1; i < operands.Count; ++i) {
-                    var list = operands[i].As<IList>();
-                    if (null != list) {
-                        foreach (var o in list) {
-                            var key = o as string;
+                if (null != str) {
+                    r = true;
+                    for (int i = 1; i < operands.Count; ++i) {
+                        var list = operands[i].As<IList>();
+                        if (null != list) {
+                            foreach (var o in list) {
+                                var key = o as string;
+                                if (!string.IsNullOrEmpty(key)) {
+                                    if (!str.Contains(key)) {
+                                        return true;
+                                    }
+                                    else {
+                                        r = false;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            var key = operands[i].AsString;
                             if (!string.IsNullOrEmpty(key)) {
                                 if (!str.Contains(key)) {
                                     return true;
@@ -439,17 +496,6 @@ namespace DotnetStoryScript.DslExpression
                                 else {
                                     r = false;
                                 }
-                            }
-                        }
-                    }
-                    else {
-                        var key = operands[i].AsString;
-                        if (!string.IsNullOrEmpty(key)) {
-                            if (!str.Contains(key)) {
-                                return true;
-                            }
-                            else {
-                                r = false;
                             }
                         }
                     }
@@ -467,9 +513,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                int v;
-                if (int.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    int v;
+                    if (int.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -484,9 +532,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                uint v;
-                if (uint.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    uint v;
+                    if (uint.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -501,9 +551,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                long v;
-                if (long.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    long v;
+                    if (long.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -518,9 +570,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                ulong v;
-                if (ulong.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    ulong v;
+                    if (ulong.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -535,9 +589,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                float v;
-                if (float.TryParse(str, System.Globalization.NumberStyles.Float, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    float v;
+                    if (float.TryParse(str, System.Globalization.NumberStyles.Float, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -552,9 +608,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                double v;
-                if (double.TryParse(str, System.Globalization.NumberStyles.Float, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    double v;
+                    if (double.TryParse(str, System.Globalization.NumberStyles.Float, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -569,9 +627,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                int v;
-                if (int.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    int v;
+                    if (int.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -586,9 +646,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                uint v;
-                if (uint.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    uint v;
+                    if (uint.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -603,9 +665,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                long v;
-                if (long.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    long v;
+                    if (long.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -620,9 +684,11 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
-                ulong v;
-                if (ulong.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
-                    r = v;
+                if (null != str) {
+                    ulong v;
+                    if (ulong.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
+                        r = v;
+                    }
                 }
             }
             return r;
@@ -637,7 +703,9 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var fmt = operands[0].AsString;
-                r = DateTime.Now.ToString(fmt);
+                if (null != fmt) {
+                    r = DateTime.Now.ToString(fmt);
+                }
             }
             else {
                 r = DateTime.Now.ToString();

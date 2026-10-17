@@ -2093,6 +2093,22 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue v = v1.GetLong() != 0 ? v2 = m_Op2.Calc() : v3 = m_Op3.Calc();
             return v;
         }
+        protected override bool Load(Dsl.FunctionData funcData)
+        {
+            if (funcData.GetParamNum() >= 3) {
+                Dsl.ISyntaxComponent cond = funcData.GetParam(0);
+                Dsl.ISyntaxComponent op1 = funcData.GetParam(1);
+                Dsl.ISyntaxComponent op2 = funcData.GetParam(2);
+                m_Op1 = Calculator.Load(cond);
+                m_Op2 = Calculator.Load(op1);
+                m_Op3 = Calculator.Load(op2);
+            }
+            else {
+                //error
+                Calculator.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
+            }
+            return true;
+        }
         protected override bool Load(Dsl.StatementData statementData)
         {
             Dsl.FunctionData funcData1 = statementData.First.AsFunction;
