@@ -3371,6 +3371,29 @@ namespace DotnetStoryScript.DslExpression
             return v;
         }
     }
+    internal sealed class GetTypeAssemblyExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var ret = BoxedValue.NullObject;
+            if (operands.Count >= 1) {
+                var obj = operands[0].GetObject();
+                try {
+                    Type t = obj as Type;
+                    if (null != t) {
+                        ret = BoxedValue.FromObject(t.Assembly);
+                    }
+                    else if (null != obj) {
+                        ret = BoxedValue.FromObject(obj.GetType().Assembly);
+                    }
+                }
+                catch (Exception ex) {
+                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                }
+            }
+            return ret;
+        }
+    }
     internal sealed class GetTypeAssemblyNameExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -3379,7 +3402,11 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 1) {
                 var obj = operands[0].GetObject();
                 try {
-                    if (null != obj) {
+                    Type t = obj as Type;
+                    if (null != t) {
+                        ret = BoxedValue.FromObject(t.AssemblyQualifiedName);
+                    }
+                    else if (null != obj) {
                         ret = obj.GetType().AssemblyQualifiedName;
                     }
                     else {
@@ -3401,7 +3428,11 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 1) {
                 var obj = operands[0].GetObject();
                 try {
-                    if (null != obj) {
+                    Type t = obj as Type;
+                    if (null != t) {
+                        ret = BoxedValue.FromObject(t.FullName);
+                    }
+                    else if (null != obj) {
                         ret = obj.GetType().FullName;
                     }
                     else {
@@ -3423,7 +3454,11 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 1) {
                 var obj = operands[0].GetObject();
                 try {
-                    if (null != obj) {
+                    Type t = obj as Type;
+                    if (null != t) {
+                        ret = BoxedValue.FromObject(t.Name);
+                    }
+                    else if (null != obj) {
                         ret = obj.GetType().Name;
                     }
                     else {
@@ -3635,6 +3670,133 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
+    internal sealed class TypeCallExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var ret = BoxedValue.NullObject;
+            object obj = null;
+            string method = null;
+            ArrayList arglist = null;
+            for (int ix = 0; ix < operands.Count; ++ix) {
+                var v = operands[ix];
+                if (ix == 0) {
+                    obj = v.GetObject();
+                }
+                else if (ix == 1) {
+                    method = v.AsString;
+                }
+                else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
+                    arglist.Add(v.GetObject());
+                }
+            }
+            if (null != obj && null != method) {
+                if (null == arglist)
+                    arglist = new ArrayList();
+                object[] _args = arglist.ToArray();
+                Type systype = typeof(Type);
+                Type target = obj as Type;
+                if (null == target)
+                    target = obj.GetType();
+                try {
+                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                    _args = OptionalArgsHelper.PadInvokeMemberArgs(systype, method, flags, _args);
+                    CastArgsForCall(systype, method, flags, _args);
+                    ret = BoxedValue.FromObject(systype.InvokeMember(method, flags, null, target, _args));
+                }
+                catch (Exception ex) {
+                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                }
+            }
+            return ret;
+        }
+    }
+    internal sealed class TypeSetExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var ret = BoxedValue.NullObject;
+            object obj = null;
+            string method = null;
+            ArrayList arglist = null;
+            for (int ix = 0; ix < operands.Count; ++ix) {
+                var v = operands[ix];
+                if (ix == 0) {
+                    obj = v.GetObject();
+                }
+                else if (ix == 1) {
+                    method = v.AsString;
+                }
+                else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
+                    arglist.Add(v.GetObject());
+                }
+            }
+            if (null != obj && null != method) {
+                if (null == arglist)
+                    arglist = new ArrayList();
+                object[] _args = arglist.ToArray();
+                Type systype = typeof(Type);
+                Type target = obj as Type;
+                if (null == target)
+                    target = obj.GetType();
+                try {
+                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                    CastArgsForSet(systype, method, flags, _args);
+                    ret = BoxedValue.FromObject(systype.InvokeMember(method, flags, null, target, _args));
+                }
+                catch (Exception ex) {
+                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                }
+            }
+            return ret;
+        }
+    }
+    internal sealed class TypeGetExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        {
+            var ret = BoxedValue.NullObject;
+            object obj = null;
+            string method = null;
+            ArrayList arglist = null;
+            for (int ix = 0; ix < operands.Count; ++ix) {
+                var v = operands[ix];
+                if (ix == 0) {
+                    obj = v.GetObject();
+                }
+                else if (ix == 1) {
+                    method = v.AsString;
+                }
+                else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
+                    arglist.Add(v.GetObject());
+                }
+            }
+            if (null != obj && null != method) {
+                if (null == arglist)
+                    arglist = new ArrayList();
+                object[] _args = arglist.ToArray();
+                Type systype = typeof(Type);
+                Type target = obj as Type;
+                if (null == target)
+                    target = obj.GetType();
+                try {
+                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                    CastArgsForGet(systype, method, flags, _args);
+                    ret = BoxedValue.FromObject(systype.InvokeMember(method, flags, null, target, _args));
+                }
+                catch (Exception ex) {
+                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                }
+            }
+            return ret;
+        }
+    }
     internal sealed class DotnetCallExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
@@ -3769,6 +3931,8 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
                     object[] _args = arglist.ToArray();
                     IDictionary dict = obj as IDictionary;
                     if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic)) {

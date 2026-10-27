@@ -3801,12 +3801,16 @@ namespace DotnetStoryScript.DslExpression
             Register("looplist", "looplist(list)func(args); or looplist(list){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopListExp>());
             Register("foreachvalue", "foreachvalue(args)func(args); or foreachvalue(args){...}; statement, iterator is $$", new ExpressionFactoryHelper<ForEachValueExp>());
             Register("format", "format(fmt,arg1,arg2,...) api", new ExpressionFactoryHelper<FormatExp>());
+            Register("gettypeassembly", "gettypeassembly(obj) api", new ExpressionFactoryHelper<GetTypeAssemblyExp>());
             Register("gettypeassemblyname", "gettypeassemblyname(obj) api", new ExpressionFactoryHelper<GetTypeAssemblyNameExp>());
             Register("gettypefullname", "gettypefullname(obj) api", new ExpressionFactoryHelper<GetTypeFullNameExp>());
             Register("gettypename", "gettypename(obj) api", new ExpressionFactoryHelper<GetTypeNameExp>());
             Register("gettype", "gettype(type_str) api", new ExpressionFactoryHelper<GetTypeExp>());
             Register("changetype", "changetype(obj,type_str) api", new ExpressionFactoryHelper<ChangeTypeExp>());
             Register("parseenum", "parseenum(type_str,val_str) api", new ExpressionFactoryHelper<ParseEnumExp>());
+            Register("typecall", "typecall(obj_or_type,method,...) api, call Type's method", new ExpressionFactoryHelper<TypeCallExp>());
+            Register("typeset", "typeset(obj_or_type,name,val) api, set Type's property", new ExpressionFactoryHelper<TypeSetExp>());
+            Register("typeget", "typeget(obj_or_type,name) api, get Type's property", new ExpressionFactoryHelper<TypeGetExp>());
             Register("dotnetcall", "dotnetcall api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetCallExp>());
             Register("dotnetset", "dotnetset api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetSetExp>());
             Register("dotnetget", "dotnetget api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetGetExp>());
