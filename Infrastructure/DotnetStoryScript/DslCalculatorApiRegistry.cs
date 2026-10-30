@@ -2899,6 +2899,9 @@ namespace DotnetStoryScript.DslExpression
                             else if (type == "nowait") {
                                 cmd.m_NoWait = exp;
                             }
+                            else if (type == "timeout") {
+                                cmd.m_Timeout = exp;
+                            }
                             else if (type == "useshellexecute") {
                                 cmd.m_UseShellExecute = exp;
                             }
@@ -3015,6 +3018,9 @@ namespace DotnetStoryScript.DslExpression
                 noWait = cfg.m_NoWait.Calc().GetBool();
             }
             DslCalculator.ProcessStartOption option = new DslCalculator.ProcessStartOption();
+            if (null != cfg.m_Timeout) {
+                option.TimeoutMs = cfg.m_Timeout.Calc().GetInt();
+            }
             if (null != cfg.m_UseShellExecute) {
                 option.UseShellExecute = cfg.m_UseShellExecute.Calc().GetBool();
             }
@@ -3199,6 +3205,9 @@ namespace DotnetStoryScript.DslExpression
                     noWait = cfg.m_NoWait.Calc().GetBool();
                 }
                 DslCalculator.ProcessStartOption option = new DslCalculator.ProcessStartOption();
+                if (null != cfg.m_Timeout) {
+                    option.TimeoutMs = cfg.m_Timeout.Calc().GetInt();
+                }
                 if (null != cfg.m_UseShellExecute) {
                     option.UseShellExecute = cfg.m_UseShellExecute.Calc().GetBool();
                 }
@@ -3390,6 +3399,7 @@ namespace DotnetStoryScript.DslExpression
             internal Dictionary<string, string> m_Commands = new Dictionary<string, string>();
 
             internal IExpression m_NoWait = null;
+            internal IExpression m_Timeout = null;
             internal IExpression m_UseShellExecute = null;
             internal IExpression m_Verb = null;
             internal IExpression m_Domain = null;

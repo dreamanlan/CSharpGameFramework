@@ -5613,8 +5613,9 @@ namespace DotnetStoryScript.DslExpression
         private static int NewProcessTask(string fileName, string args, ProcessStartOption option, Stream istream, Stream ostream, IList<string> input, StringBuilder output, StringBuilder error, bool redirectToConsole, Encoding encoding)
         {
             //Considering cross-platform compatibility, do not use specific process environment variables.
+            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            bool started = false;
             try {
-                System.Diagnostics.Process p = new System.Diagnostics.Process();
                 var psi = p.StartInfo;
                 psi.FileName = fileName;
                 psi.Arguments = args;
@@ -5658,19 +5659,52 @@ namespace DotnetStoryScript.DslExpression
                 if (null != istream || null != input) {
                     psi.RedirectStandardInput = true;
                 }
-                if (null != ostream || null != output || redirectToConsole) {
+                bool redirectOutput = null != ostream || null != output || redirectToConsole;
+                bool redirectError = null != error || redirectToConsole;
+                // e.Data == null fires once per redirected stream at EOF. It lets
+                // us bound the post-exit drain wait: a grandchild that inherits
+                // the pipes can keep them open forever after the child exits.
+                var streamEof = new ManualResetEventSlim(false);
+                int eofRemaining = (redirectOutput ? 1 : 0) + (redirectError ? 1 : 0);
+                if (redirectOutput) {
                     psi.RedirectStandardOutput = true;
                     psi.StandardOutputEncoding = encoding;
                     var tempStringBuilder = new StringBuilder();
-                    p.OutputDataReceived += (sender, e) => OnOutputDataReceived(sender, e, ostream, output, redirectToConsole, encoding, tempStringBuilder);
+                    p.OutputDataReceived += (sender, e) => {
+                        if (null == e.Data) {
+                            if (Interlocked.Decrement(ref eofRemaining) <= 0)
+                                streamEof.Set();
+                            return;
+                        }
+                        OnOutputDataReceived(sender, e, ostream, output, redirectToConsole, encoding, tempStringBuilder);
+                    };
                 }
-                if (null != error || redirectToConsole) {
+                if (redirectError) {
                     psi.RedirectStandardError = true;
                     psi.StandardErrorEncoding = encoding;
                     var tempStringBuilder = new StringBuilder();
-                    p.ErrorDataReceived += (sender, e) => OnErrorDataReceived(sender, e, ostream, error, redirectToConsole, encoding, tempStringBuilder);
+                    p.ErrorDataReceived += (sender, e) => {
+                        if (null == e.Data) {
+                            if (Interlocked.Decrement(ref eofRemaining) <= 0)
+                                streamEof.Set();
+                            return;
+                        }
+                        OnErrorDataReceived(sender, e, ostream, error, redirectToConsole, encoding, tempStringBuilder);
+                    };
                 }
                 if (p.Start()) {
+                    started = true;
+                    if (null != ostream) {
+                        ostream.Seek(0, SeekOrigin.Begin);
+                        ostream.SetLength(0);
+                    }
+                    // Begin the async reads BEFORE writing stdin: if the child
+                    // fills the output pipe before consuming all input, writing
+                    // stdin synchronously would deadlock against the unread pipe.
+                    if (psi.RedirectStandardOutput)
+                        p.BeginOutputReadLine();
+                    if (psi.RedirectStandardError)
+                        p.BeginErrorReadLine();
                     if (psi.RedirectStandardInput) {
                         if (null != istream) {
                             istream.Seek(0, SeekOrigin.Begin);
@@ -5691,24 +5725,37 @@ namespace DotnetStoryScript.DslExpression
                             p.StandardInput.Close();
                         }
                     }
-                    if (null != ostream) {
-                        ostream.Seek(0, SeekOrigin.Begin);
-                        ostream.SetLength(0);
+                    // WaitForExit(timeout) returns as soon as the process exits
+                    // and does NOT wait for the async readers; the drain below
+                    // does. TimeoutMs: -1 waits indefinitely (previous behavior),
+                    // 0 polls the exit state once, > 0 caps the wait.
+                    bool exited = p.WaitForExit(option.TimeoutMs);
+                    if (!exited) {
+                        try { p.Kill(); } catch { }
+                        Console.WriteLine("process({0} {1}) timeout after {2}ms.", fileName, args, option.TimeoutMs);
+                        return -1;
                     }
-                    if (psi.RedirectStandardOutput)
-                        p.BeginOutputReadLine();
-                    if (psi.RedirectStandardError)
-                        p.BeginErrorReadLine();
-                    p.WaitForExit();
+                    // Wait for the readers to reach EOF so the output is complete.
+                    // Bounded (except for an infinite TimeoutMs) so a grandchild
+                    // holding the pipes open cannot hang this call forever.
+                    if (eofRemaining > 0) {
+                        if (option.TimeoutMs < 0) {
+                            streamEof.Wait();
+                        }
+                        else if (option.TimeoutMs > 0) {
+                            // Give up on the remaining output when the drain
+                            // budget is spent; the reads are cancelled below,
+                            // which also releases the reader threads.
+                            streamEof.Wait(Math.Min(option.TimeoutMs, c_ProcessDrainTimeoutMs));
+                        }
+                    }
                     if (psi.RedirectStandardOutput) {
                         p.CancelOutputRead();
                     }
                     if (psi.RedirectStandardError) {
                         p.CancelErrorRead();
                     }
-                    int r = p.ExitCode;
-                    p.Close();
-                    return r;
+                    return p.ExitCode;
                 }
                 else {
                     Console.WriteLine("process({0} {1}) failed.", fileName, args);
@@ -5722,6 +5769,18 @@ namespace DotnetStoryScript.DslExpression
                     Console.WriteLine("\t=> exception:{0} stack:{1}", ex.Message, ex.StackTrace);
                 }
                 return -1;
+            }
+            finally {
+                // Never leak a live process or its handles on any path.
+                if (started) {
+                    try {
+                        if (!p.HasExited) {
+                            p.Kill();
+                        }
+                    }
+                    catch { }
+                }
+                p.Close();
             }
         }
 
@@ -5792,7 +5851,16 @@ namespace DotnetStoryScript.DslExpression
             internal bool CreateWindow = false;
             internal bool ErrorDialog = false;
             internal string WorkingDirectory = Environment.CurrentDirectory;
+            // -1 waits indefinitely (default), 0 polls the exit state once,
+            // > 0 caps the wait at that many milliseconds
+            internal int TimeoutMs = -1;
         }
+
+        // How long to wait for stdout/stderr EOF after the process exited.
+        // A grandchild that inherits the pipes can keep them open forever,
+        // so the drain wait is bounded (except for an explicit infinite
+        // TimeoutMs, i.e. -1).
+        private const int c_ProcessDrainTimeoutMs = 5000;
 
         private static List<Task<int>> s_Tasks = new List<Task<int>>();
         private static int s_CheckStartInterval = 500;
