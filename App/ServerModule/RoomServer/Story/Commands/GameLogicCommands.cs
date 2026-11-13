@@ -14,9 +14,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class BlackboardClearCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 scene.SceneContext.BlackBoard.ClearVariables();
@@ -29,11 +29,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class BlackboardSetCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 string name = operands[0].ToString();
@@ -48,13 +48,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class CameraFollowCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 for (int i = 0; i < m_UnitIds.Count; i++) {
-                    int unitId = m_UnitIds[i].Calc().GetInt();
+                    int unitId = m_UnitIds[i].Calc(calculator).GetInt();
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                     if (null != entity && (!entity.IsDead() || entity.IsBorning)) {
                         Msg_RC_SendGfxMessage msg = new ScriptableFrameworkMessage.Msg_RC_SendGfxMessage();
@@ -67,7 +67,7 @@ namespace ScriptableFramework.Story.Commands
                         msg.args.Add(arg);
 
                         if (m_HaveUserId) {
-                            int userId = m_UserId.Calc().GetInt();
+                            int userId = m_UserId.Calc(calculator).GetInt();
                             EntityInfo user = scene.GetEntityById(userId);
                             if (null != user) {
                                 User us = user.CustomData as User;
@@ -89,7 +89,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                m_UnitIds.Add(Calculator.Load(callData.GetParam(i)));
+                m_UnitIds.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -110,7 +110,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -124,13 +124,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class CameraFollowRangeCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int beginUnitId = m_BeginUnitId.Calc().GetInt();
-                int endUnitId = m_EndUnitId.Calc().GetInt();
+                int beginUnitId = m_BeginUnitId.Calc(calculator).GetInt();
+                int endUnitId = m_EndUnitId.Calc(calculator).GetInt();
                 for (int unitId = beginUnitId; unitId <= endUnitId; ++unitId) {
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                     if (null != entity && (!entity.IsDead() || entity.IsBorning)) {
@@ -144,7 +144,7 @@ namespace ScriptableFramework.Story.Commands
                         msg.args.Add(arg);
 
                         if (m_HaveUserId) {
-                            int userId = m_UserId.Calc().GetInt();
+                            int userId = m_UserId.Calc(calculator).GetInt();
                             EntityInfo user = scene.GetEntityById(userId);
                             if (null != user) {
                                 User us = user.CustomData as User;
@@ -166,8 +166,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_BeginUnitId = Calculator.Load(callData.GetParam(0));
-                m_EndUnitId = Calculator.Load(callData.GetParam(1));
+                m_BeginUnitId = CodeStructure.Load(callData.GetParam(0));
+                m_EndUnitId = CodeStructure.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -188,7 +188,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -205,12 +205,12 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class CameraLookCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var obj = m_Arg.Calc();
+                var obj = m_Arg.Calc(calculator);
                 if (obj.IsInteger) {
                     int unitId = obj.GetInt();
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
@@ -232,7 +232,7 @@ namespace ScriptableFramework.Story.Commands
                         msg.args.Add(arg);
 
                         if (m_HaveUserId) {
-                            int userId = m_UserId.Calc().GetInt();
+                            int userId = m_UserId.Calc(calculator).GetInt();
                             EntityInfo user = scene.GetEntityById(userId);
                             if (null != user) {
                                 User us = user.CustomData as User;
@@ -262,7 +262,7 @@ namespace ScriptableFramework.Story.Commands
                     msg.args.Add(arg);
 
                     if (m_HaveUserId) {
-                        int userId = m_UserId.Calc().GetInt();
+                        int userId = m_UserId.Calc(calculator).GetInt();
                         EntityInfo user = scene.GetEntityById(userId);
                         if (null != user) {
                             User us = user.CustomData as User;
@@ -282,7 +282,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Arg = Calculator.Load(callData.GetParam(0));
+                m_Arg = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -303,7 +303,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -317,9 +317,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class CameraFollowPathCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 Msg_RC_SendGfxMessage msg = new ScriptableFrameworkMessage.Msg_RC_SendGfxMessage();
@@ -328,7 +328,7 @@ namespace ScriptableFramework.Story.Commands
                 msg.is_with_tag = false;
 
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -364,7 +364,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -377,17 +377,17 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class LockFrameCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                float scale = m_Scale.Calc().GetFloat();
+                float scale = m_Scale.Calc(calculator).GetFloat();
                 Msg_RC_LockFrame msg = new Msg_RC_LockFrame();
                 msg.scale = scale;
 
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -406,7 +406,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Scale = Calculator.Load(callData.GetParam(0));
+                m_Scale = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -427,7 +427,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -441,11 +441,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SetLeaderIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count > 1) {
@@ -465,15 +465,15 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ShowDlgCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 Msg_RC_ShowDlg msg = new Msg_RC_ShowDlg();
-                msg.dialog_id = m_StoryDlgId.Calc().GetInt();
+                msg.dialog_id = m_StoryDlgId.Calc(calculator).GetInt();
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -492,7 +492,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_StoryDlgId = Calculator.Load(callData.GetParam(0));
+                m_StoryDlgId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -513,7 +513,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -527,17 +527,17 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class AreaDetectCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 bool triggered = false;
-                Vector3Obj posObj = m_Pos.Calc();
+                Vector3Obj posObj = m_Pos.Calc(calculator);
                 Vector3 pos = posObj.Value;
-                float radius = m_Radius.Calc().GetFloat();
-                string type = m_Type.Calc().ToString();
-                string eventName = m_EventName.Calc().ToString();
+                float radius = m_Radius.Calc(calculator).GetFloat();
+                string type = m_Type.Calc(calculator).ToString();
+                string eventName = m_EventName.Calc(calculator).ToString();
                 if (type == "user") {
                     scene.KdTree.QueryWithFunc(pos, radius, (float distSqr, KdTreeObject kdObj) => {
                         if (kdObj.Object.EntityType != (int)EntityTypeEnum.Hero) {
@@ -558,9 +558,9 @@ namespace ScriptableFramework.Story.Commands
                     });
                 }
                 if (m_HaveSet) {
-                    string varName = m_SetVar.Calc().ToString();
-                    var varVal = m_SetVal.Calc();
-                    var elseVal = m_ElseSetVal.Calc();
+                    string varName = m_SetVar.Calc(calculator).ToString();
+                    var varVal = m_SetVal.Calc(calculator);
+                    var elseVal = m_ElseSetVal.Calc(calculator);
                     if (triggered) {
                         instance.SetVariable(varName, varVal);
                     } else {
@@ -575,10 +575,10 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 3) {
-                m_Pos = Calculator.Load(callData.GetParam(0));
-                m_Radius = Calculator.Load(callData.GetParam(1));
-                m_Type = Calculator.Load(callData.GetParam(2));
-                m_EventName = Calculator.Load(callData.GetParam(3));
+                m_Pos = CodeStructure.Load(callData.GetParam(0));
+                m_Radius = CodeStructure.Load(callData.GetParam(1));
+                m_Type = CodeStructure.Load(callData.GetParam(2));
+                m_EventName = CodeStructure.Load(callData.GetParam(3));
             }
             return true;
         }
@@ -601,9 +601,9 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
-                m_ElseSetVal = Calculator.Load(callData.GetParam(2));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
+                m_ElseSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
 

@@ -8,7 +8,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// storepos([start_time]);
     /// </summary>
-    internal class StorePosTrigger : AbstractSkillTriger
+    internal class StorePosTrigger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -47,7 +47,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// restorepos([start_time]);
     /// </summary>
-    internal class RestorePosTrigger : AbstractSkillTriger
+    internal class RestorePosTrigger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

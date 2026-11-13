@@ -14,7 +14,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class EvalExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count == 0)
                 return BoxedValue.NullObject;
@@ -27,9 +27,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class NamespaceExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst != null)
                 return storyInst.Namespace;
             return BoxedValue.NullObject;
@@ -41,9 +41,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class StoryIdExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst != null)
                 return storyInst.StoryId;
             return BoxedValue.NullObject;
@@ -55,9 +55,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class MessageIdExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst != null && storyInst.CurrentCoroutine != null)
                 return storyInst.CurrentCoroutine.MessageId;
             return BoxedValue.NullObject;
@@ -71,7 +71,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class StringListExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: stringlist(str_split_by_sep)");
@@ -92,7 +92,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class IntListExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: intlist(str_split_by_sep)");
@@ -108,7 +108,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class FloatListExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: floatlist(str_split_by_sep)");
@@ -124,7 +124,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class RndFromListExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: rndfromlist(list[, defval])");
@@ -151,7 +151,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class ToJsonExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: tojson(obj)");
@@ -213,7 +213,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class FromJsonExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: fromjson(json_str)");

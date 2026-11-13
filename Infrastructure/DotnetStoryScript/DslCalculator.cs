@@ -177,9 +177,9 @@ namespace DotnetStoryScript.DslExpression
     public interface IExpression
     {
         bool IsAsync { get; }
-        IEnumerator Calc(AsyncCalcResult result);
-        BoxedValue Calc();
-        bool Load(Dsl.ISyntaxComponent dsl, DslCalculator calculator);
+        IEnumerator Calc(DslCalculator calculator, AsyncCalcResult result);
+        BoxedValue Calc(DslCalculator calculator);
+        bool Load(Dsl.ISyntaxComponent dsl, DslCalculatorCodeStructure code);
     }
     public interface IExpressionFactory
     {
@@ -195,10 +195,10 @@ namespace DotnetStoryScript.DslExpression
     public abstract class AbstractExpression : IExpression
     {
         public virtual bool IsAsync { get { return false; } }
-        public IEnumerator Calc(AsyncCalcResult result)
+        public IEnumerator Calc(DslCalculator calculator, AsyncCalcResult result)
         {
             if (IsAsync) {
-                var _ei = DoCalc(result);
+                var _ei = DoCalc(calculator, result);
                 try {
                     while (_ei.MoveNext()) { yield return _ei.Current; }
                 }
@@ -209,7 +209,7 @@ namespace DotnetStoryScript.DslExpression
             else {
                 BoxedValue ret = BoxedValue.NullObject;
                 try {
-                    ret = DoCalc();
+                    ret = DoCalc(calculator);
                 }
                 catch (Exception ex) {
                     var msg = string.Format("calc:[{0}]", ToString());
@@ -219,20 +219,20 @@ namespace DotnetStoryScript.DslExpression
             }
             result.IsCompleted = true;
         }
-        public BoxedValue Calc()
+        public BoxedValue Calc(DslCalculator calculator)
         {
-            Calculator.SyncCalculationPush();
+            calculator.SyncCalculationPush();
             try {
                 if (IsAsync) {
                     AsyncCalcResult result = new AsyncCalcResult();
-                    var enumer = DoCalc(result);
+                    var enumer = DoCalc(calculator, result);
                     DrainEnumerator(enumer);
                     return result.Value;
                 }
                 else {
                     BoxedValue ret = BoxedValue.NullObject;
                     try {
-                        ret = DoCalc();
+                        ret = DoCalc(calculator);
                     }
                     catch (Exception ex) {
                         var msg = string.Format("calc:[{0}]", ToString());
@@ -242,12 +242,12 @@ namespace DotnetStoryScript.DslExpression
                 }
             }
             finally {
-                Calculator.SyncCalculationPop();
+                calculator.SyncCalculationPop();
             }
         }
-        public bool Load(Dsl.ISyntaxComponent dsl, DslCalculator calculator)
+        public bool Load(Dsl.ISyntaxComponent dsl, DslCalculatorCodeStructure code)
         {
-            m_Calculator = calculator;
+            m_CodeStructure = code;
             m_Dsl = dsl;
             Dsl.ValueData valueData = dsl as Dsl.ValueData;
             if (null != valueData) {
@@ -264,7 +264,7 @@ namespace DotnetStoryScript.DslExpression
                             List<IExpression> args = new List<IExpression>();
                             for (int ix = 0; ix < num; ++ix) {
                                 Dsl.ISyntaxComponent param = callData.GetParam(ix);
-                                args.Add(calculator.Load(param));
+                                args.Add(code.Load(param));
                             }
                             return Load(args);
                         }
@@ -291,8 +291,8 @@ namespace DotnetStoryScript.DslExpression
         protected virtual bool Load(IList<IExpression> exps) { return false; }
         protected virtual bool Load(Dsl.FunctionData funcData) { return false; }
         protected virtual bool Load(Dsl.StatementData statementData) { return false; }
-        protected virtual BoxedValue DoCalc() { return BoxedValue.NullObject; }
-        protected virtual IEnumerator DoCalc(AsyncCalcResult result) { result.Value = BoxedValue.NullObject; yield break; }
+        protected virtual BoxedValue DoCalc(DslCalculator calculator) { return BoxedValue.NullObject; }
+        protected virtual IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result) { result.Value = BoxedValue.NullObject; yield break; }
         private static void DrainEnumerator(IEnumerator enumer)
         {
             try {
@@ -311,14 +311,15 @@ namespace DotnetStoryScript.DslExpression
             }
         }
 
-        protected DslCalculator Calculator {
-            get { return m_Calculator; }
+        protected DslCalculatorCodeStructure CodeStructure
+        {
+            get { return m_CodeStructure; }
         }
         protected internal Dsl.ISyntaxComponent SyntaxComponent {
             get { return m_Dsl; }
         }
 
-        private DslCalculator m_Calculator = null;
+        private DslCalculatorCodeStructure m_CodeStructure = null;
         private Dsl.ISyntaxComponent m_Dsl = null;
 
         protected static void CastArgsForCall(Type t, string method, BindingFlags flags, params object[] args)
@@ -477,15 +478,15 @@ namespace DotnetStoryScript.DslExpression
     }
     public abstract class SimpleExpressionBase : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var operands = Calculator.NewCalculatorValueList();
+            var operands = calculator.NewCalculatorValueList();
             for (int i = 0; i < m_Exps.Count; ++i) {
-                var v = m_Exps[i].Calc();
+                var v = m_Exps[i].Calc(calculator);
                 operands.Add(v);
             }
-            var r = OnCalc(operands);
-            Calculator.RecycleCalculatorValueList(operands);
+            var r = OnCalc(calculator, operands);
+            calculator.RecycleCalculatorValueList(operands);
             return r;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -493,19 +494,23 @@ namespace DotnetStoryScript.DslExpression
             m_Exps = exps;
             return true;
         }
-        protected abstract BoxedValue OnCalc(IList<BoxedValue> operands);
+        protected virtual BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return OnCalc(operands);
+        }
+        protected virtual BoxedValue OnCalc(IList<BoxedValue> operands) { return BoxedValue.NullObject; }
 
         private IList<IExpression> m_Exps = null;
     }
     public abstract class SimpleAsyncExpressionBase : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            var operands = Calculator.NewCalculatorValueList();
+            var operands = calculator.NewCalculatorValueList();
             try {
                 for (int i = 0; i < m_Exps.Count; ++i) {
-                    var _ei1 = m_Exps[i].Calc(result);
+                    var _ei1 = m_Exps[i].Calc(calculator, result);
                     try {
                         while (_ei1.MoveNext()) { yield return _ei1.Current; }
                     }
@@ -514,7 +519,7 @@ namespace DotnetStoryScript.DslExpression
                     }
                     operands.Add(result.Value);
                 }
-                var _ei2 = OnCalc(operands, result);
+                var _ei2 = OnCalc(calculator, operands, result);
                 try {
                     while (_ei2.MoveNext()) { yield return _ei2.Current; }
                 }
@@ -523,7 +528,7 @@ namespace DotnetStoryScript.DslExpression
                 }
             }
             finally {
-                Calculator.RecycleCalculatorValueList(operands);
+                calculator.RecycleCalculatorValueList(operands);
             }
         }
 
@@ -532,25 +537,29 @@ namespace DotnetStoryScript.DslExpression
             m_Exps = exps;
             return true;
         }
-        protected abstract IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result);
+        protected virtual IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
+        {
+            return OnCalc(operands, result);
+        }
+        protected virtual IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result) { result.Value = BoxedValue.NullObject; yield break; }
 
         private IList<IExpression> m_Exps = null;
     }
     internal sealed class ArgsGet : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            BoxedValue ret = BoxedValue.FromObject(Calculator.Arguments);
+            BoxedValue ret = BoxedValue.FromObject(calculator.Arguments);
             return ret;
         }
     }
     internal sealed class ArgGet : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             var ix = operands[0].GetInt();
-            var args = Calculator.Arguments;
+            var args = calculator.Arguments;
             if (ix >= 0 && ix < args.Count) {
                 ret = args[ix];
             }
@@ -559,27 +568,27 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ArgNumGet : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var ret = Calculator.Arguments.Count;
+            var ret = calculator.Arguments.Count;
             return BoxedValue.From(ret);
         }
     }
     internal sealed class GlobalVarSet : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            BoxedValue v = m_Op.Calc();
+            BoxedValue v = m_Op.Calc(calculator);
             if (m_VarIx < int.MaxValue) {
-                Calculator.SetGlobalVaraibleByIndex(m_VarIx, v);
+                calculator.SetGlobalVaraibleByIndex(m_VarIx, v);
             }
             else if (m_VarId.Length > 0) {
-                m_VarIx = Calculator.AllocGlobalVariableIndex(m_VarId);
+                m_VarIx = calculator.AllocGlobalVariableIndex(m_VarId);
                 if (m_VarIx < int.MaxValue) {
-                    Calculator.SetGlobalVaraibleByIndex(m_VarIx, v);
+                    calculator.SetGlobalVaraibleByIndex(m_VarIx, v);
                 }
                 else {
-                    Calculator.SetGlobalVariable(m_VarId, v);
+                    calculator.SetGlobalVariable(m_VarId, v);
                 }
             }
             if (m_VarId.Length > 0 && m_VarId[0] != '@') {
@@ -592,7 +601,7 @@ namespace DotnetStoryScript.DslExpression
             Dsl.ISyntaxComponent param1 = callData.GetParam(0);
             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
             m_VarId = param1.GetId();
-            m_Op = Calculator.Load(param2);
+            m_Op = CodeStructure.Load(param2);
             return true;
         }
 
@@ -602,30 +611,30 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GlobalVarGet : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             var ret = BoxedValue.NullObject;
             if (m_VarId == "break") {
-                Calculator.RunState = RunStateEnum.Break;
+                calculator.RunState = RunStateEnum.Break;
                 return ret;
             }
             else if (m_VarId == "continue") {
-                Calculator.RunState = RunStateEnum.Continue;
+                calculator.RunState = RunStateEnum.Continue;
                 return ret;
             }
             else if (m_VarIx < int.MaxValue) {
-                ret = Calculator.GetGlobalVaraibleByIndex(m_VarIx);
+                ret = calculator.GetGlobalVaraibleByIndex(m_VarIx);
             }
             else if (m_VarId.Length > 0) {
-                m_VarIx = Calculator.GetGlobalVariableIndex(m_VarId);
+                m_VarIx = calculator.GetGlobalVariableIndex(m_VarId);
                 if (m_VarIx < int.MaxValue) {
-                    ret = Calculator.GetGlobalVaraibleByIndex(m_VarIx);
+                    ret = calculator.GetGlobalVaraibleByIndex(m_VarIx);
                 }
-                else if (Calculator.TryGetGlobalVariable(m_VarId, out var val)) {
+                else if (calculator.TryGetGlobalVariable(m_VarId, out var val)) {
                     ret = val;
                 }
                 else {
-                    Calculator.Log("unassigned global var '{0}'", m_VarId);
+                    CodeStructure.Log("unassigned global var '{0}'", m_VarId);
                 }
             }
             if (ret.IsNullObject && m_VarId.Length > 0 && m_VarId[0] != '@') {
@@ -644,15 +653,15 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LocalVarSet : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            BoxedValue v = m_Op.Calc();
+            BoxedValue v = m_Op.Calc(calculator);
             if (m_VarIx < int.MaxValue) {
-                Calculator.SetLocalVaraibleByIndex(m_VarIx, v);
+                calculator.SetLocalVaraibleByIndex(m_VarIx, v);
             }
             else if (m_VarId.Length > 0) {
-                m_VarIx = Calculator.AllocLocalVariableIndex(m_VarId);
-                Calculator.SetLocalVaraibleByIndex(m_VarIx, v);
+                m_VarIx = calculator.AllocLocalVariableIndex(m_VarId);
+                calculator.SetLocalVaraibleByIndex(m_VarIx, v);
             }
             return v;
         }
@@ -661,7 +670,7 @@ namespace DotnetStoryScript.DslExpression
             Dsl.ISyntaxComponent param1 = callData.GetParam(0);
             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
             m_VarId = param1.GetId();
-            m_Op = Calculator.Load(param2);
+            m_Op = CodeStructure.Load(param2);
             return true;
         }
 
@@ -671,19 +680,19 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LocalVarGet : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             var ret = BoxedValue.NullObject;
             if (m_VarIx < int.MaxValue) {
-                ret = Calculator.GetLocalVaraibleByIndex(m_VarIx);
+                ret = calculator.GetLocalVaraibleByIndex(m_VarIx);
             }
             else if (m_VarId.Length > 0) {
-                m_VarIx = Calculator.GetLocalVariableIndex(m_VarId);
+                m_VarIx = calculator.GetLocalVariableIndex(m_VarId);
                 if (m_VarIx < int.MaxValue) {
-                    ret = Calculator.GetLocalVaraibleByIndex(m_VarIx);
+                    ret = calculator.GetLocalVaraibleByIndex(m_VarIx);
                 }
                 else {
-                    Calculator.Log("unassigned local var '{0}'", m_VarId);
+                    CodeStructure.Log("unassigned local var '{0}'", m_VarId);
                 }
             }
             return ret;
@@ -699,7 +708,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ConstGet : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue v = m_Val;
             return v;
@@ -731,15 +740,15 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FunctionCall : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var args = Calculator.NewCalculatorValueList();
+            var args = calculator.NewCalculatorValueList();
             foreach (var arg in m_Args) {
-                var o = arg.Calc();
+                var o = arg.Calc(calculator);
                 args.Add(o);
             }
-            var r = Calculator.Calc(m_Func, args);
-            Calculator.RecycleCalculatorValueList(args);
+            var r = calculator.Calc(m_Func, args);
+            calculator.RecycleCalculatorValueList(args);
             return r;
         }
         protected override bool Load(Dsl.FunctionData funcData)
@@ -749,7 +758,7 @@ namespace DotnetStoryScript.DslExpression
                 int num = funcData.GetParamNum();
                 for (int ix = 0; ix < num; ++ix) {
                     Dsl.ISyntaxComponent param = funcData.GetParam(ix);
-                    m_Args.Add(Calculator.Load(param));
+                    m_Args.Add(CodeStructure.Load(param));
                 }
                 return true;
             }
@@ -761,39 +770,39 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IncExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             if (m_OpNum == 1) {
-                if (Calculator.TryGetVariable(m_VarId, out var v)) {
+                if (calculator.TryGetVariable(m_VarId, out var v)) {
                     if (v.IsUnsignedInteger) {
                         v = v.GetULong() + 1;
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsSignedInteger) {
                         v = v.GetLong() + 1;
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsNumber) {
                         v = v.GetDouble() + 1;
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                 }
                 return v;
             }
             else if (m_OpNum == 2) {
-                var vv = m_Op.Calc();
-                if (Calculator.TryGetVariable(m_VarId, out var v)) {
+                var vv = m_Op.Calc(calculator);
+                if (calculator.TryGetVariable(m_VarId, out var v)) {
                     if (v.IsUnsignedInteger) {
                         v = v.GetULong() + vv.GetULong();
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsSignedInteger) {
                         v = v.GetLong() + vv.GetLong();
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsNumber) {
                         v = v.GetDouble() + vv.GetDouble();
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                 }
                 return v;
@@ -809,7 +818,7 @@ namespace DotnetStoryScript.DslExpression
             }
             if (m_OpNum > 1) {
                 Dsl.ISyntaxComponent param = callData.GetParam(1);
-                m_Op = Calculator.Load(param);
+                m_Op = CodeStructure.Load(param);
             }
             return true;
         }
@@ -820,39 +829,39 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DecExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             if (m_OpNum == 1) {
-                if (Calculator.TryGetVariable(m_VarId, out var v)) {
+                if (calculator.TryGetVariable(m_VarId, out var v)) {
                     if (v.IsUnsignedInteger) {
                         v = v.GetULong() - 1;
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsSignedInteger) {
                         v = v.GetLong() - 1;
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsNumber) {
                         v = v.GetDouble() - 1;
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                 }
                 return v;
             }
             else if (m_OpNum == 2) {
-                var vv = m_Op.Calc();
-                if (Calculator.TryGetVariable(m_VarId, out var v)) {
+                var vv = m_Op.Calc(calculator);
+                if (calculator.TryGetVariable(m_VarId, out var v)) {
                     if (v.IsUnsignedInteger) {
                         v = v.GetULong() - vv.GetULong();
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsSignedInteger) {
                         v = v.GetLong() - vv.GetLong();
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                     else if (v.IsNumber) {
                         v = v.GetDouble() - vv.GetDouble();
-                        Calculator.SetVariable(m_VarId, v);
+                        calculator.SetVariable(m_VarId, v);
                     }
                 }
                 return v;
@@ -868,7 +877,7 @@ namespace DotnetStoryScript.DslExpression
             }
             if (m_OpNum > 1) {
                 Dsl.ISyntaxComponent param = callData.GetParam(1);
-                m_Op = Calculator.Load(param);
+                m_Op = CodeStructure.Load(param);
             }
             return true;
         }
@@ -879,7 +888,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AddExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count == 1) {
                 var v1 = operands[0];
@@ -922,7 +931,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SubExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count == 1) {
                 var v1 = operands[0];
@@ -962,7 +971,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class MulExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -983,7 +992,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DivExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -1004,7 +1013,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ModExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -1025,7 +1034,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class BitAndExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -1041,7 +1050,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class BitOrExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -1057,7 +1066,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class BitXorExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -1073,7 +1082,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class BitNotExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             BoxedValue v;
@@ -1088,7 +1097,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LShiftExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -1104,7 +1113,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class RShiftExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -1120,7 +1129,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class MaxExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var opd1 = operands[0];
             var opd2 = operands[1];
@@ -1147,7 +1156,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class MinExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var opd1 = operands[0];
             var opd2 = operands[1];
@@ -1174,7 +1183,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AbsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var opd = operands[0];
             BoxedValue v;
@@ -1191,7 +1200,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SinExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Sin(v1);
@@ -1200,7 +1209,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CosExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Cos(v1);
@@ -1209,7 +1218,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class TanExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Tan(v1);
@@ -1218,7 +1227,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AsinExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Asin(v1);
@@ -1227,7 +1236,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AcosExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Acos(v1);
@@ -1236,7 +1245,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AtanExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Atan(v1);
@@ -1245,7 +1254,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Atan2Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             double v2 = operands[1].GetDouble();
@@ -1255,7 +1264,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SinhExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Sinh(v1);
@@ -1264,7 +1273,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CoshExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Cosh(v1);
@@ -1273,7 +1282,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class TanhExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Tanh(v1);
@@ -1282,7 +1291,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class RndIntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int v1 = operands[0].GetInt();
             int v2 = operands[1].GetInt();
@@ -1294,7 +1303,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class RndFloatExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             float v1 = operands[0].GetFloat();
             float v2 = operands[1].GetFloat();
@@ -1306,7 +1315,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class PowExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             double v2 = operands[1].GetDouble();
@@ -1316,7 +1325,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SqrtExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Sqrt(v1);
@@ -1325,7 +1334,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ExpExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Exp(v1);
@@ -1334,7 +1343,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Exp2Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Pow(2, v1);
@@ -1343,7 +1352,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LogExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             if (operands.Count == 1) {
@@ -1359,7 +1368,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Log2Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Log(v1) / Math.Log(2);
@@ -1368,7 +1377,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Log10Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Log10(v1);
@@ -1377,7 +1386,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FloorExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Floor(v1);
@@ -1386,7 +1395,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CeilingExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Ceiling(v1);
@@ -1395,7 +1404,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class RoundExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = Math.Round(v1);
@@ -1404,7 +1413,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FloorToIntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = (int)Math.Floor(v1);
@@ -1413,7 +1422,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CeilingToIntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = (int)Math.Ceiling(v1);
@@ -1422,7 +1431,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class RoundToIntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = (int)Math.Round(v1);
@@ -1431,7 +1440,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class BoolExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             bool v1 = operands[0].GetBool();
             BoxedValue v = v1;
@@ -1440,7 +1449,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SByteExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             sbyte v1 = operands[0].GetSByte();
             BoxedValue v = v1;
@@ -1449,7 +1458,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ByteExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             byte v1 = operands[0].GetByte();
             BoxedValue v = v1;
@@ -1458,7 +1467,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CharExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             char v1 = operands[0].GetChar();
             BoxedValue v = v1;
@@ -1467,7 +1476,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ShortExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             short v1 = operands[0].GetShort();
             BoxedValue v = v1;
@@ -1476,7 +1485,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class UShortExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             ushort v1 = operands[0].GetUShort();
             BoxedValue v = v1;
@@ -1485,7 +1494,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int v1 = operands[0].GetInt();
             BoxedValue v = v1;
@@ -1494,7 +1503,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class UIntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             uint v1 = operands[0].GetUInt();
             BoxedValue v = v1;
@@ -1503,7 +1512,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LongExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             long v1 = operands[0].GetLong();
             BoxedValue v = v1;
@@ -1512,7 +1521,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ULongExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             ulong v1 = operands[0].GetULong();
             BoxedValue v = v1;
@@ -1521,7 +1530,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FloatExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             float v1 = operands[0].GetFloat();
             BoxedValue v = v1;
@@ -1530,7 +1539,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DoubleExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = v1;
@@ -1539,7 +1548,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DecimalExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             decimal v1 = operands[0].GetDecimal();
             BoxedValue v = v1;
@@ -1548,7 +1557,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DateTimeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             DateTime v1 = operands[0].GetDateTime();
             BoxedValue v = v1;
@@ -1557,7 +1566,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsObjectExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1567,7 +1576,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsStringExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1577,7 +1586,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsBooleanExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1587,7 +1596,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsCharExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1597,7 +1606,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsIntegerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1607,7 +1616,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsSignedIntegerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1617,7 +1626,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsUnsignedIntegerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1627,7 +1636,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsNumberExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1637,7 +1646,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsDateTimeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1647,7 +1656,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsTupleExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.FromBool(false);
@@ -1657,7 +1666,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class BoxedValueTypeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.From(-1);
@@ -1667,7 +1676,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class BoxedValueTypeNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1) {
                 return BoxedValue.EmptyString;
@@ -1677,7 +1686,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ItofExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int v1 = operands[0].GetInt();
             float v2 = 0;
@@ -1690,7 +1699,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FtoiExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             float v1 = operands[0].GetFloat();
             int v2 = 0;
@@ -1703,7 +1712,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class UtofExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             uint v1 = operands[0].GetUInt();
             float v2 = 0;
@@ -1716,7 +1725,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FtouExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             float v1 = operands[0].GetFloat();
             uint v2 = 0;
@@ -1729,7 +1738,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LtodExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             long v1 = operands[0].GetLong();
             double v2 = 0;
@@ -1742,7 +1751,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DtolExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             long v2 = 0;
@@ -1755,7 +1764,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class UtodExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             ulong v1 = operands[0].GetULong();
             double v2 = 0;
@@ -1768,7 +1777,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DtouExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             ulong v2 = 0;
@@ -1781,7 +1790,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LerpExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double a = operands[0].GetDouble();
             double b = operands[1].GetDouble();
@@ -1793,7 +1802,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LerpUnclampedExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double a = operands[0].GetDouble();
             double b = operands[1].GetDouble();
@@ -1804,7 +1813,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LerpAngleExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double a = operands[0].GetDouble();
             double b = operands[1].GetDouble();
@@ -1824,7 +1833,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SmoothStepExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double from = operands[0].GetDouble();
             double to = operands[1].GetDouble();
@@ -1837,7 +1846,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Clamp01Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             BoxedValue v = ClampExp.Clamp01(v1);
@@ -1846,7 +1855,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ClampExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             double v2 = operands[1].GetDouble();
@@ -1894,7 +1903,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ApproximatelyExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             float v1 = operands[0].GetFloat();
             float v2 = operands[1].GetFloat();
@@ -1909,7 +1918,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsPowerOfTwoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int v1 = operands[0].GetInt();
             int v = IsPowerOfTwo(v1) ? 1 : 0;
@@ -1924,7 +1933,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ClosestPowerOfTwoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int v1 = operands[0].GetInt();
             int v = ClosestPowerOfTwo(v1);
@@ -1939,7 +1948,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class NextPowerOfTwoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int v1 = operands[0].GetInt();
             int v = NextPowerOfTwo(v1);
@@ -1954,7 +1963,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DistExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             float x1 = (float)operands[0].GetDouble();
             float y1 = (float)operands[1].GetDouble();
@@ -1966,7 +1975,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DistSqrExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             float x1 = (float)operands[0].GetDouble();
             float y1 = (float)operands[1].GetDouble();
@@ -1978,7 +1987,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GreatExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             double v2 = operands[1].GetDouble();
@@ -1988,7 +1997,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GreatEqualExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             double v2 = operands[1].GetDouble();
@@ -1998,7 +2007,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LessExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             double v2 = operands[1].GetDouble();
@@ -2008,7 +2017,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LessEqualExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             double v1 = operands[0].GetDouble();
             double v2 = operands[1].GetDouble();
@@ -2018,7 +2027,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class EqualExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -2028,7 +2037,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class NotEqualExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var v1 = operands[0];
             var v2 = operands[1];
@@ -2038,11 +2047,11 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AndExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            long v1 = m_Op1.Calc().GetLong();
+            long v1 = m_Op1.Calc(calculator).GetLong();
             long v2 = 0;
-            BoxedValue v = v1 != 0 && (v2 = m_Op2.Calc().GetLong()) != 0 ? 1 : 0;
+            BoxedValue v = v1 != 0 && (v2 = m_Op2.Calc(calculator).GetLong()) != 0 ? 1 : 0;
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2057,11 +2066,11 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class OrExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            long v1 = m_Op1.Calc().GetLong();
+            long v1 = m_Op1.Calc(calculator).GetLong();
             long v2 = 0;
-            BoxedValue v = v1 != 0 || (v2 = m_Op2.Calc().GetLong()) != 0 ? 1 : 0;
+            BoxedValue v = v1 != 0 || (v2 = m_Op2.Calc(calculator).GetLong()) != 0 ? 1 : 0;
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2076,7 +2085,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class NotExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             long val = operands[0].GetLong();
             BoxedValue v = val == 0 ? 1 : 0;
@@ -2085,12 +2094,12 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CondExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var v1 = m_Op1.Calc();
+            var v1 = m_Op1.Calc(calculator);
             var v2 = BoxedValue.NullObject;
             BoxedValue v3 = BoxedValue.NullObject;
-            BoxedValue v = v1.GetLong() != 0 ? v2 = m_Op2.Calc() : v3 = m_Op3.Calc();
+            BoxedValue v = v1.GetLong() != 0 ? v2 = m_Op2.Calc(calculator) : v3 = m_Op3.Calc(calculator);
             return v;
         }
         protected override bool Load(Dsl.FunctionData funcData)
@@ -2099,13 +2108,13 @@ namespace DotnetStoryScript.DslExpression
                 Dsl.ISyntaxComponent cond = funcData.GetParam(0);
                 Dsl.ISyntaxComponent op1 = funcData.GetParam(1);
                 Dsl.ISyntaxComponent op2 = funcData.GetParam(2);
-                m_Op1 = Calculator.Load(cond);
-                m_Op2 = Calculator.Load(op1);
-                m_Op3 = Calculator.Load(op2);
+                m_Op1 = CodeStructure.Load(cond);
+                m_Op2 = CodeStructure.Load(op1);
+                m_Op3 = CodeStructure.Load(op2);
             }
             else {
                 //error
-                Calculator.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
+                CodeStructure.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
             }
             return true;
         }
@@ -2117,13 +2126,13 @@ namespace DotnetStoryScript.DslExpression
                 Dsl.ISyntaxComponent cond = funcData1.LowerOrderFunction.GetParam(0);
                 Dsl.ISyntaxComponent op1 = funcData1.GetParam(0);
                 Dsl.ISyntaxComponent op2 = funcData2.GetParam(0);
-                m_Op1 = Calculator.Load(cond);
-                m_Op2 = Calculator.Load(op1);
-                m_Op3 = Calculator.Load(op2);
+                m_Op1 = CodeStructure.Load(cond);
+                m_Op2 = CodeStructure.Load(op1);
+                m_Op3 = CodeStructure.Load(op2);
             }
             else {
                 //error
-                Calculator.Log("DslCalculator error, {0} line {1}", statementData.ToScriptString(false, Dsl.DelimiterInfo.Default), statementData.GetLine());
+                CodeStructure.Log("DslCalculator error, {0} line {1}", statementData.ToScriptString(false, Dsl.DelimiterInfo.Default), statementData.GetLine());
             }
             return true;
         }
@@ -2135,18 +2144,18 @@ namespace DotnetStoryScript.DslExpression
     internal sealed class IfExp : AbstractExpression
     {
         public override bool IsAsync { get { return m_IsAsync; } }
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue v = 0;
             for (int ix = 0; ix < m_Clauses.Count; ++ix) {
                 var clause = m_Clauses[ix];
                 if (null != clause.Condition) {
-                    var condVal = clause.Condition.Calc();
+                    var condVal = clause.Condition.Calc(calculator);
                     if (condVal.GetLong() != 0) {
                         for (int index = 0; index < clause.Expressions.Count; ++index) {
-                            BoxedValue tv = clause.Expressions[index].Calc();
-                            if (Calculator.RunState != RunStateEnum.Normal) {
-                                if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                            BoxedValue tv = clause.Expressions[index].Calc(calculator);
+                            if (calculator.RunState != RunStateEnum.Normal) {
+                                if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                     v = tv;
                                 }
                                 return v;
@@ -2160,9 +2169,9 @@ namespace DotnetStoryScript.DslExpression
                 }
                 else if (ix == m_Clauses.Count - 1) {
                     for (int index = 0; index < clause.Expressions.Count; ++index) {
-                        BoxedValue tv = clause.Expressions[index].Calc();
-                        if (Calculator.RunState != RunStateEnum.Normal) {
-                            if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                        BoxedValue tv = clause.Expressions[index].Calc(calculator);
+                        if (calculator.RunState != RunStateEnum.Normal) {
+                            if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                 v = tv;
                             }
                             return v;
@@ -2176,7 +2185,7 @@ namespace DotnetStoryScript.DslExpression
             }
             return v;
         }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
             BoxedValue v = 0;
             for (int ix = 0; ix < m_Clauses.Count; ++ix) {
@@ -2184,7 +2193,7 @@ namespace DotnetStoryScript.DslExpression
                 if (null != clause.Condition) {
                     BoxedValue condVal;
                     if (clause.Condition.IsAsync) {
-                        var _ei1 = clause.Condition.Calc(result);
+                        var _ei1 = clause.Condition.Calc(calculator, result);
                         try {
                             while (_ei1.MoveNext()) { yield return _ei1.Current; }
                             condVal = result.Value;
@@ -2194,14 +2203,14 @@ namespace DotnetStoryScript.DslExpression
                         }
                     }
                     else {
-                        condVal = clause.Condition.Calc();
+                        condVal = clause.Condition.Calc(calculator);
                     }
                     if (condVal.GetLong() != 0) {
                         for (int index = 0; index < clause.Expressions.Count; ++index) {
                             var exp = clause.Expressions[index];
                             BoxedValue tv;
                             if (exp.IsAsync) {
-                                var _ei2 = exp.Calc(result);
+                                var _ei2 = exp.Calc(calculator, result);
                                 try {
                                     while (_ei2.MoveNext()) { yield return _ei2.Current; }
                                     tv = result.Value;
@@ -2211,10 +2220,10 @@ namespace DotnetStoryScript.DslExpression
                                 }
                             }
                             else {
-                                tv = exp.Calc();
+                                tv = exp.Calc(calculator);
                             }
-                            if (Calculator.RunState != RunStateEnum.Normal) {
-                                if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                            if (calculator.RunState != RunStateEnum.Normal) {
+                                if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                     v = tv;
                                 }
                                 result.Value = v;
@@ -2232,7 +2241,7 @@ namespace DotnetStoryScript.DslExpression
                         var exp = clause.Expressions[index];
                         BoxedValue tv;
                         if (exp.IsAsync) {
-                            var _ei3 = exp.Calc(result);
+                            var _ei3 = exp.Calc(calculator, result);
                             try {
                                 while (_ei3.MoveNext()) { yield return _ei3.Current; }
                                 tv = result.Value;
@@ -2242,10 +2251,10 @@ namespace DotnetStoryScript.DslExpression
                             }
                         }
                         else {
-                            tv = exp.Calc();
+                            tv = exp.Calc(calculator);
                         }
-                        if (Calculator.RunState != RunStateEnum.Normal) {
-                            if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                        if (calculator.RunState != RunStateEnum.Normal) {
+                            if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                 v = tv;
                             }
                             result.Value = v;
@@ -2265,16 +2274,16 @@ namespace DotnetStoryScript.DslExpression
             if (funcData.IsHighOrder) {
                 Dsl.ISyntaxComponent cond = funcData.LowerOrderFunction.GetParam(0);
                 IfExp.Clause item = new IfExp.Clause();
-                item.Condition = Calculator.Load(cond);
+                item.Condition = CodeStructure.Load(cond);
                 for (int ix = 0; ix < funcData.GetParamNum(); ++ix) {
-                    IExpression subExp = Calculator.Load(funcData.GetParam(ix));
+                    IExpression subExp = CodeStructure.Load(funcData.GetParam(ix));
                     item.Expressions.Add(subExp);
                 }
                 m_Clauses.Add(item);
             }
             else {
                 //error
-                Calculator.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
+                CodeStructure.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
             }
             UpdateIsAsync();
             return true;
@@ -2294,13 +2303,13 @@ namespace DotnetStoryScript.DslExpression
                     IfExp.Clause item = new IfExp.Clause();
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent cond = first.GetParam(0);
-                        item.Condition = Calculator.Load(cond);
+                        item.Condition = CodeStructure.Load(cond);
                     }
                     else {
                         //error
-                        Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
+                        CodeStructure.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(statementData.Second);
+                    IExpression subExp = CodeStructure.Load(statementData.Second);
                     item.Expressions.Add(subExp);
                     m_Clauses.Add(item);
                     UpdateIsAsync();
@@ -2314,14 +2323,14 @@ namespace DotnetStoryScript.DslExpression
                     IfExp.Clause item = new IfExp.Clause();
                     if (fData.IsHighOrder && fData.LowerOrderFunction.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent cond = fData.LowerOrderFunction.GetParam(0);
-                        item.Condition = Calculator.Load(cond);
+                        item.Condition = CodeStructure.Load(cond);
                     }
                     else {
                         //error
-                        Calculator.Log("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
+                        CodeStructure.Log("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
                     }
                     for (int ix = 0; ix < fData.GetParamNum(); ++ix) {
-                        IExpression subExp = Calculator.Load(fData.GetParam(ix));
+                        IExpression subExp = CodeStructure.Load(fData.GetParam(ix));
                         item.Expressions.Add(subExp);
                     }
                     m_Clauses.Add(item);
@@ -2329,12 +2338,12 @@ namespace DotnetStoryScript.DslExpression
                 else if (fData.GetId() == "else") {
                     if (fData != statementData.Last) {
                         //error
-                        Calculator.Log("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
+                        CodeStructure.Log("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
                     }
                     else {
                         IfExp.Clause item = new IfExp.Clause();
                         for (int ix = 0; ix < fData.GetParamNum(); ++ix) {
-                            IExpression subExp = Calculator.Load(fData.GetParam(ix));
+                            IExpression subExp = CodeStructure.Load(fData.GetParam(ix));
                             item.Expressions.Add(subExp);
                         }
                         m_Clauses.Add(item);
@@ -2342,7 +2351,7 @@ namespace DotnetStoryScript.DslExpression
                 }
                 else {
                     //error
-                    Calculator.Log("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
+                    CodeStructure.Log("DslCalculator error, {0} line {1}", fData.ToScriptString(false, Dsl.DelimiterInfo.Default), fData.GetLine());
                 }
             }
             UpdateIsAsync();
@@ -2372,24 +2381,24 @@ namespace DotnetStoryScript.DslExpression
     internal sealed class WhileExp : AbstractExpression
     {
         public override bool IsAsync { get { return m_IsAsync; } }
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue v = 0;
             for (; ; ) {
-                var condVal = m_Condition.Calc();
+                var condVal = m_Condition.Calc(calculator);
                 if (condVal.GetLong() != 0) {
                     for (int index = 0; index < m_Expressions.Count; ++index) {
-                        BoxedValue tv = m_Expressions[index].Calc();
-                        if (Calculator.RunState == RunStateEnum.Continue) {
-                            Calculator.RunState = RunStateEnum.Normal;
+                        BoxedValue tv = m_Expressions[index].Calc(calculator);
+                        if (calculator.RunState == RunStateEnum.Continue) {
+                            calculator.RunState = RunStateEnum.Normal;
                             break;
                         }
-                        else if (Calculator.RunState != RunStateEnum.Normal) {
-                            if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                        else if (calculator.RunState != RunStateEnum.Normal) {
+                            if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                 v = tv;
                             }
-                            if (Calculator.RunState == RunStateEnum.Break)
-                                Calculator.RunState = RunStateEnum.Normal;
+                            if (calculator.RunState == RunStateEnum.Break)
+                                calculator.RunState = RunStateEnum.Normal;
                             return v;
                         }
                         else {
@@ -2403,13 +2412,13 @@ namespace DotnetStoryScript.DslExpression
             }
             return v;
         }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
             BoxedValue v = 0;
             for (; ; ) {
                 BoxedValue condVal;
                 if (m_Condition.IsAsync) {
-                    var _ei1 = m_Condition.Calc(result);
+                    var _ei1 = m_Condition.Calc(calculator, result);
                     try {
                         while (_ei1.MoveNext()) { yield return _ei1.Current; }
                         condVal = result.Value;
@@ -2419,14 +2428,14 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 else {
-                    condVal = m_Condition.Calc();
+                    condVal = m_Condition.Calc(calculator);
                 }
                 if (condVal.GetLong() != 0) {
                     for (int index = 0; index < m_Expressions.Count; ++index) {
                         var exp = m_Expressions[index];
                         BoxedValue tv;
                         if (exp.IsAsync) {
-                            var _ei2 = exp.Calc(result);
+                            var _ei2 = exp.Calc(calculator, result);
                             try {
                                 while (_ei2.MoveNext()) { yield return _ei2.Current; }
                                 tv = result.Value;
@@ -2436,18 +2445,18 @@ namespace DotnetStoryScript.DslExpression
                             }
                         }
                         else {
-                            tv = exp.Calc();
+                            tv = exp.Calc(calculator);
                         }
-                        if (Calculator.RunState == RunStateEnum.Continue) {
-                            Calculator.RunState = RunStateEnum.Normal;
+                        if (calculator.RunState == RunStateEnum.Continue) {
+                            calculator.RunState = RunStateEnum.Normal;
                             break;
                         }
-                        else if (Calculator.RunState != RunStateEnum.Normal) {
-                            if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                        else if (calculator.RunState != RunStateEnum.Normal) {
+                            if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                 v = tv;
                             }
-                            if (Calculator.RunState == RunStateEnum.Break)
-                                Calculator.RunState = RunStateEnum.Normal;
+                            if (calculator.RunState == RunStateEnum.Break)
+                                calculator.RunState = RunStateEnum.Normal;
                             result.Value = v;
                             yield break;
                         }
@@ -2466,15 +2475,15 @@ namespace DotnetStoryScript.DslExpression
         {
             if (funcData.IsHighOrder) {
                 Dsl.ISyntaxComponent cond = funcData.LowerOrderFunction.GetParam(0);
-                m_Condition = Calculator.Load(cond);
+                m_Condition = CodeStructure.Load(cond);
                 for (int ix = 0; ix < funcData.GetParamNum(); ++ix) {
-                    IExpression subExp = Calculator.Load(funcData.GetParam(ix));
+                    IExpression subExp = CodeStructure.Load(funcData.GetParam(ix));
                     m_Expressions.Add(subExp);
                 }
             }
             else {
                 //error
-                Calculator.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
+                CodeStructure.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
             }
             UpdateIsAsync();
             return true;
@@ -2492,13 +2501,13 @@ namespace DotnetStoryScript.DslExpression
                         !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent cond = first.GetParam(0);
-                        m_Condition = Calculator.Load(cond);
+                        m_Condition = CodeStructure.Load(cond);
                     }
                     else {
                         //error
-                        Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
+                        CodeStructure.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(statementData.Second);
+                    IExpression subExp = CodeStructure.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     UpdateIsAsync();
                     return true;
@@ -2529,25 +2538,25 @@ namespace DotnetStoryScript.DslExpression
     internal sealed class LoopExp : AbstractExpression
     {
         public override bool IsAsync { get { return m_IsAsync; } }
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue v = 0;
-            var count = m_Count.Calc();
+            var count = m_Count.Calc(calculator);
             long ct = count.GetLong();
             for (int i = 0; i < ct; ++i) {
-                Calculator.SetVariable("$$", i);
+                calculator.SetVariable("$$", i);
                 for (int index = 0; index < m_Expressions.Count; ++index) {
-                    BoxedValue tv = m_Expressions[index].Calc();
-                    if (Calculator.RunState == RunStateEnum.Continue) {
-                        Calculator.RunState = RunStateEnum.Normal;
+                    BoxedValue tv = m_Expressions[index].Calc(calculator);
+                    if (calculator.RunState == RunStateEnum.Continue) {
+                        calculator.RunState = RunStateEnum.Normal;
                         break;
                     }
-                    else if (Calculator.RunState != RunStateEnum.Normal) {
-                        if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                    else if (calculator.RunState != RunStateEnum.Normal) {
+                        if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                             v = tv;
                         }
-                        if (Calculator.RunState == RunStateEnum.Break)
-                            Calculator.RunState = RunStateEnum.Normal;
+                        if (calculator.RunState == RunStateEnum.Break)
+                            calculator.RunState = RunStateEnum.Normal;
                         return v;
                     }
                     else {
@@ -2557,12 +2566,12 @@ namespace DotnetStoryScript.DslExpression
             }
             return v;
         }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
             BoxedValue v = 0;
             BoxedValue countVal;
             if (m_Count.IsAsync) {
-                var _ei1 = m_Count.Calc(result);
+                var _ei1 = m_Count.Calc(calculator, result);
                 try {
                     while (_ei1.MoveNext()) { yield return _ei1.Current; }
                     countVal = result.Value;
@@ -2572,16 +2581,16 @@ namespace DotnetStoryScript.DslExpression
                 }
             }
             else {
-                countVal = m_Count.Calc();
+                countVal = m_Count.Calc(calculator);
             }
             long ct = countVal.GetLong();
             for (int i = 0; i < ct; ++i) {
-                Calculator.SetVariable("$$", i);
+                calculator.SetVariable("$$", i);
                 for (int index = 0; index < m_Expressions.Count; ++index) {
                     var exp = m_Expressions[index];
                     BoxedValue tv;
                     if (exp.IsAsync) {
-                        var _ei2 = exp.Calc(result);
+                        var _ei2 = exp.Calc(calculator, result);
                         try {
                             while (_ei2.MoveNext()) { yield return _ei2.Current; }
                             tv = result.Value;
@@ -2591,18 +2600,18 @@ namespace DotnetStoryScript.DslExpression
                         }
                     }
                     else {
-                        tv = exp.Calc();
+                        tv = exp.Calc(calculator);
                     }
-                    if (Calculator.RunState == RunStateEnum.Continue) {
-                        Calculator.RunState = RunStateEnum.Normal;
+                    if (calculator.RunState == RunStateEnum.Continue) {
+                        calculator.RunState = RunStateEnum.Normal;
                         break;
                     }
-                    else if (Calculator.RunState != RunStateEnum.Normal) {
-                        if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                    else if (calculator.RunState != RunStateEnum.Normal) {
+                        if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                             v = tv;
                         }
-                        if (Calculator.RunState == RunStateEnum.Break)
-                            Calculator.RunState = RunStateEnum.Normal;
+                        if (calculator.RunState == RunStateEnum.Break)
+                            calculator.RunState = RunStateEnum.Normal;
                         result.Value = v;
                         yield break;
                     }
@@ -2617,15 +2626,15 @@ namespace DotnetStoryScript.DslExpression
         {
             if (funcData.IsHighOrder) {
                 Dsl.ISyntaxComponent count = funcData.LowerOrderFunction.GetParam(0);
-                m_Count = Calculator.Load(count);
+                m_Count = CodeStructure.Load(count);
                 for (int ix = 0; ix < funcData.GetParamNum(); ++ix) {
-                    IExpression subExp = Calculator.Load(funcData.GetParam(ix));
+                    IExpression subExp = CodeStructure.Load(funcData.GetParam(ix));
                     m_Expressions.Add(subExp);
                 }
             }
             else {
                 //error
-                Calculator.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
+                CodeStructure.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
             }
             UpdateIsAsync();
             return true;
@@ -2643,13 +2652,13 @@ namespace DotnetStoryScript.DslExpression
                         !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent exp = first.GetParam(0);
-                        m_Count = Calculator.Load(exp);
+                        m_Count = CodeStructure.Load(exp);
                     }
                     else {
                         //error
-                        Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
+                        CodeStructure.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(statementData.Second);
+                    IExpression subExp = CodeStructure.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     UpdateIsAsync();
                     return true;
@@ -2680,17 +2689,17 @@ namespace DotnetStoryScript.DslExpression
     internal sealed class LoopListExp : AbstractExpression
     {
         public override bool IsAsync { get { return m_IsAsync; } }
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue v = 0;
-            var list = m_List.Calc();
+            var list = m_List.Calc(calculator);
             IEnumerable obj = list.As<IEnumerable>();
             if (null != obj && obj is IEnumerable<BoxedValue> bvEnumer) {
                 var enumer = bvEnumer.GetEnumerator();
                 try {
                     while (enumer.MoveNext()) {
                         var val = enumer.Current;
-                        if (LoopOnce(val, ref v))
+                        if (LoopOnce(calculator, val, ref v))
                             return v;
                     }
                 }
@@ -2703,7 +2712,7 @@ namespace DotnetStoryScript.DslExpression
                 try {
                     while (enumer.MoveNext()) {
                         var val = BoxedValue.FromObject(enumer.Current);
-                        if (LoopOnce(val, ref v))
+                        if (LoopOnce(calculator, val, ref v))
                             return v;
                     }
                 }
@@ -2717,15 +2726,15 @@ namespace DotnetStoryScript.DslExpression
         {
             if (funcData.IsHighOrder) {
                 Dsl.ISyntaxComponent list = funcData.LowerOrderFunction.GetParam(0);
-                m_List = Calculator.Load(list);
+                m_List = CodeStructure.Load(list);
                 for (int ix = 0; ix < funcData.GetParamNum(); ++ix) {
-                    IExpression subExp = Calculator.Load(funcData.GetParam(ix));
+                    IExpression subExp = CodeStructure.Load(funcData.GetParam(ix));
                     m_Expressions.Add(subExp);
                 }
             }
             else {
                 //error
-                Calculator.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
+                CodeStructure.Log("DslCalculator error, {0} line {1}", funcData.ToScriptString(false, Dsl.DelimiterInfo.Default), funcData.GetLine());
             }
             UpdateIsAsync();
             return true;
@@ -2743,13 +2752,13 @@ namespace DotnetStoryScript.DslExpression
                         !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent exp = first.GetParam(0);
-                        m_List = Calculator.Load(exp);
+                        m_List = CodeStructure.Load(exp);
                     }
                     else {
                         //error
-                        Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
+                        CodeStructure.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(statementData.Second);
+                    IExpression subExp = CodeStructure.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     UpdateIsAsync();
                     return true;
@@ -2757,21 +2766,21 @@ namespace DotnetStoryScript.DslExpression
             }
             return false;
         }
-        private bool LoopOnce(in BoxedValue val, ref BoxedValue ret)
+        private bool LoopOnce(DslCalculator calculator, in BoxedValue val, ref BoxedValue ret)
         {
-            Calculator.SetVariable("$$", val);
+            calculator.SetVariable("$$", val);
             for (int index = 0; index < m_Expressions.Count; ++index) {
-                BoxedValue v = m_Expressions[index].Calc();
-                if (Calculator.RunState == RunStateEnum.Continue) {
-                    Calculator.RunState = RunStateEnum.Normal;
+                BoxedValue v = m_Expressions[index].Calc(calculator);
+                if (calculator.RunState == RunStateEnum.Continue) {
+                    calculator.RunState = RunStateEnum.Normal;
                     break;
                 }
-                else if (Calculator.RunState != RunStateEnum.Normal) {
-                    if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                else if (calculator.RunState != RunStateEnum.Normal) {
+                    if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                         ret = v;
                     }
-                    if (Calculator.RunState == RunStateEnum.Break)
-                        Calculator.RunState = RunStateEnum.Normal;
+                    if (calculator.RunState == RunStateEnum.Break)
+                        calculator.RunState = RunStateEnum.Normal;
                     return true;
                 }
                 else {
@@ -2780,12 +2789,12 @@ namespace DotnetStoryScript.DslExpression
             }
             return false;
         }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
             BoxedValue v = 0;
             var listResult = new AsyncCalcResult();
             if (m_List.IsAsync) {
-                var _ei1 = m_List.Calc(listResult);
+                var _ei1 = m_List.Calc(calculator, listResult);
                 try {
                     while (_ei1.MoveNext()) { yield return _ei1.Current; }
                 }
@@ -2794,7 +2803,7 @@ namespace DotnetStoryScript.DslExpression
                 }
             }
             else {
-                listResult.Value = m_List.Calc();
+                listResult.Value = m_List.Calc(calculator);
             }
             var list = listResult.Value;
             IEnumerable obj = list.As<IEnumerable>();
@@ -2804,7 +2813,7 @@ namespace DotnetStoryScript.DslExpression
                     while (enumer.MoveNext()) {
                         var val = enumer.Current;
                         var loopResult = new AsyncCalcResult();
-                        var _ei2 = LoopOnceAsync(val, loopResult);
+                        var _ei2 = LoopOnceAsync(calculator, val, loopResult);
                         try {
                             while (_ei2.MoveNext()) { yield return _ei2.Current; }
                         }
@@ -2827,7 +2836,7 @@ namespace DotnetStoryScript.DslExpression
                     while (enumer.MoveNext()) {
                         var val = BoxedValue.FromObject(enumer.Current);
                         var loopResult = new AsyncCalcResult();
-                        var _ei3 = LoopOnceAsync(val, loopResult);
+                        var _ei3 = LoopOnceAsync(calculator, val, loopResult);
                         try {
                             while (_ei3.MoveNext()) { yield return _ei3.Current; }
                         }
@@ -2846,15 +2855,15 @@ namespace DotnetStoryScript.DslExpression
             }
             result.Value = v;
         }
-        private IEnumerator LoopOnceAsync(BoxedValue val, AsyncCalcResult loopResult)
+        private IEnumerator LoopOnceAsync(DslCalculator calculator, BoxedValue val, AsyncCalcResult loopResult)
         {
-            Calculator.SetVariable("$$", val);
+            calculator.SetVariable("$$", val);
             for (int index = 0; index < m_Expressions.Count; ++index) {
                 var exp = m_Expressions[index];
                 BoxedValue v;
                 if (exp.IsAsync) {
                     var subResult = new AsyncCalcResult();
-                    var _ei = exp.Calc(subResult);
+                    var _ei = exp.Calc(calculator, subResult);
                     try {
                         while (_ei.MoveNext()) { yield return _ei.Current; }
                         v = subResult.Value;
@@ -2864,18 +2873,18 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 else {
-                    v = exp.Calc();
+                    v = exp.Calc(calculator);
                 }
-                if (Calculator.RunState == RunStateEnum.Continue) {
-                    Calculator.RunState = RunStateEnum.Normal;
+                if (calculator.RunState == RunStateEnum.Continue) {
+                    calculator.RunState = RunStateEnum.Normal;
                     break;
                 }
-                else if (Calculator.RunState != RunStateEnum.Normal) {
-                    if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                else if (calculator.RunState != RunStateEnum.Normal) {
+                    if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                         loopResult.Value = v;
                     }
-                    if (Calculator.RunState == RunStateEnum.Break)
-                        Calculator.RunState = RunStateEnum.Normal;
+                    if (calculator.RunState == RunStateEnum.Break)
+                        calculator.RunState = RunStateEnum.Normal;
                     loopResult.IsBreak = true;
                     yield break;
                 }
@@ -2907,31 +2916,31 @@ namespace DotnetStoryScript.DslExpression
     internal sealed class ForEachValueExp : AbstractExpression
     {
         public override bool IsAsync { get { return m_IsAsync; } }
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue v = 0;
             List<BoxedValue> list = new List<BoxedValue>();
             for (int ix = 0; ix < m_Elements.Count; ++ix) {
-                var val = m_Elements[ix].Calc();
+                var val = m_Elements[ix].Calc(calculator);
                 list.Add(val);
             }
             var enumer = list.GetEnumerator();
             try {
                 while (enumer.MoveNext()) {
                     var val = enumer.Current;
-                    Calculator.SetVariable("$$", val);
+                    calculator.SetVariable("$$", val);
                     for (int index = 0; index < m_Expressions.Count; ++index) {
-                        BoxedValue tv = m_Expressions[index].Calc();
-                        if (Calculator.RunState == RunStateEnum.Continue) {
-                            Calculator.RunState = RunStateEnum.Normal;
+                        BoxedValue tv = m_Expressions[index].Calc(calculator);
+                        if (calculator.RunState == RunStateEnum.Continue) {
+                            calculator.RunState = RunStateEnum.Normal;
                             break;
                         }
-                        else if (Calculator.RunState != RunStateEnum.Normal) {
-                            if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                        else if (calculator.RunState != RunStateEnum.Normal) {
+                            if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                 v = tv;
                             }
-                            if (Calculator.RunState == RunStateEnum.Break)
-                                Calculator.RunState = RunStateEnum.Normal;
+                            if (calculator.RunState == RunStateEnum.Break)
+                                calculator.RunState = RunStateEnum.Normal;
                             return v;
                         }
                         else {
@@ -2945,7 +2954,7 @@ namespace DotnetStoryScript.DslExpression
             }
             return v;
         }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
             BoxedValue v = 0;
             List<BoxedValue> list = new List<BoxedValue>();
@@ -2953,7 +2962,7 @@ namespace DotnetStoryScript.DslExpression
                 var exp = m_Elements[ix];
                 if (exp.IsAsync) {
                     var subResult = new AsyncCalcResult();
-                    var _ei1 = exp.Calc(subResult);
+                    var _ei1 = exp.Calc(calculator, subResult);
                     try {
                         while (_ei1.MoveNext()) { yield return _ei1.Current; }
                     }
@@ -2963,20 +2972,20 @@ namespace DotnetStoryScript.DslExpression
                     list.Add(subResult.Value);
                 }
                 else {
-                    list.Add(exp.Calc());
+                    list.Add(exp.Calc(calculator));
                 }
             }
             var enumer = list.GetEnumerator();
             try {
                 while (enumer.MoveNext()) {
                     var val = enumer.Current;
-                    Calculator.SetVariable("$$", val);
+                    calculator.SetVariable("$$", val);
                     for (int index = 0; index < m_Expressions.Count; ++index) {
                         var exp = m_Expressions[index];
                         BoxedValue tv;
                         if (exp.IsAsync) {
                             var subResult = new AsyncCalcResult();
-                            var _ei2 = exp.Calc(subResult);
+                            var _ei2 = exp.Calc(calculator, subResult);
                             try {
                                 while (_ei2.MoveNext()) { yield return _ei2.Current; }
                             }
@@ -2986,18 +2995,18 @@ namespace DotnetStoryScript.DslExpression
                             tv = subResult.Value;
                         }
                         else {
-                            tv = exp.Calc();
+                            tv = exp.Calc(calculator);
                         }
-                        if (Calculator.RunState == RunStateEnum.Continue) {
-                            Calculator.RunState = RunStateEnum.Normal;
+                        if (calculator.RunState == RunStateEnum.Continue) {
+                            calculator.RunState = RunStateEnum.Normal;
                             break;
                         }
-                        else if (Calculator.RunState != RunStateEnum.Normal) {
-                            if (Calculator.RunState == RunStateEnum.Return || Calculator.RunState == RunStateEnum.Redirect) {
+                        else if (calculator.RunState != RunStateEnum.Normal) {
+                            if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
                                 v = tv;
                             }
-                            if (Calculator.RunState == RunStateEnum.Break)
-                                Calculator.RunState = RunStateEnum.Normal;
+                            if (calculator.RunState == RunStateEnum.Break)
+                                calculator.RunState = RunStateEnum.Normal;
                             result.Value = v;
                             yield break;
                         }
@@ -3019,13 +3028,13 @@ namespace DotnetStoryScript.DslExpression
                 int num = callData.GetParamNum();
                 for (int ix = 0; ix < num; ++ix) {
                     Dsl.ISyntaxComponent exp = callData.GetParam(ix);
-                    m_Elements.Add(Calculator.Load(exp));
+                    m_Elements.Add(CodeStructure.Load(exp));
                 }
             }
             if (funcData.HaveStatement()) {
                 int fnum = funcData.GetParamNum();
                 for (int ix = 0; ix < fnum; ++ix) {
-                    IExpression subExp = Calculator.Load(funcData.GetParam(ix));
+                    IExpression subExp = CodeStructure.Load(funcData.GetParam(ix));
                     m_Expressions.Add(subExp);
                 }
             }
@@ -3047,14 +3056,14 @@ namespace DotnetStoryScript.DslExpression
                     if (num > 0) {
                         for (int ix = 0; ix < num; ++ix) {
                             Dsl.ISyntaxComponent exp = first.GetParam(ix);
-                            m_Elements.Add(Calculator.Load(exp));
+                            m_Elements.Add(CodeStructure.Load(exp));
                         }
                     }
                     else {
                         //error
-                        Calculator.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
+                        CodeStructure.Log("DslCalculator error, {0} line {1}", first.ToScriptString(false, Dsl.DelimiterInfo.Default), first.GetLine());
                     }
-                    IExpression subExp = Calculator.Load(statementData.Second);
+                    IExpression subExp = CodeStructure.Load(statementData.Second);
                     m_Expressions.Add(subExp);
                     UpdateIsAsync();
                     return true;
@@ -3087,7 +3096,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class TupleExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue v;
             int num = m_Expressions.Count;
@@ -3095,7 +3104,7 @@ namespace DotnetStoryScript.DslExpression
                 v = BoxedValue.NullObject;
             }
             else {
-                v = PackValues(0);
+                v = PackValues(calculator, 0);
             }
             return v;
         }
@@ -3104,11 +3113,11 @@ namespace DotnetStoryScript.DslExpression
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
                 Dsl.ISyntaxComponent param = callData.GetParam(i);
-                m_Expressions.Add(Calculator.Load(param));
+                m_Expressions.Add(CodeStructure.Load(param));
             }
             return true;
         }
-        private BoxedValue PackValues(int start)
+        private BoxedValue PackValues(DslCalculator calculator, int start)
         {
             const int c_MaxTupleElementNum = 8;
             BoxedValue v1 = BoxedValue.NullObject, v2 = BoxedValue.NullObject, v3 = BoxedValue.NullObject, v4 = BoxedValue.NullObject, v5 = BoxedValue.NullObject, v6 = BoxedValue.NullObject, v7 = BoxedValue.NullObject, v8 = BoxedValue.NullObject;
@@ -3118,54 +3127,54 @@ namespace DotnetStoryScript.DslExpression
                 var exp = m_Expressions[start + ix];
                 switch (ix) {
                     case 0:
-                        v1 = exp.Calc();
+                        v1 = exp.Calc(calculator);
                         if (num == 1) {
                             return new TupleValue1(v1);
                         }
                         break;
                     case 1:
-                        v2 = exp.Calc();
+                        v2 = exp.Calc(calculator);
                         if (num == 2) {
                             return new TupleValue2(v1, v2);
                         }
                         break;
                     case 2:
-                        v3 = exp.Calc();
+                        v3 = exp.Calc(calculator);
                         if (num == 3) {
                             return new TupleValue3(v1, v2, v3);
                         }
                         break;
                     case 3:
-                        v4 = exp.Calc();
+                        v4 = exp.Calc(calculator);
                         if (num == 4) {
                             return new TupleValue4(v1, v2, v3, v4);
                         }
                         break;
                     case 4:
-                        v5 = exp.Calc();
+                        v5 = exp.Calc(calculator);
                         if (num == 5) {
                             return new TupleValue5(v1, v2, v3, v4, v5);
                         }
                         break;
                     case 5:
-                        v6 = exp.Calc();
+                        v6 = exp.Calc(calculator);
                         if (num == 6) {
                             return new TupleValue6(v1, v2, v3, v4, v5, v6);
                         }
                         break;
                     case 6:
-                        v7 = exp.Calc();
+                        v7 = exp.Calc(calculator);
                         if (num == 7) {
                             return new TupleValue7(v1, v2, v3, v4, v5, v6, v7);
                         }
                         break;
                     case 7:
                         if (num == 8) {
-                            v8 = exp.Calc();
+                            v8 = exp.Calc(calculator);
                             return new TupleValue8(v1, v2, v3, v4, v5, v6, v7, Tuple.Create(v8));
                         }
                         else {
-                            var tuple = PackValues(start + 7);
+                            var tuple = PackValues(calculator, start + 7);
                             return new TupleValue8(v1, v2, v3, v4, v5, v6, v7, Tuple.Create(tuple));
                         }
                 }
@@ -3177,15 +3186,15 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class TupleSetExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var val = m_Op.Calc();
+            var val = m_Op.Calc(calculator);
             bool success = true;
             var setVars = new Dictionary<string, BoxedValue>();
             MatchRecursively(ref success, setVars, val, m_VarIds, 0);
             if (success) {
                 foreach (var pair in setVars) {
-                    Calculator.SetVariable(pair.Key, pair.Value);
+                    calculator.SetVariable(pair.Key, pair.Value);
                 }
             }
             return BoxedValue.FromBool(success);
@@ -3198,7 +3207,7 @@ namespace DotnetStoryScript.DslExpression
                 LoadRecursively(vars, m_VarIds);
             }
             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
-            m_Op = Calculator.Load(param2);
+            m_Op = CodeStructure.Load(param2);
             return true;
         }
         private void LoadRecursively(Dsl.FunctionData vars, List<ValueTuple<string, int>> varIds)
@@ -3218,7 +3227,7 @@ namespace DotnetStoryScript.DslExpression
                     LoadRecursively(pfd, m_EmbeddedVars[index]);
                 }
                 else {
-                    Calculator.Log("invalid tuple member {0}. code:{1} line:{2}", i, p.ToScriptString(false, Dsl.DelimiterInfo.Default), p.GetLine());
+                    CodeStructure.Log("invalid tuple member {0}. code:{1} line:{2}", i, p.ToScriptString(false, Dsl.DelimiterInfo.Default), p.GetLine());
                 }
             }
         }
@@ -3355,7 +3364,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FormatExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue v = 0;
             string fmt = string.Empty;
@@ -3373,7 +3382,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTypeAssemblyExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -3388,7 +3397,7 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    CodeStructure.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3396,7 +3405,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTypeAssemblyNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -3414,7 +3423,7 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    CodeStructure.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3422,7 +3431,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTypeFullNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -3440,7 +3449,7 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    CodeStructure.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3448,7 +3457,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTypeNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -3466,7 +3475,7 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    CodeStructure.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3474,7 +3483,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTypeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -3482,14 +3491,14 @@ namespace DotnetStoryScript.DslExpression
                 try {
                     var r = Resolve(type);
                     if (null == r) {
-                        Calculator.Log("null == Type.GetType({0})", type);
+                        CodeStructure.Log("null == Type.GetType({0})", type);
                     }
                     else {
                         ret = BoxedValue.FromObject(r);
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    CodeStructure.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3536,7 +3545,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ChangeTypeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 2) {
@@ -3587,7 +3596,7 @@ namespace DotnetStoryScript.DslExpression
                                 ret = BoxedValue.FromObject(CastTo(t, str));
                             }
                             else {
-                                Calculator.Log("null == Type.GetType({0})", type);
+                                CodeStructure.Log("null == Type.GetType({0})", type);
                             }
                         }
                     }
@@ -3634,13 +3643,13 @@ namespace DotnetStoryScript.DslExpression
                                 ret = BoxedValue.FromObject(obj.CastTo(t));
                             }
                             else {
-                                Calculator.Log("null == Type.GetType({0})", type);
+                                CodeStructure.Log("null == Type.GetType({0})", type);
                             }
                         }
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    CodeStructure.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3648,7 +3657,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ParseEnumExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 2) {
@@ -3660,11 +3669,11 @@ namespace DotnetStoryScript.DslExpression
                         ret = BoxedValue.FromObject(Enum.Parse(t, val, true));
                     }
                     else {
-                        Calculator.Log("null == Type.GetType({0})", type);
+                        CodeStructure.Log("null == Type.GetType({0})", type);
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    CodeStructure.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3672,7 +3681,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class TypeCallExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -3707,7 +3716,7 @@ namespace DotnetStoryScript.DslExpression
                     ret = BoxedValue.FromObject(systype.InvokeMember(method, flags, null, target, _args));
                 }
                 catch (Exception ex) {
-                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                    CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3715,7 +3724,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class TypeSetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -3749,7 +3758,7 @@ namespace DotnetStoryScript.DslExpression
                     ret = BoxedValue.FromObject(systype.InvokeMember(method, flags, null, target, _args));
                 }
                 catch (Exception ex) {
-                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                    CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3757,7 +3766,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class TypeGetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -3791,7 +3800,7 @@ namespace DotnetStoryScript.DslExpression
                     ret = BoxedValue.FromObject(systype.InvokeMember(method, flags, null, target, _args));
                 }
                 catch (Exception ex) {
-                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                    CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                 }
             }
             return ret;
@@ -3799,7 +3808,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DotnetCallExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -3820,7 +3829,7 @@ namespace DotnetStoryScript.DslExpression
                 }
                 else if (null != disp) {
                     if (null == args)
-                        args = Calculator.NewCalculatorValueList();
+                        args = calculator.NewCalculatorValueList();
                     args.Add(v);
                 }
                 else {
@@ -3831,13 +3840,11 @@ namespace DotnetStoryScript.DslExpression
             }
             if (null != obj && null != method) {
                 if (null != disp) {
-                    if (m_DispId < 0) {
-                        m_DispId = disp.GetDispatchId(method);
+                    int dispId = disp.GetDispatchId(method);
+                    if (dispId >= 0) {
+                        ret = disp.InvokeMethod(dispId, args);
                     }
-                    if (m_DispId >= 0) {
-                        ret = disp.InvokeMethod(m_DispId, args);
-                    }
-                    Calculator.RecycleCalculatorValueList(args);
+                    calculator.RecycleCalculatorValueList(args);
                 }
                 else {
                     if (null == arglist)
@@ -3866,7 +3873,7 @@ namespace DotnetStoryScript.DslExpression
                                 ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
                             catch (Exception ex) {
-                                Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                                CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                             }
                         }
                         else {
@@ -3879,7 +3886,7 @@ namespace DotnetStoryScript.DslExpression
                                     ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
                                 catch (Exception ex) {
-                                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                                    CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                                 }
                             }
                         }
@@ -3888,11 +3895,10 @@ namespace DotnetStoryScript.DslExpression
             }
             return ret;
         }
-        private int m_DispId = -1;
     }
     internal sealed class DotnetSetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -3923,11 +3929,9 @@ namespace DotnetStoryScript.DslExpression
             }
             if (null != obj && null != method) {
                 if (null != disp) {
-                    if (m_DispId < 0) {
-                        m_DispId = disp.GetDispatchId(method);
-                    }
-                    if (m_DispId >= 0) {
-                        disp.SetProperty(m_DispId, argv);
+                    int dispId = disp.GetDispatchId(method);
+                    if (dispId >= 0) {
+                        disp.SetProperty(dispId, argv);
                     }
                 }
                 else {
@@ -3952,7 +3956,7 @@ namespace DotnetStoryScript.DslExpression
                                 ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
                             catch (Exception ex) {
-                                Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                                CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                             }
                         }
                         else {
@@ -3964,7 +3968,7 @@ namespace DotnetStoryScript.DslExpression
                                     ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
                                 catch (Exception ex) {
-                                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                                    CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                                 }
                             }
                         }
@@ -3973,11 +3977,10 @@ namespace DotnetStoryScript.DslExpression
             }
             return ret;
         }
-        private int m_DispId = -1;
     }
     internal sealed class DotnetGetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -4006,11 +4009,9 @@ namespace DotnetStoryScript.DslExpression
             }
             if (null != obj && null != method) {
                 if (null != disp) {
-                    if (m_DispId < 0) {
-                        m_DispId = disp.GetDispatchId(method);
-                    }
-                    if (m_DispId >= 0) {
-                        ret = disp.GetProperty(m_DispId);
+                    int dispId = disp.GetDispatchId(method);
+                    if (dispId >= 0) {
+                        ret = disp.GetProperty(dispId);
                     }
                 }
                 else {
@@ -4033,7 +4034,7 @@ namespace DotnetStoryScript.DslExpression
                                 ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
                             catch (Exception ex) {
-                                Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                                CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                             }
                         }
                         else {
@@ -4045,7 +4046,7 @@ namespace DotnetStoryScript.DslExpression
                                     ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
                                 catch (Exception ex) {
-                                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
+                                    CodeStructure.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                                 }
                             }
                         }
@@ -4054,11 +4055,10 @@ namespace DotnetStoryScript.DslExpression
             }
             return ret;
         }
-        private int m_DispId = -1;
     }
     internal sealed class CollectionCallExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -4136,7 +4136,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CollectionSetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -4180,7 +4180,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CollectionGetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             object obj = null;
@@ -4244,7 +4244,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsNullExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -4256,7 +4256,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class NullExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             return ret;
@@ -4264,7 +4264,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class EqualsNullExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -4276,7 +4276,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DotnetLoadExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: dotnetload(dll_path) api");
@@ -4292,7 +4292,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DotnetNewExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: dotnetnew(assembly,type_name,arg1,arg2,...) api");
@@ -4313,7 +4313,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CallStackExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: callstack() api");
@@ -4323,7 +4323,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CallExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: call(func_name,arg1,arg2,...) api");
@@ -4331,12 +4331,12 @@ namespace DotnetStoryScript.DslExpression
             if (operands.Count >= 1) {
                 var func = operands[0].AsString;
                 if (null != func) {
-                    var args = Calculator.NewCalculatorValueList();
+                    var args = calculator.NewCalculatorValueList();
                     for (int i = 1; i < operands.Count; ++i) {
                         args.Add(operands[i]);
                     }
-                    r = Calculator.Calc(func, args);
-                    Calculator.RecycleCalculatorValueList(args);
+                    r = calculator.Calc(func, args);
+                    calculator.RecycleCalculatorValueList(args);
                 }
             }
             return r;
@@ -4344,11 +4344,11 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ReturnExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: return([val]) api");
-            Calculator.RunState = RunStateEnum.Return;
+            calculator.RunState = RunStateEnum.Return;
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 r = operands[0];
@@ -4358,11 +4358,11 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class RedirectExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: redirect(arg1,arg2,...) api");
-            Calculator.RunState = RunStateEnum.Redirect;
+            calculator.RunState = RunStateEnum.Redirect;
             if (operands.Count >= 1) {
                 List<string> args = new List<string>();
                 for (int i = 0; i < operands.Count; ++i) {
@@ -4376,18 +4376,18 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AwaitExp : SimpleAsyncExpressionBase
     {
-        protected override IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+        protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: await(\"func_name\", arg1, arg2, ...) api");
             var funcName = operands[0].AsString;
-            var args = Calculator.NewCalculatorValueList();
+            var args = calculator.NewCalculatorValueList();
             try {
                 for (int i = 1; i < operands.Count; ++i) {
                     args.Add(operands[i]);
                 }
                 var asyncResult = new AsyncCalcResult();
-                var enumerator = Calculator.CalcAsync(funcName, args, asyncResult);
+                var enumerator = calculator.CalcAsync(funcName, args, asyncResult);
                 try {
                     while (enumerator.MoveNext()) { yield return enumerator.Current; }
                     result.Value = asyncResult.Value;
@@ -4397,64 +4397,64 @@ namespace DotnetStoryScript.DslExpression
                 }
             }
             finally {
-                Calculator.RecycleCalculatorValueList(args);
+                calculator.RecycleCalculatorValueList(args);
             }
 
         }
     }
     internal sealed class AwaitWhileExp : SimpleAsyncExpressionBase
     {
-        protected override IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+        protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: awaitwhile(\"func_name\", arg1, arg2, ...) api, loop call sync function while result is true");
             var funcName = operands[0].AsString;
-            var args = Calculator.NewCalculatorValueList();
+            var args = calculator.NewCalculatorValueList();
             try {
                 for (int i = 1; i < operands.Count; ++i) {
                     args.Add(operands[i]);
                 }
-                BoxedValue v = Calculator.Calc(funcName, args);
+                BoxedValue v = calculator.Calc(funcName, args);
                 while (v.GetBool()) {
                     yield return null;
-                    v = Calculator.Calc(funcName, args);
+                    v = calculator.Calc(funcName, args);
                 }
                 result.Value = v;
             }
             finally {
-                Calculator.RecycleCalculatorValueList(args);
+                calculator.RecycleCalculatorValueList(args);
             }
 
         }
     }
     internal sealed class AwaitUntilExp : SimpleAsyncExpressionBase
     {
-        protected override IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+        protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: awaituntil(\"func_name\", arg1, arg2, ...) api, loop call sync function until result is true");
             var funcName = operands[0].AsString;
-            var args = Calculator.NewCalculatorValueList();
+            var args = calculator.NewCalculatorValueList();
             try {
                 for (int i = 1; i < operands.Count; ++i) {
                     args.Add(operands[i]);
                 }
-                BoxedValue v = Calculator.Calc(funcName, args);
+                BoxedValue v = calculator.Calc(funcName, args);
                 while (!v.GetBool()) {
                     yield return null;
-                    v = Calculator.Calc(funcName, args);
+                    v = calculator.Calc(funcName, args);
                 }
                 result.Value = v;
             }
             finally {
-                Calculator.RecycleCalculatorValueList(args);
+                calculator.RecycleCalculatorValueList(args);
             }
 
         }
     }
     internal sealed class AwaitTimeExp : SimpleAsyncExpressionBase
     {
-        protected override IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+        protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: awaittime(milliseconds) api, async wait specified time");
@@ -4479,7 +4479,7 @@ namespace DotnetStoryScript.DslExpression
     {
         public delegate bool TryGetVariableDelegation(string v, out BoxedValue result);
         public delegate bool TrySetVariableDelegation(string v, ref BoxedValue result);
-        public delegate bool LoadFailbackDelegation(Dsl.ISyntaxComponent comp, DslCalculator calculator, out IExpression expression);
+        public delegate bool LoadFailbackDelegation(Dsl.ISyntaxComponent comp, DslCalculatorCodeStructure code, out IExpression expression);
         public class FuncInfo
         {
             public Dictionary<string, int> LocalVarIndexes = new Dictionary<string, int>();
@@ -4503,42 +4503,46 @@ namespace DotnetStoryScript.DslExpression
             }
         }
 
-        public Dsl.DslLogDelegation OnLog;
+        public Dsl.DslLogDelegation OnLog
+        {
+            get { return m_CodeStructure.OnLog; }
+            set { m_CodeStructure.OnLog = value; }
+        }
         public TryGetVariableDelegation OnTryGetVariable;
         public TrySetVariableDelegation OnTrySetVariable;
-        public LoadFailbackDelegation OnLoadFailback;
-
-        public DslCalculatorApiRegistry ApiRegistry {
-            get { return m_ApiRegistry; }
-            set { m_ApiRegistry = value; }
+        public LoadFailbackDelegation OnLoadFailback
+        {
+            get { return m_CodeStructure.OnLoadFailback; }
+            set { m_CodeStructure.OnLoadFailback = value; }
         }
 
+        public DslCalculatorCodeStructure CodeStructure
+        {
+            get { return m_CodeStructure; }
+            set { m_CodeStructure = value; }
+        }
+        public DslCalculatorApiRegistry ApiRegistry
+        {
+            get { return m_CodeStructure.ApiRegistry; }
+            set { m_CodeStructure.ApiRegistry = value; }
+        }
         public void NewApiRegistry()
         {
-            m_ApiRegistry = new DslCalculatorApiRegistry();
-            m_ApiRegistry.Init();
+            m_CodeStructure.NewApiRegistry();
         }
         public void Register(string name, string doc, IExpressionFactory factory)
         {
-            if (null != m_ApiRegistry) {
-                m_ApiRegistry.Register(name, doc, factory);
-            }
+            m_CodeStructure.Register(name, doc, factory);
         }
-        public SortedList<string, string> ApiDocs {
-            get {
-                if (null != m_ApiRegistry) {
-                    return m_ApiRegistry.ApiDocs;
-                }
-                return null;
-            }
+        public SortedList<string, string> ApiDocs
+        {
+            get { return m_CodeStructure.ApiDocs; }
         }
         public void Clear()
         {
-            m_Funcs.Clear();
-            m_FuncCalls.Clear();
+            m_CodeStructure.Clear();
             m_Stack.Clear();
             m_GlobalSyncCalculationStack.Clear();
-            m_NamedGlobalVariableIndexes.Clear();
             m_GlobalVariables.Clear();
             m_Pool.Clear();
         }
@@ -4556,18 +4560,17 @@ namespace DotnetStoryScript.DslExpression
 
         public void ClearGlobalVariables()
         {
-            m_NamedGlobalVariableIndexes.Clear();
             m_GlobalVariables.Clear();
         }
         public IEnumerable<string> GlobalVariableNames {
-            get { return m_NamedGlobalVariableIndexes.Keys; }
+            get { return m_CodeStructure.NamedGlobalVariableIndexes.Keys; }
         }
         public bool TryGetGlobalVariable(string v, out BoxedValue result)
         {
             if (null != OnTryGetVariable && OnTryGetVariable(v, out result)) {
                 return true;
             }
-            else if (m_NamedGlobalVariableIndexes.TryGetValue(v, out var index)) {
+            else if (m_CodeStructure.NamedGlobalVariableIndexes.TryGetValue(v, out var index)) {
                 result = GetGlobalVaraibleByIndex(index);
                 return true;
             }
@@ -4587,123 +4590,45 @@ namespace DotnetStoryScript.DslExpression
             if (null != OnTrySetVariable && OnTrySetVariable(v, ref val)) {
 
             }
-            else if (m_NamedGlobalVariableIndexes.TryGetValue(v, out var index)) {
+            else if (m_CodeStructure.NamedGlobalVariableIndexes.TryGetValue(v, out var index)) {
                 SetGlobalVaraibleByIndex(index, val);
             }
             else {
-                int ix = m_NamedGlobalVariableIndexes.Count;
-                m_NamedGlobalVariableIndexes.Add(v, ix);
-                m_GlobalVariables.Add(val);
+                int ix = m_CodeStructure.AllocGlobalVariableIndex(v);
+                SetGlobalVaraibleByIndex(ix, val);
             }
         }
         public void LoadDsl(string dslFile)
         {
-            Dsl.DslFile file = new Dsl.DslFile();
-            ScriptableDslHelper.ForDslCalculator.SetCallbacks(file);
-            string path = dslFile;
-            if (file.Load(path, LogError)) {
-                foreach (Dsl.ISyntaxComponent info in file.DslInfos) {
-                    LoadDsl(info);
-                }
-            }
+            m_CodeStructure.LoadDsl(dslFile);
         }
         public void LoadDsl(Dsl.ISyntaxComponent info)
         {
-            string fid = info.GetId();
-            if (fid != "script" && fid != "func")
-                return;
-            var func = info as Dsl.FunctionData;
-            string id;
-            FuncInfo funcInfo = null;
-            bool isAsync = false;
-            if (null != func) {
-                if (func.IsHighOrder) {
-                    id = func.LowerOrderFunction.GetParamId(0);
-                    if (func.LowerOrderFunction.GetParamNum() > 1 && func.LowerOrderFunction.GetParamId(1) == "async")
-                        isAsync = true;
-                }
-                else
-                    return;
-            }
-            else {
-                var statement = info as Dsl.StatementData;
-                if (null != statement && statement.GetFunctionNum() == 2) {
-                    id = statement.First.AsFunction.GetParamId(0);
-                    if (statement.First.AsFunction.GetParamNum() > 1 && statement.First.AsFunction.GetParamId(1) == "async")
-                        isAsync = true;
-                    func = statement.Second.AsFunction;
-                    if ((func.GetId() == "params" || func.GetId() == "args") && func.IsHighOrder) {
-                        if (func.LowerOrderFunction.GetParamNum() > 0) {
-                            funcInfo = new FuncInfo();
-                            foreach (var p in func.LowerOrderFunction.Params) {
-                                string argName = p.GetId();
-                                funcInfo.AddParamNameIndex(argName);
-                            }
-                        }
-                    }
-                    else {
-                        return;
-                    }
-                }
-                else {
-                    return;
-                }
-            }
-            if (null == funcInfo)
-                funcInfo = new FuncInfo();
-            foreach (Dsl.ISyntaxComponent comp in func.Params) {
-                var exp = Load(comp);
-                if (null != exp) {
-                    funcInfo.Codes.Add(exp);
-                }
-            }
-            funcInfo.IsAsync = isAsync;
-            m_Funcs[id] = funcInfo;
+            m_CodeStructure.LoadDsl(info);
         }
         public void LoadDsl(string func, Dsl.FunctionData dslFunc)
         {
-            LoadDsl(func, null, dslFunc);
+            m_CodeStructure.LoadDsl(func, dslFunc);
         }
         public void LoadDsl(string func, IList<string> paramNames, Dsl.FunctionData dslFunc)
         {
-            LoadDsl(func, paramNames, dslFunc, false);
+            m_CodeStructure.LoadDsl(func, paramNames, dslFunc);
         }
         public void LoadDsl(string func, IList<string> paramNames, Dsl.FunctionData dslFunc, bool isAsync)
         {
-            FuncInfo funcInfo = null;
-            if (null != paramNames && paramNames.Count > 0) {
-                funcInfo = new FuncInfo();
-                funcInfo.BuildParamNameIndexes(paramNames);
-            }
-            if (null == funcInfo)
-                funcInfo = new FuncInfo();
-            LoadDsl(dslFunc.Params, funcInfo.Codes);
-            funcInfo.IsAsync = isAsync;
-            m_Funcs[func] = funcInfo;
+            m_CodeStructure.LoadDsl(func, paramNames, dslFunc, isAsync);
         }
         public void LoadDsl(IList<Dsl.ISyntaxComponent> statements, List<IExpression> exps)
         {
-            foreach (Dsl.ISyntaxComponent comp in statements) {
-                if (comp.IsValid()) {
-                    var exp = Load(comp);
-                    if (null != exp) {
-                        exps.Add(exp);
-                    }
-                }
-            }
+            m_CodeStructure.LoadDsl(statements, exps);
         }
         public bool TryGetFuncInfo(string func, out FuncInfo funcInfo)
         {
-            return m_Funcs.TryGetValue(func, out funcInfo);
+            return m_CodeStructure.TryGetFuncInfo(func, out funcInfo);
         }
         public void CheckFuncXrefs()
         {
-            foreach (var func in m_FuncCalls) {
-                if (!m_Funcs.ContainsKey(func.FuncName)) {
-                    //error
-                    Log("DslCalculator error, unknown func '{0}', {1} line {2}", func.FuncName, func.SyntaxComponent.ToScriptString(false, Dsl.DelimiterInfo.Default), func.SyntaxComponent.GetLine());
-                }
-            }
+            m_CodeStructure.CheckFuncXrefs();
         }
         public List<BoxedValue> NewCalculatorValueList()
         {
@@ -4800,7 +4725,7 @@ namespace DotnetStoryScript.DslExpression
             for (int i = 0; i < exps.Count; ++i) {
                 var exp = exps[i];
                 try {
-                    ret = exp.Calc();
+                    ret = exp.Calc(this);
                     if (m_RunState == RunStateEnum.Return) {
                         m_RunState = RunStateEnum.Normal;
                         break;
@@ -4868,10 +4793,10 @@ namespace DotnetStoryScript.DslExpression
                     try {
                         if (exp.IsAsync) {
                             asyncResult = new AsyncCalcResult();
-                            asyncEnumerator = exp.Calc(asyncResult);
+                            asyncEnumerator = exp.Calc(this, asyncResult);
                         }
                         else {
-                            ret = exp.Calc();
+                            ret = exp.Calc(this);
                         }
                         if (m_RunState == RunStateEnum.Return) {
                             m_RunState = RunStateEnum.Normal;
@@ -5033,296 +4958,7 @@ namespace DotnetStoryScript.DslExpression
         }
         public IExpression Load(Dsl.ISyntaxComponent comp)
         {
-            Dsl.ValueData valueData = comp as Dsl.ValueData;
-            Dsl.FunctionData funcData = null;
-            if (null != valueData) {
-                int idType = valueData.GetIdType();
-                if (idType == Dsl.ValueData.ID_TOKEN) {
-                    string id = valueData.GetId();
-                    var p = Create(id);
-                    if (null != p) {
-                        //Convert a parameterless name into a parameterless function call.
-                        Dsl.FunctionData fd = new Dsl.FunctionData();
-                        fd.Name.CopyFrom(valueData);
-                        fd.SetParenthesesParamClass();
-                        if (!p.Load(fd, this)) {
-                            //error
-                            Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
-                        }
-                        return p;
-                    }
-                    else if (id == "true" || id == "false") {
-                        ConstGet constExp = new ConstGet();
-                        constExp.Load(comp, this);
-                        return constExp;
-                    }
-                    else if (id.Length > 0 && id[0] == '$') {
-                        LocalVarGet varExp = new LocalVarGet();
-                        varExp.Load(comp, this);
-                        return varExp;
-                    }
-                    else {
-                        GlobalVarGet varExp = new GlobalVarGet();
-                        varExp.Load(comp, this);
-                        return varExp;
-                    }
-                }
-                else {
-                    ConstGet constExp = new ConstGet();
-                    constExp.Load(comp, this);
-                    return constExp;
-                }
-            }
-            else {
-                funcData = comp as Dsl.FunctionData;
-                if (null != funcData) {
-                    if (funcData.HaveParam()) {
-                        var callData = funcData;
-                        if (!callData.HaveId() && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES || callData.GetParamClass() == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
-                            switch (callData.GetParamClass()) {
-                                case (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES: {
-                                        int num = callData.GetParamNum();
-                                        if (num == 1) {
-                                            Dsl.ISyntaxComponent param = callData.GetParam(0);
-                                            return Load(param);
-                                        }
-                                        else {
-                                            TupleExp exp = new TupleExp();
-                                            exp.Load(comp, this);
-                                            return exp;
-                                        }
-                                    }
-                                case (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET: {
-                                        ArrayExp exp = new ArrayExp();
-                                        exp.Load(comp, this);
-                                        return exp;
-                                    }
-                                default:
-                                    return null;
-                            }
-                        }
-                        else if (!callData.HaveParam()) {
-                            //degeneration
-                            valueData = callData.Name;
-                            return Load(valueData);
-                        }
-                        else {
-                            int paramClass = callData.GetParamClass();
-                            string op = callData.GetId();
-                            if (op == "`") {//backtick
-                                int paramNum = callData.GetParamNum();
-                                if (paramNum == 2) {
-                                    Dsl.ISyntaxComponent param0 = callData.GetParam(0);
-                                    Dsl.ISyntaxComponent param1 = callData.GetParam(1);
-                                    if (param0 is Dsl.ValueData vd) {
-                                        if (vd.GetId() == "return") {
-                                            Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                            newCall.Name = new Dsl.ValueData("return", Dsl.ValueData.ID_TOKEN);
-                                            newCall.SetParenthesesParamClass();
-                                            newCall.Params.Add(param1);
-                                            return Load(newCall);
-                                        }
-                                        else {
-                                            //error
-                                            Log("DslCalculator error, compound statements within an expression cannot be abbreviated to the brace-less form, return statements must be enclosed in parentheses, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
-                                            return null;
-                                        }
-                                    }
-                                    else if (param0 is Dsl.FunctionData fd) {
-                                        if (fd.IsOperatorParamClass() || fd.IsTernaryOperatorParamClass()) {
-                                            //error
-                                            Log("DslCalculator error, compound statements within an expression cannot be abbreviated to the brace-less form, return statements must be enclosed in parentheses, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
-                                            return null;
-                                        }
-                                        else {
-                                            Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                            newCall.LowerOrderFunction = fd;
-                                            newCall.SetStatementParamClass();
-                                            newCall.Params.Add(param1);
-                                            return Load(newCall);
-                                        }
-                                    }
-                                    else {
-                                        //error
-                                        Log("DslCalculator error, compound statements within an expression cannot be abbreviated to the brace-less form, return statements must be enclosed in parentheses, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
-                                        return null;
-                                    }
-                                }
-                            }
-                            else if (op == "=") {//assignment
-                                Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
-                                if (null != innerCall) {
-                                    int innerParamClass = innerCall.GetParamClass();
-                                    if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                      innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
-                                        //obj.property = val -> dotnetset(obj, property, val)
-                                        //obj[property] = val -> collectionset(obj, property, val)
-                                        Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                        if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
-                                            newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
-                                        else
-                                            newCall.Name = new Dsl.ValueData("collectionset", Dsl.ValueData.ID_TOKEN);
-                                        newCall.SetParenthesesParamClass();
-                                        if (innerCall.IsHighOrder) {
-                                            newCall.Params.Add(innerCall.LowerOrderFunction);
-                                            newCall.Params.Add(ConvertMember(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                            newCall.Params.Add(callData.GetParam(1));
-                                        }
-                                        else {
-                                            newCall.Params.Add(innerCall.Name);
-                                            newCall.Params.Add(ConvertMember(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                            newCall.Params.Add(callData.GetParam(1));
-                                        }
-
-                                        return Load(newCall);
-                                    }
-                                    else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && !innerCall.HaveId()) {
-                                        //(a,b,c) = val;
-                                        TupleSetExp tuple = new TupleSetExp();
-                                        tuple.Load(comp, this);
-                                        return tuple;
-                                    }
-                                }
-                                IExpression exp = null;
-                                string name = callData.GetParamId(0);
-                                if (name.Length > 0 && name[0] == '$') {
-                                    exp = new LocalVarSet();
-                                }
-                                else {
-                                    exp = new GlobalVarSet();
-                                }
-                                if (null != exp) {
-                                    exp.Load(comp, this);
-                                }
-                                else {
-                                    //error
-                                    Log("DslCalculator error, {0} line {1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
-                                }
-                                return exp;
-                            }
-                            else {
-                                if (callData.IsHighOrder) {
-                                    Dsl.FunctionData innerCall = callData.LowerOrderFunction;
-                                    int innerParamClass = innerCall.GetParamClass();
-                                    if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PARENTHESES && (
-                                        innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                        innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET)) {
-                                        //obj.member(a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
-                                        //obj[member](a,b,...) -> collectioncall(obj,member,a,b,...)
-                                        string apiName;
-                                        string member = innerCall.GetParamId(0);
-                                        if (m_ApiRegistry.LinqOperatorRegistry.IsLinqMethod(member)) {
-                                            apiName = "linq";
-                                        }
-                                        else if (innerParamClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD) {
-                                            apiName = "dotnetcall";
-                                        }
-                                        else {
-                                            apiName = "collectioncall";
-                                        }
-                                        Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                        newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
-                                        newCall.SetParenthesesParamClass();
-                                        if (innerCall.IsHighOrder) {
-                                            newCall.Params.Add(innerCall.LowerOrderFunction);
-                                            newCall.Params.Add(ConvertMember(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                            for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                                Dsl.ISyntaxComponent p = callData.Params[i];
-                                                newCall.Params.Add(p);
-                                            }
-                                        }
-                                        else {
-                                            newCall.Params.Add(innerCall.Name);
-                                            newCall.Params.Add(ConvertMember(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                            for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                                Dsl.ISyntaxComponent p = callData.Params[i];
-                                                newCall.Params.Add(p);
-                                            }
-                                        }
-
-                                        return Load(newCall);
-                                    }
-                                }
-                                if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                  paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_BRACKET) {
-                                    //obj.property or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
-                                    //obj[property] -> collectionget(obj,property)
-                                    Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                    if (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD)
-                                        newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
-                                    else
-                                        newCall.Name = new Dsl.ValueData("collectionget", Dsl.ValueData.ID_TOKEN);
-                                    newCall.SetParenthesesParamClass();
-                                    if (callData.IsHighOrder) {
-                                        newCall.Params.Add(callData.LowerOrderFunction);
-                                        newCall.Params.Add(ConvertMember(callData.GetParam(0), callData.GetParamClass()));
-                                    }
-                                    else {
-                                        newCall.Params.Add(callData.Name);
-                                        newCall.Params.Add(ConvertMember(callData.GetParam(0), callData.GetParamClass()));
-                                    }
-
-                                    return Load(newCall);
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        if (funcData.HaveStatement()) {
-                            if (!funcData.HaveId() && !funcData.IsHighOrder) {
-                                HashtableExp exp = new HashtableExp();
-                                exp.Load(comp, this);
-                                return exp;
-                            }
-                        }
-                        else if (!funcData.HaveExternScript()) {
-                            //degeneration
-                            valueData = funcData.Name;
-                            return Load(valueData);
-                        }
-                    }
-                }
-            }
-            IExpression ret = Create(comp.GetId());
-            if (null == ret) {
-                // We enable the function to be called before it is defined, so failover is done first
-                if (null == OnLoadFailback || !OnLoadFailback(comp, this, out ret)) {
-                    Dsl.StatementData stData = comp as Dsl.StatementData;
-                    if (null != stData) {
-                        //Convert command line syntax into function call syntax.
-                        if (DslSyntaxTransformer.TryTransformCommandLineLikeSyntax(stData, out var fd)) {
-                            funcData = fd;
-                        }
-                    }
-                    if (null != funcData && !funcData.IsHighOrder) {
-                        var fc = new FunctionCall();
-                        m_FuncCalls.Add(fc);
-                        ret = fc;
-                    }
-                    else {
-                        //error
-                        Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
-                    }
-                }
-            }
-            if (null != ret) {
-                Dsl.StatementData stData = comp as Dsl.StatementData;
-                if (null != stData) {
-                    //Convert command line syntax into function call syntax.
-                    if (DslSyntaxTransformer.TryTransformCommandLineLikeSyntax(stData, out var fd)) {
-                        if (!ret.Load(fd, this)) {
-                            //error
-                            Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
-                        }
-                        return ret;
-                    }
-                }
-                if (!ret.Load(comp, this)) {
-                    //error
-                    Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
-                }
-            }
-            return ret;
+            return m_CodeStructure.Load(comp);
         }
         public void Log(string fmt, params object[] args)
         {
@@ -5350,10 +4986,8 @@ namespace DotnetStoryScript.DslExpression
             if (null != OnTryGetVariable && OnTryGetVariable(name, out var val)) {
                 ix = int.MaxValue;
             }
-            else if (!m_NamedGlobalVariableIndexes.TryGetValue(name, out ix)) {
-                ix = m_NamedGlobalVariableIndexes.Count;
-                m_NamedGlobalVariableIndexes.Add(name, ix);
-                m_GlobalVariables.Add(BoxedValue.NullObject);
+            else {
+                ix = m_CodeStructure.AllocGlobalVariableIndex(name);
             }
             return ix;
         }
@@ -5363,14 +4997,13 @@ namespace DotnetStoryScript.DslExpression
             if (!LocalVariableIndexes.TryGetValue(name, out ix)) {
                 ix = LocalVariableIndexes.Count;
                 LocalVariableIndexes.Add(name, ix);
-                LocalVariables.Add(BoxedValue.NullObject);
             }
             return ix;
         }
         internal int GetGlobalVariableIndex(string name)
         {
             int ix;
-            if (!m_NamedGlobalVariableIndexes.TryGetValue(name, out ix)) {
+            if (!m_CodeStructure.NamedGlobalVariableIndexes.TryGetValue(name, out ix)) {
                 ix = int.MaxValue;
             }
             return ix;
@@ -5385,11 +5018,13 @@ namespace DotnetStoryScript.DslExpression
         }
         internal BoxedValue GetGlobalVaraibleByIndex(int ix)
         {
+            EnsureGlobalVariableCapacity(ix);
             return m_GlobalVariables[ix];
         }
         internal BoxedValue GetLocalVaraibleByIndex(int ix)
         {
             if (ix >= 0) {
+                EnsureLocalVariableCapacity(ix);
                 return LocalVariables[ix];
             }
             else {
@@ -5402,17 +5037,31 @@ namespace DotnetStoryScript.DslExpression
         }
         internal void SetGlobalVaraibleByIndex(int ix, BoxedValue val)
         {
+            EnsureGlobalVariableCapacity(ix);
             m_GlobalVariables[ix] = val;
         }
         internal void SetLocalVaraibleByIndex(int ix, BoxedValue val)
         {
             if (ix >= 0) {
+                EnsureLocalVariableCapacity(ix);
                 LocalVariables[ix] = val;
             }
             else {
                 int argIx = -1 - ix;
                 if (argIx >= 0 && argIx < Arguments.Count)
                     Arguments[argIx] = val;
+            }
+        }
+        private void EnsureGlobalVariableCapacity(int ix)
+        {
+            while (m_GlobalVariables.Count <= ix) {
+                m_GlobalVariables.Add(BoxedValue.NullObject);
+            }
+        }
+        private void EnsureLocalVariableCapacity(int ix)
+        {
+            while (LocalVariables.Count <= ix) {
+                LocalVariables.Add(BoxedValue.NullObject);
             }
         }
 
@@ -5445,28 +5094,6 @@ namespace DotnetStoryScript.DslExpression
             }
         }
 
-        private Dsl.ISyntaxComponent ConvertMember(Dsl.ISyntaxComponent p, int paramClass)
-        {
-            var pvd = p as Dsl.ValueData;
-            if (null != pvd && pvd.IsId() && (paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_PERIOD
-                || paramClass == (int)Dsl.ParamClassEnum.PARAM_CLASS_POINTER)) {
-                pvd.SetType(Dsl.ValueData.STRING_TOKEN);
-                return pvd;
-            }
-            else {
-                return p;
-            }
-        }
-
-        private IExpression Create(string name)
-        {
-            IExpression ret = null;
-            IExpressionFactory factory;
-            if (null != m_ApiRegistry && m_ApiRegistry.TryGetFactory(name, out factory)) {
-                ret = factory.Create();
-            }
-            return ret;
-        }
         private void OutputInnerException(Exception ex)
         {
             while (null != ex.InnerException) {
@@ -5503,7 +5130,7 @@ namespace DotnetStoryScript.DslExpression
             else {
                 int ix = LocalVariableIndexes.Count;
                 LocalVariableIndexes.Add(v, ix);
-                LocalVariables.Add(val);
+                SetLocalVaraibleByIndex(ix, val);
             }
         }
         private Dictionary<string, int> LocalVariableIndexes {
@@ -5565,14 +5192,12 @@ namespace DotnetStoryScript.DslExpression
         }
 
         private RunStateEnum m_RunState = RunStateEnum.Normal;
-        private Dictionary<string, FuncInfo> m_Funcs = new Dictionary<string, FuncInfo>();
+        private Dictionary<string, FuncInfo> m_Funcs { get { return m_CodeStructure.Funcs; } }
         private Stack<StackInfo> m_Stack = new Stack<StackInfo>();
         private Stack<bool> m_GlobalSyncCalculationStack = new Stack<bool>();
-        private Dictionary<string, int> m_NamedGlobalVariableIndexes = new Dictionary<string, int>();
         private List<BoxedValue> m_GlobalVariables = new List<BoxedValue>();
-        private DslCalculatorApiRegistry m_ApiRegistry = null;
+        private DslCalculatorCodeStructure m_CodeStructure = new DslCalculatorCodeStructure();
         private BoxedValueListPool m_Pool = new BoxedValueListPool(16);
-        private List<FunctionCall> m_FuncCalls = new List<FunctionCall>();
 
         public static bool FileEchoOn {
             get { return s_FileEchoOn; }

@@ -14,11 +14,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class SendMailCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 7)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong receiver = operands[0].GetULong();
@@ -63,11 +63,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class ClearMembersCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -84,11 +84,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class AddMemberCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -111,11 +111,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class RemoveMemberCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -153,11 +153,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class SyncMembersCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -171,11 +171,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class ClearItemsCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -192,11 +192,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class AddItemCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -215,11 +215,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class ReduceItemCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -238,11 +238,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class RemoveItemCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -270,11 +270,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class SyncItemsCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -288,11 +288,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class ClearUserDatasCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -311,11 +311,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class AddUserDataCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -354,11 +354,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class RemoveUserDataCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = operands[0].GetULong();
@@ -383,9 +383,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class ClearGlobalDatasCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 GlobalData.Instance.Clear();
@@ -398,11 +398,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class AddGlobalDataCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 string key = operands[0].ToString();
@@ -428,11 +428,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class RemoveGlobalDataCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 string key = operands[0].ToString();

@@ -9,11 +9,11 @@ namespace ScriptableFramework.Story.Functions
 {
     public sealed class BlackboardGetFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 string name = operands[0].ToString();
@@ -30,11 +30,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetDialogItemFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int dlgId = operands[0].GetInt();
@@ -50,11 +50,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetActorIconValue : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int index = operands[0].GetInt();
@@ -65,11 +65,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetMonsterInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int sceneId = scene.SceneResId;
@@ -88,11 +88,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetAiDataFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int objId = operands[0].GetInt();
@@ -106,9 +106,9 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetLeaderIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count > 0) {
@@ -124,11 +124,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetLeaderTableIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int objId = operands[0].GetInt();
@@ -146,16 +146,16 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class IsClientFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             return 0;
         }
     }
     internal sealed class GetRoomIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 return scene.GetRoomUserManager().RoomId;
@@ -165,9 +165,9 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetSceneIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 return scene.SceneResId;

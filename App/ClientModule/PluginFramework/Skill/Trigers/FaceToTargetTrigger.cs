@@ -180,7 +180,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// cleartargets(starttime);
     /// </summary>
-    internal class ClearTargetsTrigger : AbstractSkillTriger
+    internal class ClearTargetsTrigger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

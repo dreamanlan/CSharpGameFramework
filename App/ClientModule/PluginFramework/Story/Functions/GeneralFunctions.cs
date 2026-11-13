@@ -9,21 +9,21 @@ namespace ScriptableFramework.Story.Functions
 {
     internal sealed class GetTimeFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             return UnityEngine.Time.time;
         }
     }
     internal sealed class GetTimeScaleFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             return UnityEngine.Time.timeScale;
         }
     }
     internal sealed class IsActiveFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
@@ -54,7 +54,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class IsReallyActiveFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
@@ -85,7 +85,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class IsVisibleFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
@@ -116,7 +116,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class IsNavmeshAgentEnabledFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
@@ -147,7 +147,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetComponentFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -185,7 +185,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetComponentInParentFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -231,7 +231,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetComponentInChildrenFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -277,7 +277,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetComponentsFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -325,7 +325,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetComponentsInParentFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -377,7 +377,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetComponentsInChildrenFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -429,17 +429,17 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetGameObjectFunction : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var o = m_ObjPath.Calc();
+            var o = m_ObjPath.Calc(calculator);
             string objPath = o.IsString ? o.StringVal : null;
             StrList disables = new StrList();
             for (int i = 0; i < m_DisableComponents.Count; ++i) {
-                disables.Add(m_DisableComponents[i].Calc());
+                disables.Add(m_DisableComponents[i].Calc(calculator));
             }
             StrList removes = new StrList();
             for (int i = 0; i < m_RemoveComponents.Count; ++i) {
-                removes.Add(m_RemoveComponents[i].Calc());
+                removes.Add(m_RemoveComponents[i].Calc(calculator));
             }
             UnityEngine.GameObject obj = null;
             if (null != objPath) {
@@ -500,7 +500,7 @@ namespace ScriptableFramework.Story.Functions
             if (callData.GetId() == "getgameobject") {
                 int num = callData.GetParamNum();
                 if (num > 0) {
-                    m_ObjPath = Calculator.Load(callData.GetParam(0));
+                    m_ObjPath = CodeStructure.Load(callData.GetParam(0));
                 }
             }
         }
@@ -509,12 +509,12 @@ namespace ScriptableFramework.Story.Functions
             string id = callData.GetId();
             if (id == "disable") {
                 for (int i = 0; i < callData.GetParamNum(); ++i) {
-                    IExpression p = Calculator.Load(callData.GetParam(i));
+                    IExpression p = CodeStructure.Load(callData.GetParam(i));
                     m_DisableComponents.Add(p);
                 }
             } else if (id == "remove") {
                 for (int i = 0; i < callData.GetParamNum(); ++i) {
-                    IExpression p = Calculator.Load(callData.GetParam(i));
+                    IExpression p = CodeStructure.Load(callData.GetParam(i));
                     m_RemoveComponents.Add(p);
                 }
             }
@@ -525,7 +525,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetParentFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -559,7 +559,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class FindChildFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -601,7 +601,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetChildCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
@@ -628,7 +628,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetChildFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -659,7 +659,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetUnityTypeFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -678,7 +678,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetUnityUiTypeFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -697,7 +697,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetUserTypeFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -714,7 +714,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetEntityInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -724,7 +724,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetEntityViewFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -734,14 +734,14 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetGlobalFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             return BoxedValue.FromObject(GlobalVariables.Instance);
         }
     }
     internal sealed class PluginFrameworkFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             return BoxedValue.FromObject(PluginFramework.Instance);
         }

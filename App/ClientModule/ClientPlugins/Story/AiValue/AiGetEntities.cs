@@ -7,20 +7,21 @@ using ScriptableFramework;
 using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
+using DotnetStoryScript;
 using DotnetStoryScript.DslExpression;
 
 public class AiGetEntities : ISimpleStoryApiPlugin
 {
-    public void Init(DslCalculator calculator)
+    public void Init(DslCalculatorCodeStructure code)
     {
-        m_Calculator = calculator;
+        m_CodeStructure = code;
     }
 
-    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+    public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
         result.Value = BoxedValue.FromObject(PluginFramework.Instance.EntityManager.Entities.Values);
         return false;
     }
 
-    private DslCalculator m_Calculator = null;
+    private DslCalculatorCodeStructure m_CodeStructure = null;
 }

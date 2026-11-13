@@ -8,7 +8,7 @@ namespace ScriptableFramework.Story.Functions
 {
     internal sealed class NpcIdListFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             List<object> npcs = new List<object>();
             PluginFramework.Instance.EntityManager.Entities.VisitValues((EntityInfo npcInfo) => {
@@ -19,7 +19,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class CombatNpcCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 0) {
                 int campId = operands[0].GetInt();
@@ -31,7 +31,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class NpcGetFormationFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 0) {
                 int unitId = operands[0].GetInt();
@@ -45,7 +45,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class NpcGetNpcTypeFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 0) {
                 int unitId = operands[0].GetInt();
@@ -59,7 +59,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class NpcGetSummonerIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 0) {
                 int unitId = operands[0].GetInt();
@@ -73,7 +73,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class NpcGetSummonSkillIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 0) {
                 int unitId = operands[0].GetInt();
@@ -87,7 +87,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class NpcFindImpactSeqByIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1) {
                 int unitId = operands[0].GetInt();
@@ -105,7 +105,7 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class NpcCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1) {
                 int startUnitId = operands[0].GetInt();

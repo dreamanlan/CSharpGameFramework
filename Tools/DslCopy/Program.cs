@@ -86,7 +86,7 @@ namespace DslCopy
             foreach (string destfile in destfiles) {
                 string code = File.ReadAllText(destfile);
                 DslFile file = new DslFile();
-                file.LoadFromString(code, (string msg) => GameFramework.LogSystem.Warn("{0}", msg));
+                file.LoadFromString(code, (string msg) => ScriptableFramework.LogSystem.Warn("{0}", msg));
                 try {
                     file.SaveBinaryFile(destfile);
                 }

@@ -7,16 +7,17 @@ using ScriptableFramework;
 using ScriptableFramework;
 using ScriptableFramework.Skill;
 using DotnetSkillScript;
+using DotnetStoryScript;
 using DotnetStoryScript.DslExpression;
 
 public class AiNeedChase : ISimpleStoryApiPlugin
 {
-    public void Init(DslCalculator calculator)
+    public void Init(DslCalculatorCodeStructure code)
     {
-        m_Calculator = calculator;
+        m_CodeStructure = code;
     }
 
-    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+    public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
         var args = operands;
         int objId = args[0].GetInt();
@@ -39,5 +40,5 @@ public class AiNeedChase : ISimpleStoryApiPlugin
         return false;
     }
 
-    private DslCalculator m_Calculator = null;
+    private DslCalculatorCodeStructure m_CodeStructure = null;
 }

@@ -113,6 +113,26 @@ namespace DotnetSkillScript
         void Reset();//Reset trigger to initial state
         bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime);//Execute the trigger, return false to indicate the end of the trigger, and the next tick will not be executed.
     }
+    public interface ISharedSkillTriger
+    {
+        object CreateRuntimeState();
+        void ResetRuntimeState(object state);
+        bool ExecuteRuntime(object state, object sender, SkillInstance instance, long delta, long curSectionTime);
+    }
+    public abstract class AbstractStatelessSkillTriger : AbstractSkillTriger, ISharedSkillTriger
+    {
+        public object CreateRuntimeState()
+        {
+            return null;
+        }
+        public void ResetRuntimeState(object state)
+        {
+        }
+        public bool ExecuteRuntime(object state, object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            return Execute(sender, instance, delta, curSectionTime);
+        }
+    }
     public abstract class AbstractSkillTriger : ISkillTriger
     {
         public string Name

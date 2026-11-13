@@ -856,11 +856,11 @@ internal static class TerrainEditUtility
 
 internal class GetHeightExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         float r = 0;
         if (operands.Count >= 2) {
-            var datas = Calculator.GetGlobalVariable("heights").As<float[,]>();
+            var datas = calculator.GetGlobalVariable("heights").As<float[,]>();
             var x = operands[0].GetLong();
             var y = operands[1].GetLong();
             r = datas[y, x];
@@ -870,11 +870,11 @@ internal class GetHeightExp : SimpleExpressionBase
 }
 internal class GetAlphamapExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         float r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetGlobalVariable("alphamaps").As<float[, ,]>();
+            var datas = calculator.GetGlobalVariable("alphamaps").As<float[, ,]>();
             var x = operands[0].GetLong();
             var y = operands[1].GetLong();
             var ix = operands[2].GetLong();
@@ -885,11 +885,11 @@ internal class GetAlphamapExp : SimpleExpressionBase
 }
 internal class GetAlphaExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         float r = 0;
         if (operands.Count >= 1) {
-            var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
+            var datas = calculator.GetGlobalVariable("alphas").As<float[]>();
             var ix = operands[0].GetLong();
             r = datas[ix];
         }
@@ -898,11 +898,11 @@ internal class GetAlphaExp : SimpleExpressionBase
 }
 internal class SetAlphaExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         double r = 0;
         if (operands.Count >= 2) {
-            var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
+            var datas = calculator.GetGlobalVariable("alphas").As<float[]>();
             var ix = operands[0].GetLong();
             var v = operands[1].GetDouble();
             datas[ix] = (float)v;
@@ -913,10 +913,10 @@ internal class SetAlphaExp : SimpleExpressionBase
 }
 internal class ClearAlphaExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         int r = 0;
-        var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
+        var datas = calculator.GetGlobalVariable("alphas").As<float[]>();
         for(int ix = 0; ix < datas.Length; ++ix) {
             if (datas[ix] > float.Epsilon)
                 ++r;
@@ -927,11 +927,11 @@ internal class ClearAlphaExp : SimpleExpressionBase
 }
 internal class GetDetailExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetGlobalVariable("details").As<Dictionary<int, int[,]>>();
+            var datas = calculator.GetGlobalVariable("details").As<Dictionary<int, int[,]>>();
             var x = operands[0].GetLong();
             var y = operands[1].GetLong();
             var ix = operands[2].GetLong();
@@ -945,11 +945,11 @@ internal class GetDetailExp : SimpleExpressionBase
 }
 internal class SampleRedExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var datas = calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
             var x = operands[1].GetLong();
             var y = operands[2].GetLong();
@@ -967,11 +967,11 @@ internal class SampleRedExp : SimpleExpressionBase
 }
 internal class SampleGreenExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var datas = calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
             var x = operands[1].GetLong();
             var y = operands[2].GetLong();
@@ -989,11 +989,11 @@ internal class SampleGreenExp : SimpleExpressionBase
 }
 internal class SampleBlueExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var datas = calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
             var x = operands[1].GetLong();
             var y = operands[2].GetLong();
@@ -1011,11 +1011,11 @@ internal class SampleBlueExp : SimpleExpressionBase
 }
 internal class SampleAlphaExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var datas = calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
             var x = operands[1].GetLong();
             var y = operands[2].GetLong();
@@ -1033,11 +1033,11 @@ internal class SampleAlphaExp : SimpleExpressionBase
 }
 internal class GetCacheExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
+            var datas = calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
             var key = operands[0].AsString;
             var x = operands[1].GetLong();
             var y = operands[2].GetLong();
@@ -1055,11 +1055,11 @@ internal class GetCacheExp : SimpleExpressionBase
 }
 internal class SetCacheExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         long r = 0;
         if (operands.Count >= 4) {
-            var datas = Calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
+            var datas = calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
             var key = operands[0].AsString;
             var x = operands[1].GetLong();
             var y = operands[2].GetLong();
@@ -1079,11 +1079,11 @@ internal class SetCacheExp : SimpleExpressionBase
 }
 internal class AddTreeExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         long r = 0;
         if (operands.Count >= 9) {
-            var trees = Calculator.GetGlobalVariable("trees").As<List<TreeInstance>>();
+            var trees = calculator.GetGlobalVariable("trees").As<List<TreeInstance>>();
             var ix = operands[0].GetLong();
             var x = operands[1].GetDouble();
             var y = operands[2].GetDouble();
@@ -1105,11 +1105,11 @@ internal class AddTreeExp : SimpleExpressionBase
 }
 internal class AddObjectExp : SimpleExpressionBase
 {
-    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
         string r = string.Empty;
         if (operands.Count >= 4) {
-            var objects = Calculator.GetGlobalVariable("objects").As<List<ObjectInfo>>();
+            var objects = calculator.GetGlobalVariable("objects").As<List<ObjectInfo>>();
             var x = operands[0].GetFloat();
             var y = operands[1].GetFloat();
             var z = operands[2].GetFloat();

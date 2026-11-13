@@ -8,9 +8,9 @@ namespace ScriptableFramework.Story.Functions
 {
     public sealed class GetTimeFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 return TimeUtility.GetLocalMilliseconds();
@@ -20,9 +20,9 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetTimeScaleFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 return 1;
@@ -32,11 +32,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class GetEntityInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int objId = operands[0].GetInt();

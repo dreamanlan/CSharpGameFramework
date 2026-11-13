@@ -177,6 +177,10 @@ namespace DotnetSkillScript
             }
         }
 
+        internal SkillSectionState CreateState()
+        {
+            return new SkillSectionState(m_Duration, m_InitTrigers, m_LoadedTrigers);
+        }
         public SkillSection()
         {
             m_AccessorHelper.AddProperty("Duration", () => { return m_Duration; }, (object val) => { m_Duration = (long)Convert.ChangeType(val, typeof(long)); });
@@ -319,6 +323,10 @@ namespace DotnetSkillScript
             return m_Trigers.Count <= 0 ? true : false;
         }
 
+        internal SkillMessageHandlerState CreateState()
+        {
+            return new SkillMessageHandlerState(m_LoadedTrigers);
+        }
         public SkillMessageHandler()
         {
             //m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; });
@@ -410,9 +418,10 @@ namespace DotnetSkillScript
         public long CurSectionDuration
         {
             get {
+                EnsureStateInitialized();
                 long ret = 0;
-                if (m_CurSection >= 0 && m_CurSection < m_Sections.Count) {
-                    ret = m_Sections[m_CurSection].Duration;
+                if (m_State.CurSection >= 0 && m_State.CurSection < m_State.Sections.Count) {
+                    ret = m_State.Sections[m_State.CurSection].Duration;
                 }
                 return ret;
             }
@@ -470,44 +479,45 @@ namespace DotnetSkillScript
         //----------------------------------------------
         public List<InplaceSkillPropertyInfo> CollectProperties()
         {
+            EnsureStateInitialized();
             List<InplaceSkillPropertyInfo> list = new List<InplaceSkillPropertyInfo>();
             m_AccessorHelper.VisitProperties((string group, string key, IProperty property) => {
                 list.Add(new InplaceSkillPropertyInfo { Group = "SkillInstance", Key = key, Property = property });
             });
-            for (int i = 0; i < m_Sections.Count; ++i) {
+            for (int i = 0; i < m_State.Sections.Count; ++i) {
                 List<InplaceSkillPropertyInfo> temp = new List<InplaceSkillPropertyInfo>();
                 temp.Add(new InplaceSkillPropertyInfo { Group = "SkillSection", Key = "Section" + i, Property = null });
-                m_Sections[i].VisitProperties((string group, string key, IProperty property) => {
+                m_State.Sections[i].VisitProperties((string group, string key, IProperty property) => {
                     temp.Add(new InplaceSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillSection" : group, Key = key, Property = property });
                 });
                 if (temp.Count > 1) {
                     list.AddRange(temp);
                 }
             }
-            for (int i = 0; i < m_MessageHandlers.Count; ++i) {
+            for (int i = 0; i < m_State.MessageHandlers.Count; ++i) {
                 List<InplaceSkillPropertyInfo> temp = new List<InplaceSkillPropertyInfo>();
                 temp.Add(new InplaceSkillPropertyInfo { Group = "SkillMessageHandler", Key = m_MessageHandlers[i].MsgId, Property = null });
-                m_MessageHandlers[i].VisitProperties((string group, string key, IProperty property) => {
+                m_State.MessageHandlers[i].VisitProperties((string group, string key, IProperty property) => {
                     temp.Add(new InplaceSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillMessageHandler" : group, Key = key, Property = property });
                 });
                 if (temp.Count > 1) {
                     list.AddRange(temp);
                 }
             }
-            if (null != m_InterruptSection) {
+            if (null != m_State.InterruptSection) {
                 List<InplaceSkillPropertyInfo> temp = new List<InplaceSkillPropertyInfo>();
                 temp.Add(new InplaceSkillPropertyInfo { Group = "SkillMessageHandler", Key = "oninterrupt", Property = null });
-                m_InterruptSection.VisitProperties((string group, string key, IProperty property) => {
+                m_State.InterruptSection.VisitProperties((string group, string key, IProperty property) => {
                     temp.Add(new InplaceSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillMessageHandler" : group, Key = key, Property = property });
                 });
                 if (temp.Count > 1) {
                     list.AddRange(temp);
                 }
             }
-            if (null != m_StopSection) {
+            if (null != m_State.StopSection) {
                 List<InplaceSkillPropertyInfo> temp = new List<InplaceSkillPropertyInfo>();
                 temp.Add(new InplaceSkillPropertyInfo { Group = "SkillMessageHandler", Key = "onstop", Property = null });
-                m_StopSection.VisitProperties((string group, string key, IProperty property) => {
+                m_State.StopSection.VisitProperties((string group, string key, IProperty property) => {
                     temp.Add(new InplaceSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillMessageHandler" : group, Key = key, Property = property });
                 });
                 if (temp.Count > 1) {
@@ -530,21 +540,14 @@ namespace DotnetSkillScript
         public SkillInstance Clone()
         {
             SkillInstance instance = new SkillInstance();
-            for (int i = 0; i < m_Sections.Count; i++) {
-                instance.m_Sections.Add(m_Sections[i].Clone());
-            }
+            instance.m_Sections = m_Sections;
+            instance.m_MessageHandlers = m_MessageHandlers;
+            instance.m_StopSection = m_StopSection;
+            instance.m_InterruptSection = m_InterruptSection;
+            instance.m_IsConfigShared = true;
             instance.m_InnerDslSkillId = m_InnerDslSkillId;
             instance.m_OuterDslSkillId = m_OuterDslSkillId;
             instance.m_DslSkillId = m_DslSkillId;
-            if (m_StopSection != null) {
-                instance.m_StopSection = m_StopSection.Clone();
-            }
-            if (m_InterruptSection != null) {
-                instance.m_InterruptSection = m_InterruptSection.Clone();
-            }
-            for (int i = 0; i < m_MessageHandlers.Count; i++) {
-                instance.m_MessageHandlers.Add(m_MessageHandlers[i].Clone());
-            }
             //A skill instance embedded within a skill is only used as a parent for cloning and can be shared by multiple skill instances.
             instance.m_EmitSkillInstances = m_EmitSkillInstances;
             instance.m_HitSkillInstances = m_HitSkillInstances;
@@ -552,7 +555,75 @@ namespace DotnetSkillScript
             instance.m_DamageCount = m_DamageCount;
             //Used to write back the parsed dsl data of the dsl file. The debug mode can be saved to the code file after modification.
             instance.m_SkillDsl = m_SkillDsl;
+            if (m_State.IsInitialized) {
+                instance.InitializeStateFrom(m_State);
+            }
+            else {
+                instance.EnsureStateInitialized();
+            }
             return instance;
+        }
+        private void EnsureStateInitialized()
+        {
+            if (m_State.IsInitialized) {
+                return;
+            }
+            for (int i = 0; i < m_Sections.Count; ++i) {
+                m_State.Sections.Add(m_Sections[i].CreateState());
+            }
+            for (int i = 0; i < m_MessageHandlers.Count; ++i) {
+                m_State.MessageHandlers.Add(m_MessageHandlers[i].CreateState());
+            }
+            if (null != m_StopSection) {
+                m_State.StopSection = m_StopSection.CreateState();
+            }
+            if (null != m_InterruptSection) {
+                m_State.InterruptSection = m_InterruptSection.CreateState();
+            }
+            m_State.IsInitialized = true;
+        }
+        private void InitializeStateFrom(SkillInstanceState source)
+        {
+            for (int i = 0; i < source.Sections.Count; ++i) {
+                m_State.Sections.Add(source.Sections[i].CreateDefinitionState());
+            }
+            for (int i = 0; i < source.MessageHandlers.Count; ++i) {
+                m_State.MessageHandlers.Add(source.MessageHandlers[i].CreateDefinitionState());
+            }
+            if (null != source.StopSection) {
+                m_State.StopSection = source.StopSection.CreateDefinitionState();
+            }
+            if (null != source.InterruptSection) {
+                m_State.InterruptSection = source.InterruptSection.CreateDefinitionState();
+            }
+            m_State.IsInitialized = true;
+        }
+        private void PrepareForInit()
+        {
+            if (m_IsConfigShared) {
+                List<SkillSection> sections = new List<SkillSection>(m_Sections.Count);
+                for (int i = 0; i < m_Sections.Count; ++i) {
+                    sections.Add(m_Sections[i].Clone());
+                }
+                m_Sections = sections;
+                List<SkillMessageHandler> handlers = new List<SkillMessageHandler>(m_MessageHandlers.Count);
+                for (int i = 0; i < m_MessageHandlers.Count; ++i) {
+                    handlers.Add(m_MessageHandlers[i].Clone());
+                }
+                m_MessageHandlers = handlers;
+                if (null != m_StopSection) {
+                    m_StopSection = m_StopSection.Clone();
+                }
+                if (null != m_InterruptSection) {
+                    m_InterruptSection = m_InterruptSection.Clone();
+                }
+                m_IsConfigShared = false;
+            }
+            m_State.Sections.Clear();
+            m_State.MessageHandlers.Clear();
+            m_State.StopSection = null;
+            m_State.InterruptSection = null;
+            m_State.IsInitialized = false;
         }
         public bool Init(Dsl.ISyntaxComponent config)
         {
@@ -568,6 +639,7 @@ namespace DotnetSkillScript
         }
         public bool Init(Dsl.FunctionData skill)
         {
+            PrepareForInit();
             bool ret = false;
             m_SkillDsl = skill;
             m_UseImpactsForInit = new List<SkillSectionOrMessageTriggers>();
@@ -778,6 +850,7 @@ namespace DotnetSkillScript
         }
         public void Reset()
         {
+            EnsureStateInitialized();
             m_IsInterrupted = false;
             m_IsFinished = false;
             m_IsStopCurSection = false;
@@ -785,9 +858,9 @@ namespace DotnetSkillScript
             m_CurSection = -1;
             m_GoToSectionId = -1;
 
-            int ct = m_Sections.Count;
+            int ct = m_State.Sections.Count;
             for (int i = ct - 1; i >= 0; --i) {
-                SkillSection section = m_Sections[i];
+                SkillSectionState section = m_State.Sections[i];
                 section.Reset();
             }
             m_MessageQueue.Clear();
@@ -796,6 +869,7 @@ namespace DotnetSkillScript
         }
         public void Start(object sender)
         {
+            EnsureStateInitialized();
             m_CurTime = 0;
             m_CurSection = -1;
         }
@@ -805,6 +879,7 @@ namespace DotnetSkillScript
         }
         public void Tick(object sender, long deltaTime)
         {
+            EnsureStateInitialized();
             if (m_IsFinished) {
                 return;
             }
@@ -820,7 +895,7 @@ namespace DotnetSkillScript
                 TickMessageHandlers(sender, delta);
             }
             if (!IsSectionDone(m_CurSection)) {
-                m_Sections[m_CurSection].Tick(sender, this, delta);
+                m_State.Sections[m_CurSection].Tick(sender, this, delta);
             }
             if (m_IsStopCurSection) {
                 m_IsStopCurSection = false;
@@ -846,9 +921,10 @@ namespace DotnetSkillScript
         }
         public void OnInterrupt(object sender)
         {
-            if (m_InterruptSection != null) {
-                m_InterruptSection.Prepare();
-                m_InterruptSection.Tick(sender, this, m_CurTime);
+            EnsureStateInitialized();
+            if (m_State.InterruptSection != null) {
+                m_State.InterruptSection.Prepare();
+                m_State.InterruptSection.Tick(sender, this, m_CurTime);
             }
             ResetCurSection();
             StopMessageHandlers();
@@ -856,9 +932,10 @@ namespace DotnetSkillScript
         }
         public void OnSkillStop(object sender)
         {
-            if (m_StopSection != null) {
-                m_StopSection.Prepare();
-                m_StopSection.Tick(sender, this, m_CurTime);
+            EnsureStateInitialized();
+            if (m_State.StopSection != null) {
+                m_State.StopSection.Prepare();
+                m_State.StopSection.Tick(sender, this, m_CurTime);
             }
             ResetCurSection();
             StopMessageHandlers();
@@ -867,8 +944,9 @@ namespace DotnetSkillScript
 
         public bool IsMessageDone()
         {
-            for (int i = 0; i < m_MessageHandlers.Count; i++) {
-                if (m_MessageHandlers[i].IsTriggered) {
+            EnsureStateInitialized();
+            for (int i = 0; i < m_State.MessageHandlers.Count; i++) {
+                if (m_State.MessageHandlers[i].IsTriggered) {
                     return false;
                 }
             }
@@ -877,14 +955,14 @@ namespace DotnetSkillScript
         public void SetCurSectionDuration(long duration)
         {
             if (!IsSectionDone(m_CurSection)) {
-                SkillSection section = m_Sections[m_CurSection];
+                SkillSectionState section = m_State.Sections[m_CurSection];
                 section.Duration = duration;
             }
         }
         public void AdjustCurSectionDuration(long leftDuration)
         {
             if (!IsSectionDone(m_CurSection)) {
-                SkillSection section = m_Sections[m_CurSection];
+                SkillSectionState section = m_State.Sections[m_CurSection];
                 section.Duration = section.CurTime + leftDuration;
             }
         }
@@ -905,8 +983,9 @@ namespace DotnetSkillScript
 
         private bool IsSectionDone(int sectionnum)
         {
-            if (sectionnum >= 0 && sectionnum < m_Sections.Count) {
-                SkillSection section = m_Sections[sectionnum];
+            EnsureStateInitialized();
+            if (sectionnum >= 0 && sectionnum < m_State.Sections.Count) {
+                SkillSectionState section = m_State.Sections[sectionnum];
                 if (section.IsFinished) {
                     return true;
                 }
@@ -920,22 +999,22 @@ namespace DotnetSkillScript
         }
         private bool IsAllSectionDone()
         {
-            if (IsSectionDone(m_CurSection) && m_CurSection == m_Sections.Count - 1) {
+            if (IsSectionDone(m_CurSection) && m_CurSection == m_State.Sections.Count - 1) {
                 return true;
             }
             return false;
         }
         private void ResetCurSection()
         {
-            if (m_CurSection >= 0 && m_CurSection < m_Sections.Count) {
-                SkillSection section = m_Sections[m_CurSection];
+            if (m_CurSection >= 0 && m_CurSection < m_State.Sections.Count) {
+                SkillSectionState section = m_State.Sections[m_CurSection];
                 section.Reset();
             }
         }
         private void ChangeToSection(int index)
         {
-            if (index >= 0 && index < m_Sections.Count) {
-                SkillSection section = m_Sections[index];
+            if (index >= 0 && index < m_State.Sections.Count) {
+                SkillSectionState section = m_State.Sections[index];
                 m_CurSection = index;
                 m_CurSectionTime = 0;
                 section.Prepare();
@@ -944,8 +1023,8 @@ namespace DotnetSkillScript
         }
         private void DoFirstSectionTick(object sender)
         {
-            if (m_CurSection >= 0 && m_CurSection < m_Sections.Count) {
-                SkillSection section = m_Sections[m_CurSection];
+            if (m_CurSection >= 0 && m_CurSection < m_State.Sections.Count) {
+                SkillSectionState section = m_State.Sections[m_CurSection];
                 section.Tick(sender, this, 0);
             }
         }
@@ -955,14 +1034,15 @@ namespace DotnetSkillScript
                 int cantTriggerCount = 0;
                 int triggerCount = 0;
                 string msgId = m_MessageQueue.Peek();
-                for (int i = 0; i < m_MessageHandlers.Count; i++) {
+                for (int i = 0; i < m_State.MessageHandlers.Count; i++) {
                     if (m_MessageHandlers[i].MsgId == msgId) {
-                        if (m_MessageHandlers[i].IsTriggered) {
+                        SkillMessageHandlerState handler = m_State.MessageHandlers[i];
+                        if (handler.IsTriggered) {
                             ++cantTriggerCount;
                         }
                         else {
-                            m_MessageHandlers[i].Prepare();
-                            m_MessageHandlers[i].IsTriggered = true;
+                            handler.Prepare();
+                            handler.IsTriggered = true;
                             ++triggerCount;
                         }
                     }
@@ -971,20 +1051,21 @@ namespace DotnetSkillScript
                     m_MessageQueue.Dequeue();
                 }
             }
-            for (int i = 0; i < m_MessageHandlers.Count; i++) {
-                if (m_MessageHandlers[i].IsTriggered) {
-                    m_MessageHandlers[i].Tick(sender, this, delta);
-                    if (m_MessageHandlers[i].IsOver()) {
-                        m_MessageHandlers[i].Reset();
+            for (int i = 0; i < m_State.MessageHandlers.Count; i++) {
+                SkillMessageHandlerState handler = m_State.MessageHandlers[i];
+                if (handler.IsTriggered) {
+                    handler.Tick(sender, this, delta);
+                    if (handler.IsOver()) {
+                        handler.Reset();
                     }
                 }
             }
         }
         private void StopMessageHandlers()
         {
-            for (int i = 0; i < m_MessageHandlers.Count; i++) {
-                if (m_MessageHandlers[i].IsTriggered) {
-                    m_MessageHandlers[i].Reset();
+            for (int i = 0; i < m_State.MessageHandlers.Count; i++) {
+                if (m_State.MessageHandlers[i].IsTriggered) {
+                    m_State.MessageHandlers[i].Reset();
                 }
             }
         }
@@ -1233,29 +1314,29 @@ namespace DotnetSkillScript
         }
         //----------------------------------------------
 
-        private bool m_IsInterrupted = false;
-        private bool m_IsFinished = false;
-        private bool m_IsStopCurSection = false;
+        private SkillInstanceState m_State = new SkillInstanceState();
+        private bool m_IsInterrupted { get { return m_State.IsInterrupted; } set { m_State.IsInterrupted = value; } }
+        private bool m_IsFinished { get { return m_State.IsFinished; } set { m_State.IsFinished = value; } }
+        private bool m_IsStopCurSection { get { return m_State.IsStopCurSection; } set { m_State.IsStopCurSection = value; } }
+        private int m_CurSection { get { return m_State.CurSection; } set { m_State.CurSection = value; } }
+        private int m_GoToSectionId { get { return m_State.GoToSectionId; } set { m_State.GoToSectionId = value; } }
+        private long m_CurSectionTime { get { return m_State.CurSectionTime; } set { m_State.CurSectionTime = value; } }
+        private long m_CurTime { get { return m_State.CurTime; } set { m_State.CurTime = value; } }
+        private long m_OriginalDelta { get { return m_State.OriginalDelta; } set { m_State.OriginalDelta = value; } }
+        private float m_TimeScale { get { return m_State.TimeScale; } set { m_State.TimeScale = value; } }
+        private float m_EffectScale { get { return m_State.EffectScale; } set { m_State.EffectScale = value; } }
+        private float m_MoveScale { get { return m_State.MoveScale; } set { m_State.MoveScale = value; } }
+        private int m_DslSkillId { get { return m_State.DslSkillId; } set { m_State.DslSkillId = value; } }
+        private object m_Context { get { return m_State.Context; } set { m_State.Context = value; } }
+        private Queue<string> m_MessageQueue { get { return m_State.MessageQueue; } }
+        private StrObjDict m_Variables { get { return m_State.Variables; } }
+        private CustomDataCollection m_CustomDatas { get { return m_State.CustomDatas; } }
 
-        private int m_CurSection = -1;
-        private int m_GoToSectionId = -1;
-        private long m_CurSectionTime = 0;
-        private long m_CurTime = 0;
-        private long m_OriginalDelta = 0;
-        private float m_TimeScale = 1;
-        private float m_EffectScale = 1;
-        private float m_MoveScale = 1;
-
-        private int m_DslSkillId = 0;
-        private object m_Context = null;
+        private bool m_IsConfigShared;
         private List<SkillSection> m_Sections = new List<SkillSection>();
-        private Queue<string> m_MessageQueue = new Queue<string>();
         private List<SkillMessageHandler> m_MessageHandlers = new List<SkillMessageHandler>();
         private SkillMessageHandler m_StopSection = null;
         private SkillMessageHandler m_InterruptSection = null;
-
-        private StrObjDict m_Variables = new StrObjDict();
-        private CustomDataCollection m_CustomDatas = new CustomDataCollection();
 
         private int m_InnerDslSkillId = 0;
         private int m_OuterDslSkillId = 0;

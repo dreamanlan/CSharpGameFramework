@@ -2,14 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ScriptableFramework;
+using DotnetStoryScript;
 using DotnetStoryScript.DslExpression;
 
 public class ScriptSimpleStoryApiPlugin : ScriptPluginProxyBase
 {
-	public void Init(DslCalculator calculator)
+	public void Init(DslCalculatorCodeStructure code)
 	{
 	}
-	public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+	public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
 	{
 		return false;
 	}

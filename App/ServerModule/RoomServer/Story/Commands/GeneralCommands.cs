@@ -13,13 +13,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class StartStoryCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var storyId = m_StoryId.Calc();
-                var multiple = m_Multiple.Calc().GetInt();
+                var storyId = m_StoryId.Calc(calculator);
+                var multiple = m_Multiple.Calc(calculator).GetInt();
                 scene.DelayActionProcessor.QueueAction(() => {
                     if (multiple == 0)
                         scene.StorySystem.StartStory(storyId);
@@ -33,7 +33,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_StoryId = Calculator.Load(callData.GetParam(0));
+                m_StoryId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -46,7 +46,7 @@ namespace ScriptableFramework.Story.Commands
                     Load(first);
                     var call = second;
                     if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple = Calculator.Load(call.GetParam(0));
+                        m_Multiple = CodeStructure.Load(call.GetParam(0));
                     }
                 }
             }
@@ -60,16 +60,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class StopStoryCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var multiple = m_Multiple.Calc().GetInt();
+                var multiple = m_Multiple.Calc(calculator).GetInt();
                 if (multiple == 0)
-                    scene.StorySystem.MarkStoryTerminated(m_StoryId.Calc());
+                    scene.StorySystem.MarkStoryTerminated(m_StoryId.Calc(calculator));
                 else
-                    scene.StorySystem.MarkStoriesTerminated(m_StoryId.Calc());
+                    scene.StorySystem.MarkStoriesTerminated(m_StoryId.Calc(calculator));
             }
             return BoxedValue.NullObject;
         }
@@ -77,7 +77,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_StoryId = Calculator.Load(callData.GetParam(0));
+                m_StoryId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -90,7 +90,7 @@ namespace ScriptableFramework.Story.Commands
                     Load(first);
                     var call = second;
                     if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple = Calculator.Load(call.GetParam(0));
+                        m_Multiple = CodeStructure.Load(call.GetParam(0));
                     }
                 }
             }
@@ -106,33 +106,33 @@ namespace ScriptableFramework.Story.Commands
     {
         public override bool IsAsync { get { return true; } }
 
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
             List<string> storyIds = new List<string>();
             for (int i = 0; i < m_StoryIds.Count; ++i) {
-                storyIds.Add(m_StoryIds[i].Calc().ToString());
+                storyIds.Add(m_StoryIds[i].Calc(calculator).ToString());
             }
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null == instance || null == scene) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
             }
-            int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+            int timeout = m_HaveSet ? m_TimeoutVal.Calc(calculator).GetInt() : 0;
             int curTime = 0;
             while (true) {
                 int ct = 0;
                 for (int i = 0; i < storyIds.Count; i++) {
                     ct += scene.StorySystem.CountStory(storyIds[i]);
                 }
-                int multiple = m_HaveMultiple ? m_Multiple.Calc().GetInt() : 0;
+                int multiple = m_HaveMultiple ? m_Multiple.Calc(calculator).GetInt() : 0;
                 if (ct <= 0) {
                     if (m_HaveSet) {
-                        string varName = m_SetVar.Calc().ToString();
-                        var varVal = m_SetVal.Calc();
+                        string varName = m_SetVar.Calc(calculator).ToString();
+                        var varVal = m_SetVal.Calc(calculator);
                         instance.SetVariable(varName, varVal);
                     }
                     break;
@@ -141,8 +141,8 @@ namespace ScriptableFramework.Story.Commands
                         yield return null;
                         curTime += 1;
                     } else if (m_HaveSet) {
-                        string varName = m_TimeoutSetVar.Calc().ToString();
-                        var varVal = m_TimeoutSetVal.Calc();
+                        string varName = m_TimeoutSetVar.Calc(calculator).ToString();
+                        var varVal = m_TimeoutSetVal.Calc(calculator);
                         instance.SetVariable(varName, varVal);
                         break;
                     }
@@ -155,7 +155,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                m_StoryIds.Add(Calculator.Load(callData.GetParam(i)));
+                m_StoryIds.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -195,24 +195,24 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 1 && callData.GetId() == "multiple") {
-                m_Multiple = Calculator.Load(callData.GetParam(0));
+                m_Multiple = CodeStructure.Load(callData.GetParam(0));
             }
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 2 && callData.GetId() == "set") {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
             }
         }
         private void LoadTimeoutSet(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 3 && callData.GetId() == "timeoutset") {
-                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
-                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
-                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
+                m_TimeoutVal = CodeStructure.Load(callData.GetParam(0));
+                m_TimeoutSetVar = CodeStructure.Load(callData.GetParam(1));
+                m_TimeoutSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
         private List<IExpression> m_StoryIds = new List<IExpression>();
@@ -230,19 +230,19 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class PauseStoryCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var multiple = m_Multiple.Calc().GetInt();
+                var multiple = m_Multiple.Calc(calculator).GetInt();
                 if (multiple == 0) {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        scene.StorySystem.PauseStory(m_StoryIds[i].Calc().ToString(), true);
+                        scene.StorySystem.PauseStory(m_StoryIds[i].Calc(calculator).ToString(), true);
                     }
                 } else {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        scene.StorySystem.PauseStories(m_StoryIds[i].Calc().ToString(), true);
+                        scene.StorySystem.PauseStories(m_StoryIds[i].Calc(calculator).ToString(), true);
                     }
                 }
             }
@@ -252,7 +252,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                m_StoryIds.Add(Calculator.Load(callData.GetParam(i)));
+                m_StoryIds.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -265,7 +265,7 @@ namespace ScriptableFramework.Story.Commands
                     Load(first);
                     var call = second;
                     if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple = Calculator.Load(call.GetParam(0));
+                        m_Multiple = CodeStructure.Load(call.GetParam(0));
                     }
                 }
             }
@@ -279,19 +279,19 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ResumeStoryCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var multiple = m_Multiple.Calc().GetInt();
+                var multiple = m_Multiple.Calc(calculator).GetInt();
                 if (multiple == 0) {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        scene.StorySystem.PauseStory(m_StoryIds[i].Calc().ToString(), false);
+                        scene.StorySystem.PauseStory(m_StoryIds[i].Calc(calculator).ToString(), false);
                     }
                 } else {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
-                        scene.StorySystem.PauseStories(m_StoryIds[i].Calc().ToString(), false);
+                        scene.StorySystem.PauseStories(m_StoryIds[i].Calc(calculator).ToString(), false);
                     }
                 }
             }
@@ -301,7 +301,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                m_StoryIds.Add(Calculator.Load(callData.GetParam(i)));
+                m_StoryIds.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -314,7 +314,7 @@ namespace ScriptableFramework.Story.Commands
                     Load(first);
                     var call = second;
                     if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
-                        m_Multiple = Calculator.Load(call.GetParam(0));
+                        m_Multiple = CodeStructure.Load(call.GetParam(0));
                     }
                 }
             }
@@ -335,9 +335,9 @@ namespace ScriptableFramework.Story.Commands
         {
             m_IsConcurrent = isConcurrent;
         }
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count > 0) {
@@ -371,16 +371,16 @@ namespace ScriptableFramework.Story.Commands
     {
         public override bool IsAsync { get { return true; } }
 
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
             List<string> msgIds = new List<string>();
             for (int i = 0; i < m_MsgIds.Count; ++i) {
-                msgIds.Add(m_MsgIds[i].Calc().ToString());
+                msgIds.Add(m_MsgIds[i].Calc(calculator).ToString());
             }
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null == instance || null == scene) {
                 result.Value = BoxedValue.NullObject;
@@ -403,20 +403,20 @@ namespace ScriptableFramework.Story.Commands
                 }
                 if (triggered) {
                     if (m_HaveSet) {
-                        string varName = m_SetVar.Calc().ToString();
-                        var varVal = m_SetVal.Calc();
+                        string varName = m_SetVar.Calc(calculator).ToString();
+                        var varVal = m_SetVal.Calc(calculator);
                         instance.SetVariable(varName, varVal);
                     }
                     break;
                 } else {
-                    int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+                    int timeout = m_HaveSet ? m_TimeoutVal.Calc(calculator).GetInt() : 0;
                     if (!StoryConfigManager.Instance.IsStorySkipped && (timeout <= 0 || m_CurTime <= timeout)) {
                         yield return null;
                         m_CurTime += 1;
                     } else {
                         if (m_HaveSet) {
-                            string varName = m_TimeoutSetVar.Calc().ToString();
-                            var varVal = m_TimeoutSetVal.Calc();
+                            string varName = m_TimeoutSetVar.Calc(calculator).ToString();
+                            var varVal = m_TimeoutSetVal.Calc(calculator);
                             instance.SetVariable(varName, varVal);
                         }
                         break;
@@ -430,7 +430,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                m_MsgIds.Add(Calculator.Load(callData.GetParam(i)));
+                m_MsgIds.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -455,8 +455,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 2 && callData.GetId() == "set") {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
             }
         }
 
@@ -464,9 +464,9 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 3 && callData.GetId() == "timeoutset") {
-                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
-                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
-                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
+                m_TimeoutVal = CodeStructure.Load(callData.GetParam(0));
+                m_TimeoutSetVar = CodeStructure.Load(callData.GetParam(1));
+                m_TimeoutSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
 
@@ -487,16 +487,16 @@ namespace ScriptableFramework.Story.Commands
     {
         public override bool IsAsync { get { return true; } }
 
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
             List<string> msgIds = new List<string>();
             for (int i = 0; i < m_MsgIds.Count; ++i) {
-                msgIds.Add(m_MsgIds[i].Calc().ToString());
+                msgIds.Add(m_MsgIds[i].Calc(calculator).ToString());
             }
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null == instance || null == scene) {
                 result.Value = BoxedValue.NullObject;
@@ -509,20 +509,20 @@ namespace ScriptableFramework.Story.Commands
                 }
                 if (ct <= 0) {
                     if (m_HaveSet) {
-                        string varName = m_SetVar.Calc().ToString();
-                        var varVal = m_SetVal.Calc();
+                        string varName = m_SetVar.Calc(calculator).ToString();
+                        var varVal = m_SetVal.Calc(calculator);
                         instance.SetVariable(varName, varVal);
                     }
                     break;
                 } else {
-                    int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+                    int timeout = m_HaveSet ? m_TimeoutVal.Calc(calculator).GetInt() : 0;
                     if (!StoryConfigManager.Instance.IsStorySkipped && (timeout <= 0 || m_CurTime <= timeout)) {
                         yield return null;
                         m_CurTime += 1;
                     } else {
                         if (m_HaveSet) {
-                            string varName = m_TimeoutSetVar.Calc().ToString();
-                            var varVal = m_TimeoutSetVal.Calc();
+                            string varName = m_TimeoutSetVar.Calc(calculator).ToString();
+                            var varVal = m_TimeoutSetVal.Calc(calculator);
                             instance.SetVariable(varName, varVal);
                         }
                         break;
@@ -536,7 +536,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                m_MsgIds.Add(Calculator.Load(callData.GetParam(i)));
+                m_MsgIds.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -561,8 +561,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 2 && callData.GetId() == "set") {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
             }
         }
 
@@ -570,9 +570,9 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 3 && callData.GetId() == "timeoutset") {
-                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
-                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
-                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
+                m_TimeoutVal = CodeStructure.Load(callData.GetParam(0));
+                m_TimeoutSetVar = CodeStructure.Load(callData.GetParam(1));
+                m_TimeoutSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
 
@@ -590,9 +590,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SuspendAllMessageHandlerCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 for (int i = 0; i < operands.Count; i++) {
@@ -607,9 +607,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ResumeAllMessageHandlerCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 for (int i = 0; i < operands.Count; i++) {
@@ -624,16 +624,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SendServerStoryMessageCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                string _msg = m_Msg.Calc().ToString();
+                string _msg = m_Msg.Calc(calculator).ToString();
                 Msg_LRL_StoryMessage msg = new Msg_LRL_StoryMessage();
                 msg.MsgId = _msg;
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    var v = m_Args[i].Calc();
+                    var v = m_Args[i].Calc(calculator);
                     if (v.IsNullObject) {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
                         arg.val_type = Msg_LRL_StoryMessage.ArgType.NULL;
@@ -657,7 +657,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -677,10 +677,10 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Msg = Calculator.Load(callData.GetParam(0));
+                m_Msg = CodeStructure.Load(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                m_Args.Add(Calculator.Load(callData.GetParam(i)));
+                m_Args.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -701,7 +701,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -716,16 +716,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SendClientStoryMessageCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                string _msg = m_Msg.Calc().ToString();
+                string _msg = m_Msg.Calc(calculator).ToString();
                 Msg_CRC_StoryMessage msg = new Msg_CRC_StoryMessage();
                 msg.m_MsgId = _msg;
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    var v = m_Args[i].Calc();
+                    var v = m_Args[i].Calc(calculator);
                     if (v.IsNullObject) {
                         Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                         arg.val_type = ArgType.NULL;
@@ -749,7 +749,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -768,10 +768,10 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Msg = Calculator.Load(callData.GetParam(0));
+                m_Msg = CodeStructure.Load(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                m_Args.Add(Calculator.Load(callData.GetParam(i)));
+                m_Args.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -792,7 +792,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -807,19 +807,19 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class PublishGfxEventCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                string evname = m_EventName.Calc().ToString();
-                string group = m_Group.Calc().ToString();
+                string evname = m_EventName.Calc(calculator).ToString();
+                string group = m_Group.Calc(calculator).ToString();
                 Msg_RC_PublishEvent msg = new Msg_RC_PublishEvent();
                 msg.group = group;
                 msg.ev_name = evname;
                 msg.is_logic_event = false;
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    var v = m_Args[i].Calc();
+                    var v = m_Args[i].Calc(calculator);
                     if (v.IsNullObject) {
                         Msg_RC_PublishEvent.EventArg arg = new Msg_RC_PublishEvent.EventArg();
                         arg.val_type = ArgType.NULL;
@@ -843,7 +843,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -862,11 +862,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_EventName = Calculator.Load(callData.GetParam(0));
-                m_Group = Calculator.Load(callData.GetParam(1));
+                m_EventName = CodeStructure.Load(callData.GetParam(0));
+                m_Group = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                m_Args.Add(Calculator.Load(callData.GetParam(i)));
+                m_Args.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -887,7 +887,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -903,19 +903,19 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SendGfxMessageCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                string objname = m_ObjName.Calc().ToString();
-                string _msg = m_Msg.Calc().ToString();
+                string objname = m_ObjName.Calc(calculator).ToString();
+                string _msg = m_Msg.Calc(calculator).ToString();
                 Msg_RC_SendGfxMessage msg = new Msg_RC_SendGfxMessage();
                 msg.is_with_tag = false;
                 msg.name = objname;
                 msg.msg = _msg;
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    var v = m_Args[i].Calc();
+                    var v = m_Args[i].Calc(calculator);
                     if (v.IsNullObject) {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
                         arg.val_type = ArgType.NULL;
@@ -939,7 +939,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -958,11 +958,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjName = Calculator.Load(callData.GetParam(0));
-                m_Msg = Calculator.Load(callData.GetParam(1));
+                m_ObjName = CodeStructure.Load(callData.GetParam(0));
+                m_Msg = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                m_Args.Add(Calculator.Load(callData.GetParam(i)));
+                m_Args.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -983,7 +983,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -999,19 +999,19 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SendGfxMessageWithTagCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                string objname = m_ObjTag.Calc().ToString();
-                string _msg = m_Msg.Calc().ToString();
+                string objname = m_ObjTag.Calc(calculator).ToString();
+                string _msg = m_Msg.Calc(calculator).ToString();
                 Msg_RC_SendGfxMessage msg = new Msg_RC_SendGfxMessage();
                 msg.is_with_tag = true;
                 msg.name = objname;
                 msg.msg = _msg;
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    var v = m_Args[i].Calc();
+                    var v = m_Args[i].Calc(calculator);
                     if (v.IsNullObject) {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
                         arg.val_type = ArgType.NULL;
@@ -1035,7 +1035,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveUserId) {
-                    int userId = m_UserId.Calc().GetInt();
+                    int userId = m_UserId.Calc(calculator).GetInt();
                     EntityInfo user = scene.GetEntityById(userId);
                     if (null != user) {
                         User us = user.CustomData as User;
@@ -1054,11 +1054,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjTag = Calculator.Load(callData.GetParam(0));
-                m_Msg = Calculator.Load(callData.GetParam(1));
+                m_ObjTag = CodeStructure.Load(callData.GetParam(0));
+                m_Msg = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                m_Args.Add(Calculator.Load(callData.GetParam(i)));
+                m_Args.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -1079,7 +1079,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadUserId(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "touser" && callData.GetParamNum() == 1) {
-                m_UserId = Calculator.Load(callData.GetParam(0));
+                m_UserId = CodeStructure.Load(callData.GetParam(0));
                 m_HaveUserId = true;
             }
         }
@@ -1095,11 +1095,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ActiveSceneCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int sceneId = operands[0].GetInt();
@@ -1140,11 +1140,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ChangeSceneCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int sceneId = operands[0].GetInt();
@@ -1185,11 +1185,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ChangeRoomSceneCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int targetSceneId = operands[0].GetInt();
@@ -1203,11 +1203,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class CreateSceneLogicCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int configId = operands[0].GetInt();
@@ -1227,11 +1227,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class DestroySceneLogicCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int configId = operands[0].GetInt();
@@ -1245,11 +1245,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class PauseSceneLogicCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int cfgId = operands[0].GetInt();
@@ -1269,11 +1269,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class RestartTimeoutCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int cfgId = operands[0].GetInt();
@@ -1301,11 +1301,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class HighlightPromptCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int objId = operands[0].GetInt();

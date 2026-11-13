@@ -9,9 +9,9 @@ namespace ScriptableFramework.Story.Functions
 {
     public sealed class NpcIdListFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 List<object> npcs = new List<object>();
@@ -25,9 +25,9 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class CombatNpcCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count > 0) {
@@ -42,11 +42,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class NpcGetFormationFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int unitId = operands[0].GetInt();
@@ -60,11 +60,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class NpcGetNpcTypeFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int unitId = operands[0].GetInt();
@@ -78,11 +78,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class NpcGetSummonerIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int unitId = operands[0].GetInt();
@@ -96,11 +96,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class NpcGetSummonSkillIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int unitId = operands[0].GetInt();
@@ -114,11 +114,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class NpcFindImpactSeqByIdFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int unitId = operands[0].GetInt();
@@ -136,11 +136,11 @@ namespace ScriptableFramework.Story.Functions
     }
     public sealed class NpcCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 int startUnitId = operands[0].GetInt();

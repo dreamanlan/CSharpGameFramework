@@ -11,11 +11,11 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class LocalMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: localmessage(msgId, args...)");
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = operands[0].ToString();
@@ -33,11 +33,11 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class LocalConcurrentMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: localconcurrentmessage(msgId, args...)");
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = operands[0].ToString();
@@ -55,13 +55,13 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class StoryLocalMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: storylocalmessage(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = operands[0].ToString();
@@ -79,13 +79,13 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class StoryLocalConcurrentMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: storylocalconcurrentmessage(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = operands[0].ToString();
@@ -103,9 +103,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class ClearMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string[] msgIds = new string[operands.Count];
@@ -123,9 +123,9 @@ namespace DotnetStoryScript
     internal sealed class WaitLocalMessageExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -236,9 +236,9 @@ namespace DotnetStoryScript
     internal sealed class WaitLocalMessageHandlerExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -342,12 +342,12 @@ namespace DotnetStoryScript
     internal sealed class StoryWaitLocalMessageExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -455,12 +455,12 @@ namespace DotnetStoryScript
     internal sealed class StoryWaitLocalMessageHandlerExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -563,9 +563,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class SuspendLocalMessageHandlerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             for (int i = 0; i < operands.Count; i++) {
@@ -580,9 +580,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class ResumeLocalMessageHandlerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             for (int i = 0; i < operands.Count; i++) {
@@ -599,11 +599,11 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class LocalNamespacedMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: localnamespacedmessage(msgId, args...)");
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = MessageExpHelper.BuildNamespacedMessageId(storyInst, operands[0].ToString());
@@ -621,11 +621,11 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class LocalConcurrentNamespacedMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: localconcurrentnamespacedmessage(msgId, args...)");
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = MessageExpHelper.BuildNamespacedMessageId(storyInst, operands[0].ToString());
@@ -643,13 +643,13 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class StoryLocalNamespacedMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: storylocalnamespacedmessage(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = MessageExpHelper.BuildNamespacedMessageId(storyInst, operands[0].ToString());
@@ -667,13 +667,13 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class StoryLocalConcurrentNamespacedMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: storylocalconcurrentnamespacedmessage(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string msgId = MessageExpHelper.BuildNamespacedMessageId(storyInst, operands[0].ToString());
@@ -691,9 +691,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class ClearNamespacedMessageExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string _namespace = storyInst.Namespace;
@@ -717,9 +717,9 @@ namespace DotnetStoryScript
     internal sealed class WaitLocalNamespacedMessageExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -828,9 +828,9 @@ namespace DotnetStoryScript
     internal sealed class WaitLocalNamespacedMessageHandlerExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -935,12 +935,12 @@ namespace DotnetStoryScript
     internal sealed class StoryWaitLocalNamespacedMessageExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -1049,12 +1049,12 @@ namespace DotnetStoryScript
     internal sealed class StoryWaitLocalNamespacedMessageHandlerExp : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -1158,9 +1158,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class SuspendLocalNamespacedMessageHandlerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string _namespace = storyInst.Namespace;
@@ -1181,9 +1181,9 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class ResumeLocalNamespacedMessageHandlerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
             string _namespace = storyInst.Namespace;

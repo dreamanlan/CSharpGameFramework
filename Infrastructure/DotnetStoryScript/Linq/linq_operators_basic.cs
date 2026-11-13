@@ -58,7 +58,7 @@ namespace DotnetStoryScript.DslExpression
                 try {
                     _calc.SetVariable("$$", item);
                     for (int idx = 0; idx < _exprs.Count; ++idx) {
-                        r = _exprs[idx].Calc();
+                        r = _exprs[idx].Calc(_calc);
                     }
                 }
                 finally {
@@ -110,7 +110,7 @@ namespace DotnetStoryScript.DslExpression
                     for (int idx = 0; idx < _exprs.Count; ++idx) {
                         var exp = _exprs[idx];
                         if (exp.IsAsync) {
-                            var _eiCalc = exp.Calc(result);
+                            var _eiCalc = exp.Calc(_calc, result);
                             try {
                                 while (_eiCalc.MoveNext()) {
                                     yield return _eiCalc.Current;
@@ -122,7 +122,7 @@ namespace DotnetStoryScript.DslExpression
                             condVal = result.Value;
                         }
                         else {
-                            condVal = exp.Calc();
+                            condVal = exp.Calc(_calc);
                         }
                     }
                 }
@@ -177,7 +177,7 @@ namespace DotnetStoryScript.DslExpression
                 try {
                     _calc.SetVariable("$$", _src.Current);
                     for (int idx = 0; idx < _exprs.Count; ++idx) {
-                        r = _exprs[idx].Calc();
+                        r = _exprs[idx].Calc(_calc);
                     }
                 }
                 finally {
@@ -225,7 +225,7 @@ namespace DotnetStoryScript.DslExpression
                 for (int idx = 0; idx < _exprs.Count; ++idx) {
                     var exp = _exprs[idx];
                     if (exp.IsAsync) {
-                        var _eiCalc = exp.Calc(result);
+                        var _eiCalc = exp.Calc(_calc, result);
                         try {
                             while (_eiCalc.MoveNext()) {
                                 yield return _eiCalc.Current;
@@ -237,7 +237,7 @@ namespace DotnetStoryScript.DslExpression
                         mappedVal = result.Value;
                     }
                     else {
-                        mappedVal = exp.Calc();
+                        mappedVal = exp.Calc(_calc);
                     }
                 }
             }

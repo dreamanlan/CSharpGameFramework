@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Dsl;
-using GameFramework;
+using ScriptableFramework;
 
 namespace TableReaderGenerator
 {
@@ -86,7 +86,7 @@ namespace TableReaderGenerator
                 foreach (var dslInfo in file.DslInfos) {
                     var info = dslInfo as FunctionData;
                     if (null == info) {
-                        LogSystem.Error("{0} {1} must end with ';' ! line {2}", dslInfo.GetId(), dslInfo.ToScriptString(false), dslInfo.GetLine());
+                        LogSystem.Error("{0} {1} must end with ';' ! line {2}", dslInfo.GetId(), dslInfo.ToScriptString(false, DelimiterInfo.Default), dslInfo.GetLine());
                         haveError = true;
                         continue;
                     }
@@ -152,7 +152,7 @@ namespace TableReaderGenerator
                                             }
                                         }
                                         else {
-                                            LogSystem.Error("typedef {0} must contains code ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                            LogSystem.Error("typedef {0} must contains code ! line {1}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine());
                                             haveError = true;
                                         }
                                     }
@@ -164,14 +164,14 @@ namespace TableReaderGenerator
                                             }
                                         }
                                         else {
-                                            LogSystem.Error("typedef {0} must have params or end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                            LogSystem.Error("typedef {0} must have params or end with ';' ! line {1}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine());
                                             haveError = true;
                                         }
                                     }
                                 }
                             }
                             else {
-                                LogSystem.Error("typedef {0} must have 1 params ! line {1}", info.ToScriptString(false), info.GetLine());
+                                LogSystem.Error("typedef {0} must have 1 params ! line {1}", info.ToScriptString(false, DelimiterInfo.Default), info.GetLine());
                                 haveError = true;
                             }
                         }
@@ -273,18 +273,18 @@ namespace TableReaderGenerator
                                             tableDef.m_Fields.Add(fieldDef);
                                         }
                                         else {
-                                            LogSystem.Error("field {0} must have name (member and field) and type ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                            LogSystem.Error("field {0} must have name (member and field) and type ! line {1}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine());
                                             haveError = true;
                                         }
                                     }
                                     else {
-                                        LogSystem.Error("field {0} must have name (member and field) and type and end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                        LogSystem.Error("field {0} must have name (member and field) and type and end with ';' ! line {1}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine());
                                         haveError = true;
                                     }
                                 }
                             }
                             else {
-                                LogSystem.Error("tabledef {0} must have 3 params ! line {1}", info.ToScriptString(false), info.GetLine());
+                                LogSystem.Error("tabledef {0} must have 3 params ! line {1}", info.ToScriptString(false, DelimiterInfo.Default), info.GetLine());
                                 haveError = true;
                             }
                         }
@@ -391,7 +391,7 @@ namespace TableReaderGenerator
                             sw.WriteLine("using System.Runtime.InteropServices;");
                             sw.WriteLine("using System.IO;");
                             sw.WriteLine("using System.Text;");
-                            sw.WriteLine("using GameFramework;");
+                            sw.WriteLine("using ScriptableFramework;");
                             sw.Close();
                         }
                     } catch (Exception ex) {
@@ -425,7 +425,7 @@ namespace TableReaderGenerator
                             sw.WriteLine("using System.Runtime.InteropServices;");
                             sw.WriteLine("using System.IO;");
                             sw.WriteLine("using System.Text;");
-                            sw.WriteLine("using GameFramework;");
+                            sw.WriteLine("using ScriptableFramework;");
                             sw.Close();
                         }
                     } catch (Exception ex) {

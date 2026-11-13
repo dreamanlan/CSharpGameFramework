@@ -13,7 +13,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector2Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: vector2(x, y)");
@@ -30,7 +30,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector3Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
                 throw new Exception("Expected: vector3(x, y, z)");
@@ -48,7 +48,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector4Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 4)
                 throw new Exception("Expected: vector4(x, y, z, w)");
@@ -67,7 +67,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class QuaternionExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 4)
                 throw new Exception("Expected: quaternion(x, y, z, w)");
@@ -86,7 +86,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class EularExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
                 throw new Exception("Expected: eular(x, y, z)");
@@ -122,7 +122,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class ColorExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 4)
                 throw new Exception("Expected: color(r, g, b, a)");
@@ -141,7 +141,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Color32Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 4)
                 throw new Exception("Expected: color32(r, g, b, a)");
@@ -162,7 +162,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector2IntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: vector2int(x, y)");
@@ -179,7 +179,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector3IntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
                 throw new Exception("Expected: vector3int(x, y, z)");
@@ -199,7 +199,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector2ListExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: vector2list(str_split_by_sep)");
@@ -215,7 +215,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector3ListExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: vector3list(str_split_by_sep)");
@@ -233,7 +233,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector2DistExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: vector2dist(pt1, pt2)");
@@ -252,7 +252,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector3DistExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: vector3dist(pt1, pt2)");
@@ -271,7 +271,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector2To3Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: vector2to3(pt)");
@@ -288,7 +288,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class Vector3To2Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: vector3to2(pt)");
@@ -312,7 +312,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class RndVector3Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: rndvector3(pt, radius)");
@@ -335,7 +335,7 @@ namespace DotnetStoryScript
     /// </summary>
     internal sealed class RndVector2Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: rndvector2(pt, radius)");

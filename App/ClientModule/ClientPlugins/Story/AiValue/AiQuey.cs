@@ -12,15 +12,15 @@ using DotnetStoryScript.DslExpression;
 
 public class AiQuery : IStoryApiPlugin
 {
-    public void Init(DslCalculator calculator)
+    public void Init(DslCalculatorCodeStructure code)
     {
-        m_Calculator = calculator;
+        m_CodeStructure = code;
     }
 
-    public bool Calc(AsyncCalcResult result)
+    public bool Calc(DslCalculator calculator, AsyncCalcResult result)
     {
         if (null != m_Select && null != m_From) {
-            var fromVal = m_From.Calc();
+            var fromVal = m_From.Calc(calculator);
             ArrayList coll = new ArrayList();
 
             //filter
@@ -31,14 +31,14 @@ public class AiQuery : IStoryApiPlugin
                     var v = enumerator.Current;
                     var bv = BoxedValue.FromObject(v);
                     if (null != m_Where) {
-                        var whereVal = m_Where.Calc();
+                        var whereVal = m_Where.Calc(calculator);
                         object wvObj = whereVal.ObjectVal;
                         int wv = (int)System.Convert.ChangeType(wvObj, typeof(int));
                         if (wv != 0) {
-                            AddRow(coll, bv);
+                            AddRow(calculator, coll, bv);
                         }
                     } else {
-                        AddRow(coll, bv);
+                        AddRow(calculator, coll, bv);
                     }
                 }
             }
@@ -64,14 +64,14 @@ public class AiQuery : IStoryApiPlugin
     {
         string id = callData.GetId();
         if (id == "select") {
-            m_Select = m_Calculator.Load(callData.GetParam(0));
+            m_Select = m_CodeStructure.Load(callData.GetParam(0));
         } else if (id == "from") {
-            m_From = m_Calculator.Load(callData.GetParam(0));
+            m_From = m_CodeStructure.Load(callData.GetParam(0));
         } else if (id == "where") {
-            m_Where = m_Calculator.Load(callData.GetParam(0));
+            m_Where = m_CodeStructure.Load(callData.GetParam(0));
         } else if (id == "orderby") {
             for (int i = 0; i < callData.GetParamNum(); ++i) {
-                var v = m_Calculator.Load(callData.GetParam(i));
+                var v = m_CodeStructure.Load(callData.GetParam(i));
                 m_OrderBy.Add(v);
             }
         } else if (id == "asc") {
@@ -94,22 +94,22 @@ public class AiQuery : IStoryApiPlugin
         }
     }
 
-    private void AddRow(ArrayList coll, BoxedValue v)
+    private void AddRow(DslCalculator calculator, ArrayList coll, BoxedValue v)
     {
         ArrayList row = new ArrayList();
         coll.Add(row);
 
-        var selectVal = m_Select.Calc();
+        var selectVal = m_Select.Calc(calculator);
         row.Add(selectVal.GetObject());
 
         for (int i = 0; i < m_OrderBy.Count; ++i) {
             var val = m_OrderBy[i];
-            var orderVal = val.Calc();
+            var orderVal = val.Calc(calculator);
             row.Add(orderVal.GetObject());
         }
     }
 
-    private DslCalculator m_Calculator = null;
+    private DslCalculatorCodeStructure m_CodeStructure = null;
     private IExpression m_Select = null;
     private IExpression m_From = null;
     private IExpression m_Where = null;

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
@@ -11,7 +11,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common">
-      <HintPath>..\..\Infrastructure\Common\bin\Debug\netstandard2.1\Common.dll</HintPath>
+      <HintPath>..\..\App\ClientModule\PluginFramework\bin\Debug\netstandard2.1\Common.dll</HintPath>
     </Reference>
     <Reference Include="Dsl">
       <HintPath>..\..\ExternalLibrary\Dsl.dll</HintPath>

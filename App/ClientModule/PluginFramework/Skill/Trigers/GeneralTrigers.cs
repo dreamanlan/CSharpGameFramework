@@ -111,7 +111,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// bornfinish(start_time);
     /// </summary>
-    internal class BornFinishTriger : AbstractSkillTriger
+    internal class BornFinishTriger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -152,7 +152,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// deadfinish(start_time);
     /// </summary>
-    internal class DeadFinishTriger : AbstractSkillTriger
+    internal class DeadFinishTriger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

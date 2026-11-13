@@ -8,7 +8,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// stopeffect(starttime);
     /// </summary>
-    internal class StopEffectTrigger : AbstractSkillTriger
+    internal class StopEffectTrigger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

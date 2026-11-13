@@ -8,7 +8,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// bufftotarget(starttime);
     /// </summary>
-    internal class BuffToTargetTrigger : AbstractSkillTriger
+    internal class BuffToTargetTrigger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

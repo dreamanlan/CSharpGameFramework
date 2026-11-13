@@ -9,11 +9,11 @@ namespace ScriptableFramework.Story.Functions
 {
     internal sealed class GetMemberCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -27,11 +27,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetMemberInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -48,11 +48,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetFriendCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -66,11 +66,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetFriendInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -96,11 +96,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetItemCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -114,11 +114,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetFreeItemCountFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -132,11 +132,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetItemInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -162,11 +162,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class FindItemInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -190,11 +190,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class CalcItemNumFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -209,11 +209,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetUserDataFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong userGuid = operands[0].GetULong();
@@ -241,11 +241,11 @@ namespace ScriptableFramework.Story.Functions
     }
     internal sealed class GetGlobalDataFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return 0;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 string key = operands[0].ToString();

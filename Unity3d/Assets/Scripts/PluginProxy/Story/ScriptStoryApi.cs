@@ -18,9 +18,9 @@ internal class ScriptStoryApi : AbstractExpression
         m_Plugin.LoadStatementData(statementData);
         return true;
     }
-    protected override BoxedValue DoCalc()
+    protected override BoxedValue DoCalc(DslCalculator calculator)
     {
-        return m_Plugin.Calc();
+        return m_Plugin.Calc(calculator);
     }
 
     internal ScriptStoryApi(string className)
@@ -35,7 +35,7 @@ internal class ScriptStoryApi : AbstractExpression
     {
         if (!m_Inited) {
             m_Inited = true;
-            m_Plugin.Init(Calculator);
+            m_Plugin.Init(CodeStructure);
         }
     }
 

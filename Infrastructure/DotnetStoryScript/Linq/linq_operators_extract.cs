@@ -29,7 +29,7 @@ namespace DotnetStoryScript.DslExpression
                 while (src.MoveNext()) {
                     if (exprs.Count > 0) {
                         calcContext.SetVariable("$$", src.Current);
-                        if (Enumerable.First(exprs).Calc().GetLong() != 0) {
+                        if (Enumerable.First(exprs).Calc(calcContext).GetLong() != 0) {
                             return src.Current;
                         }
                     }
@@ -63,7 +63,7 @@ namespace DotnetStoryScript.DslExpression
                         var condExpr = Enumerable.First(exprs);
                         BoxedValue condRes;
                         if (condExpr.IsAsync) {
-                            var _eiCalc = condExpr.Calc(result);
+                            var _eiCalc = condExpr.Calc(calcContext, result);
                             try {
                                 while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
                             }
@@ -73,7 +73,7 @@ namespace DotnetStoryScript.DslExpression
                             condRes = result.Value;
                         }
                         else {
-                            condRes = condExpr.Calc();
+                            condRes = condExpr.Calc(calcContext);
                         }
                         if (condRes.GetLong() != 0) {
                             result.Value = src.Current;
@@ -107,7 +107,7 @@ namespace DotnetStoryScript.DslExpression
                 while (src.MoveNext()) {
                     if (exprs.Count > 0) {
                         calcContext.SetVariable("$$", src.Current);
-                        if (Enumerable.First(exprs).Calc().GetLong() != 0) {
+                        if (Enumerable.First(exprs).Calc(calcContext).GetLong() != 0) {
                             last = src.Current;
                         }
                     }
@@ -142,7 +142,7 @@ namespace DotnetStoryScript.DslExpression
                         var condExpr = Enumerable.First(exprs);
                         BoxedValue condRes;
                         if (condExpr.IsAsync) {
-                            var _eiCalc = condExpr.Calc(result);
+                            var _eiCalc = condExpr.Calc(calcContext, result);
                             try {
                                 while (_eiCalc.MoveNext()) yield return _eiCalc.Current;
                             }
@@ -152,7 +152,7 @@ namespace DotnetStoryScript.DslExpression
                             condRes = result.Value;
                         }
                         else {
-                            condRes = condExpr.Calc();
+                            condRes = condExpr.Calc(calcContext);
                         }
                         if (condRes.GetLong() != 0) {
                             last = src.Current;

@@ -11,9 +11,9 @@ internal class NativeSimpleStoryApi : SimpleAsyncExpressionBase
         get { return m_Plugin; }
     }
 
-    protected override IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+    protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
-        while (m_Plugin.OnCalc(operands, result)) {
+        while (m_Plugin.OnCalc(calculator, operands, result)) {
             yield return result.Value;
         }
     }
@@ -33,7 +33,7 @@ internal class NativeSimpleStoryApi : SimpleAsyncExpressionBase
     {
         if (!m_Inited) {
             m_Inited = true;
-            m_Plugin.Init(Calculator);
+            m_Plugin.Init(CodeStructure);
         }
     }
 

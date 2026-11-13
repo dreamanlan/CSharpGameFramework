@@ -8,7 +8,7 @@ namespace ScriptableFramework.GmCommands
 {
     internal sealed class EnableCalculatorLogCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
                 throw new Exception("Expected: enablecalculatorlog(val1, val2, val3)");
@@ -25,7 +25,7 @@ namespace ScriptableFramework.GmCommands
     //---------------------------------------------------------------------------------------------------------------
     internal sealed class DoResetDslCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: resetdsl(val)");
@@ -41,7 +41,7 @@ namespace ScriptableFramework.GmCommands
     }
     internal sealed class DoScpCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: scp(val)");
@@ -58,7 +58,7 @@ namespace ScriptableFramework.GmCommands
     }
     internal sealed class DoGmCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: gm(val)");
@@ -75,7 +75,7 @@ namespace ScriptableFramework.GmCommands
     }
     internal sealed class SetDebugCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: setdebug(flag)");
@@ -90,7 +90,7 @@ namespace ScriptableFramework.GmCommands
     }
     internal sealed class AllocMemoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: allocmemory(key, size)");
@@ -98,7 +98,7 @@ namespace ScriptableFramework.GmCommands
             string key = operands[0].ToString();
             int size = operands[1].GetInt();
 
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst != null) {
                 BoxedValue m = BoxedValue.FromObject(new byte[size]);
                 var globals = storyInst.ContextVariables;
@@ -113,14 +113,14 @@ namespace ScriptableFramework.GmCommands
     }
     internal sealed class FreeMemoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: freememory(key)");
 
             string key = operands[0].ToString();
 
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst != null) {
                 var globals = storyInst.ContextVariables;
                 if (globals.ContainsKey(key)) {
@@ -135,7 +135,7 @@ namespace ScriptableFramework.GmCommands
     }
     internal sealed class ConsumeCpuCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: consumecpu(time_us)");

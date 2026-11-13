@@ -12,12 +12,12 @@ using DotnetStoryScript.DslExpression;
 
 public class AiCastSkill : ISimpleStoryApiPlugin
 {
-    public void Init(DslCalculator calculator)
+    public void Init(DslCalculatorCodeStructure code)
     {
-        m_Calculator = calculator;
+        m_CodeStructure = code;
     }
 
-    public bool OnCalc(IList<BoxedValue> operands, AsyncCalcResult result)
+    public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
         var args = operands;
         if (!m_ParamReaded) {
@@ -62,7 +62,7 @@ public class AiCastSkill : ISimpleStoryApiPlugin
         return false;
     }
 
-    private DslCalculator m_Calculator = null;
+    private DslCalculatorCodeStructure m_CodeStructure = null;
     private int m_ObjId = 0;
     private SkillInfo m_SkillInfo = null;
     private bool m_SkillCasted = false;

@@ -25,10 +25,10 @@ internal class NativeStoryApi : AbstractExpression
         m_Plugin.LoadStatementData(statementData);
         return true;
     }
-    protected override IEnumerator DoCalc(AsyncCalcResult result)
+    protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
     {
-        while (m_Plugin.Calc(m_Result)) {
-            yield return m_Result.Value;
+        while (m_Plugin.Calc(calculator, result)) {
+            yield return result.Value;
         }
     }
 
@@ -42,7 +42,7 @@ internal class NativeStoryApi : AbstractExpression
     {
         if (!m_Inited) {
             m_Inited = true;
-            m_Plugin.Init(Calculator);
+            m_Plugin.Init(CodeStructure);
         }
     }
 

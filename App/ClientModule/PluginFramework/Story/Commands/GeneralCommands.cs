@@ -17,7 +17,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class DummyCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             return BoxedValue.NullObject;
         }
@@ -30,7 +30,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class PreloadCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             for (int i = 0; i < operands.Count; i++) {
                 int resId = operands[i].GetInt();
@@ -64,7 +64,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class StartStoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -84,7 +84,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class StopStoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -103,27 +103,27 @@ namespace ScriptableFramework.Story.Commands
     internal sealed class WaitStoryCommand : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            var inst = Calculator.GetFuncContext<StoryInstance>();
+            var inst = calculator.GetFuncContext<StoryInstance>();
             if (null == inst) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
             }
-            int multiple = m_HaveMultiple ? m_Multiple.Calc().GetInt() : 0;
-            int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+            int multiple = m_HaveMultiple ? m_Multiple.Calc(calculator).GetInt() : 0;
+            int timeout = m_HaveSet ? m_TimeoutVal.Calc(calculator).GetInt() : 0;
             long startTime = ScriptableFramework.TimeUtility.GetLocalMilliseconds();
             int ct = 0;
             for (int i = 0; i < m_StoryIds.Count; i++) {
-                ct += GfxStorySystem.Instance.CountStory(m_StoryIds[i].Calc().GetString());
+                ct += GfxStorySystem.Instance.CountStory(m_StoryIds[i].Calc(calculator).GetString());
             }
             if (ct <= 0) {
                 if (m_HaveSet) {
-                    string varName = m_SetVar.Calc().GetString();
-                    var varVal = m_SetVal.Calc();
+                    string varName = m_SetVar.Calc(calculator).GetString();
+                    var varVal = m_SetVal.Calc(calculator);
                     inst.SetVariable(varName, varVal);
                 }
                 result.Value = BoxedValue.NullObject;
@@ -133,12 +133,12 @@ namespace ScriptableFramework.Story.Commands
                 yield return null;
                 ct = 0;
                 for (int i = 0; i < m_StoryIds.Count; i++) {
-                    ct += GfxStorySystem.Instance.CountStory(m_StoryIds[i].Calc().GetString());
+                    ct += GfxStorySystem.Instance.CountStory(m_StoryIds[i].Calc(calculator).GetString());
                 }
                 if (ct <= 0) {
                     if (m_HaveSet) {
-                        string varName = m_SetVar.Calc().GetString();
-                        var varVal = m_SetVal.Calc();
+                        string varName = m_SetVar.Calc(calculator).GetString();
+                        var varVal = m_SetVal.Calc(calculator);
                         inst.SetVariable(varName, varVal);
                     }
                     break;
@@ -146,8 +146,8 @@ namespace ScriptableFramework.Story.Commands
                 int curTime = (int)(ScriptableFramework.TimeUtility.GetLocalMilliseconds() - startTime);
                 if (StoryConfigManager.Instance.IsStorySkipped || (timeout > 0 && curTime > timeout)) {
                     if (m_HaveSet) {
-                        string varName = m_TimeoutSetVar.Calc().GetString();
-                        var varVal = m_TimeoutSetVal.Calc();
+                        string varName = m_TimeoutSetVar.Calc(calculator).GetString();
+                        var varVal = m_TimeoutSetVal.Calc(calculator);
                         inst.SetVariable(varName, varVal);
                     }
                     break;
@@ -208,7 +208,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_StoryIds.Add(val);
             }
         }
@@ -227,8 +227,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 2 && callData.GetId() == "set") {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
                 m_HaveSet = true;
             }
         }
@@ -236,16 +236,16 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 3 && callData.GetId() == "timeoutset") {
-                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
-                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
-                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
+                m_TimeoutVal = CodeStructure.Load(callData.GetParam(0));
+                m_TimeoutSetVar = CodeStructure.Load(callData.GetParam(1));
+                m_TimeoutSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
         private void LoadMultiple(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 1 && callData.GetId() == "multiple") {
-                m_Multiple = Calculator.Load(callData.GetParam(0));
+                m_Multiple = CodeStructure.Load(callData.GetParam(0));
                 m_HaveMultiple = true;
             }
         }
@@ -264,7 +264,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class PauseStoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int multiple = operands.Count > 0 ? operands[operands.Count - 1].GetInt() : 0;
             if (multiple == 0) {
@@ -286,7 +286,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class ResumeStoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             int multiple = operands.Count > 0 ? operands[operands.Count - 1].GetInt() : 0;
             if (multiple == 0) {
@@ -308,7 +308,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class SetParentCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -353,7 +353,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class SetActiveCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -384,7 +384,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal sealed class QuitCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             UnityEngine.Application.Quit();
             return BoxedValue.NullObject;
@@ -395,7 +395,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class FireMessageCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -421,7 +421,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class FireConcurrentMessageCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -448,21 +448,21 @@ namespace ScriptableFramework.Story.Commands
     internal class WaitAllMessageCommand : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            var inst = Calculator.GetFuncContext<StoryInstance>();
+            var inst = calculator.GetFuncContext<StoryInstance>();
             if (null == inst) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
             }
-            int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+            int timeout = m_HaveSet ? m_TimeoutVal.Calc(calculator).GetInt() : 0;
             long startTime = ScriptableFramework.TimeUtility.GetLocalMilliseconds();
             bool triggered = false;
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                long time = inst.GetMessageTriggerTime(m_MsgIds[i].Calc().GetString());
+                long time = inst.GetMessageTriggerTime(m_MsgIds[i].Calc(calculator).GetString());
                 if (time > startTime) {
                     triggered = true;
                     break;
@@ -470,8 +470,8 @@ namespace ScriptableFramework.Story.Commands
             }
             if (triggered) {
                 if (m_HaveSet) {
-                    string varName = m_SetVar.Calc().GetString();
-                    var varVal = m_SetVal.Calc();
+                    string varName = m_SetVar.Calc(calculator).GetString();
+                    var varVal = m_SetVal.Calc(calculator);
                     inst.SetVariable(varName, varVal);
                 }
                 result.Value = BoxedValue.NullObject;
@@ -481,7 +481,7 @@ namespace ScriptableFramework.Story.Commands
                 yield return null;
                 triggered = false;
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    long time = inst.GetMessageTriggerTime(m_MsgIds[i].Calc().GetString());
+                    long time = inst.GetMessageTriggerTime(m_MsgIds[i].Calc(calculator).GetString());
                     if (time > 0) {
                         triggered = true;
                         break;
@@ -489,8 +489,8 @@ namespace ScriptableFramework.Story.Commands
                 }
                 if (triggered) {
                     if (m_HaveSet) {
-                        string varName = m_SetVar.Calc().GetString();
-                        var varVal = m_SetVal.Calc();
+                        string varName = m_SetVar.Calc(calculator).GetString();
+                        var varVal = m_SetVal.Calc(calculator);
                         inst.SetVariable(varName, varVal);
                     }
                     break;
@@ -498,8 +498,8 @@ namespace ScriptableFramework.Story.Commands
                 int curTime = (int)(ScriptableFramework.TimeUtility.GetLocalMilliseconds() - startTime);
                 if (StoryConfigManager.Instance.IsStorySkipped || (timeout > 0 && curTime > timeout)) {
                     if (m_HaveSet) {
-                        string varName = m_TimeoutSetVar.Calc().GetString();
-                        var varVal = m_TimeoutSetVal.Calc();
+                        string varName = m_TimeoutSetVar.Calc(calculator).GetString();
+                        var varVal = m_TimeoutSetVal.Calc(calculator);
                         inst.SetVariable(varName, varVal);
                     }
                     break;
@@ -511,7 +511,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
             return true;
@@ -535,17 +535,17 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 2) {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
             }
         }
         private void LoadTimeoutSet(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
-                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
-                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
-                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
+                m_TimeoutVal = CodeStructure.Load(callData.GetParam(0));
+                m_TimeoutSetVar = CodeStructure.Load(callData.GetParam(1));
+                m_TimeoutSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
         private List<IExpression> m_MsgIds = new List<IExpression>();
@@ -562,26 +562,26 @@ namespace ScriptableFramework.Story.Commands
     internal class WaitAllMessageHandlerCommand : AbstractExpression
     {
         public override bool IsAsync { get { return true; } }
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            var inst = Calculator.GetFuncContext<StoryInstance>();
+            var inst = calculator.GetFuncContext<StoryInstance>();
             if (null == inst) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
             }
-            int timeout = m_HaveSet ? m_TimeoutVal.Calc().GetInt() : 0;
+            int timeout = m_HaveSet ? m_TimeoutVal.Calc(calculator).GetInt() : 0;
             long startTime = ScriptableFramework.TimeUtility.GetLocalMilliseconds();
             int ct = 0;
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                ct += GfxStorySystem.Instance.CountMessage(m_MsgIds[i].Calc().GetString());
+                ct += GfxStorySystem.Instance.CountMessage(m_MsgIds[i].Calc(calculator).GetString());
             }
             if (ct <= 0) {
                 if (m_HaveSet) {
-                    string varName = m_SetVar.Calc().GetString();
-                    var varVal = m_SetVal.Calc();
+                    string varName = m_SetVar.Calc(calculator).GetString();
+                    var varVal = m_SetVal.Calc(calculator);
                     inst.SetVariable(varName, varVal);
                 }
                 result.Value = BoxedValue.NullObject;
@@ -591,12 +591,12 @@ namespace ScriptableFramework.Story.Commands
                 yield return null;
                 ct = 0;
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    ct += GfxStorySystem.Instance.CountMessage(m_MsgIds[i].Calc().GetString());
+                    ct += GfxStorySystem.Instance.CountMessage(m_MsgIds[i].Calc(calculator).GetString());
                 }
                 if (ct <= 0) {
                     if (m_HaveSet) {
-                        string varName = m_SetVar.Calc().GetString();
-                        var varVal = m_SetVal.Calc();
+                        string varName = m_SetVar.Calc(calculator).GetString();
+                        var varVal = m_SetVal.Calc(calculator);
                         inst.SetVariable(varName, varVal);
                     }
                     break;
@@ -604,8 +604,8 @@ namespace ScriptableFramework.Story.Commands
                 int curTime = (int)(ScriptableFramework.TimeUtility.GetLocalMilliseconds() - startTime);
                 if (StoryConfigManager.Instance.IsStorySkipped || (timeout > 0 && curTime > timeout)) {
                     if (m_HaveSet) {
-                        string varName = m_TimeoutSetVar.Calc().GetString();
-                        var varVal = m_TimeoutSetVal.Calc();
+                        string varName = m_TimeoutSetVar.Calc(calculator).GetString();
+                        var varVal = m_TimeoutSetVal.Calc(calculator);
                         inst.SetVariable(varName, varVal);
                     }
                     break;
@@ -617,7 +617,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
             return true;
@@ -641,17 +641,17 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 2) {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
             }
         }
         private void LoadTimeoutSet(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
-                m_TimeoutVal = Calculator.Load(callData.GetParam(0));
-                m_TimeoutSetVar = Calculator.Load(callData.GetParam(1));
-                m_TimeoutSetVal = Calculator.Load(callData.GetParam(2));
+                m_TimeoutVal = CodeStructure.Load(callData.GetParam(0));
+                m_TimeoutSetVar = CodeStructure.Load(callData.GetParam(1));
+                m_TimeoutSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
         private List<IExpression> m_MsgIds = new List<IExpression>();
@@ -667,7 +667,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SuspendAllMessageHandlerCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             for (int i = 0; i < operands.Count; i++) {
                 GfxStorySystem.Instance.SuspendMessageHandler(operands[i].GetString(), true);
@@ -680,7 +680,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ResumeAllMessageHandlerCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             for (int i = 0; i < operands.Count; i++) {
                 GfxStorySystem.Instance.SuspendMessageHandler(operands[i].GetString(), false);
@@ -693,7 +693,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SendRoomStoryMessageCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -733,13 +733,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SendServerStoryMessageCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            string _msg = m_Msg.Calc().GetString();
+            string _msg = m_Msg.Calc(calculator).GetString();
             Msg_CLC_StoryMessage protoData = new Msg_CLC_StoryMessage();
             protoData.m_MsgId = _msg;
             for (int i = 0; i < m_Args.Count; ++i) {
-                object v = m_Args[i].Calc().GetObject();
+                object v = m_Args[i].Calc(calculator).GetObject();
                 if (null == v) {
                     Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
                     arg.val_type = LobbyArgType.NULL;
@@ -775,10 +775,10 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Msg = Calculator.Load(callData.GetParam(0));
+                m_Msg = CodeStructure.Load(callData.GetParam(0));
             }
             for (int i = 1; i < callData.GetParamNum(); ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
@@ -791,13 +791,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class PublishGfxEventCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            string evName = m_EventName.Calc().GetString();
-            string group = m_Group.Calc().GetString();
+            string evName = m_EventName.Calc(calculator).GetString();
+            string group = m_Group.Calc(calculator).GetString();
             List<object> arglist = new List<object>();
             for (int i = 0; i < m_Args.Count; ++i) {
-                arglist.Add(m_Args[i].Calc().GetObject());
+                arglist.Add(m_Args[i].Calc(calculator).GetObject());
             }
             Utility.EventSystem.Publish(evName, group, arglist.ToArray());
             return BoxedValue.NullObject;
@@ -806,11 +806,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_EventName = Calculator.Load(callData.GetParam(0));
-                m_Group = Calculator.Load(callData.GetParam(1));
+                m_EventName = CodeStructure.Load(callData.GetParam(0));
+                m_Group = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
@@ -836,13 +836,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SendGfxMessageCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            string objPath = m_ObjPath.Calc().GetString();
-            string funcName = m_FuncName.Calc().GetString();
+            string objPath = m_ObjPath.Calc(calculator).GetString();
+            string funcName = m_FuncName.Calc(calculator).GetString();
             object[] args = new object[m_Args.Count];
             for (int i = 0; i < m_Args.Count; ++i) {
-                args[i] = m_Args[i].Calc().GetObject();
+                args[i] = m_Args[i].Calc(calculator).GetObject();
             }
             Utility.SendMessage(objPath, funcName, args);
             return BoxedValue.NullObject;
@@ -851,11 +851,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjPath = Calculator.Load(callData.GetParam(0));
-                m_FuncName = Calculator.Load(callData.GetParam(1));
+                m_ObjPath = CodeStructure.Load(callData.GetParam(0));
+                m_FuncName = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
@@ -881,13 +881,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SendGfxMessageWithTagCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            string tag = m_Tag.Calc().GetString();
-            string funcName = m_FuncName.Calc().GetString();
+            string tag = m_Tag.Calc(calculator).GetString();
+            string funcName = m_FuncName.Calc(calculator).GetString();
             object[] args = new object[m_Args.Count];
             for (int i = 0; i < m_Args.Count; ++i) {
-                args[i] = m_Args[i].Calc().GetObject();
+                args[i] = m_Args[i].Calc(calculator).GetObject();
             }
             Utility.SendMessageWithTag(tag, funcName, args);
             return BoxedValue.NullObject;
@@ -896,11 +896,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_Tag = Calculator.Load(callData.GetParam(0));
-                m_FuncName = Calculator.Load(callData.GetParam(1));
+                m_Tag = CodeStructure.Load(callData.GetParam(0));
+                m_FuncName = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
@@ -926,7 +926,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SendGfxMessageWithGameObjectCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -961,7 +961,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SendSkillMessageCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 4)
                 return BoxedValue.NullObject;
@@ -989,15 +989,15 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CreateGameObjectCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            string name = m_Name.Calc().GetString();
-            string prefab = m_Prefab.Calc().GetString();
+            string name = m_Name.Calc(calculator).GetString();
+            string prefab = m_Prefab.Calc(calculator).GetString();
             UnityEngine.GameObject obj = ResourceSystem.Instance.NewObject(prefab) as UnityEngine.GameObject;
             if (null != obj) {
                 obj.name = name;
                 if (m_HaveParent) {
-                    object parent = m_Parent.Calc().GetObject();
+                    object parent = m_Parent.Calc(calculator).GetObject();
                     string path = parent as string;
                     if (null != path) {
                         var pobj = UnityEngine.GameObject.Find(path);
@@ -1012,29 +1012,29 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HavePosition) {
-                    var vObj = m_Position.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Position.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         obj.transform.localPosition = new UnityEngine.Vector3(v.X, v.Y, v.Z);
                     }
                 }
                 if (m_HaveRotation) {
-                    var vObj = m_Rotation.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Rotation.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         obj.transform.localEulerAngles = new UnityEngine.Vector3(v.X, v.Y, v.Z);
                     }
                 }
                 if (m_HaveScale) {
-                    var vObj = m_Scale.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Scale.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         obj.transform.localScale = new UnityEngine.Vector3(v.X, v.Y, v.Z);
                     }
                 }
                 if (m_HaveObj) {
-                    string varName = m_ObjVarName.Calc().GetString();
-                    var inst = Calculator.GetFuncContext<StoryInstance>();
+                    string varName = m_ObjVarName.Calc(calculator).GetString();
+                    var inst = calculator.GetFuncContext<StoryInstance>();
                     if (null != inst) {
                         inst.SetVariable(varName, BoxedValue.FromObject(obj));
                     }
@@ -1089,18 +1089,18 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_Name = Calculator.Load(callData.GetParam(0));
-                m_Prefab = Calculator.Load(callData.GetParam(1));
+                m_Name = CodeStructure.Load(callData.GetParam(0));
+                m_Prefab = CodeStructure.Load(callData.GetParam(1));
                 if (num > 2) {
                     m_HaveParent = true;
-                    m_Parent = Calculator.Load(callData.GetParam(2));
+                    m_Parent = CodeStructure.Load(callData.GetParam(2));
                 }
             }
         }
         private void LoadVarName(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "obj" && callData.GetParamNum() == 1) {
-                m_ObjVarName = Calculator.Load(callData.GetParam(0));
+                m_ObjVarName = CodeStructure.Load(callData.GetParam(0));
                 m_HaveObj = true;
             }
         }
@@ -1110,23 +1110,23 @@ namespace ScriptableFramework.Story.Commands
             int num = callData.GetParamNum();
             if (id == "position") {
                 if (num == 3)
-                    m_Position = Calculator.Load(callData);
+                    m_Position = CodeStructure.Load(callData);
                 else
-                    m_Position = Calculator.Load(callData.GetParam(0));
+                    m_Position = CodeStructure.Load(callData.GetParam(0));
                 m_HavePosition = true;
             }
             else if (id == "rotation") {
                 if (num == 3)
-                    m_Rotation = Calculator.Load(callData);
+                    m_Rotation = CodeStructure.Load(callData);
                 else
-                    m_Rotation = Calculator.Load(callData.GetParam(0));
+                    m_Rotation = CodeStructure.Load(callData.GetParam(0));
                 m_HaveRotation = true;
             }
             else if (id == "scale") {
                 if (num == 3)
-                    m_Scale = Calculator.Load(callData);
+                    m_Scale = CodeStructure.Load(callData);
                 else
-                    m_Scale = Calculator.Load(callData.GetParam(0));
+                    m_Scale = CodeStructure.Load(callData.GetParam(0));
                 m_HaveScale = true;
             }
         }
@@ -1149,10 +1149,10 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetTransformCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            object objVal = m_ObjPath.Calc().GetObject();
-            int localOrWorld = m_LocalOrWorld.Calc().GetInt();
+            object objVal = m_ObjPath.Calc(calculator).GetObject();
+            int localOrWorld = m_LocalOrWorld.Calc(calculator).GetInt();
             string objPath = objVal as string;
             UnityEngine.GameObject obj = null;
             if (null != objPath) {
@@ -1170,7 +1170,7 @@ namespace ScriptableFramework.Story.Commands
             }
             if (null != obj) {
                 if (m_HavePosition) {
-                    var vObj = m_Position.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Position.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         if (0 == localOrWorld)
@@ -1180,7 +1180,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveRotation) {
-                    var vObj = m_Rotation.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Rotation.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         if (0 == localOrWorld)
@@ -1190,7 +1190,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveScale) {
-                    var vObj = m_Scale.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Scale.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         obj.transform.localScale = new UnityEngine.Vector3(v.X, v.Y, v.Z);
@@ -1221,8 +1221,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjPath = Calculator.Load(callData.GetParam(0));
-                m_LocalOrWorld = Calculator.Load(callData.GetParam(1));
+                m_ObjPath = CodeStructure.Load(callData.GetParam(0));
+                m_LocalOrWorld = CodeStructure.Load(callData.GetParam(1));
             }
         }
         private void LoadOptional(Dsl.FunctionData callData)
@@ -1231,21 +1231,21 @@ namespace ScriptableFramework.Story.Commands
             int num = callData.GetParamNum();
             if (id == "position") {
                 if (num == 3)
-                    m_Position = Calculator.Load(callData);
+                    m_Position = CodeStructure.Load(callData);
                 else
-                    m_Position = Calculator.Load(callData.GetParam(0));
+                    m_Position = CodeStructure.Load(callData.GetParam(0));
                 m_HavePosition = true;
             } else if (id == "rotation") {
                 if (num == 3)
-                    m_Rotation = Calculator.Load(callData);
+                    m_Rotation = CodeStructure.Load(callData);
                 else
-                    m_Rotation = Calculator.Load(callData.GetParam(0));
+                    m_Rotation = CodeStructure.Load(callData.GetParam(0));
                 m_HaveRotation = true;
             } else if (id == "scale") {
                 if (num == 3)
-                    m_Scale = Calculator.Load(callData);
+                    m_Scale = CodeStructure.Load(callData);
                 else
-                    m_Scale = Calculator.Load(callData.GetParam(0));
+                    m_Scale = CodeStructure.Load(callData.GetParam(0));
                 m_HaveScale = true;
             }
         }
@@ -1264,10 +1264,10 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class AddTransformCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            object objVal = m_ObjPath.Calc().GetObject();
-            int localOrWorld = m_LocalOrWorld.Calc().GetInt();
+            object objVal = m_ObjPath.Calc(calculator).GetObject();
+            int localOrWorld = m_LocalOrWorld.Calc(calculator).GetInt();
             string objPath = objVal as string;
             UnityEngine.GameObject obj = null;
             if (null != objPath) {
@@ -1285,7 +1285,7 @@ namespace ScriptableFramework.Story.Commands
             }
             if (null != obj) {
                 if (m_HavePosition) {
-                    var vObj = m_Position.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Position.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         if (0 == localOrWorld)
@@ -1295,7 +1295,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveRotation) {
-                    var vObj = m_Rotation.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Rotation.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         if (0 == localOrWorld)
@@ -1305,7 +1305,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveScale) {
-                    var vObj = m_Scale.Calc().GetObject() as Vector3Obj;
+                    var vObj = m_Scale.Calc(calculator).GetObject() as Vector3Obj;
                     if (null != vObj) {
                         var v = vObj.Value;
                         obj.transform.localScale += new UnityEngine.Vector3(v.X, v.Y, v.Z);
@@ -1336,8 +1336,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjPath = Calculator.Load(callData.GetParam(0));
-                m_LocalOrWorld = Calculator.Load(callData.GetParam(1));
+                m_ObjPath = CodeStructure.Load(callData.GetParam(0));
+                m_LocalOrWorld = CodeStructure.Load(callData.GetParam(1));
             }
         }
         private void LoadOptional(Dsl.FunctionData callData)
@@ -1346,23 +1346,23 @@ namespace ScriptableFramework.Story.Commands
             int num = callData.GetParamNum();
             if (id == "position") {
                 if (num == 3)
-                    m_Position = Calculator.Load(callData);
+                    m_Position = CodeStructure.Load(callData);
                 else
-                    m_Position = Calculator.Load(callData.GetParam(0));
+                    m_Position = CodeStructure.Load(callData.GetParam(0));
                 m_HavePosition = true;
             }
             else if (id == "rotation") {
                 if (num == 3)
-                    m_Rotation = Calculator.Load(callData);
+                    m_Rotation = CodeStructure.Load(callData);
                 else
-                    m_Rotation = Calculator.Load(callData.GetParam(0));
+                    m_Rotation = CodeStructure.Load(callData.GetParam(0));
                 m_HaveRotation = true;
             }
             else if (id == "scale") {
                 if (num == 3)
-                    m_Scale = Calculator.Load(callData);
+                    m_Scale = CodeStructure.Load(callData);
                 else
-                    m_Scale = Calculator.Load(callData.GetParam(0));
+                    m_Scale = CodeStructure.Load(callData.GetParam(0));
                 m_HaveScale = true;
             }
         }
@@ -1381,7 +1381,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class DestroyGameObjectCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1413,7 +1413,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetVisibleCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -1444,7 +1444,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class PutOnGroundCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1476,7 +1476,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetNavMeshAgentEnabledCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -1510,11 +1510,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class AddComponentCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
-            var objVal = m_ObjPath.Calc();
-            string componentType = m_ComponentType.Calc().GetString();
+            var instance = calculator.GetFuncContext<StoryInstance>();
+            var objVal = m_ObjPath.Calc(calculator);
+            string componentType = m_ComponentType.Calc(calculator).GetString();
             UnityEngine.GameObject obj = objVal.IsObject ? objVal.ObjectVal as UnityEngine.GameObject : null;
             if (null == obj) {
                 string objPath = objVal.IsString ? objVal.StringVal : null;
@@ -1534,7 +1534,7 @@ namespace ScriptableFramework.Story.Commands
                 var type = System.Type.GetType(componentType);
                 var comp = null != type ? obj.AddComponent(type) : null;
                 if (m_HaveObj && null != instance && null != comp) {
-                    string varName = m_ObjVarName.Calc().GetString();
+                    string varName = m_ObjVarName.Calc(calculator).GetString();
                     instance.SetVariable(varName, BoxedValue.FromObject(comp));
                 }
             }
@@ -1544,8 +1544,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjPath = Calculator.Load(callData.GetParam(0));
-                m_ComponentType = Calculator.Load(callData.GetParam(1));
+                m_ObjPath = CodeStructure.Load(callData.GetParam(0));
+                m_ComponentType = CodeStructure.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -1564,7 +1564,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadVarName(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "obj" && callData.GetParamNum() == 1) {
-                m_ObjVarName = Calculator.Load(callData.GetParam(0));
+                m_ObjVarName = CodeStructure.Load(callData.GetParam(0));
                 m_HaveObj = true;
             }
         }
@@ -1578,7 +1578,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class RemoveComponentCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -1615,7 +1615,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class InstallPluginCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             string objPath = operands[0].AsString;
             string pluginClass = operands[1].AsString;
@@ -1641,7 +1641,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class RemovePluginCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             string objPath = operands[0].AsString;
             string pluginClass = operands[1].AsString;
@@ -1667,7 +1667,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class OpenUrlCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1681,7 +1681,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ChangeSceneCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1695,7 +1695,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class OpenBattleCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1709,7 +1709,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CloseBattleCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1723,7 +1723,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CreateSceneLogicCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
                 return BoxedValue.NullObject;
@@ -1746,7 +1746,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class DestroySceneLogicCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1760,7 +1760,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class PauseSceneLogicCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -1780,7 +1780,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class RestartTimeoutCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1808,7 +1808,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class HighlightPromptWithDictCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1826,7 +1826,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class HighlightPromptCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;
@@ -1840,7 +1840,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetActorScaleCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -1877,7 +1877,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class GameObjectAnimationCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -1921,9 +1921,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class GameObjectAnimationParamCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var objVal = m_ObjPath.Calc();
+            var objVal = m_ObjPath.Calc(calculator);
             UnityEngine.GameObject obj = objVal.IsObject ? objVal.ObjectVal as UnityEngine.GameObject : null;
             if (null == obj) {
                 string objPath = objVal.IsString ? objVal.StringVal : null;
@@ -1944,8 +1944,8 @@ namespace ScriptableFramework.Story.Commands
                     for (int i = 0; i < m_Params.Count; ++i) {
                         var param = m_Params[i];
                         string type = param.Type;
-                        string key = param.Key.Calc().GetString();
-                        var val = param.Value.Calc();
+                        string key = param.Key.Calc(calculator).GetString();
+                        var val = param.Value.Calc(calculator);
                         if (type == "int") {
                             int v = val.GetInt();
                             animator.SetInteger(key, v);
@@ -1981,7 +1981,7 @@ namespace ScriptableFramework.Story.Commands
                     Dsl.FunctionData stCall = statement as Dsl.FunctionData;
                     if (null != stCall && stCall.GetParamNum() >= 2) {
                         string id = stCall.GetId();
-                        ParamInfo param = new ParamInfo(Calculator, id, stCall.GetParam(0), stCall.GetParam(1));
+                        ParamInfo param = new ParamInfo(CodeStructure, id, stCall.GetParam(0), stCall.GetParam(1));
                         m_Params.Add(param);
                     }
                 }
@@ -2004,7 +2004,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
-                m_ObjPath = Calculator.Load(callData.GetParam(0));
+                m_ObjPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
         private void LoadParam(Dsl.FunctionData callData)
@@ -2020,7 +2020,7 @@ namespace ScriptableFramework.Story.Commands
                     Dsl.FunctionData stCall = statement as Dsl.FunctionData;
                     if (null != stCall && stCall.GetParamNum() >= 2) {
                         string id = stCall.GetId();
-                        ParamInfo param = new ParamInfo(Calculator, id, stCall.GetParam(0), stCall.GetParam(1));
+                        ParamInfo param = new ParamInfo(CodeStructure, id, stCall.GetParam(0), stCall.GetParam(1));
                         m_Params.Add(param);
                     }
                 }
@@ -2031,7 +2031,7 @@ namespace ScriptableFramework.Story.Commands
             internal string Type;
             internal IExpression Key;
             internal IExpression Value;
-            internal ParamInfo(DslCalculator calc, string type, Dsl.ISyntaxComponent keyDsl, Dsl.ISyntaxComponent valDsl)
+            internal ParamInfo(DslCalculatorCodeStructure calc, string type, Dsl.ISyntaxComponent keyDsl, Dsl.ISyntaxComponent valDsl)
             {
                 Type = type;
                 Key = calc.Load(keyDsl);
@@ -2046,7 +2046,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class GameObjectCastSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -2084,7 +2084,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class GameObjectStopSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 return BoxedValue.NullObject;

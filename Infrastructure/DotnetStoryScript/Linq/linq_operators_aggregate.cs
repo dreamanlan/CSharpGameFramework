@@ -28,12 +28,12 @@ namespace DotnetStoryScript.DslExpression
             BoxedValue prevAcc = calcContext.GetVariable("$$acc");
             try {
                 if (exprs.Count >= 2) {
-                    acc = Enumerable.First(exprs).Calc();
+                    acc = Enumerable.First(exprs).Calc(calcContext);
                     var folder = Enumerable.Last(exprs);
                     while (src.MoveNext()) {
                         calcContext.SetVariable("$$acc", acc);
                         calcContext.SetVariable("$$", src.Current);
-                        acc = folder.Calc();
+                        acc = folder.Calc(calcContext);
                     }
                 }
                 else if (exprs.Count == 1) {
@@ -45,7 +45,7 @@ namespace DotnetStoryScript.DslExpression
                     while (src.MoveNext()) {
                         calcContext.SetVariable("$$acc", acc);
                         calcContext.SetVariable("$$", src.Current);
-                        acc = folder.Calc();
+                        acc = folder.Calc(calcContext);
                     }
                 }
                 return acc;
@@ -65,7 +65,7 @@ namespace DotnetStoryScript.DslExpression
                 if (exprs.Count >= 2) {
                     var seedExpr = Enumerable.First(exprs);
                     if (seedExpr.IsAsync) {
-                        var _ei = seedExpr.Calc(result);
+                        var _ei = seedExpr.Calc(calcContext, result);
                         try {
                             while (_ei.MoveNext()) {
                                 yield return _ei.Current;
@@ -77,7 +77,7 @@ namespace DotnetStoryScript.DslExpression
                         acc = result.Value;
                     }
                     else {
-                        acc = seedExpr.Calc();
+                        acc = seedExpr.Calc(calcContext);
                     }
 
                     var folder = Enumerable.Last(exprs);
@@ -99,7 +99,7 @@ namespace DotnetStoryScript.DslExpression
                         calcContext.SetVariable("$$", src.Current);
 
                         if (folder.IsAsync) {
-                            var _eiCalc = folder.Calc(result);
+                            var _eiCalc = folder.Calc(calcContext, result);
                             try {
                                 while (_eiCalc.MoveNext()) {
                                     yield return _eiCalc.Current;
@@ -111,7 +111,7 @@ namespace DotnetStoryScript.DslExpression
                             acc = result.Value;
                         }
                         else {
-                            acc = folder.Calc();
+                            acc = folder.Calc(calcContext);
                         }
                     }
                 }
@@ -150,7 +150,7 @@ namespace DotnetStoryScript.DslExpression
                         calcContext.SetVariable("$$", src.Current);
 
                         if (folder.IsAsync) {
-                            var _eiCalc = folder.Calc(result);
+                            var _eiCalc = folder.Calc(calcContext, result);
                             try {
                                 while (_eiCalc.MoveNext()) {
                                     yield return _eiCalc.Current;
@@ -162,7 +162,7 @@ namespace DotnetStoryScript.DslExpression
                             acc = result.Value;
                         }
                         else {
-                            acc = folder.Calc();
+                            acc = folder.Calc(calcContext);
                         }
                     }
                 }

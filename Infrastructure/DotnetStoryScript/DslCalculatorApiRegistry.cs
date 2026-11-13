@@ -19,7 +19,7 @@ namespace DotnetStoryScript.DslExpression
 {
     internal sealed class SubstringExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1 || operands.Count > 3)
                 throw new Exception("Expected: substring(str[,start,len]) function");
@@ -56,7 +56,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class NewStringBuilderExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: newstringbuilder() api");
@@ -69,7 +69,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AppendFormatExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: appendformat(sb,fmt,arg1,arg2,...) api");
@@ -94,7 +94,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class AppendFormatLineExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: appendformatline(sb,fmt,arg1,arg2,...) api");
@@ -125,7 +125,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringBuilderToStringExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stringbuilder_tostring(sb)");
@@ -141,7 +141,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringJoinExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: stringjoin(sep,list) api");
@@ -171,7 +171,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringSplitExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: stringsplit(str,sep_list) api");
@@ -217,7 +217,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringTrimExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stringtrim(str) api");
@@ -233,7 +233,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringTrimStartExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stringtrimstart(str) api");
@@ -249,7 +249,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringTrimEndExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stringtrimend(str) api");
@@ -265,7 +265,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringToLowerExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stringtolower(str) api");
@@ -281,7 +281,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringToUpperExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stringtoupper(str) api");
@@ -297,7 +297,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringReplaceExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
                 throw new Exception("Expected: stringreplace(str,key,rep_str) api");
@@ -313,7 +313,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringReplaceCharExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
                 throw new Exception("Expected: stringreplacechar(str,key,char_as_str) api");
@@ -331,7 +331,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class MakeStringExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             List<char> chars = new List<char>();
             for (int i = 0; i < operands.Count; ++i) {
@@ -354,7 +354,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringContainsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: stringcontains(str,str_or_list_1,str_or_list_2,...) api");
@@ -387,7 +387,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringNotContainsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: stringnotcontains(str,str_or_list_1,str_or_list_2,...) api");
@@ -420,7 +420,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringContainsAnyExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: stringcontainsany(str,str_or_list_1,str_or_list_2,...) api");
@@ -463,7 +463,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StringNotContainsAnyExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: stringnotcontainsany(str,str_or_list_1,str_or_list_2,...) api");
@@ -506,7 +506,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Str2IntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: str2int(str) api");
@@ -525,7 +525,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Str2UintExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: str2uint(str) api");
@@ -544,7 +544,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Str2LongExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: str2long(str) api");
@@ -563,7 +563,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Str2UlongExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: str2ulong(str) api");
@@ -582,7 +582,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Str2FloatExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: str2float(str) api");
@@ -601,7 +601,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Str2DoubleExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: str2double(str) api");
@@ -620,7 +620,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Hex2IntExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hex2int(str) api");
@@ -639,7 +639,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Hex2UintExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hex2uint(str) api");
@@ -658,7 +658,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Hex2LongExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hex2long(str) api");
@@ -677,7 +677,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class Hex2UlongExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hex2ulong(str) api");
@@ -696,7 +696,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DatetimeStrExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: datetimestr([fmt]) api");
@@ -715,7 +715,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LongDateStrExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: longdatestr() api");
@@ -725,7 +725,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class LongTimeStrExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: longtimestr() api");
@@ -735,7 +735,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ShortDateStrExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: shortdatestr() api");
@@ -745,7 +745,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ShortTimeStrExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: shorttimestr() api");
@@ -755,7 +755,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class NowExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: now() api");
@@ -765,7 +765,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ParseDateTimeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: parsedatetime(str) api");
@@ -776,7 +776,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FormatDateTimeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: formatdatetime(str,datetime) api");
@@ -788,7 +788,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsNullOrEmptyExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: isnullorempty(str) api");
@@ -802,7 +802,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ArrayExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue[] r = new BoxedValue[operands.Count];
             for (int i = 0; i < operands.Count; ++i) {
@@ -813,7 +813,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ToArrayExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: toarray(list) api");
@@ -841,7 +841,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListSizeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: listsize(list) api");
@@ -857,7 +857,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue r = BoxedValue.NullObject;
             List<BoxedValue> al = new List<BoxedValue>();
@@ -870,7 +870,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListGetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
                 throw new Exception("Expected: listget(list,index[,defval]) api");
@@ -896,7 +896,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListSetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
                 throw new Exception("Expected: listset(list,index,val) api");
@@ -921,7 +921,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListIndexOfExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: listindexof(list,val) api");
@@ -941,7 +941,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListAddExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: listadd(list,val) api");
@@ -961,7 +961,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListRemoveExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: listremove(list,val) api");
@@ -981,7 +981,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListInsertExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
                 throw new Exception("Expected: listinsert(list,index,val) api");
@@ -1002,7 +1002,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListRemoveAtExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: listremoveat(list,index) api");
@@ -1019,7 +1019,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListClearExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: listclear(list) api");
@@ -1035,7 +1035,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListSplitExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: listsplit(list,ct) api, return list of list");
@@ -1103,7 +1103,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableSizeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hashtablesize(hash) api");
@@ -1119,13 +1119,13 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             BoxedValue r = BoxedValue.NullObject;
             var dict = new Dictionary<BoxedValue, BoxedValue>();
             for (int i = 0; i < m_Expressions.Count - 1; i += 2) {
-                var key = m_Expressions[i].Calc();
-                var val = m_Expressions[i + 1].Calc();
+                var key = m_Expressions[i].Calc(calculator);
+                var val = m_Expressions[i + 1].Calc(calculator);
                 dict.Add(key, val);
             }
             r = BoxedValue.FromObject(dict);
@@ -1147,9 +1147,9 @@ namespace DotnetStoryScript.DslExpression
                             vd0.SetType(Dsl.ValueData.STRING_TOKEN);
                         }
                     }
-                    var expKey = Calculator.Load(p0);
+                    var expKey = CodeStructure.Load(p0);
                     m_Expressions.Add(expKey);
-                    var expVal = Calculator.Load(p1);
+                    var expVal = CodeStructure.Load(p1);
                     m_Expressions.Add(expVal);
                 }
             }
@@ -1160,7 +1160,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableGetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
                 throw new Exception("Expected: hashtableget(hash,key[,defval]) api");
@@ -1190,7 +1190,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableSetExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
                 throw new Exception("Expected: hashtableset(hash,key,val) api");
@@ -1215,7 +1215,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableAddExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
                 throw new Exception("Expected: hashtableadd(hash,key,val) api");
@@ -1240,7 +1240,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableRemoveExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: hashtableremove(hash,key) api");
@@ -1263,7 +1263,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableClearExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hashtableclear(hash) api");
@@ -1279,7 +1279,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableKeysExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hashtablekeys(hash) api");
@@ -1306,7 +1306,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableValuesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hashtablevalues(hash) api");
@@ -1333,7 +1333,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListHashtableExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: listhashtable(hash) api, return list of pair");
@@ -1353,7 +1353,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HashtableSplitExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: hashtablesplit(hash,ct) api, return list of hashtable");
@@ -1422,7 +1422,7 @@ namespace DotnetStoryScript.DslExpression
     //The stack and queue share the same peek function.
     internal sealed class PeekExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: peek(queue_or_stack) api");
@@ -1442,7 +1442,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StackSizeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stacksize(stack) api");
@@ -1458,7 +1458,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StackExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue r = BoxedValue.NullObject;
             var stack = new Stack<BoxedValue>();
@@ -1471,7 +1471,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class PushExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: push(stack,v) api");
@@ -1488,7 +1488,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class PopExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: pop(stack) api");
@@ -1504,7 +1504,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class StackClearExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: stackclear(stack) api");
@@ -1520,7 +1520,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class QueueSizeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: queuesize(queue) api");
@@ -1536,7 +1536,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class QueueExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue r = BoxedValue.NullObject;
             var queue = new Queue<BoxedValue>();
@@ -1549,7 +1549,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class EnqueueExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: enqueue(queue,v) api");
@@ -1566,7 +1566,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DequeueExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: dequeue(queue) api");
@@ -1582,7 +1582,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class QueueClearExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: queueclear(queue) api");
@@ -1598,7 +1598,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SetEnvironmentExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: setenv(k,v) api");
@@ -1614,7 +1614,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetEnvironmentExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getenv(k) api");
@@ -1628,7 +1628,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ExpandEnvironmentsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: expand(str) api");
@@ -1642,7 +1642,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class EnvironmentsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: envs() api");
@@ -1651,7 +1651,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SetCurrentDirectoryExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: cd(path) api");
@@ -1672,7 +1672,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetCurrentDirectoryExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: pwd() api");
@@ -1681,7 +1681,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CommandLineExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: cmdline() api");
@@ -1690,7 +1690,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CommandLineArgsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: cmdlineargs(prev_arg) or cmdlineargs() api, first return next arg, second return array of arg");
@@ -1712,7 +1712,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class OsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: os() api");
@@ -1721,7 +1721,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class OsPlatformExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: osplatform() api");
@@ -1730,7 +1730,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class OsVersionExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: osversion() api");
@@ -1739,7 +1739,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetFullPathExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getfullpath(path) api");
@@ -1756,7 +1756,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetPathRootExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getpathroot(path) api");
@@ -1773,7 +1773,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetRandomFileNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: getrandomfilename() api");
@@ -1782,7 +1782,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTempFileNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: gettempfilename() api");
@@ -1791,7 +1791,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTempPathExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: gettemppath() api");
@@ -1800,7 +1800,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class HasExtensionExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: hasextension(path) api");
@@ -1817,7 +1817,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class IsPathRootedExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: ispathrooted(path) api");
@@ -1834,7 +1834,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetFileNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getfilename(path) api");
@@ -1851,7 +1851,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetFileNameWithoutExtensionExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getfilenamewithoutextension(path) api");
@@ -1868,7 +1868,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetExtensionExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getextension(path) api");
@@ -1885,7 +1885,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetDirectoryNameExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getdirectoryname(path) api");
@@ -1902,7 +1902,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CombinePathExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: combinepath(path1,path2,...) api");
@@ -1926,7 +1926,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ChangeExtensionExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: changeextension(path,ext) api");
@@ -1944,7 +1944,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class QuotePathExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1 || operands.Count > 3)
                 throw new Exception("Expected: quotepath(path[,only_needed,single_quote]) api");
@@ -2009,7 +2009,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class EchoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
@@ -2039,7 +2039,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FileEchoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: fileecho(bool) or fileecho() api");
@@ -2051,7 +2051,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DirectoryExistsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: direxists(dir) api");
@@ -2066,7 +2066,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class FileExistsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: fileexists(file) api");
@@ -2081,7 +2081,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class PathExistsExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: pathexists(dir) api");
@@ -2096,7 +2096,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListDirectoriesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: listdirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
@@ -2139,7 +2139,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListFilesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: listfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
@@ -2182,7 +2182,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListAllDirectoriesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: listalldirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
@@ -2225,7 +2225,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListAllFilesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: listallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
@@ -2268,7 +2268,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CreateDirectoryExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: createdir(dir) api");
@@ -2290,7 +2290,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CopyDirectoryExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: copydir(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
@@ -2370,7 +2370,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class MoveDirectoryExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: movedir(dir1,dir2) api");
@@ -2397,7 +2397,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DeleteDirectoryExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: deletedir(dir) api");
@@ -2419,7 +2419,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CopyFileExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: copyfile(file1,file2) api");
@@ -2447,7 +2447,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CopyFilesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 throw new Exception("Expected: copyfiles(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
@@ -2512,7 +2512,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class MoveFileExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
                 throw new Exception("Expected: movefile(file1,file2) api");
@@ -2543,7 +2543,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DeleteFileExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: deletefile(file) api");
@@ -2565,7 +2565,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DeleteFilesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: deletefiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
@@ -2611,7 +2611,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class DeleteAllFilesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
                 throw new Exception("Expected: deleteallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
@@ -2657,7 +2657,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetFileInfoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getfileinfo(file) api");
@@ -2674,7 +2674,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetDirectoryInfoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getdirinfo(dir) api");
@@ -2691,7 +2691,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetDriveInfoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: getdriveinfo(drive) api");
@@ -2705,7 +2705,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetDrivesInfoExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: getdrivesinfo() api");
@@ -2715,7 +2715,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ReadAllLinesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1 || operands.Count > 2)
                 throw new Exception("Expected: readalllines(file[,encoding]) api");
@@ -2736,7 +2736,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class WriteAllLinesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
                 throw new Exception("Expected: writealllines(file,lines[,encoding]) api");
@@ -2763,7 +2763,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ReadAllTextExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1 || operands.Count > 2)
                 throw new Exception("Expected: readalltext(file[,encoding]) api");
@@ -2784,7 +2784,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class WriteAllTextExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
                 throw new Exception("Expected: writealltext(file,txt[,encoding]) api");
@@ -2807,7 +2807,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CommandExp : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             int exitCode = 0;
             MemoryStream ims = null, oms = null;
@@ -2823,10 +2823,10 @@ namespace DotnetStoryScript.DslExpression
                     }
                     var cfg = m_CommandConfigs[i];
                     if (cfg.m_Commands.Count > 0) {
-                        exitCode = ExecCommand(cfg, ims, oms);
+                        exitCode = ExecCommand(calculator, cfg, ims, oms);
                     }
                     else {
-                        exitCode = ExecProcess(cfg, ims, oms);
+                        exitCode = ExecProcess(calculator, cfg, ims, oms);
                     }
                 }
                 finally {
@@ -2867,8 +2867,8 @@ namespace DotnetStoryScript.DslExpression
                         }
                         else if (num >= 2) {
                             string type = cd.GetId();
-                            var exp = Calculator.Load(cd.GetParam(0));
-                            var opt = Calculator.Load(cd.GetParam(1));
+                            var exp = CodeStructure.Load(cd.GetParam(0));
+                            var opt = CodeStructure.Load(cd.GetParam(1));
                             if (type == "output") {
                                 cmd.m_Output = exp;
                                 cmd.m_OutputOptArg = opt;
@@ -2878,12 +2878,12 @@ namespace DotnetStoryScript.DslExpression
                                 cmd.m_ErrorOptArg = opt;
                             }
                             else {
-                                Calculator.Log("[syntax error] {0} line:{1}", cd.ToScriptString(false, Dsl.DelimiterInfo.Default), cd.GetLine());
+                                CodeStructure.Log("[syntax error] {0} line:{1}", cd.ToScriptString(false, Dsl.DelimiterInfo.Default), cd.GetLine());
                             }
                         }
                         else if (num >= 1) {
                             string type = cd.GetId();
-                            var exp = Calculator.Load(cd.GetParam(0));
+                            var exp = CodeStructure.Load(cd.GetParam(0));
                             if (type == "input") {
                                 cmd.m_Input = exp;
                             }
@@ -2939,15 +2939,15 @@ namespace DotnetStoryScript.DslExpression
                                 cmd.m_Encoding = exp;
                             }
                             else {
-                                Calculator.Log("[syntax error] {0} line:{1}", cd.ToScriptString(false, Dsl.DelimiterInfo.Default), cd.GetLine());
+                                CodeStructure.Log("[syntax error] {0} line:{1}", cd.ToScriptString(false, Dsl.DelimiterInfo.Default), cd.GetLine());
                             }
                         }
                         else {
-                            Calculator.Log("[syntax error] {0} line:{1}", cd.ToScriptString(false, Dsl.DelimiterInfo.Default), cd.GetLine());
+                            CodeStructure.Log("[syntax error] {0} line:{1}", cd.ToScriptString(false, Dsl.DelimiterInfo.Default), cd.GetLine());
                         }
                     }
                     else {
-                        Calculator.Log("[syntax error] {0} line:{1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
+                        CodeStructure.Log("[syntax error] {0} line:{1}", comp.ToScriptString(false, Dsl.DelimiterInfo.Default), comp.GetLine());
                     }
                 }
             }
@@ -2979,88 +2979,88 @@ namespace DotnetStoryScript.DslExpression
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     var param0 = callData.GetParam(0);
-                    var exp0 = Calculator.Load(param0);
+                    var exp0 = CodeStructure.Load(param0);
                     cmd.m_FileName = exp0;
 
                     if (num > 1) {
                         var param1 = callData.GetParam(1);
-                        var exp1 = Calculator.Load(param1);
+                        var exp1 = CodeStructure.Load(param1);
                         cmd.m_Argments = exp1;
                     }
                 }
                 else {
-                    Calculator.Log("[syntax error] {0} line:{1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
+                    CodeStructure.Log("[syntax error] {0} line:{1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
                 }
             }
             else if (id == "command") {
                 int num = callData.GetParamNum();
                 if (num > 0) {
-                    Calculator.Log("[syntax error] {0} line:{1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
+                    CodeStructure.Log("[syntax error] {0} line:{1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
                 }
             }
             else {
-                Calculator.Log("[syntax error] {0} line:{1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
+                CodeStructure.Log("[syntax error] {0} line:{1}", callData.ToScriptString(false, Dsl.DelimiterInfo.Default), callData.GetLine());
             }
             return true;
         }
-        private int ExecProcess(CommandConfig cfg, Stream istream, Stream ostream)
+        private int ExecProcess(DslCalculator calculator, CommandConfig cfg, Stream istream, Stream ostream)
         {
             string fileName = string.Empty;
             if (null != cfg.m_FileName) {
-                fileName = cfg.m_FileName.Calc().AsString;
+                fileName = cfg.m_FileName.Calc(calculator).AsString;
             }
             string args = string.Empty;
             if (null != cfg.m_Argments) {
-                args = cfg.m_Argments.Calc().AsString;
+                args = cfg.m_Argments.Calc(calculator).AsString;
             }
             bool noWait = false;
             if (null != cfg.m_NoWait) {
-                noWait = cfg.m_NoWait.Calc().GetBool();
+                noWait = cfg.m_NoWait.Calc(calculator).GetBool();
             }
             DslCalculator.ProcessStartOption option = new DslCalculator.ProcessStartOption();
             if (null != cfg.m_Timeout) {
-                option.TimeoutMs = cfg.m_Timeout.Calc().GetInt();
+                option.TimeoutMs = cfg.m_Timeout.Calc(calculator).GetInt();
             }
             if (null != cfg.m_UseShellExecute) {
-                option.UseShellExecute = cfg.m_UseShellExecute.Calc().GetBool();
+                option.UseShellExecute = cfg.m_UseShellExecute.Calc(calculator).GetBool();
             }
             if (null != cfg.m_Verb) {
-                option.Verb = cfg.m_Verb.Calc().AsString;
+                option.Verb = cfg.m_Verb.Calc(calculator).AsString;
             }
             if (null != cfg.m_Domain) {
-                option.Domain = cfg.m_Domain.Calc().AsString;
+                option.Domain = cfg.m_Domain.Calc(calculator).AsString;
             }
             if (null != cfg.m_UserName) {
-                option.UserName = cfg.m_UserName.Calc().AsString;
+                option.UserName = cfg.m_UserName.Calc(calculator).AsString;
             }
             if (null != cfg.m_Password) {
-                option.Password = cfg.m_Password.Calc().AsString;
+                option.Password = cfg.m_Password.Calc(calculator).AsString;
             }
             if (null != cfg.m_PasswordInClearText) {
-                option.PasswordInClearText = cfg.m_PasswordInClearText.Calc().AsString;
+                option.PasswordInClearText = cfg.m_PasswordInClearText.Calc(calculator).AsString;
             }
             if (null != cfg.m_LoadUserProfile) {
-                option.LoadUserProfile = cfg.m_LoadUserProfile.Calc().GetBool();
+                option.LoadUserProfile = cfg.m_LoadUserProfile.Calc(calculator).GetBool();
             }
             if (null != cfg.m_WindowStyle) {
-                var str = cfg.m_WindowStyle.Calc().AsString;
+                var str = cfg.m_WindowStyle.Calc(calculator).AsString;
                 System.Diagnostics.ProcessWindowStyle style;
                 if (Enum.TryParse(str, out style)) {
                     option.WindowStyle = style;
                 }
             }
             if (null != cfg.m_CreateWindow) {
-                option.CreateWindow = cfg.m_CreateWindow.Calc().GetBool();
+                option.CreateWindow = cfg.m_CreateWindow.Calc(calculator).GetBool();
             }
             if (null != cfg.m_ErrorDialog) {
-                option.ErrorDialog = cfg.m_ErrorDialog.Calc().GetBool();
+                option.ErrorDialog = cfg.m_ErrorDialog.Calc(calculator).GetBool();
             }
             if (null != cfg.m_WorkingDirectory) {
-                option.WorkingDirectory = cfg.m_WorkingDirectory.Calc().AsString;
+                option.WorkingDirectory = cfg.m_WorkingDirectory.Calc(calculator).AsString;
             }
             Encoding encoding = null;
             if (null != cfg.m_Encoding) {
-                var v = cfg.m_Encoding.Calc();
+                var v = cfg.m_Encoding.Calc(calculator);
                 var name = v.AsString;
                 if (!string.IsNullOrEmpty(name)) {
                     encoding = Encoding.GetEncoding(name);
@@ -3076,7 +3076,7 @@ namespace DotnetStoryScript.DslExpression
 
             IList<string> input = null;
             if (null != cfg.m_Input) {
-                var v = cfg.m_Input.Calc();
+                var v = cfg.m_Input.Calc(calculator);
                 try {
                     var list = v.As<IList>();
                     if (null != list) {
@@ -3095,7 +3095,7 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("input {0} failed:{1}", v, ex.Message);
+                    CodeStructure.Log("input {0} failed:{1}", v, ex.Message);
                 }
             }
             bool redirectToConsole = DslCalculator.FileEchoOn;
@@ -3106,7 +3106,7 @@ namespace DotnetStoryScript.DslExpression
             var error = BoxedValue.NullObject;
             int errorIx = -1;
             if (null != cfg.m_Output) {
-                var v = cfg.m_Output.Calc();
+                var v = cfg.m_Output.Calc(calculator);
                 var str = v.AsString;
                 if (!string.IsNullOrEmpty(str)) {
                     str = Environment.ExpandEnvironmentVariables(str);
@@ -3116,11 +3116,11 @@ namespace DotnetStoryScript.DslExpression
                     output = v;
                 }
                 if (null != cfg.m_OutputOptArg)
-                    outputIx = cfg.m_OutputOptArg.Calc().GetInt();
+                    outputIx = cfg.m_OutputOptArg.Calc(calculator).GetInt();
                 outputBuilder = new StringBuilder();
             }
             if (null != cfg.m_Error) {
-                var v = cfg.m_Error.Calc();
+                var v = cfg.m_Error.Calc(calculator);
                 var str = v.AsString;
                 if (!string.IsNullOrEmpty(str)) {
                     str = Environment.ExpandEnvironmentVariables(str);
@@ -3130,11 +3130,11 @@ namespace DotnetStoryScript.DslExpression
                     error = v;
                 }
                 if (null != cfg.m_ErrorOptArg)
-                    errorIx = cfg.m_ErrorOptArg.Calc().GetInt();
+                    errorIx = cfg.m_ErrorOptArg.Calc(calculator).GetInt();
                 errorBuilder = new StringBuilder();
             }
             if (null != cfg.m_RedirectToConsole) {
-                var v = cfg.m_RedirectToConsole.Calc();
+                var v = cfg.m_RedirectToConsole.Calc(calculator);
                 redirectToConsole = v.GetBool();
             }
             int exitCode = DslCalculator.NewProcess(noWait, fileName, args, option, istream, ostream, input, outputBuilder, errorBuilder, redirectToConsole, encoding);
@@ -3147,7 +3147,7 @@ namespace DotnetStoryScript.DslExpression
                     var file = output.AsString;
                     if (!string.IsNullOrEmpty(file)) {
                         if (file[0] == '@' || file[0] == '$') {
-                            Calculator.SetVariable(file, outputBuilder.ToString());
+                            calculator.SetVariable(file, outputBuilder.ToString());
                         }
                         else {
                             File.WriteAllText(file, outputBuilder.ToString());
@@ -3162,7 +3162,7 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("output {0} failed:{1}", output, ex.Message);
+                    CodeStructure.Log("output {0} failed:{1}", output, ex.Message);
                 }
             }
             if (null != errorBuilder && !error.IsNullObject) {
@@ -3170,7 +3170,7 @@ namespace DotnetStoryScript.DslExpression
                     var file = error.AsString;
                     if (!string.IsNullOrEmpty(file)) {
                         if (file[0] == '@' || file[0] == '$') {
-                            Calculator.SetVariable(file, errorBuilder.ToString());
+                            calculator.SetVariable(file, errorBuilder.ToString());
                         }
                         else {
                             File.WriteAllText(file, errorBuilder.ToString());
@@ -3185,12 +3185,12 @@ namespace DotnetStoryScript.DslExpression
                     }
                 }
                 catch (Exception ex) {
-                    Calculator.Log("error {0} failed:{1}", error, ex.Message);
+                    CodeStructure.Log("error {0} failed:{1}", error, ex.Message);
                 }
             }
             return exitCode;
         }
-        private int ExecCommand(CommandConfig cfg, Stream istream, Stream ostream)
+        private int ExecCommand(DslCalculator calculator, CommandConfig cfg, Stream istream, Stream ostream)
         {
             int exitCode = 0;
             string os = string.Empty;
@@ -3202,52 +3202,52 @@ namespace DotnetStoryScript.DslExpression
             if (cfg.m_Commands.TryGetValue(os, out cmd) || cfg.m_Commands.TryGetValue("common", out cmd)) {
                 bool noWait = false;
                 if (null != cfg.m_NoWait) {
-                    noWait = cfg.m_NoWait.Calc().GetBool();
+                    noWait = cfg.m_NoWait.Calc(calculator).GetBool();
                 }
                 DslCalculator.ProcessStartOption option = new DslCalculator.ProcessStartOption();
                 if (null != cfg.m_Timeout) {
-                    option.TimeoutMs = cfg.m_Timeout.Calc().GetInt();
+                    option.TimeoutMs = cfg.m_Timeout.Calc(calculator).GetInt();
                 }
                 if (null != cfg.m_UseShellExecute) {
-                    option.UseShellExecute = cfg.m_UseShellExecute.Calc().GetBool();
+                    option.UseShellExecute = cfg.m_UseShellExecute.Calc(calculator).GetBool();
                 }
                 if (null != cfg.m_Verb) {
-                    option.Verb = cfg.m_Verb.Calc().AsString;
+                    option.Verb = cfg.m_Verb.Calc(calculator).AsString;
                 }
                 if (null != cfg.m_Domain) {
-                    option.Domain = cfg.m_Domain.Calc().AsString;
+                    option.Domain = cfg.m_Domain.Calc(calculator).AsString;
                 }
                 if (null != cfg.m_UserName) {
-                    option.UserName = cfg.m_UserName.Calc().AsString;
+                    option.UserName = cfg.m_UserName.Calc(calculator).AsString;
                 }
                 if (null != cfg.m_Password) {
-                    option.Password = cfg.m_Password.Calc().AsString;
+                    option.Password = cfg.m_Password.Calc(calculator).AsString;
                 }
                 if (null != cfg.m_PasswordInClearText) {
-                    option.PasswordInClearText = cfg.m_PasswordInClearText.Calc().AsString;
+                    option.PasswordInClearText = cfg.m_PasswordInClearText.Calc(calculator).AsString;
                 }
                 if (null != cfg.m_LoadUserProfile) {
-                    option.LoadUserProfile = cfg.m_LoadUserProfile.Calc().GetBool();
+                    option.LoadUserProfile = cfg.m_LoadUserProfile.Calc(calculator).GetBool();
                 }
                 if (null != cfg.m_WindowStyle) {
-                    var str = cfg.m_WindowStyle.Calc().AsString;
+                    var str = cfg.m_WindowStyle.Calc(calculator).AsString;
                     System.Diagnostics.ProcessWindowStyle style;
                     if (Enum.TryParse(str, out style)) {
                         option.WindowStyle = style;
                     }
                 }
                 if (null != cfg.m_CreateWindow) {
-                    option.CreateWindow = cfg.m_CreateWindow.Calc().GetBool();
+                    option.CreateWindow = cfg.m_CreateWindow.Calc(calculator).GetBool();
                 }
                 if (null != cfg.m_ErrorDialog) {
-                    option.ErrorDialog = cfg.m_ErrorDialog.Calc().GetBool();
+                    option.ErrorDialog = cfg.m_ErrorDialog.Calc(calculator).GetBool();
                 }
                 if (null != cfg.m_WorkingDirectory) {
-                    option.WorkingDirectory = cfg.m_WorkingDirectory.Calc().AsString;
+                    option.WorkingDirectory = cfg.m_WorkingDirectory.Calc(calculator).AsString;
                 }
                 Encoding encoding = null;
                 if (null != cfg.m_Encoding) {
-                    var v = cfg.m_Encoding.Calc();
+                    var v = cfg.m_Encoding.Calc(calculator);
                     var name = v.AsString;
                     if (!string.IsNullOrEmpty(name)) {
                         encoding = Encoding.GetEncoding(name);
@@ -3259,7 +3259,7 @@ namespace DotnetStoryScript.DslExpression
                 }
                 IList<string> input = null;
                 if (null != cfg.m_Input) {
-                    var v = cfg.m_Input.Calc();
+                    var v = cfg.m_Input.Calc(calculator);
                     try {
                         var list = v.As<IList>();
                         if (null != list) {
@@ -3278,7 +3278,7 @@ namespace DotnetStoryScript.DslExpression
                         }
                     }
                     catch (Exception ex) {
-                        Calculator.Log("input {0} failed:{1}", v, ex.Message);
+                        CodeStructure.Log("input {0} failed:{1}", v, ex.Message);
                     }
                 }
                 bool redirectToConsole = DslCalculator.FileEchoOn;
@@ -3289,7 +3289,7 @@ namespace DotnetStoryScript.DslExpression
                 var error = BoxedValue.NullObject;
                 int errorIx = -1;
                 if (null != cfg.m_Output) {
-                    var v = cfg.m_Output.Calc();
+                    var v = cfg.m_Output.Calc(calculator);
                     var str = v.AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         str = Environment.ExpandEnvironmentVariables(str);
@@ -3299,11 +3299,11 @@ namespace DotnetStoryScript.DslExpression
                         output = v;
                     }
                     if (null != cfg.m_OutputOptArg)
-                        outputIx = cfg.m_OutputOptArg.Calc().GetInt();
+                        outputIx = cfg.m_OutputOptArg.Calc(calculator).GetInt();
                     outputBuilder = new StringBuilder();
                 }
                 if (null != cfg.m_Error) {
-                    var v = cfg.m_Error.Calc();
+                    var v = cfg.m_Error.Calc(calculator);
                     var str = v.AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         str = Environment.ExpandEnvironmentVariables(str);
@@ -3313,11 +3313,11 @@ namespace DotnetStoryScript.DslExpression
                         error = v;
                     }
                     if (null != cfg.m_ErrorOptArg)
-                        errorIx = cfg.m_ErrorOptArg.Calc().GetInt();
+                        errorIx = cfg.m_ErrorOptArg.Calc(calculator).GetInt();
                     errorBuilder = new StringBuilder();
                 }
                 if (null != cfg.m_RedirectToConsole) {
-                    var v = cfg.m_RedirectToConsole.Calc();
+                    var v = cfg.m_RedirectToConsole.Calc(calculator);
                     redirectToConsole = v.GetBool();
                 }
 
@@ -3346,7 +3346,7 @@ namespace DotnetStoryScript.DslExpression
                             var file = output.AsString;
                             if (!string.IsNullOrEmpty(file)) {
                                 if (file[0] == '@' || file[0] == '$') {
-                                    Calculator.SetVariable(file, outputBuilder.ToString());
+                                    calculator.SetVariable(file, outputBuilder.ToString());
                                 }
                                 else {
                                     File.WriteAllText(file, outputBuilder.ToString());
@@ -3361,7 +3361,7 @@ namespace DotnetStoryScript.DslExpression
                             }
                         }
                         catch (Exception ex) {
-                            Calculator.Log("output {0} failed:{1}", output, ex.Message);
+                            CodeStructure.Log("output {0} failed:{1}", output, ex.Message);
                         }
                     }
                     if (null != errorBuilder && !error.IsNullObject) {
@@ -3369,7 +3369,7 @@ namespace DotnetStoryScript.DslExpression
                             var file = error.AsString;
                             if (!string.IsNullOrEmpty(file)) {
                                 if (file[0] == '@' || file[0] == '$') {
-                                    Calculator.SetVariable(file, errorBuilder.ToString());
+                                    calculator.SetVariable(file, errorBuilder.ToString());
                                 }
                                 else {
                                     File.WriteAllText(file, errorBuilder.ToString());
@@ -3384,7 +3384,7 @@ namespace DotnetStoryScript.DslExpression
                             }
                         }
                         catch (Exception ex) {
-                            Calculator.Log("error {0} failed:{1}", error, ex.Message);
+                            CodeStructure.Log("error {0} failed:{1}", error, ex.Message);
                         }
                     }
                 }
@@ -3424,7 +3424,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class KillExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: kill(name_or_pid) api");
@@ -3471,7 +3471,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class KillMeExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: killme([exit_code]) api");
@@ -3493,7 +3493,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetCurrentProcessIdExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: pid() api");
@@ -3507,7 +3507,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class ListProcessesExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: plist([filter]) api, return list");
@@ -3542,7 +3542,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class SleepExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: sleep(time) api");
@@ -3557,7 +3557,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class WaitAllExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: waitall([timeout]) api, wait all task to exit");
@@ -3577,7 +3577,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class WaitStartIntervalExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
                 throw new Exception("Expected: waitstartinterval(time) or waitstartinterval() api, used in Task.Wait for process/command");
@@ -3592,7 +3592,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CleanupCompletedTasksExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: cleanupcompletedtasks() api");
@@ -3602,7 +3602,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class GetTaskCountExp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
                 throw new Exception("Expected: gettaskcount() api");
@@ -3611,7 +3611,7 @@ namespace DotnetStoryScript.DslExpression
     }
     internal sealed class CalcMd5Exp : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
                 throw new Exception("Expected: calcmd5(file) api");

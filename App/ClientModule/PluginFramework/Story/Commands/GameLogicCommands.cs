@@ -16,7 +16,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class BlackboardClearCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             PluginFramework.Instance.BlackBoard.ClearVariables();
             return BoxedValue.NullObject;
@@ -27,7 +27,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class BlackboardSetCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -42,11 +42,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraFollowCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -55,7 +55,7 @@ namespace ScriptableFramework.Story.Commands
                 Utility.SendMessage(path, "CameraFollow", PluginFramework.Instance.LeaderId);
             } else {
                 for (int i = 0; i < m_UnitIds.Count; i++) {
-                    int unitId = m_UnitIds[i].Calc().GetInt();
+                    int unitId = m_UnitIds[i].Calc(calculator).GetInt();
                     EntityInfo npc = PluginFramework.Instance.GetEntityByUnitId(unitId);
                     if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
                         Utility.SendMessage(path, "CameraFollow", npc.GetId());
@@ -69,7 +69,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_UnitIds.Add(val);
             }
             return true;
@@ -88,7 +88,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -102,12 +102,12 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            object obj = m_Arg.Calc().GetObject();
+            object obj = m_Arg.Calc(calculator).GetObject();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -129,7 +129,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Arg = Calculator.Load(callData.GetParam(0));
+                m_Arg = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -147,7 +147,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -161,12 +161,12 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookImmediatelyCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            object obj = m_Arg.Calc().GetObject();
+            object obj = m_Arg.Calc(calculator).GetObject();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -188,7 +188,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Arg = Calculator.Load(callData.GetParam(0));
+                m_Arg = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -206,7 +206,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -220,12 +220,12 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookTowardCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            object obj = m_Arg.Calc().GetObject();
+            object obj = m_Arg.Calc(calculator).GetObject();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -247,7 +247,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Arg = Calculator.Load(callData.GetParam(0));
+                m_Arg = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -265,7 +265,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -277,12 +277,12 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraFixedYawCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            float arg1 = m_Arg1.Calc().GetFloat();
+            float arg1 = m_Arg1.Calc(calculator).GetFloat();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -294,7 +294,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Arg1 = Calculator.Load(callData.GetParam(0));
+                m_Arg1 = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -312,7 +312,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -324,14 +324,14 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraYawCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            float arg1 = m_Arg1.Calc().GetFloat();
-            float arg2 = m_Arg2.Calc().GetFloat();
-            float arg3 = m_Arg3.Calc().GetFloat();
+            float arg1 = m_Arg1.Calc(calculator).GetFloat();
+            float arg2 = m_Arg2.Calc(calculator).GetFloat();
+            float arg3 = m_Arg3.Calc(calculator).GetFloat();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -343,9 +343,9 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 2) {
-                m_Arg1 = Calculator.Load(callData.GetParam(0));
-                m_Arg2 = Calculator.Load(callData.GetParam(1));
-                m_Arg3 = Calculator.Load(callData.GetParam(2));
+                m_Arg1 = CodeStructure.Load(callData.GetParam(0));
+                m_Arg2 = CodeStructure.Load(callData.GetParam(1));
+                m_Arg3 = CodeStructure.Load(callData.GetParam(2));
             }
             return true;
         }
@@ -363,7 +363,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -377,13 +377,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraHeightCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            float arg1 = m_Arg1.Calc().GetFloat();
-            float arg2 = m_Arg2.Calc().GetFloat();
+            float arg1 = m_Arg1.Calc(calculator).GetFloat();
+            float arg2 = m_Arg2.Calc(calculator).GetFloat();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -395,8 +395,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_Arg1 = Calculator.Load(callData.GetParam(0));
-                m_Arg2 = Calculator.Load(callData.GetParam(1));
+                m_Arg1 = CodeStructure.Load(callData.GetParam(0));
+                m_Arg2 = CodeStructure.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -414,7 +414,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -427,13 +427,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraDistanceCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            float arg1 = m_Arg1.Calc().GetFloat();
-            float arg2 = m_Arg2.Calc().GetFloat();
+            float arg1 = m_Arg1.Calc(calculator).GetFloat();
+            float arg2 = m_Arg2.Calc(calculator).GetFloat();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -445,8 +445,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_Arg1 = Calculator.Load(callData.GetParam(0));
-                m_Arg2 = Calculator.Load(callData.GetParam(1));
+                m_Arg1 = CodeStructure.Load(callData.GetParam(0));
+                m_Arg2 = CodeStructure.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -464,7 +464,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -477,13 +477,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraSetDistanceHeightCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            float arg1 = m_Arg1.Calc().GetFloat();
-            float arg2 = m_Arg2.Calc().GetFloat();
+            float arg1 = m_Arg1.Calc(calculator).GetFloat();
+            float arg2 = m_Arg2.Calc(calculator).GetFloat();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -495,8 +495,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_Arg1 = Calculator.Load(callData.GetParam(0));
-                m_Arg2 = Calculator.Load(callData.GetParam(1));
+                m_Arg1 = CodeStructure.Load(callData.GetParam(0));
+                m_Arg2 = CodeStructure.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -514,7 +514,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -527,11 +527,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraResetDistanceHeightCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -557,7 +557,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -568,16 +568,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraSetFollowSpeedCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            float arg1 = m_Arg1.Calc().GetFloat();
-            float arg2 = m_Arg2.Calc().GetFloat();
-            float arg3 = m_Arg3.Calc().GetFloat();
-            float arg4 = m_Arg4.Calc().GetFloat();
-            int arg5 = m_Arg5.Calc().GetInt();
+            float arg1 = m_Arg1.Calc(calculator).GetFloat();
+            float arg2 = m_Arg2.Calc(calculator).GetFloat();
+            float arg3 = m_Arg3.Calc(calculator).GetFloat();
+            float arg4 = m_Arg4.Calc(calculator).GetFloat();
+            int arg5 = m_Arg5.Calc(calculator).GetInt();
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -589,11 +589,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 4) {
-                m_Arg1 = Calculator.Load(callData.GetParam(0));
-                m_Arg2 = Calculator.Load(callData.GetParam(1));
-                m_Arg3 = Calculator.Load(callData.GetParam(2));
-                m_Arg4 = Calculator.Load(callData.GetParam(3));
-                m_Arg5 = Calculator.Load(callData.GetParam(4));
+                m_Arg1 = CodeStructure.Load(callData.GetParam(0));
+                m_Arg2 = CodeStructure.Load(callData.GetParam(1));
+                m_Arg3 = CodeStructure.Load(callData.GetParam(2));
+                m_Arg4 = CodeStructure.Load(callData.GetParam(3));
+                m_Arg5 = CodeStructure.Load(callData.GetParam(4));
             }
             return true;
         }
@@ -611,7 +611,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -627,11 +627,11 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraResetFollowSpeedCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -657,7 +657,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -668,16 +668,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraFollowObjCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc().GetInt());
+            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc(calculator).GetInt());
             if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
                 Utility.SendMessage(path, "CameraFollow", npc.GetId());
             }
@@ -687,7 +687,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_ObjId = Calculator.Load(callData.GetParam(0));
+                m_ObjId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -705,7 +705,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -717,16 +717,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookObjCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc().GetInt());
+            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc(calculator).GetInt());
             if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
                 Vector3 pos = npc.GetMovementStateInfo().GetPosition3D();
                 Utility.SendMessage(path, "CameraLook", new object[] { pos.X, pos.Y + npc.GetRadius(), pos.Z });
@@ -737,7 +737,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_ObjId = Calculator.Load(callData.GetParam(0));
+                m_ObjId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -755,7 +755,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -767,16 +767,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookObjImmediatelyCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc().GetInt());
+            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc(calculator).GetInt());
             if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
                 Vector3 pos = npc.GetMovementStateInfo().GetPosition3D();
                 Utility.SendMessage(path, "CameraLookImmediately", new object[] { pos.X, pos.Y + npc.GetRadius(), pos.Z });
@@ -787,7 +787,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_ObjId = Calculator.Load(callData.GetParam(0));
+                m_ObjId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -805,7 +805,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -817,16 +817,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookTowardObjCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc().GetInt());
+            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Calc(calculator).GetInt());
             if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
                 var pos = npc.GetMovementStateInfo().GetPosition3D();
                 Utility.SendMessage(path, "CameraLookImmediately", new object[] { pos.X, pos.Y + npc.GetRadius(), pos.Z });
@@ -837,7 +837,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_ObjId = Calculator.Load(callData.GetParam(0));
+                m_ObjId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -855,7 +855,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -867,16 +867,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookCopyCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            object obj = m_ObjPath.Calc().GetObject();
+            object obj = m_ObjPath.Calc(calculator).GetObject();
             var pobj = obj as UnityEngine.GameObject;
             if (null == pobj) {
                 string objPath = obj as string;
@@ -885,7 +885,7 @@ namespace ScriptableFramework.Story.Commands
                 }
             }
             if (null != pobj) {
-                var argObj = m_Arg.Calc();
+                var argObj = m_Arg.Calc(calculator);
                 if (argObj.IsInteger) {
                     int unitId = argObj.GetInt();
                     EntityInfo npc = PluginFramework.Instance.GetEntityByUnitId(unitId);
@@ -903,8 +903,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjPath = Calculator.Load(callData.GetParam(0));
-                m_Arg = Calculator.Load(callData.GetParam(1));
+                m_ObjPath = CodeStructure.Load(callData.GetParam(0));
+                m_Arg = CodeStructure.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -922,7 +922,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -935,16 +935,16 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraLookObjCopyCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             string path = "GameRoot";
             if (null != m_CameraPath) {
-                path = m_CameraPath.Calc().GetString();
+                path = m_CameraPath.Calc(calculator).GetString();
             }
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            object obj = m_ObjPath.Calc().GetObject();
+            object obj = m_ObjPath.Calc(calculator).GetObject();
             var pobj = obj as UnityEngine.GameObject;
             if (null == pobj) {
                 string objPath = obj as string;
@@ -953,7 +953,7 @@ namespace ScriptableFramework.Story.Commands
                 }
             }
             if (null != pobj) {
-                int objId = m_ObjId.Calc().GetInt();
+                int objId = m_ObjId.Calc(calculator).GetInt();
                 Utility.SendMessage(path, "CameraLookObjCopy", new object[] { pobj.transform, objId });
             }
             return BoxedValue.NullObject;
@@ -962,8 +962,8 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjPath = Calculator.Load(callData.GetParam(0));
-                m_ObjId = Calculator.Load(callData.GetParam(1));
+                m_ObjPath = CodeStructure.Load(callData.GetParam(0));
+                m_ObjId = CodeStructure.Load(callData.GetParam(1));
             }
             return true;
         }
@@ -981,7 +981,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_CameraPath = Calculator.Load(callData.GetParam(0));
+                m_CameraPath = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -994,7 +994,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class CameraEnableCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -1009,9 +1009,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class LockFrameCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            float scale = m_Scale.Calc().GetFloat();
+            float scale = m_Scale.Calc(calculator).GetFloat();
             UnityEngine.Time.timeScale = scale;
             return BoxedValue.NullObject;
         }
@@ -1019,7 +1019,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Scale = Calculator.Load(callData.GetParam(0));
+                m_Scale = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -1031,7 +1031,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetLeaderIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -1054,9 +1054,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ShowDlgCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            int storyDlgId = m_StoryDlgId.Calc().GetInt();
+            int storyDlgId = m_StoryDlgId.Calc(calculator).GetInt();
             GfxStorySystem.Instance.SendMessage("show_dlg", storyDlgId);
             LogSystem.Info("showdlg {0}", storyDlgId);
             return BoxedValue.NullObject;
@@ -1065,7 +1065,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_StoryDlgId = Calculator.Load(callData.GetParam(0));
+                m_StoryDlgId = CodeStructure.Load(callData.GetParam(0));
             }
             return true;
         }
@@ -1077,13 +1077,13 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class AreaDetectCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             bool triggered = false;
-            string name = m_Name.Calc().GetString();
-            float radius = m_Radius.Calc().GetFloat();
-            string type = m_Type.Calc().GetString();
-            string eventName = m_EventName.Calc().GetString();
+            string name = m_Name.Calc(calculator).GetString();
+            float radius = m_Radius.Calc(calculator).GetFloat();
+            string type = m_Type.Calc(calculator).GetString();
+            string eventName = m_EventName.Calc(calculator).GetString();
             UnityEngine.GameObject obj = UnityEngine.GameObject.Find(name);
             if (null != obj) {
                 UnityEngine.Vector3 pos = obj.transform.position;
@@ -1108,10 +1108,10 @@ namespace ScriptableFramework.Story.Commands
                     });
                 }
             }
-            string varName = m_SetVar.Calc().GetString();
-            var varVal = m_SetVal.Calc();
-            var elseVal = m_ElseSetVal.Calc();
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            string varName = m_SetVar.Calc(calculator).GetString();
+            var varVal = m_SetVal.Calc(calculator);
+            var elseVal = m_ElseSetVal.Calc(calculator);
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance) {
                 if (triggered) {
                     instance.SetVariable(varName, varVal);
@@ -1125,10 +1125,10 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 3) {
-                m_Name = Calculator.Load(callData.GetParam(0));
-                m_Radius = Calculator.Load(callData.GetParam(1));
-                m_Type = Calculator.Load(callData.GetParam(2));
-                m_EventName = Calculator.Load(callData.GetParam(3));
+                m_Name = CodeStructure.Load(callData.GetParam(0));
+                m_Radius = CodeStructure.Load(callData.GetParam(1));
+                m_Type = CodeStructure.Load(callData.GetParam(2));
+                m_EventName = CodeStructure.Load(callData.GetParam(3));
             }
             return true;
         }
@@ -1149,9 +1149,9 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
-                m_SetVar = Calculator.Load(callData.GetParam(0));
-                m_SetVal = Calculator.Load(callData.GetParam(1));
-                m_ElseSetVal = Calculator.Load(callData.GetParam(2));
+                m_SetVar = CodeStructure.Load(callData.GetParam(0));
+                m_SetVal = CodeStructure.Load(callData.GetParam(1));
+                m_ElseSetVal = CodeStructure.Load(callData.GetParam(2));
             }
         }
 
@@ -1169,7 +1169,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class LoadUiCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
@@ -1221,9 +1221,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class BindUiCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            UnityEngine.GameObject obj = m_Obj.Calc().GetObject() as UnityEngine.GameObject;
+            UnityEngine.GameObject obj = m_Obj.Calc(calculator).GetObject() as UnityEngine.GameObject;
             if (null != obj) {
                 UiStoryInitializer initer = obj.GetComponent<UiStoryInitializer>();
                 if (null != initer) {
@@ -1234,43 +1234,43 @@ namespace ScriptableFramework.Story.Commands
                     if (null != handler0) {
                         int ct = m_VarInfos.Count;
                         for (int ix = 0; ix < ct; ++ix) {
-                            string name = m_VarInfos[ix].m_VarName.Calc().GetString();
-                            string path = m_VarInfos[ix].m_ControlPath.Calc().GetString();
+                            string name = m_VarInfos[ix].m_VarName.Calc(calculator).GetString();
+                            string path = m_VarInfos[ix].m_ControlPath.Calc(calculator).GetString();
                             UnityEngine.GameObject ctrl = Utility.FindChildObjectByPath(obj, path);
-                            AddVariable(Calculator, name, ctrl);
+                            AddVariable(calculator, name, ctrl);
                         }
 
                         handler0.WindowName = initer.WindowName;
                         var list = m_Inputs;
                         for (int k = 0; k < list.Count; ++k) {
-                            string path = list[k].Calc().GetString();
+                            string path = list[k].Calc(calculator).GetString();
                             var comp = Utility.FindComponentInChildren<UnityEngine.UI.InputField>(obj, path);
                             handler0.InputLabels.Add(comp);
                         }
                         list = m_Toggles;
                         for (int k = 0; k < list.Count; ++k) {
-                            string path = list[k].Calc().GetString();
+                            string path = list[k].Calc(calculator).GetString();
                             var comp = Utility.FindComponentInChildren<UnityEngine.UI.Toggle>(obj, path);
                             handler0.InputToggles.Add(comp);
                         }
                         list = m_Sliders;
                         for (int k = 0; k < list.Count; ++k) {
-                            string path = list[k].Calc().GetString();
+                            string path = list[k].Calc(calculator).GetString();
                             var comp = Utility.FindComponentInChildren<UnityEngine.UI.Slider>(obj, path);
                             handler0.InputSliders.Add(comp);
                         }
                         list = m_DropDowns;
                         for (int k = 0; k < list.Count; ++k) {
-                            string path = list[k].Calc().GetString();
+                            string path = list[k].Calc(calculator).GetString();
                             var comp = Utility.FindComponentInChildren<UnityEngine.UI.Dropdown>(obj, path);
                             handler0.InputDropdowns.Add(comp);
                         }
 
                         ct = m_EventInfos.Count;
                         for (int ix = 0; ix < ct; ++ix) {
-                            string evt = m_EventInfos[ix].m_Event.Calc().GetString();
-                            string tag = m_EventInfos[ix].m_Tag.Calc().GetString();
-                            string path = m_EventInfos[ix].m_Path.Calc().GetString();
+                            string evt = m_EventInfos[ix].m_Event.Calc(calculator).GetString();
+                            string tag = m_EventInfos[ix].m_Tag.Calc(calculator).GetString();
+                            string path = m_EventInfos[ix].m_Path.Calc(calculator).GetString();
                             if (evt == "button") {
                                 UnityEngine.UI.Button button = Utility.FindComponentInChildren<UnityEngine.UI.Button>(obj, path);
                                 button.onClick.AddListener(() => { handler0.OnClickHandler(tag); });
@@ -1327,7 +1327,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_Obj = Calculator.Load(callData.GetParam(0));
+                m_Obj = CodeStructure.Load(callData.GetParam(0));
             }
         }
         private void LoadVar(Dsl.FunctionData callData)
@@ -1335,8 +1335,8 @@ namespace ScriptableFramework.Story.Commands
             int num = callData.GetParamNum();
             if (num >= 2) {
                 VarInfo info = new VarInfo(
-                    Calculator.Load(callData.GetParam(0)),
-                    Calculator.Load(callData.GetParam(1)));
+                    CodeStructure.Load(callData.GetParam(0)),
+                    CodeStructure.Load(callData.GetParam(1)));
                 m_VarInfos.Add(info);
             }
         }
@@ -1345,9 +1345,9 @@ namespace ScriptableFramework.Story.Commands
             int num = callData.GetParamNum();
             if (num >= 3) {
                 EventInfo info = new EventInfo(
-                    Calculator.Load(callData.GetParam(0)),
-                    Calculator.Load(callData.GetParam(1)),
-                    Calculator.Load(callData.GetParam(2)));
+                    CodeStructure.Load(callData.GetParam(0)),
+                    CodeStructure.Load(callData.GetParam(1)),
+                    CodeStructure.Load(callData.GetParam(2)));
                 m_EventInfos.Add(info);
             }
         }
@@ -1387,7 +1387,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IExpression path = Calculator.Load(callData.GetParam(i));
+                IExpression path = CodeStructure.Load(callData.GetParam(i));
                 list.Add(path);
             }
         }

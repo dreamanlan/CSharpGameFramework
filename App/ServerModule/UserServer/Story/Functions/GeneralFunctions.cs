@@ -8,9 +8,9 @@ namespace ScriptableFramework.Story.Functions
 {
     internal sealed class GetUserInfoFunction : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 var userGuid = operands[0].GetULong();

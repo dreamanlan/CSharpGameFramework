@@ -15,7 +15,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjFaceCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -46,7 +46,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjMoveCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -79,7 +79,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjMoveWithWaypointsCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -116,7 +116,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjStopCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -144,7 +144,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjAttackCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -166,7 +166,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjSetFormationCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -183,7 +183,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjEnableAiCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -204,7 +204,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjSetAiCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
@@ -233,7 +233,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjSetAiTargetCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -252,7 +252,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjAnimationCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -283,9 +283,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjAnimationParamCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            int objId = m_ObjId.Calc().GetInt();
+            int objId = m_ObjId.Calc(calculator).GetInt();
             UnityEngine.GameObject obj = EntityController.Instance.GetGameObject(objId);
             if (null != obj) {
                 UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
@@ -293,8 +293,8 @@ namespace ScriptableFramework.Story.Commands
                     for (int i = 0; i < m_Params.Count; ++i) {
                         var param = m_Params[i];
                         string type = param.Type;
-                        string key = param.Key.Calc().GetString();
-                        var val = param.Value.Calc();
+                        string key = param.Key.Calc(calculator).GetString();
+                        var val = param.Value.Calc(calculator);
                         if (type == "int") {
                             int v = val.GetInt();
                             animator.SetInteger(key, v);
@@ -330,8 +330,8 @@ namespace ScriptableFramework.Story.Commands
                     Dsl.FunctionData stCall = statement as Dsl.FunctionData;
                     if (null != stCall && stCall.GetParamNum() >= 2) {
                         string id = stCall.GetId();
-                        IExpression keyExp = Calculator.Load(stCall.GetParam(0));
-                        IExpression valExp = Calculator.Load(stCall.GetParam(1));
+                        IExpression keyExp = CodeStructure.Load(stCall.GetParam(0));
+                        IExpression valExp = CodeStructure.Load(stCall.GetParam(1));
                         ParamInfo param = new ParamInfo(id, keyExp, valExp);
                         m_Params.Add(param);
                     }
@@ -343,7 +343,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
-                m_ObjId = Calculator.Load(callData.GetParam(0));
+                m_ObjId = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -368,15 +368,15 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjAddImpactCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            int objId = m_ObjId.Calc().GetInt();
-            int impactId = m_ImpactId.Calc().GetInt();
+            int objId = m_ObjId.Calc(calculator).GetInt();
+            int impactId = m_ImpactId.Calc(calculator).GetInt();
             int seq = 0;
             Dictionary<string, object> locals = new Dictionary<string, object>();
             for (int i = 0; i < m_Args.Count - 1; i += 2) {
-                string key = m_Args[i].Calc().GetString();
-                object val = m_Args[i + 1].Calc().GetObject();
+                string key = m_Args[i].Calc(calculator).GetString();
+                object val = m_Args[i + 1].Calc(calculator).GetObject();
                 if (!string.IsNullOrEmpty(key)) {
                     locals.Add(key, val);
                 }
@@ -394,8 +394,8 @@ namespace ScriptableFramework.Story.Commands
                 }
             }
             if (m_HaveSeq) {
-                string varName = m_SeqVarName.Calc().GetString();
-                var instance = Calculator.GetFuncContext<StoryInstance>();
+                string varName = m_SeqVarName.Calc(calculator).GetString();
+                var instance = calculator.GetFuncContext<StoryInstance>();
                 if (null != instance) {
                     instance.SetVariable(varName, seq);
                 }
@@ -406,11 +406,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjId = Calculator.Load(callData.GetParam(0));
-                m_ImpactId = Calculator.Load(callData.GetParam(1));
+                m_ObjId = CodeStructure.Load(callData.GetParam(0));
+                m_ImpactId = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                IExpression val = Calculator.Load(callData.GetParam(i));
+                IExpression val = CodeStructure.Load(callData.GetParam(i));
                 m_Args.Add(val);
             }
             return true;
@@ -430,7 +430,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadVarName(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "seq" && callData.GetParamNum() == 1) {
-                m_SeqVarName = Calculator.Load(callData.GetParam(0));
+                m_SeqVarName = CodeStructure.Load(callData.GetParam(0));
                 m_HaveSeq = true;
             }
         }
@@ -446,7 +446,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjRemoveImpactCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -468,7 +468,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjCastSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -497,7 +497,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjStopSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 0)
                 return BoxedValue.NullObject;
@@ -511,7 +511,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjListenCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
@@ -535,7 +535,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetHpCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -553,7 +553,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetEnergyCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -571,7 +571,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjSetCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
@@ -587,7 +587,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetLevelCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -605,7 +605,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetAttrCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 2)
                 return BoxedValue.NullObject;
@@ -630,7 +630,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class MarkControlByStoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
                 return BoxedValue.NullObject;
@@ -648,7 +648,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class SetUnitIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -666,7 +666,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjSetCampCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -683,7 +683,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjSetSummonerIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;
@@ -701,7 +701,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     internal class ObjSetSummonSkillIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count <= 1)
                 return BoxedValue.NullObject;

@@ -16,13 +16,13 @@ namespace DotnetStoryScript
     {
         public override bool IsAsync { get { return true; } }
 
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            int ms = m_Time.Calc().GetInt();
-            var storyInst = Calculator.GetFuncContext<StoryInstance>();
+            int ms = m_Time.Calc(calculator).GetInt();
+            var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null) {
                 result.Value = BoxedValue.NullObject;
                 yield break;
@@ -31,7 +31,7 @@ namespace DotnetStoryScript
             long targetTime = startTime + ms;
             while (storyInst.CurrentTime < targetTime) {
                 if (m_HaveCondition && m_Condition != null) {
-                    var condVal = m_Condition.Calc();
+                    var condVal = m_Condition.Calc(calculator);
                     if (condVal.GetInt() == 0) {
                         break;
                     }
@@ -49,7 +49,7 @@ namespace DotnetStoryScript
                 LoadCondition(funcData.LowerOrderFunction);
             }
             if (null != callData && callData.HaveParam()) {
-                m_Time = Calculator.Load(callData.GetParam(0));
+                m_Time = CodeStructure.Load(callData.GetParam(0));
             }
             if (funcData.HaveStatement()) {
                 for (int i = 0; i < funcData.GetParamNum(); ++i) {
@@ -79,7 +79,7 @@ namespace DotnetStoryScript
         {
             if (callData.GetId() == "condition" && callData.GetParamNum() > 0) {
                 m_HaveCondition = true;
-                m_Condition = Calculator.Load(callData.GetParam(0));
+                m_Condition = CodeStructure.Load(callData.GetParam(0));
             }
         }
 
@@ -98,16 +98,16 @@ namespace DotnetStoryScript
     {
         public override bool IsAsync { get { return true; } }
 
-        protected override IEnumerator DoCalc(AsyncCalcResult result)
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
         {
-            if (Calculator.IsInSyncCalculation) {
+            if (calculator.IsInSyncCalculation) {
                 yield break;
             }
-            int ms = m_Time.Calc().GetInt();
+            int ms = m_Time.Calc(calculator).GetInt();
             var sw = System.Diagnostics.Stopwatch.StartNew();
             while (sw.ElapsedMilliseconds < ms) {
                 if (m_HaveCondition && m_Condition != null) {
-                    var condVal = m_Condition.Calc();
+                    var condVal = m_Condition.Calc(calculator);
                     if (condVal.GetInt() == 0) {
                         break;
                     }
@@ -126,7 +126,7 @@ namespace DotnetStoryScript
                 LoadCondition(funcData.LowerOrderFunction);
             }
             if (null != callData && callData.HaveParam()) {
-                m_Time = Calculator.Load(callData.GetParam(0));
+                m_Time = CodeStructure.Load(callData.GetParam(0));
             }
             if (funcData.HaveStatement()) {
                 for (int i = 0; i < funcData.GetParamNum(); ++i) {
@@ -156,7 +156,7 @@ namespace DotnetStoryScript
         {
             if (callData.GetId() == "condition" && callData.GetParamNum() > 0) {
                 m_HaveCondition = true;
-                m_Condition = Calculator.Load(callData.GetParam(0));
+                m_Condition = CodeStructure.Load(callData.GetParam(0));
             }
         }
 

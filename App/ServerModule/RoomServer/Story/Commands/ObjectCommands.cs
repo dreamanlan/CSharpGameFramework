@@ -14,9 +14,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjFaceCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -37,9 +37,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjMoveCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -73,9 +73,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjMoveWithWaypointsCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -112,9 +112,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjStopCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 0)
@@ -140,9 +140,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjAttackCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -166,9 +166,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjSetFormationCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -187,9 +187,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjEnableAiCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -208,9 +208,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjSetAiCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 2)
@@ -240,9 +240,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjSetAiTargetCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count < 2)
@@ -263,9 +263,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjAnimationCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -288,18 +288,18 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjAddImpactCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                int objId = m_ObjId.Calc().GetInt();
-                int impactId = m_ImpactId.Calc().GetInt();
+                int objId = m_ObjId.Calc(calculator).GetInt();
+                int impactId = m_ImpactId.Calc(calculator).GetInt();
                 int seq = 0;
                 Dictionary<string, object> locals = new Dictionary<string, object>();
                 for (int i = 0; i < m_Args.Count - 1; i += 2) {
-                    string key = m_Args[i].Calc().ToString();
-                    object val = m_Args[i + 1].Calc().GetInt();
+                    string key = m_Args[i].Calc(calculator).ToString();
+                    object val = m_Args[i + 1].Calc(calculator).GetInt();
                     if (!string.IsNullOrEmpty(key)) {
                         locals.Add(key, val);
                     }
@@ -323,7 +323,7 @@ namespace ScriptableFramework.Story.Commands
                     }
                 }
                 if (m_HaveSeq) {
-                    string varName = m_SeqVarName.Calc().ToString();
+                    string varName = m_SeqVarName.Calc(calculator).ToString();
                     instance.SetVariable(varName, seq);
                 }
             }
@@ -333,11 +333,11 @@ namespace ScriptableFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_ObjId = Calculator.Load(callData.GetParam(0));
-                m_ImpactId = Calculator.Load(callData.GetParam(1));
+                m_ObjId = CodeStructure.Load(callData.GetParam(0));
+                m_ImpactId = CodeStructure.Load(callData.GetParam(1));
             }
             for (int i = 2; i < callData.GetParamNum(); ++i) {
-                m_Args.Add(Calculator.Load(callData.GetParam(i)));
+                m_Args.Add(CodeStructure.Load(callData.GetParam(i)));
             }
             return true;
         }
@@ -356,7 +356,7 @@ namespace ScriptableFramework.Story.Commands
         private void LoadVarName(Dsl.FunctionData callData)
         {
             if (callData.GetId() == "seq" && callData.GetParamNum() == 1) {
-                m_SeqVarName = Calculator.Load(callData.GetParam(0));
+                m_SeqVarName = CodeStructure.Load(callData.GetParam(0));
                 m_HaveSeq = true;
             }
         }
@@ -371,9 +371,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjRemoveImpactCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -400,9 +400,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjCastSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -440,9 +440,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjStopSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 0)
@@ -460,9 +460,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjAddSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -488,9 +488,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjRemoveSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -514,9 +514,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjListenCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 2)
@@ -542,9 +542,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SetHpCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -564,9 +564,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SetEnergyCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -586,9 +586,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjSetCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 2)
@@ -606,9 +606,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SetLevelCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -628,9 +628,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SetAttrCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 2)
@@ -655,9 +655,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class MarkControlByStoryCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count < 2)
@@ -677,9 +677,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class SetUnitIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -699,9 +699,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjSetCampCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -720,9 +720,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjSetSummonerIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -742,9 +742,9 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class ObjSetSummonSkillIdCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 if (operands.Count <= 1)
@@ -765,7 +765,7 @@ namespace ScriptableFramework.Story.Commands
     /// </summary>
     public class DummyCommand : AbstractExpression
     {
-        protected override BoxedValue DoCalc()
+        protected override BoxedValue DoCalc(DslCalculator calculator)
         {
             return BoxedValue.NullObject;
         }

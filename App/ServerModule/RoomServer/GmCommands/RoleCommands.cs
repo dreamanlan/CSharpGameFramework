@@ -12,10 +12,10 @@ namespace ScriptableFramework.GmCommands
     //Commands that are only valid within the scene (only modify ScriptableFramework combat-related data)
     public class SetPositionCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -45,10 +45,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class LevelToCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -61,10 +61,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class FullCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -77,10 +77,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class ClearEquipmentsCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -91,10 +91,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class AddEquipmentCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -106,10 +106,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class ClearSkillsCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -121,10 +121,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class AddSkillCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -138,10 +138,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class ClearBuffsCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {
@@ -153,10 +153,10 @@ namespace ScriptableFramework.GmCommands
     }
     public class AddBuffCommand : SimpleExpressionBase
     {
-        protected override BoxedValue OnCalc(IList<BoxedValue> operands)
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             BoxedValue us;
-            var instance = Calculator.GetFuncContext<StoryInstance>();
+            var instance = calculator.GetFuncContext<StoryInstance>();
             if (null != instance && instance.ContextVariables.TryGetValue("EntityInfo", out us)) {
                 EntityInfo user = us.ObjectVal as EntityInfo;
                 if (null != user) {

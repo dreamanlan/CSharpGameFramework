@@ -165,7 +165,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// addshield([start_time]);
     /// </summary>
-    internal class AddShieldTriger : AbstractSkillTriger
+    internal class AddShieldTriger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -208,7 +208,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// <summary>
     /// removeshield([start_time]);
     /// </summary>
-    internal class RemoveShieldTriger : AbstractSkillTriger
+    internal class RemoveShieldTriger : AbstractStatelessSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

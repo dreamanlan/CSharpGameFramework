@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Dsl;
-using GameFramework;
+using ScriptableFramework;
+using ScriptRuntime;
 
 namespace LogicDataGenerator
 {
@@ -244,11 +245,11 @@ namespace LogicDataGenerator
                                     }
                                     else {
                                         if (comp is ValueData) {
-                                            LogSystem.Error("typeconverter {0} member must have params ! line {1} file {2}", comp.ToScriptString(false), comp.GetLine(), dslFile);
+                                            LogSystem.Error("typeconverter {0} member must have params ! line {1} file {2}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine(), dslFile);
                                             haveError = true;
                                         }
                                         else {
-                                            LogSystem.Error("typeconverter {0} member must end with ';' ! line {1} file {2}", comp.ToScriptString(false), comp.GetLine(), dslFile);
+                                            LogSystem.Error("typeconverter {0} member must end with ';' ! line {1} file {2}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine(), dslFile);
                                             haveError = true;
                                         }
                                     }
@@ -257,21 +258,21 @@ namespace LogicDataGenerator
                                   string.IsNullOrEmpty(typeConverter.m_MessageType) ||
                                   string.IsNullOrEmpty(typeConverter.m_Message2LogicCode) ||
                                   string.IsNullOrEmpty(typeConverter.m_Logic2MessageCode)) {
-                                    LogSystem.Error("typeconverter {0} error, logictype or messagetype or message2logic or logic2message is null or empty ! line {1} file {2}", funcData.ToScriptString(false), funcData.GetLine(), dslFile);
+                                    LogSystem.Error("typeconverter {0} error, logictype or messagetype or message2logic or logic2message is null or empty ! line {1} file {2}", funcData.ToScriptString(false, DelimiterInfo.Default), funcData.GetLine(), dslFile);
                                     haveError = true;
                                 }
                                 if (typeConverter.m_IsSpecial && string.IsNullOrEmpty(typeConverter.m_CrudCode)) {
-                                    LogSystem.Error("typeconverter {0} error, special type must have crudcode ! line {1} file {2}", funcData.ToScriptString(false), funcData.GetLine(), dslFile);
+                                    LogSystem.Error("typeconverter {0} error, special type must have crudcode ! line {1} file {2}", funcData.ToScriptString(false, DelimiterInfo.Default), funcData.GetLine(), dslFile);
                                     haveError = true;
                                 }
                             }
                             else {
-                                LogSystem.Error("typeconverter {0} must have 1 params ! line {1} file {2}", funcData.ToScriptString(false), funcData.GetLine(), dslFile);
+                                LogSystem.Error("typeconverter {0} must have 1 params ! line {1} file {2}", funcData.ToScriptString(false, DelimiterInfo.Default), funcData.GetLine(), dslFile);
                                 haveError = true;
                             }
                         }
                         else {
-                            LogSystem.Error("typeconverter {0} must have function body ! line {1} file {2}", info.ToScriptString(false), info.GetLine(), dslFile);
+                            LogSystem.Error("typeconverter {0} must have function body ! line {1} file {2}", info.ToScriptString(false, DelimiterInfo.Default), info.GetLine(), dslFile);
                             haveError = true;
                         }
                     }
@@ -1603,7 +1604,7 @@ namespace LogicDataGenerator
                                 ++nextValue;
                             }
                             else {
-                                LogSystem.Error("enum member {0} must have name ! line {1} file {2}", comp.ToScriptString(false), comp.GetLine(), dslFile);
+                                LogSystem.Error("enum member {0} must have name ! line {1} file {2}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine(), dslFile);
                                 haveError = true;
                             }
                         }
@@ -1619,7 +1620,7 @@ namespace LogicDataGenerator
                                             nextValue = int.Parse(id);
                                         }
                                         else {
-                                            LogSystem.Error("enum member {0} value must be number ! line {1} file {2}", comp.ToScriptString(false), comp.GetLine(), dslFile);
+                                            LogSystem.Error("enum member {0} value must be number ! line {1} file {2}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine(), dslFile);
                                             haveError = true;
                                         }
                                         enumTypeDef.m_EnumMembers.Add(field.GetId(), nextValue);
@@ -1630,19 +1631,19 @@ namespace LogicDataGenerator
                                     ++nextValue;
                                 }
                                 else {
-                                    LogSystem.Error("enum member {0} must have name ! line {1} file {2}", comp.ToScriptString(false), comp.GetLine(), dslFile);
+                                    LogSystem.Error("enum member {0} must have name ! line {1} file {2}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine(), dslFile);
                                     haveError = true;
                                 }
                             }
                             else {
-                                LogSystem.Error("enum member {0} must end with ';' ! line {1} file {2}", comp.ToScriptString(false), comp.GetLine(), dslFile);
+                                LogSystem.Error("enum member {0} must end with ';' ! line {1} file {2}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine(), dslFile);
                                 haveError = true;
                             }
                         }
                     }
                 }
                 else {
-                    LogSystem.Error("enum {0} must have 1 or 2 params (name and group) ! line {1} file {2}", funcData.ToScriptString(false), funcData.GetLine(), dslFile);
+                    LogSystem.Error("enum {0} must have 1 or 2 params (name and group) ! line {1} file {2}", funcData.ToScriptString(false, DelimiterInfo.Default), funcData.GetLine(), dslFile);
                     haveError = true;
                 }
             }
@@ -1728,7 +1729,7 @@ namespace LogicDataGenerator
                                                     }
                                                 }
                                                 else {
-                                                    LogSystem.Error("message member options {0} must end with ';' ! line {1} file {2}", comp2.ToScriptString(false), comp2.GetLine(), dslFile);
+                                                    LogSystem.Error("message member options {0} must end with ';' ! line {1} file {2}", comp2.ToScriptString(false, DelimiterInfo.Default), comp2.GetLine(), dslFile);
                                                     haveError = true;
                                                 }
                                             }
@@ -1760,7 +1761,7 @@ namespace LogicDataGenerator
                                         messageDef.m_ColumnNames.Add(memberDef.m_MemberName);
                                     }
                                     else {
-                                        LogSystem.Error("member {0} must have name、type and modifier ! line {1} file {2}", comp.ToScriptString(false), comp.GetLine(), dslFile);
+                                        LogSystem.Error("member {0} must have name、type and modifier ! line {1} file {2}", comp.ToScriptString(false, DelimiterInfo.Default), comp.GetLine(), dslFile);
                                         haveError = true;
                                     }
                                 }
@@ -1769,7 +1770,7 @@ namespace LogicDataGenerator
                     }
                 }
                 else {
-                    LogSystem.Error("message {0} must have 1 or 2 params (name and group) ! line {1} file {2}", funcData.ToScriptString(false), funcData.GetLine(), dslFile);
+                    LogSystem.Error("message {0} must have 1 or 2 params (name and group) ! line {1} file {2}", funcData.ToScriptString(false, DelimiterInfo.Default), funcData.GetLine(), dslFile);
                     haveError = true;
                 }
             }
