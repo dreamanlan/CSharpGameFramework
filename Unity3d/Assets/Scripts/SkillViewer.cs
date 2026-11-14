@@ -261,7 +261,7 @@ public class SkillViewer : MonoBehaviour
                 PredefinedSkill.Instance.ReBuild();
                 GfxSkillSystem.Instance.Reset();
                 GfxSkillSystem.Instance.ClearSkillInstancePool();
-                DotnetSkillScript.SkillConfigManager.Instance.Clear();
+                SkillSystem.SkillConfigManager.Instance.Clear();
 
                 GameObject actor = GameObject.Find("Editor_ActorRecord");
                 GameObject skills = GameObject.Find("Editor_SkillRecords");
@@ -322,7 +322,7 @@ public class SkillViewer : MonoBehaviour
             PredefinedSkill.Instance.ReBuild();
             GfxSkillSystem.Instance.Reset();
             GfxSkillSystem.Instance.ClearSkillInstancePool();
-            DotnetSkillScript.SkillConfigManager.Instance.Clear();
+            SkillSystem.SkillConfigManager.Instance.Clear();
 
             GameObject actor = GameObject.Find("Editor_ActorRecord");
             GameObject skills = GameObject.Find("Editor_SkillRecords");
@@ -368,7 +368,7 @@ public class SkillViewer : MonoBehaviour
         PredefinedSkill.Instance.ReBuild();
         GfxSkillSystem.Instance.Reset();
         GfxSkillSystem.Instance.ClearSkillInstancePool();
-        DotnetSkillScript.SkillConfigManager.Instance.Clear();
+        SkillSystem.SkillConfigManager.Instance.Clear();
 
         GameObject actor = GameObject.Find("Editor_ActorRecord");
         GameObject skills = GameObject.Find("Editor_SkillRecords");

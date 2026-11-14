@@ -306,11 +306,16 @@ namespace ScriptableFramework.Story.Commands
                 }
                 EntityInfo obj = scene.SceneContext.GetEntityById(objId);
                 if (null != obj) {
-                    ImpactInfo impactInfo = new ImpactInfo(impactId);
-                    impactInfo.StartTime = TimeUtility.GetLocalMilliseconds();
-                    impactInfo.ImpactSenderId = objId;
-                    impactInfo.SkillId = 0;
-                    if (null != impactInfo.ConfigData) {
+                    TableConfig.ImpactData cfg = TableConfig.ImpactDataProvider.Instance.GetImpactData(impactId);
+                    if (null != cfg) {
+                        ImpactInfo impactInfo = new ImpactInfo(impactId);
+                        impactInfo.StartTime = TimeUtility.GetLocalMilliseconds();
+                        impactInfo.ImpactSenderId = obj.GetId();
+                        impactInfo.SkillId = 0;
+                        impactInfo.ImpactLogicId = cfg.logicId;
+                        impactInfo.BuffDataId = cfg.buffDataId;
+                        impactInfo.StateId = cfg.stateId;
+                        impactInfo.DurationTime = cfg.impactTime > 0 ? cfg.impactTime : cfg.duration;
                         obj.GetSkillStateInfo().AddImpact(impactInfo);
                         seq = impactInfo.Seq;
                         Msg_RC_AddImpact addImpactBuilder = new Msg_RC_AddImpact();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using DotnetSkillScript;
+using SkillSystem;
 
 namespace ScriptableFramework.Skill
 {
@@ -247,13 +247,11 @@ namespace ScriptableFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("curvemove", new SkillTrigerFactoryHelper<Trigers.CurveMovementTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("damage", new SkillTrigerFactoryHelper<Trigers.DamageTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("addstate", new SkillTrigerFactoryHelper<Trigers.AddStateTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("removestate", new SkillTrigerFactoryHelper<Trigers.RemoveStateTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("addshield", new SkillTrigerFactoryHelper<Trigers.AddShieldTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("removeshield", new SkillTrigerFactoryHelper<Trigers.RemoveShieldTriger>());
-
-            SkillTrigerManager.Instance.RegisterTrigerFactory("bufftotarget", new SkillTrigerFactoryHelper<Trigers.BuffToTargetTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("bufftoself", new SkillTrigerFactoryHelper<Trigers.BuffToSelfTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("addimpacttoself", new SkillTrigerFactoryHelper<Trigers.AddImpactToSelfTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("addimpacttotarget", new SkillTrigerFactoryHelper<Trigers.AddImpactToTargetTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("stateimpact", new SkillTrigerFactoryHelper<Trigers.StateImpactTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("stopimpact", new SkillTrigerFactoryHelper<Trigers.StopImpactTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("removeimpact", new SkillTrigerFactoryHelper<Trigers.RemoveImpactTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("impact", new SkillTrigerFactoryHelper<Trigers.ImpactTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("aoeimpact", new SkillTrigerFactoryHelper<Trigers.AoeImpactTriger>());
@@ -274,7 +272,6 @@ namespace ScriptableFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("restorepos", new SkillTrigerFactoryHelper<Trigers.RestorePosTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("adjustsectionduration", new SkillTrigerFactoryHelper<Trigers.AdjustSectionDurationTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("keepsectionforbuff", new SkillTrigerFactoryHelper<Trigers.KeepSectionForBuffTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("stopsection", new SkillTrigerFactoryHelper<Trigers.StopSectionTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("gotosection", new SkillTrigerFactoryHelper<Trigers.GotoSectionTrigger>());
         }

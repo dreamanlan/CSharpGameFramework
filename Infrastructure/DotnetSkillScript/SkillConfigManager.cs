@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ScriptableFramework;
 
-namespace DotnetSkillScript
+namespace SkillSystem
 {
     public sealed class SkillConfigManager
     {

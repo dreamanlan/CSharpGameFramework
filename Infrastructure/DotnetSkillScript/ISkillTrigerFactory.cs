@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DotnetSkillScript
+namespace SkillSystem
 {
     public interface ISkillTrigerFactory
     {

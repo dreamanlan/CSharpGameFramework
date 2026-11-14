@@ -6,24 +6,28 @@
 =======================================================================================================********===========================================================================================
 
 * 技能系统的流程与几个概念
-基于DSL的技能系统里的一次技能释放，指的是攻击方发起一个技能(Skill)，在某个时刻对目标产生瞬间影响(Impact)，并有可能产生一个持续的影响（Buff）的过程。
-这里涉及到的Skill、Impact与Buff，三者都使用dsl来描述，Skill表里的type列用来区分这三种类型。
+基于DSL的技能系统里的一次技能释放，指的是攻击方发起一个技能(Skill)，在某个时刻对目标产生影响(Impact)的过程。
+Skill 用 DSL 描述以保持灵活性；Impact 不再用 DSL 描述，而是由 ImpactData.txt 配置行的 logicId 选择受限的业务逻辑（按业务分类的 19 类 impact logic），
+buffDataId 指向 BuffData.txt 的纯属性修正表。旧的 buff、state、shield 三套机制已移除，其效果统一由 impact 承载：
+霸体、无敌、护盾、控制状态等由对应 logic 与 impact 的 stateId 在 StartImpact/Tick/StopImpact 生命周期内驱动。
 
 Skill：在攻击方对象上实现流程，一般如果攻击方死亡就会消失。
-Impact：在受击方对象上实现流程，目前主要有2类，一个是子弹技能，一个是受击技能。与Skill拆分开是为了表达攻击方完成Skill后不用等受击方的处理完成即可开始做其它事情（典型的开枪打出子弹后，立即可以做其它事情）。
-Buff：在受击方对象上实现流程，主要表述对受击方的持续性的影响。
+Impact：在受击方对象上生效的效果实例，由 logicId 决定行为，由 buffDataId 决定属性修正。新增效果分类只需在 ImpactLogicManager 注册新的 logic，不需要写 DSL。
 
-一个对象上同时只能激活一个Skill，同时可以激活多个Impact与Buff。
+一个对象上同时只能激活一个Skill，同时可以激活多个Impact。
+
+技能 DSL 里可用的 impact 触发器：
+addimpacttoself(start_time, impact_id[, duration]);
+addimpacttotarget(start_time, impact_id[, duration]);
+stateimpact(start_time, impact_id[, duration]);
+stopimpact(start_time, impact_id);
+removeimpact(start_time);
 
 对不同的技能，完整过程可能有如下几种情形：
 
 Skill -> Impact (受击)
 
-Skill -> Impact (受击) -> Buff
-
 Skill -> Impact (子弹) -> Impact (受击)
-
-Skill -> Impact (子弹) -> Impact (受击) -> Buff
 
 * 相关技能配表
 
@@ -314,10 +318,8 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     Example：
       impact(200);
       
-27. keepsectionforbuff(interval[, starttime[, deltatime]]);
-    功能：以interval时间间隔调整当前section持续时间为buff的持续时间（用于支持多个buff叠加导致持续时间动态变化）
-    Example：
-      keepsectionforbuff(100,0);
+27. (已移除) keepsectionforbuff(interval[, starttime[, deltatime]]);
+    旧的 buff 持续时间跟随机制已移除；section 持续时间由 DSL 指定，或用 adjustsectionduration 调整。
 
 28. params([startTime])
     {
@@ -330,11 +332,11 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     };
     功能：定义技能参数，可以多次定义（此时startTime应不同且在间隔里会有使用参数的地方）。
         
-29. addstate(state[,starttime]);
-    功能：给当前impact对象添加状态，可以是"invincible","fixedposition","silence","sleep","hidden"
+29. (已移除) addstate(state[,starttime]);
+    状态改由 impact 的 stateId 驱动，用 addimpacttoself/addimpacttotarget/stateimpact 施加。
     
-30. removestate(state[,starttime]);
-    功能：给当前impact对象添加状态，可以是"invincible","fixedposition","silence","sleep","hidden",""
+30. (已移除) removestate(state[,starttime]);
+    状态随 impact 生命周期结束由 stopimpact/removeimpact 统一移除。
     
 31. aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
     功能：按指定偏移位置与配表的范围对指定目标产生aoe impact
@@ -357,8 +359,8 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     
     控制点的计算方法：假设初始位置距目标S，则控制点在初始位置朝目标按偏转方向“S/2*缩放矢量”距离处。
     
-33. stopsection([start_time])[if(type)];
-    功能：如果指定条件满足则终止当前section。目前只支持type为"shield"，表示如果盾消失则停止。没有if部分则在start_time终止当前section（此种情形一般用在onmessage里面）。
+33. stopsection([start_time]);
+    功能：在 start_time 终止当前section（此种情形一般用在onmessage里面）。旧的 if(shield) 条件分支已随 shield 机制移除。
     
 34. periodicallyimpact(starttime,centerx,centery,centerz,relativeToTarget,duration,interval);
     功能：按指定的周期产生impact
@@ -375,11 +377,11 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
 38. publishgfxevent(start_time,event,group,arg1,arg2,arg3,...);
     功能：发送gfx订阅事件，触发订阅了此event的函数
     
-39. addshield([start_time]);
-    功能：给目标加盾（根据配表数值）
+39. (已移除) addshield([start_time]);
+    护盾改由 impact logic 承载，用 addimpacttoself/addimpacttotarget 施加对应 impact。
     
-40. removeshield([start_time]);
-    功能：移除目标的盾
+40. (已移除) removeshield([start_time]);
+    护盾随 impact 生命周期结束由 stopimpact/removeimpact 移除。
     
 41. selecttarget(type[,start_time]);
     功能：按指定类别选择目标

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ScriptableFrameworkMessage;
 using ScriptRuntime;
-using DotnetSkillScript;
+using SkillSystem;
 
 namespace ScriptableFramework
 {

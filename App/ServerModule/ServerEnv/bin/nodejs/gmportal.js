@@ -5,7 +5,7 @@ var crypto = require('crypto');
 var hash = require("./hash");
 var config = require("./config");
 var WebSocketServer = require('ws').Server;
-var MsgEnum = require('./DashFireGmMsgEnum').DashFireMessage.GmMessageDefine;
+var MsgEnum = require('./GameGmMsgEnum').GameMessage.GmMessageDefine;
 
 var PORT = parseInt(core_query_config("nodejsport"));
 var ENABLE_CLIENT_LOG = 0;

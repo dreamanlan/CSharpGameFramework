@@ -10,16 +10,16 @@ skill(107)
     {
       transform(vector3(0,1,0));
     };
-    addstate("sleep");
+    addimpacttoself(0,10002);
     adjustsectionduration("impact",100);
     damage(0);
   };
   section(100)
   {
-    removestate("sleep");
+    stopimpact(0,10002);
   };
   onstop
   {
-    removestate("sleep");
+    stopimpact(0,10002);
   };
 };

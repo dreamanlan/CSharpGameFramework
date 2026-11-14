@@ -6,7 +6,7 @@ using System.Text;
 using System.IO;
 using ScriptableFramework;
 using ScriptableFramework.Skill;
-using DotnetSkillScript;
+using SkillSystem;
 
 [CustomEditor(typeof(InplaceSkillInfo))]
 public class InplaceSkillInfoInspector : Editor

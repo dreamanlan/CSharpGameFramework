@@ -21,7 +21,7 @@ namespace ScriptableFramework
             List<ImpactInfo> impacts = obj.GetSkillStateInfo().GetAllImpact();
             for (int i = 0; i < impacts.Count; ++i) {
                 ImpactInfo impact = impacts[i];
-                if (impact.ConfigData.type == (int)SkillOrImpactType.Buff) {
+                if (impact.BuffDataId > 0) {
                     impact.RefixCharacterProperty(obj);
                 }
             }

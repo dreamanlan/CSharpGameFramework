@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using DotnetSkillScript;
+using SkillSystem;
 
 namespace ScriptableFramework.Skill.Trigers
 {
@@ -117,64 +117,6 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// keepsectionforbuff(internal_time[, start_time[, delta_time]]);
-    /// </summary>
-    internal class KeepSectionForBuffTrigger : AbstractSkillTriger
-    {
-        protected override ISkillTriger OnClone()
-        {
-            KeepSectionForBuffTrigger copy = new KeepSectionForBuffTrigger();
-            
-            copy.m_Interval = m_Interval;
-            copy.m_DeltaTime = m_DeltaTime;
-            
-            return copy;
-        }
-        public override void Reset()
-        {
-            
-            m_LastKeepTime = 0;
-        }
-        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
-        {
-            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
-            if (null == senderObj) return false;
-            GameObject obj = senderObj.GfxObj;
-            if (null == obj) return false;
-            if (curSectionTime < StartTime) {
-                return true;
-            }
-            if (m_LastKeepTime <= 0 || m_LastKeepTime + m_Interval >= curSectionTime) {
-                m_LastKeepTime = curSectionTime;
-                int time = EntityController.Instance.GetImpactDuration(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
-                if (time > 0) {
-                    instance.SetCurSectionDuration((long)time + m_DeltaTime);
-                } else {
-                    LogSystem.Warn("adjustsectionduration impact duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
-                }
-            }
-            return true;
-        }
-        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
-        {
-            if (callData.GetParamNum() > 0) {
-                m_Interval = long.Parse(callData.GetParamId(0));
-            }
-            if (callData.GetParamNum() > 1) {
-                StartTime = long.Parse(callData.GetParamId(1));
-            }
-            if (callData.GetParamNum() > 2) {
-                m_DeltaTime = long.Parse(callData.GetParamId(2));
-            }
-            
-        }
-        
-        private long m_Interval = 100;
-        private long m_DeltaTime = 50;
-        
-        private long m_LastKeepTime = 0;
-    }
-    /// <summary>
     /// stopsection([start_time])[if(type)];
     /// stopsection([start_time])[ifnot(type)];
     /// </summary>
@@ -200,21 +142,11 @@ namespace ScriptableFramework.Skill.Trigers
                 return true;
             }
             if (m_HaveIsContinue) {
-                if (0 == m_Type.CompareTo("shield")) {
-                    if (EntityController.Instance.HaveShield(senderObj.ObjId))
-                        return true;
-                } else {
-                    if (EntityController.Instance.HaveState(senderObj.ObjId, m_Type))
-                        return true;
-                }
+                if (EntityController.Instance.HaveState(senderObj.ObjId, m_Type))
+                    return true;
             } else {
-                if (0 == m_Type.CompareTo("shield")) {
-                    if (!EntityController.Instance.HaveShield(senderObj.ObjId))
-                        return true;
-                } else {
-                    if (!EntityController.Instance.HaveState(senderObj.ObjId, m_Type))
-                        return true;
-                }
+                if (!EntityController.Instance.HaveState(senderObj.ObjId, m_Type))
+                    return true;
             }
             instance.StopCurSection();
             return false;

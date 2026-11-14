@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DotnetSkillScript
+namespace SkillSystem
 {
     public delegate void VisitPropertyDelegation(string group, string key, IProperty property);
     public interface IPropertyVisitor

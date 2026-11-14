@@ -8,20 +8,20 @@ skill(108)
       transform(vector3(0,1,0));
     };
     enablemoveagent(false);
-    addstate("sleep");
+    addimpacttoself(0,10002);
     adjustsectionduration("impact",100);
     jump(1500,10,0,1,vector3(0,0,0),0);
     damage(0);
   };
   section(100)
   {
-    removestate("sleep");
+    stopimpact(0,10002);
     animation("Stand");
     enablemoveagent(true);
   };
   onstop
   {
-    removestate("sleep");
+    stopimpact(0,10002);
     animation("Stand");
     enablemoveagent(true);
   };

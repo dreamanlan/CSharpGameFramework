@@ -1,0 +1,21 @@
+{
+    "name": "myself.gmscript.Editor",
+    "rootNamespace": "",
+    "references": [
+        "myself.gmscript.Runtime",
+        "Unity.RenderPipelines.Universal.Editor",
+		"Unity.Collections"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

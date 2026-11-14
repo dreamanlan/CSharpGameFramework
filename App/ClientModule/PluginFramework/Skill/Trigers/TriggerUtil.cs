@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AI;
-using DotnetSkillScript;
+using SkillSystem;
 
 namespace ScriptableFramework.Skill.Trigers
 {

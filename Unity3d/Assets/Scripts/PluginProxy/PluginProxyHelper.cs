@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ScriptableFramework;
 
-using DotnetSkillScript;
+using SkillSystem;
 using DotnetStoryScript;
 
 public enum PluginType

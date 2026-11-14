@@ -1,0 +1,16 @@
+//For relevant C# code, see UiHandler.cs
+
+label(@auto, 0, 1, "test label:");
+dropdown(@auto, 0, 2, "OnValueChanged", 0){
+	"0--Option0",
+	"1--Option1",
+	"2--Option2"
+};
+toggle(toggle1, 1, 1, "show", "OnCheckedChanged", "true");
+button(@auto, 1, 2, "Press", "OnButton");
+toggle_group(@auto, 1, 3){
+	toggle(group_toggle1, "one", "OnOneChanged", "true");
+	toggle(group_toggle2, "two", "OnTwoChanged", "true");
+};
+label(@auto, 2, 1, "test slider:");
+slider(slider1, 2, 2, "OnSliderChanged", 0.0, 1.0, 0.5);

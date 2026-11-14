@@ -69,28 +69,8 @@ namespace RoomServer
                 if (null != impactData) {
                     skill.impactData = impactData;
 
-                    if (skill.type == (int)SkillOrImpactType.Buff) {
-                        skill.damageData.Multiples = impactData.multiple;
-                        skill.damageData.Damages = impactData.damage;
-                        skill.damageData.Vampires = impactData.vampire;
-
-                        if (impactData.attr1 > 0 && impactData.value1 > 0)
-                            skill.attrValues[impactData.attr1] = impactData.value1;
-                        if (impactData.attr2 > 0 && impactData.value2 > 0)
-                            skill.attrValues[impactData.attr2] = impactData.value2;
-                        if (impactData.attr3 > 0 && impactData.value3 > 0)
-                            skill.attrValues[impactData.attr3] = impactData.value3;
-                        if (impactData.attr4 > 0 && impactData.value4 > 0)
-                            skill.attrValues[skillData.attr4] = impactData.value4;
-                        if (impactData.attr5 > 0 && impactData.value5 > 0)
-                            skill.attrValues[skillData.attr5] = impactData.value5;
-                        if (impactData.attr6 > 0 && impactData.value6 > 0)
-                            skill.attrValues[skillData.attr6] = impactData.value6;
-                        if (impactData.attr7 > 0 && impactData.value7 > 0)
-                            skill.attrValues[skillData.attr7] = impactData.value7;
-                        if (impactData.attr8 > 0 && impactData.value8 > 0)
-                            skill.attrValues[skillData.attr8] = impactData.value8;
-                    }
+                    // Buff-type skill assembly is removed: impact behaviour comes from logicId,
+                    // attribute deltas come from buffDataId (BuffData.txt) at runtime.
                 }
             }
             var resources = TableConfig.SkillResourcesProvider.Instance.SkillResourcesMgr.GetData();

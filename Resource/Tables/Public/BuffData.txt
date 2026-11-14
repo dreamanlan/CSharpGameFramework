@@ -1,0 +1,5 @@
+int32	string	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32
+id	desc	attr1	value1	attr2	value2	attr3	value3	attr4	value4	attr5	value5	attr6	value6	attr7	value7	attr8	value8
+// buff property table referenced by ImpactData.buffDataId
+1001	slow	2011	-1000														
+1002	attack up	1005	500														

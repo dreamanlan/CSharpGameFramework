@@ -418,6 +418,180 @@ namespace TableConfig
 
 namespace TableConfig
 {
+	public sealed partial class BuffData : IDataRecord<int>
+	{
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 72)]
+		private struct BuffDataRecord
+		{
+			internal int id;
+			internal int desc;
+			internal int attr1;
+			internal int value1;
+			internal int attr2;
+			internal int value2;
+			internal int attr3;
+			internal int value3;
+			internal int attr4;
+			internal int value4;
+			internal int attr5;
+			internal int value5;
+			internal int attr6;
+			internal int value6;
+			internal int attr7;
+			internal int value7;
+			internal int attr8;
+			internal int value8;
+		}
+
+		public int id;
+		public string desc;
+		public int attr1;
+		public int value1;
+		public int attr2;
+		public int value2;
+		public int attr3;
+		public int value3;
+		public int attr4;
+		public int value4;
+		public int attr5;
+		public int value5;
+		public int attr6;
+		public int value6;
+		public int attr7;
+		public int value7;
+		public int attr8;
+		public int value8;
+
+		public bool ReadFromBinary(BinaryTable table, int index)
+		{
+			BuffDataRecord record = GetRecord(table,index);
+			id = DataRecordUtility.ExtractInt(table, record.id, 0);
+			desc = DataRecordUtility.ExtractString(table, record.desc, "");
+			attr1 = DataRecordUtility.ExtractInt(table, record.attr1, 0);
+			value1 = DataRecordUtility.ExtractInt(table, record.value1, 0);
+			attr2 = DataRecordUtility.ExtractInt(table, record.attr2, 0);
+			value2 = DataRecordUtility.ExtractInt(table, record.value2, 0);
+			attr3 = DataRecordUtility.ExtractInt(table, record.attr3, 0);
+			value3 = DataRecordUtility.ExtractInt(table, record.value3, 0);
+			attr4 = DataRecordUtility.ExtractInt(table, record.attr4, 0);
+			value4 = DataRecordUtility.ExtractInt(table, record.value4, 0);
+			attr5 = DataRecordUtility.ExtractInt(table, record.attr5, 0);
+			value5 = DataRecordUtility.ExtractInt(table, record.value5, 0);
+			attr6 = DataRecordUtility.ExtractInt(table, record.attr6, 0);
+			value6 = DataRecordUtility.ExtractInt(table, record.value6, 0);
+			attr7 = DataRecordUtility.ExtractInt(table, record.attr7, 0);
+			value7 = DataRecordUtility.ExtractInt(table, record.value7, 0);
+			attr8 = DataRecordUtility.ExtractInt(table, record.attr8, 0);
+			value8 = DataRecordUtility.ExtractInt(table, record.value8, 0);
+			return true;
+		}
+
+		public void WriteToBinary(BinaryTable table)
+		{
+			BuffDataRecord record = new BuffDataRecord();
+			record.id = DataRecordUtility.SetValue(table, id, 0);
+			record.desc = DataRecordUtility.SetValue(table, desc, "");
+			record.attr1 = DataRecordUtility.SetValue(table, attr1, 0);
+			record.value1 = DataRecordUtility.SetValue(table, value1, 0);
+			record.attr2 = DataRecordUtility.SetValue(table, attr2, 0);
+			record.value2 = DataRecordUtility.SetValue(table, value2, 0);
+			record.attr3 = DataRecordUtility.SetValue(table, attr3, 0);
+			record.value3 = DataRecordUtility.SetValue(table, value3, 0);
+			record.attr4 = DataRecordUtility.SetValue(table, attr4, 0);
+			record.value4 = DataRecordUtility.SetValue(table, value4, 0);
+			record.attr5 = DataRecordUtility.SetValue(table, attr5, 0);
+			record.value5 = DataRecordUtility.SetValue(table, value5, 0);
+			record.attr6 = DataRecordUtility.SetValue(table, attr6, 0);
+			record.value6 = DataRecordUtility.SetValue(table, value6, 0);
+			record.attr7 = DataRecordUtility.SetValue(table, attr7, 0);
+			record.value7 = DataRecordUtility.SetValue(table, value7, 0);
+			record.attr8 = DataRecordUtility.SetValue(table, attr8, 0);
+			record.value8 = DataRecordUtility.SetValue(table, value8, 0);
+			byte[] bytes = GetRecordBytes(record);
+			table.Records.Add(bytes);
+		}
+
+		public int GetId()
+		{
+			return id;
+		}
+
+		private unsafe BuffDataRecord GetRecord(BinaryTable table, int index)
+		{
+			BuffDataRecord record;
+			byte[] bytes = table.Records[index];
+			fixed (byte* p = bytes) {
+				record = *(BuffDataRecord*)p;
+			}
+			return record;
+		}
+		private static unsafe byte[] GetRecordBytes(BuffDataRecord record)
+		{
+			byte[] bytes = new byte[sizeof(BuffDataRecord)];
+			fixed (byte* p = bytes) {
+				BuffDataRecord* temp = (BuffDataRecord*)p;
+				*temp = record;
+			}
+			return bytes;
+		}
+	}
+
+	public sealed partial class BuffDataProvider
+	{
+		public void LoadForClient()
+		{
+			Load(FilePathDefine_Client.C_BuffData);
+		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_BuffData);
+		}
+		public void Load(string file)
+		{
+			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
+				m_BuffDataMgr.LoadFromBinary(file);
+			} else {
+				LogSystem.Error("BuffData is not a table !");
+			}
+		}
+		public void Save(string file)
+		{
+		#if DEBUG
+			m_BuffDataMgr.SaveToBinary(file);
+		#endif
+		}
+		public void Clear()
+		{
+			m_BuffDataMgr.Clear();
+		}
+
+		public DataDictionaryMgr<BuffData,int> BuffDataMgr
+		{
+			get { return m_BuffDataMgr; }
+		}
+
+		public int GetBuffDataCount()
+		{
+			return m_BuffDataMgr.GetDataCount();
+		}
+
+		public BuffData GetBuffData(int id)
+		{
+			return m_BuffDataMgr.GetDataById(id);
+		}
+
+		private DataDictionaryMgr<BuffData,int> m_BuffDataMgr = new DataDictionaryMgr<BuffData,int>();
+
+		public static BuffDataProvider Instance
+		{
+			get { return s_Instance; }
+		}
+		private static BuffDataProvider s_Instance = new BuffDataProvider();
+	}
+}
+
+namespace TableConfig
+{
 	public sealed partial class Const : IDataRecord<int>
 	{
 		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 8)]
@@ -764,7 +938,7 @@ namespace TableConfig
 {
 	public sealed partial class ImpactData : IDataRecord<int>
 	{
-		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 100)]
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 216)]
 		private struct ImpactDataRecord
 		{
 			internal int id;
@@ -792,6 +966,35 @@ namespace TableConfig
 			internal int value7;
 			internal int attr8;
 			internal int value8;
+			internal int logicId;
+			internal int gfxLogicId;
+			internal int impactType;
+			internal int impactTime;
+			internal int breakSuperArmor;
+			internal int isDebuff;
+			internal int isIgnorePassiveCheck;
+			internal int damageType;
+			internal int elementType;
+			internal int damageValue;
+			internal float damageRate;
+			internal float levelRate;
+			internal int buffDataId;
+			internal int paramNum;
+			internal int param0;
+			internal int param1;
+			internal int param2;
+			internal int param3;
+			internal int param4;
+			internal int param5;
+			internal int param6;
+			internal int param7;
+			internal int effect0;
+			internal int effect1;
+			internal int effect2;
+			internal int effect3;
+			internal int effect4;
+			internal float maxDist;
+			internal int stateId;
 		}
 
 		public int id;
@@ -819,6 +1022,35 @@ namespace TableConfig
 		public int value7;
 		public int attr8;
 		public int value8;
+		public int logicId;
+		public int gfxLogicId;
+		public int impactType;
+		public int impactTime;
+		public int breakSuperArmor;
+		public int isDebuff;
+		public int isIgnorePassiveCheck;
+		public int damageType;
+		public int elementType;
+		public int damageValue;
+		public float damageRate;
+		public float levelRate;
+		public int buffDataId;
+		public int paramNum;
+		public string param0;
+		public string param1;
+		public string param2;
+		public string param3;
+		public string param4;
+		public string param5;
+		public string param6;
+		public string param7;
+		public string effect0;
+		public string effect1;
+		public string effect2;
+		public string effect3;
+		public string effect4;
+		public float maxDist;
+		public int stateId;
 
 		public bool ReadFromBinary(BinaryTable table, int index)
 		{
@@ -848,6 +1080,35 @@ namespace TableConfig
 			value7 = DataRecordUtility.ExtractInt(table, record.value7, 0);
 			attr8 = DataRecordUtility.ExtractInt(table, record.attr8, 0);
 			value8 = DataRecordUtility.ExtractInt(table, record.value8, 0);
+			logicId = DataRecordUtility.ExtractInt(table, record.logicId, 0);
+			gfxLogicId = DataRecordUtility.ExtractInt(table, record.gfxLogicId, 0);
+			impactType = DataRecordUtility.ExtractInt(table, record.impactType, 0);
+			impactTime = DataRecordUtility.ExtractInt(table, record.impactTime, 0);
+			breakSuperArmor = DataRecordUtility.ExtractInt(table, record.breakSuperArmor, 0);
+			isDebuff = DataRecordUtility.ExtractInt(table, record.isDebuff, 0);
+			isIgnorePassiveCheck = DataRecordUtility.ExtractInt(table, record.isIgnorePassiveCheck, 0);
+			damageType = DataRecordUtility.ExtractInt(table, record.damageType, 0);
+			elementType = DataRecordUtility.ExtractInt(table, record.elementType, 0);
+			damageValue = DataRecordUtility.ExtractInt(table, record.damageValue, 0);
+			damageRate = DataRecordUtility.ExtractFloat(table, record.damageRate, 0);
+			levelRate = DataRecordUtility.ExtractFloat(table, record.levelRate, 0);
+			buffDataId = DataRecordUtility.ExtractInt(table, record.buffDataId, 0);
+			paramNum = DataRecordUtility.ExtractInt(table, record.paramNum, 0);
+			param0 = DataRecordUtility.ExtractString(table, record.param0, "");
+			param1 = DataRecordUtility.ExtractString(table, record.param1, "");
+			param2 = DataRecordUtility.ExtractString(table, record.param2, "");
+			param3 = DataRecordUtility.ExtractString(table, record.param3, "");
+			param4 = DataRecordUtility.ExtractString(table, record.param4, "");
+			param5 = DataRecordUtility.ExtractString(table, record.param5, "");
+			param6 = DataRecordUtility.ExtractString(table, record.param6, "");
+			param7 = DataRecordUtility.ExtractString(table, record.param7, "");
+			effect0 = DataRecordUtility.ExtractString(table, record.effect0, "");
+			effect1 = DataRecordUtility.ExtractString(table, record.effect1, "");
+			effect2 = DataRecordUtility.ExtractString(table, record.effect2, "");
+			effect3 = DataRecordUtility.ExtractString(table, record.effect3, "");
+			effect4 = DataRecordUtility.ExtractString(table, record.effect4, "");
+			maxDist = DataRecordUtility.ExtractFloat(table, record.maxDist, 0);
+			stateId = DataRecordUtility.ExtractInt(table, record.stateId, 0);
 			return true;
 		}
 
@@ -879,6 +1140,35 @@ namespace TableConfig
 			record.value7 = DataRecordUtility.SetValue(table, value7, 0);
 			record.attr8 = DataRecordUtility.SetValue(table, attr8, 0);
 			record.value8 = DataRecordUtility.SetValue(table, value8, 0);
+			record.logicId = DataRecordUtility.SetValue(table, logicId, 0);
+			record.gfxLogicId = DataRecordUtility.SetValue(table, gfxLogicId, 0);
+			record.impactType = DataRecordUtility.SetValue(table, impactType, 0);
+			record.impactTime = DataRecordUtility.SetValue(table, impactTime, 0);
+			record.breakSuperArmor = DataRecordUtility.SetValue(table, breakSuperArmor, 0);
+			record.isDebuff = DataRecordUtility.SetValue(table, isDebuff, 0);
+			record.isIgnorePassiveCheck = DataRecordUtility.SetValue(table, isIgnorePassiveCheck, 0);
+			record.damageType = DataRecordUtility.SetValue(table, damageType, 0);
+			record.elementType = DataRecordUtility.SetValue(table, elementType, 0);
+			record.damageValue = DataRecordUtility.SetValue(table, damageValue, 0);
+			record.damageRate = DataRecordUtility.SetValue(table, damageRate, 0);
+			record.levelRate = DataRecordUtility.SetValue(table, levelRate, 0);
+			record.buffDataId = DataRecordUtility.SetValue(table, buffDataId, 0);
+			record.paramNum = DataRecordUtility.SetValue(table, paramNum, 0);
+			record.param0 = DataRecordUtility.SetValue(table, param0, "");
+			record.param1 = DataRecordUtility.SetValue(table, param1, "");
+			record.param2 = DataRecordUtility.SetValue(table, param2, "");
+			record.param3 = DataRecordUtility.SetValue(table, param3, "");
+			record.param4 = DataRecordUtility.SetValue(table, param4, "");
+			record.param5 = DataRecordUtility.SetValue(table, param5, "");
+			record.param6 = DataRecordUtility.SetValue(table, param6, "");
+			record.param7 = DataRecordUtility.SetValue(table, param7, "");
+			record.effect0 = DataRecordUtility.SetValue(table, effect0, "");
+			record.effect1 = DataRecordUtility.SetValue(table, effect1, "");
+			record.effect2 = DataRecordUtility.SetValue(table, effect2, "");
+			record.effect3 = DataRecordUtility.SetValue(table, effect3, "");
+			record.effect4 = DataRecordUtility.SetValue(table, effect4, "");
+			record.maxDist = DataRecordUtility.SetValue(table, maxDist, 0);
+			record.stateId = DataRecordUtility.SetValue(table, stateId, 0);
 			byte[] bytes = GetRecordBytes(record);
 			table.Records.Add(bytes);
 		}

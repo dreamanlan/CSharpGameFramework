@@ -78,6 +78,18 @@
           }
         }
       },
+      "ImpactSystem/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0",
+          "GameObjects": "1.0.0"
+        },
+        "runtime": {
+          "ImpactSystem.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
       "PluginFramework/1.0.0": {
         "dependencies": {
           "ClientProtoBuf": "1.0.0",
@@ -85,6 +97,7 @@
           "DotnetSkillScript": "1.0.0",
           "DotnetStoryScript": "1.0.0",
           "GameObjects": "1.0.0",
+          "ImpactSystem": "1.0.0",
           "SceneLogic": "1.0.0"
         },
         "runtime": {
@@ -225,6 +238,11 @@
       "sha512": ""
     },
     "GameObjects/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ImpactSystem/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

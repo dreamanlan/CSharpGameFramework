@@ -33,6 +33,7 @@ namespace ScriptableFramework
         public long CdEndTime;              // CD end time
 
         public int ManualSkillId;           // Record the manual skill ID when releasing the skill
+        public int Category = 1;            // 1 = ordinary attack, used by impact damage logic
 
         //Check data
         public int m_SkillCDRefreshCount = 0;

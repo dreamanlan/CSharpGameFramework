@@ -7,13 +7,13 @@
   "targets": {
     ".NETStandard,Version=v2.1": {},
     ".NETStandard,Version=v2.1/": {
-      "SkillSystem/1.0.0": {
+      "DotnetSkillScript/1.0.0": {
         "dependencies": {
           "Common": "1.0.0",
           "Dsl": "0.0.0.0"
         },
         "runtime": {
-          "SkillSystem.dll": {}
+          "DotnetSkillScript.dll": {}
         }
       },
       "Common/1.0.0": {
@@ -40,7 +40,7 @@
     }
   },
   "libraries": {
-    "SkillSystem/1.0.0": {
+    "DotnetSkillScript/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

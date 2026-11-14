@@ -258,7 +258,7 @@ skilltemplate("控制buff")
   section(10)
   {
     enablemoveagent(false);
-    addstate("silence");
+    addimpacttoself(0,10002);
     storepos();
   };
   section(300)
@@ -270,6 +270,6 @@ skilltemplate("控制buff")
   {
     restorepos();
     enablemoveagent(true);
-    removestate("silence");
+    stopimpact(0,10002);
   };
 :};

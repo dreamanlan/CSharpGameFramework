@@ -1,0 +1,21 @@
+{
+    "name": "myself.gmscript.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "UnityEngine.UI",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime",
+        "Unity.TextMeshPro",
+        "UnityEditor.UI"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

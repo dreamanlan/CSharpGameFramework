@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj": {}
+    "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj": {}
   },
   "projects": {
-    "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
         "projectName": "ClientPlugins",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,20 +33,20 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               }
             }
           }
@@ -86,14 +86,87 @@
         }
       }
     },
-    "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ImpactSystem\\ImpactSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ImpactSystem\\ImpactSystem.csproj",
+        "projectName": "ImpactSystem",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ImpactSystem\\ImpactSystem.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ImpactSystem\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+              },
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.320\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj",
         "projectName": "PluginFramework",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -115,23 +188,26 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ImpactSystem\\ImpactSystem.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ImpactSystem\\ImpactSystem.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
+              },
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
               }
             }
           }
@@ -171,14 +247,14 @@
         }
       }
     },
-    "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj",
         "projectName": "ClientProtoBuf",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -237,14 +313,14 @@
         }
       }
     },
-    "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj",
         "projectName": "GameObjects",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -266,14 +342,14 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
               }
             }
           }
@@ -313,14 +389,14 @@
         }
       }
     },
-    "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj",
         "projectName": "SceneLogic",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -342,17 +418,17 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
               },
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
               }
             }
           }
@@ -392,14 +468,14 @@
         }
       }
     },
-    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
         "projectName": "Common",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -458,14 +534,14 @@
         }
       }
     },
-    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
         "projectName": "DotnetSkillScript",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -487,8 +563,8 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               }
             }
           }
@@ -528,14 +604,14 @@
         }
       }
     },
-    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+    "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
+        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
         "projectName": "DotnetStoryScript",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
+        "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\obj\\",
+        "outputPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -557,8 +633,8 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               }
             }
           }

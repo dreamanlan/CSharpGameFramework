@@ -11,17 +11,17 @@ skill(116)
     facetotarget(0,100);
     charge(200,10,1,vector3(-1,0,-1),0);
     damage(0);
-    addstate("sleep");
+    addimpacttoself(0,10002);
   };
   section(100)
   {
-    removestate("sleep");
+    stopimpact(0,10002);
     animation("Stand");
     enablemoveagent(true);
   };
   onstop
   {
-    removestate("sleep");
+    stopimpact(0,10002);
     animation("Stand");
     enablemoveagent(true);
   };

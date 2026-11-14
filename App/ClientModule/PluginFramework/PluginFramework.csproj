@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\InformationService\GameObjects\GameObjects.csproj" />
+    <ProjectReference Include="..\ImpactSystem\ImpactSystem.csproj" />
     <ProjectReference Include="..\..\..\InformationService\SceneLogic\SceneLogic.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\DotnetSkillScript\DotnetSkillScript.csproj" />

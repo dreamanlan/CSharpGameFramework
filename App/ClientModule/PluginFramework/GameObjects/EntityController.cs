@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ScriptableFramework.Skill;
-using DotnetSkillScript;
+using SkillSystem;
 
 namespace ScriptableFramework
 {
@@ -601,6 +601,22 @@ namespace ScriptableFramework
                 EntityInfo entity = view.Entity;
                 entity.Shield = 0;
             }
+        }
+        public void SendImpactLogic(int srcObjId, int targetId, int impactId, int skillId, int duration)
+        {
+            EntityViewModel view = GetEntityViewById(srcObjId);
+            EntityViewModel targetView = GetEntityViewById(targetId);
+            EntityInfo sender = null != view ? view.Entity : null;
+            if (null == sender) sender = null != targetView ? targetView.Entity : null;
+            ImpactSystem.Instance.SendImpactToCharacter(sender, impactId, targetId, skillId, duration,
+                new ScriptRuntime.Vector3(), 0.0f);
+        }
+        public void StopImpactLogic(int targetId, int impactId)
+        {
+            EntityViewModel view = GetEntityViewById(targetId);
+            if (null == view || null == view.Entity) return;
+            if (impactId < 0) ImpactSystem.Instance.StopAllImpact(view.Entity);
+            else ImpactSystem.Instance.StopImpactById(view.Entity, impactId);
         }
         public ImpactInfo SendImpact(int srcObjId, int targetId, int impactId, int skillId)
         {

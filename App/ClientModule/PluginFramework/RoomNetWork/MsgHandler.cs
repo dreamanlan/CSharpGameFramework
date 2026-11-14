@@ -268,20 +268,11 @@ internal class Msg_RC_AddImpact_Handler
         }
         Vector3 senderPos = Vector3.Zero;
         EntityInfo sender = PluginFramework.Instance.GetEntityById(message.sender_id);
-        senderPos = sender.GetMovementStateInfo().GetPosition3D();
-
-        ImpactInfo impactInfo = new ImpactInfo(impactId);
-        impactInfo.StartTime = TimeUtility.GetLocalMilliseconds();
-        impactInfo.SkillId = skillId;
-        impactInfo.DurationTime = message.duration;
-        impactInfo.SenderPosition = senderPos;
-        impactInfo.ImpactSenderId = message.sender_id;
-        if (null != impactInfo.ConfigData) {
-            target.GetSkillStateInfo().AddImpact(impactInfo);
-            int seq = impactInfo.Seq;
-            if (GfxSkillSystem.Instance.StartSkill(target.GetId(), impactInfo.ConfigData, seq)) {
-            }
-        }                
+        if (null != sender) {
+            senderPos = sender.GetMovementStateInfo().GetPosition3D();
+        }
+        EntityInfo impactSender = null != sender ? sender : target;
+        ImpactSystem.Instance.SendImpactToCharacter(impactSender, impactId, target.GetId(), skillId, message.duration, senderPos, 0.0f);
     }
 }
 internal class Msg_RC_RemoveImpact_Handler
@@ -294,10 +285,7 @@ internal class Msg_RC_RemoveImpact_Handler
         int impactId = _msg.impact_id;
         EntityInfo obj = PluginFramework.Instance.GetEntityById(_msg.obj_id);
         if (null != obj) {
-            ImpactInfo impactInfo = obj.GetSkillStateInfo().FindImpactInfoById(impactId);
-            if (null != impactInfo) {
-                GfxSkillSystem.Instance.StopSkill(obj.GetId(), impactId, impactInfo.Seq, false);
-            }
+            ImpactSystem.Instance.StopImpactById(obj, impactId);
         }
     }
 }

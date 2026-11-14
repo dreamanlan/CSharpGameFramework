@@ -1,6 +1,6 @@
 is_global = true
 build_property.RootNamespace = DotnetStoryScript
-build_property.ProjectDir = D:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\
+build_property.ProjectDir = d:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.CsWinRTUseWindowsUIXamlProjections = false

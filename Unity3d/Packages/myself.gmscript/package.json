@@ -1,0 +1,10 @@
+{
+  "name": "myself.gmscript",
+  "version": "0.1.0",
+  "displayName": "Myself.GmScript",
+  "author": {
+    "name": "dreamanlan"
+  },
+  "type": "library",
+  "dependencies": {}
+}

@@ -1,0 +1,25 @@
+skill(107)
+{
+  section(60000)
+  {
+    selfeffect(selfEffect,1000,"eyes",0)
+    {
+      transform(vector3(0,1,0));
+    };
+    selfeffect(hitEffect,1000,"eyes",0)
+    {
+      transform(vector3(0,1,0));
+    };
+    addimpacttoself(0,10002);
+    adjustsectionduration("impact",100);
+    damage(0);
+  };
+  section(100)
+  {
+    stopimpact(0,10002);
+  };
+  onstop
+  {
+    stopimpact(0,10002);
+  };
+};

@@ -1,0 +1,18 @@
+[project]
+name = "mcp-gm"
+version = "0.1.0"
+description = "MCP server bridging AI clients to the Unity GM socket channel (exec DSL / poll logs)"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.9,<2",
+]
+
+[project.scripts]
+mcp-gm-server = "mcp_gm.server:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_gm"]

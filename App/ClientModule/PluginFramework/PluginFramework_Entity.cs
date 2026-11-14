@@ -5,7 +5,7 @@ using System.IO;
 using ScriptableFramework.GmCommands;
 using ScriptableFramework.Story;
 using ScriptableFramework.Skill;
-using DotnetSkillScript;
+using SkillSystem;
 
 namespace ScriptableFramework
 {

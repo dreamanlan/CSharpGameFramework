@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using ScriptableFramework;
 using ScriptableFramework.Skill;
-using DotnetSkillScript;
+using SkillSystem;
 
 public class InplaceSkillInfo : MonoBehaviour
 {

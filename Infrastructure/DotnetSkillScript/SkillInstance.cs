@@ -44,7 +44,7 @@ using ScriptableFramework;
 ///   };
 /// };
 /// </summary>
-namespace DotnetSkillScript
+namespace SkillSystem
 {
     public sealed class IntSkillInstanceDict : Dictionary<int, SkillInstance>
     {

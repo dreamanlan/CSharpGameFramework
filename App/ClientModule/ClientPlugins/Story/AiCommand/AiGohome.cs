@@ -5,7 +5,7 @@ using System.Text;
 using ScriptableFramework;
 using ScriptableFramework;
 using ScriptableFramework.Skill;
-using DotnetSkillScript;
+using SkillSystem;
 using DotnetStoryScript;
 using DotnetStoryScript.DslExpression;
 

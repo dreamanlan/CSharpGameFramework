@@ -93,6 +93,7 @@ namespace ScriptableFramework
         x3009_无敌 = 3009,
         x3010_复活 = 3010,
         x3011_隐身 = 3011,
+        x3012_超级霸体 = 3012,
 
         x4001_职业 = 4001,
         x4002_阵营 = 4002,
@@ -105,6 +106,8 @@ namespace ScriptableFramework
         x5004_SC当前值 = 5004,
         x5005_UC最大值 = 5005,
         x5006_UC当前值 = 5006,
+        x5007_怒气当前值 = 5007,
+        x5008_怒气最大值 = 5008,
     }
 
     public static class CharacterStateUtility

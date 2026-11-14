@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ScriptableFramework;
 using ScriptableFramework.Skill;
-using DotnetSkillScript;
+using SkillSystem;
 
 internal class NativeSkillTriggerFactory : ISkillTrigerFactory
 {

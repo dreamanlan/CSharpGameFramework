@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using System.Text;
 
-namespace DotnetSkillScript
+namespace SkillSystem
 {
     /// <summary>
     /// This class does not lock, constraint: the registration of all triggers must be completed when the program starts.

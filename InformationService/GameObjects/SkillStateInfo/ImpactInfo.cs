@@ -24,6 +24,22 @@ namespace ScriptableFramework
         public TableConfig.SkillDamageData DamageData;
         public CharacterProperty SenderProperty;
 
+        // Effect runtime state: logic id selects behaviour, buffDataId selects attribute deltas.
+        public int ImpactLogicId = 0;
+        public int ImpactType = (int)ScriptableFramework.ImpactType.BUFF;
+        public int BuffDataId = 0;
+        public int StateId = 0;
+        public bool IsActivated = false;
+        public bool HasEffectApplyed = false;
+        public bool IsGfxControl = false;
+        public float Factor = 1.0f;
+        public int ImpactWrapCnt = 1;
+        public float MaxMoveDistance = 0.0f;
+        public int LeftEnableMoveCount = 0;
+        public List<string> ExtraParams = new List<string>();
+        public List<string> EffectList = new List<string>();
+        public ImpactLogicDatas LogicDatas = new ImpactLogicDatas();
+
         public ImpactInfo(int impactId)
         {
             ImpactId = impactId;
@@ -45,11 +61,7 @@ namespace ScriptableFramework
 
         public void RefixCharacterProperty(EntityInfo entity)
         {
-            if (ConfigData.attrValues.Count > 0) {
-                foreach (var pair in ConfigData.attrValues) {
-                    entity.ActualProperty.IncreaseInt((CharacterPropertyEnum)pair.Key, pair.Value);
-                }
-            }
+            if (BuffDataId > 0) BuffRefixProperty.RefixCharacterProperty(entity, BuffDataId, Factor);
         }
     }
 }

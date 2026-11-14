@@ -119,13 +119,13 @@ namespace ScriptableFramework
         }
         public void AddImpact(ImpactInfo info)
         {
-            if (null == info.ConfigData) {
+            if (null == info.ConfigData && info.ImpactLogicId <= 0) {
                 LogSystem.Error("impact {0} config can't found !", info.ImpactId);
                 return;
             }
             m_ImpactList.Add(info);
             info.Seq = m_NextImpactSeq++;
-            if ((int)SkillOrImpactType.Buff == info.ConfigData.type) {
+            if (info.BuffDataId > 0 || (null != info.ConfigData && (int)SkillOrImpactType.Buff == info.ConfigData.type)) {
                 m_BuffChanged = true;
             }
         }
@@ -145,6 +145,18 @@ namespace ScriptableFramework
                 }
                 );
         }
+        public ImpactInfo GetImpactInfoById(int impactId)
+        {
+            return FindImpactInfoById(impactId);
+        }
+        public void RemoveImpactByImpactId(int impactId)
+        {
+            ImpactInfo oriImpact = FindImpactInfoById(impactId);
+            if (null != oriImpact) {
+                if (oriImpact.BuffDataId > 0) m_BuffChanged = true;
+                m_ImpactList.Remove(oriImpact);
+            }
+        }
         public List<ImpactInfo> GetAllImpact()
         {
             return m_ImpactList;
@@ -153,7 +165,7 @@ namespace ScriptableFramework
         {
             ImpactInfo oriImpact = GetImpactInfoBySeq(seq);
             if (oriImpact != null) {
-                if ((int)SkillOrImpactType.Buff == oriImpact.ConfigData.type) {
+                if (oriImpact.BuffDataId > 0 || (null != oriImpact.ConfigData && (int)SkillOrImpactType.Buff == oriImpact.ConfigData.type)) {
                     m_BuffChanged = true;
                 }
                 m_ImpactList.Remove(oriImpact);

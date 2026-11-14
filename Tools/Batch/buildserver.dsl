@@ -103,18 +103,18 @@ script(main)
         call("setcolor");
     };
 
-    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net7.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net7.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net7.0", svrbin, "*.pdb");
-    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net7.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net7.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net7.0", svrbin, "*.pdb");
-    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net7.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net7.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net7.0", svrbin, "*.pdb");
-    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net7.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net7.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net7.0", svrbin, "*.pdb");
+    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.pdb");
+    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.pdb");
+    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.pdb");
+    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.pdb");
 
     cd(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1");
     echo("curdir:{0}",pwd());

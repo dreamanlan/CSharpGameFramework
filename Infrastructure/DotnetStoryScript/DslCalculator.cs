@@ -496,9 +496,8 @@ namespace DotnetStoryScript.DslExpression
         }
         protected virtual BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            return OnCalc(operands);
+            return BoxedValue.NullObject;
         }
-        protected virtual BoxedValue OnCalc(IList<BoxedValue> operands) { return BoxedValue.NullObject; }
 
         private IList<IExpression> m_Exps = null;
     }
@@ -539,9 +538,9 @@ namespace DotnetStoryScript.DslExpression
         }
         protected virtual IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
-            return OnCalc(operands, result);
+            result.Value = BoxedValue.NullObject;
+            yield break;
         }
-        protected virtual IEnumerator OnCalc(IList<BoxedValue> operands, AsyncCalcResult result) { result.Value = BoxedValue.NullObject; yield break; }
 
         private IList<IExpression> m_Exps = null;
     }

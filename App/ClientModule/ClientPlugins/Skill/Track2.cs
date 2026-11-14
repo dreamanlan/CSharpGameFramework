@@ -6,7 +6,7 @@ using ScriptableFramework;
 using ScriptableFramework;
 using ScriptableFramework.Skill;
 using ScriptableFramework.Skill.Trigers;
-using DotnetSkillScript;
+using SkillSystem;
 
 public class Track2Trigger : ISkillTriggerPlugin
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using DotnetSkillScript;
+using SkillSystem;
 
 namespace ScriptableFramework.Skill.Trigers
 {

@@ -37,7 +37,7 @@ namespace ScriptableFramework
             try {
                 GfxSkillSystem.Instance.Reset();
                 GfxSkillSystem.Instance.ClearSkillInstancePool();
-                DotnetSkillScript.SkillConfigManager.Instance.Clear();
+                SkillSystem.SkillConfigManager.Instance.Clear();
 
                 GfxStorySystem.Instance.Reset();
                 GfxStorySystem.Instance.ClearStoryInstancePool();
@@ -601,6 +601,7 @@ namespace ScriptableFramework
             m_DeletedEntities.Clear();
             for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
+                ImpactSystem.Instance.Tick(info);
                 info.RetireAttackerInfos(10000);
                 //Ai hooking and switching
                 var aiStateInfo = info.GetAiStateInfo();

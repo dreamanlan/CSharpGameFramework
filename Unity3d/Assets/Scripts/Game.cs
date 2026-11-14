@@ -4,13 +4,18 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using ScriptableFramework;
 using ScriptableFramework.Story;
-using ScriptableFramework.Skill;
 using System.IO;
+using System.Text;
 using UnityEngine.SceneManagement;
 
 #if UNITY_IPHONE && !UNITY_EDITOR
 using UnityEngine.iOS;
 #endif
+using ExpressionAPI;
+using Dsl;
+using StoryScript;
+using StoryScript.DslExpression;
+using GmCommands;
 
 public class Game : MonoBehaviour
 {
@@ -31,6 +36,10 @@ public class Game : MonoBehaviour
 
     void Awake()
     {
+        StartupScript.InitLogger();
+        StartupScript.OnExistsApi = ExistsApi;
+        StartupScript.OnGetApi = GetApi;
+        GmCommands.ClientGmStorySystem.Instance.OnRegisterGmCommandsAndFunctions = AppGmRegister.Register;
         //load plugin
         PluginAssembly.Instance.Init();
         SceneManager.sceneLoaded += this.OnLevelLoaded;
@@ -38,6 +47,10 @@ public class Game : MonoBehaviour
     void Start()
     {
         try {
+			StartupScript.TryInit();
+        	StartupScript.Calculator.Register("setclipboard", "setclipboard(str) api", new ExpressionFactoryHelper<SetClipboardExp>());
+        	StartupScript.Calculator.Register("getclipboard", "getclipboard() api", new ExpressionFactoryHelper<GetClipboardExp>());
+			RunStartup(true);
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(eventSystem.gameObject);
             Input.multiTouchEnabled = true;
@@ -80,7 +93,215 @@ public class Game : MonoBehaviour
             Debug.LogErrorFormat("exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
+    void OnDestroy()
+    {
+        StartupScript.ReleaseLogger();
+    }
+    private void HandleLog(string logString, string stackTrace, LogType type)
+    {
+        switch (type) {
+            case LogType.Log:
+                DebugConsole.Log(logString);
+                break;
+            case LogType.Warning:
+                DebugConsole.LogWarning(logString);
+                break;
+            case LogType.Error:
+                DebugConsole.LogError(string.Format("{0}{1}", logString, stackTrace));
+                break;
+            case LogType.Assert:
+                DebugConsole.Log(string.Format("[Assert]:{0}{1}", logString, stackTrace), Color.blue);
+                break;
+            case LogType.Exception:
+                DebugConsole.Log(string.Format("[Exception]:{0}{1}", logString, stackTrace), Color.magenta);
+                break;
+        }
+    }
 
+
+    public static bool ExistsApi(string method, out string className)
+    {
+        if (AppStartupApi.Instance.ExistsApi(method)) {
+            className = "AppStartupApi";
+            return true;
+        }
+        var t = typeof(Game);
+        var mi = t.GetMethod(method, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        if (null != mi) {
+            className = "Game";
+            return true;
+        }
+        className = string.Empty;
+        return false;
+    }
+    private static bool GetApi(string method, out StartupScript.ApiDelegation api)
+    {
+        api = AppStartupApi.Instance.GetApi(method);
+        if (null != api) {
+            return true;
+        }
+        var t = typeof(Game);
+        var mi = t.GetMethod(method, System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+        if (null != mi) {
+            var delegation = System.Delegate.CreateDelegate(typeof(StartupScript.ApiDelegation), mi, false);
+            if (null != delegation)
+                api = (StartupScript.ApiDelegation)delegation;
+            else {
+                if (!s_ApiCache.TryGetValue(method, out api)) {
+                    var invoker = new StartupApi.ApiInvoker(mi, null);
+                    api = new StartupScript.ApiDelegation(invoker.Invoke);
+                    s_ApiCache[method] = api;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static void RunStartup(bool runGm)
+    {
+#if UNITY_ANDROID || UNITY_EDITOR || UNITY_STANDALONE
+        bool needRun = false;
+        for (int i = 0; i < StartupApi.c_max_startup_cfgs; ++i) {
+            string file = Path.Combine(StartupScript.ScriptPath, string.Format("startup{0}.dsl", i));
+            if (File.Exists(file)) {
+                if (!needRun) {
+                    StartupScript.TryInit();
+                    StartupScript.ClearStartups();
+                    needRun = true;
+                }
+                StartupScript.LoadStartup(file);
+            }
+        }
+        if (needRun) {
+            StartupScript.RunStartup(out var gmtxt);
+            if (runGm) {
+                RunInitGM(gmtxt);
+            }
+        }
+        else {
+            //Open later on demand
+            //StartupScript.RunStartupOnlyCsharp();
+            if (runGm) {
+                RunInitGM(string.Empty);
+            }
+        }
+#endif
+    }
+    public static void RunInitGM(string gmtxt)
+    {
+        if (!string.IsNullOrEmpty(gmtxt)) {
+            GmRootScript.TryInit();
+            TryFixGM();
+            GameObject obj = GmRootScript.GameObj;
+            if (null != obj) {
+                DebugConsole.Execute(gmtxt);
+            }
+        }
+        else {
+            string path = Application.persistentDataPath;
+            if (Application.platform == RuntimePlatform.Android) {
+                path = "/data/local/tmp";
+            }
+            string file = Path.Combine(path, "initgm.txt");
+            if (File.Exists(file)) {
+                GmRootScript.TryInit();
+                TryFixGM();
+                GameObject obj = GmRootScript.GameObj;
+                if (null != obj) {
+                    //DebugConsole.Execute will reset the dsl, so the commands must be concatenated into one command
+                    var sb = new StringBuilder();
+                    var lines = File.ReadAllLines(file);
+                    foreach (string line in lines) {
+                        string str = line.Trim();
+                        if (!str.StartsWith("//") && !str.StartsWith('#')) {
+                            if (str.IndexOf(';') < 0 && str.IndexOf('(') < 0 && str.IndexOf(')') < 0 && str.IndexOfAny(s_WhiteChars) > 0) {
+                                sb.Append("cmd(\"");
+                                sb.Append(str.Replace("\"", "\\\""));
+                                sb.Append("\");");
+                            }
+                            else {
+                                sb.Append(str);
+                                if (!str.EndsWith(";"))
+                                    sb.Append(";");
+                            }
+                        }
+                    }
+                    DebugConsole.Execute(sb.ToString());
+                }
+            }
+            else {
+#if UNITY_EDITOR
+                GmRootScript.TryInit();
+                TryFixGM();
+#elif UNITY_STANDALONE
+#if DEVELOPMENT_BUILD
+            GmRootScript.TryInit();
+            TryFixGM();
+#endif
+#elif UNITY_ANDROID
+#if DEVELOPMENT_BUILD
+            GmRootScript.TryInit();
+            TryFixGM();
+#endif
+#endif
+            }
+        }
+    }
+    private static void TryFixGM()
+    {
+        var gmObj = GmRootScript.GameObj;
+        if (null != gmObj) {
+            var uiHandler = gmObj.GetComponent<UiHandler>();
+            var debugConsole = gmObj.GetComponent<DebugConsole>();
+            var gmScp = gmObj.GetComponent<GmRootScript>();
+            if (null == uiHandler || null == debugConsole || null == gmScp) {
+                // some components are missing: gmObj may carry missing-script placeholders,
+                // clean them up before reinstalling
+#if UNITY_EDITOR
+                if (UnityEditor.GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(gmObj) > 0) {
+                    UnityEditor.GameObjectUtility.RemoveMonoBehavioursWithMissingScript(gmObj);
+                    Debug.Log("TryFixGM: removed missing scripts on " + gmObj.name);
+                }
+#else
+                // no runtime api to remove missing scripts; count and log for diagnosis
+                var comps = gmObj.GetComponents<Component>();
+                int missingCount = 0;
+                for (int i = 0; i < comps.Length; ++i) {
+                    if (null == comps[i]) {
+                        ++missingCount;
+                    }
+                }
+                if (missingCount > 0) {
+                    Debug.LogWarning("TryFixGM: " + missingCount + " missing scripts on " + gmObj.name + " (cannot remove at runtime)");
+                }
+#endif
+                gmObj.SetActive(false);
+                if (null == uiHandler)
+                {
+                    uiHandler = UiHandler.TryInstall(gmObj);
+                }
+                if (null == debugConsole)
+                {
+                    debugConsole = StoryScriptUtility.TryInstallComponent<DebugConsole>(gmObj);
+                }
+                if (null == gmScp)
+                {
+                    gmScp = StoryScriptUtility.TryInstallComponent<GmRootScript>(gmObj);
+                }
+                if (null == uiHandler || null == debugConsole || null == gmScp)
+                {
+                    // Fix failed.
+                }
+                else
+                {
+                    gmObj.SetActive(true);
+                    GmRootScript.TryInit();
+                }
+            }
+        }
+    }
+	
     IEnumerator CheckAndUpdate()
     {
         //1、Update check
@@ -436,16 +657,651 @@ public class Game : MonoBehaviour
 
     private void OnResetDsl()
     {
-        Utility.EventSystem.Publish("gm_resetdsl", "gm");
+        ScriptableFramework.Utility.EventSystem.Publish("gm_resetdsl", "gm");
     }
 
     private void OnExecScript(string script)
     {
-        Utility.EventSystem.Publish("gm_execscript", "gm", script);
+        ScriptableFramework.Utility.EventSystem.Publish("gm_execscript", "gm", script);
     }
 
     private void OnExecCommand(string command)
     {
-        Utility.EventSystem.Publish("gm_execcommand", "gm", command);
+        ScriptableFramework.Utility.EventSystem.Publish("gm_execcommand", "gm", command);
+    }
+	
+	public static void LoadScript(string file)
+    {
+        var basePath = Application.persistentDataPath;
+        if (!System.IO.Path.IsPathRooted(file)) {
+            file = System.IO.Path.Combine(basePath, file);
+        }
+        StartupScript.Calculator.LoadDsl(file);
+    }
+    public static StoryScript.BoxedValue EvalAndRun(string code)
+    {
+        StoryScript.BoxedValue r = StoryScript.BoxedValue.EmptyString;
+        var file = new Dsl.DslFile();
+        if (file.LoadFromString(code, msg => Debug.LogWarning(msg))) {
+            r = EvalAndRun(file.DslInfos);
+        }
+        return r;
+    }
+    public static StoryScript.BoxedValue EvalAndRun(params ISyntaxComponent[] expressions)
+    {
+        IList<ISyntaxComponent> exps = expressions;
+        return EvalAndRun(exps);
+    }
+    public static StoryScript.BoxedValue EvalAndRun(IList<ISyntaxComponent> expressions)
+    {
+        StoryScript.BoxedValue r = StoryScript.BoxedValue.EmptyString;
+        List<IExpression> exps = new List<IExpression>();
+        StartupScript.Calculator.LoadDsl(expressions, exps);
+        r = StartupScript.Calculator.CalcInCurrentContext(exps);
+        return r;
+    }
+    public static void EvalAsFunc(string name, Dsl.FunctionData func, IList<string> argNames)
+    {
+        Debug.Assert(null != func);
+        StartupScript.Calculator.LoadDsl(name, argNames, func);
+    }
+    public static bool TryGetApiFactory(string name, out IExpressionFactory factory)
+    {
+        return StartupScript.Calculator.CodeStructure.ApiRegistry.TryGetFactory(name, out factory);
+    }
+    public static object Call(string func, params object[] args)
+    {
+        if (null == s_Instance)
+            return null;
+        var vargs = StartupScript.Calculator.NewCalculatorValueList();
+        foreach (var arg in args) {
+            vargs.Add(StoryScript.BoxedValue.FromObject(arg));
+        }
+        var r = StartupScript.Calculator.Calc(func, vargs);
+        StartupScript.Calculator.RecycleCalculatorValueList(vargs);
+        return r.GetObject();
+    }
+    public static void RegisterGmApi(DslCalculatorApiRegistry registry)
+    {
+        registry.Register("loadscp", "loadscp(dsl_script_file) or loadscp(\"name\", func(param1, param2, ...)) or loadscp(name => func(param1, param2, ...)) command", new ExpressionFactoryHelper<LoadScriptCommand>());
+        registry.Register("callscp", "callscp(\"func\", arg1, arg2, ...) or callscp(apiOrFunc(arg1, arg2, ...)) command", new ExpressionFactoryHelper<CallScriptCommand>());
+        registry.Register("evalscp", "evalscp(code_str) or evalscp(exp1,exp2,...) command", new ExpressionFactoryHelper<EvalScriptCommand>());
+        registry.Register("showmemory", "showmemory() command", new ExpressionFactoryHelper<ShowMemoryExp>());
+        registry.Register("getpss", "getpss() function", new ExpressionFactoryHelper<GetPssExp>());
+        registry.Register("getvss", "getvss() function", new ExpressionFactoryHelper<GetVssExp>());
+        registry.Register("getnative", "getnative() function", new ExpressionFactoryHelper<GetNativeExp>());
+        registry.Register("getgraphics", "getgraphics() function", new ExpressionFactoryHelper<GetGraphicsExp>());
+        registry.Register("getunknown", "getunknown() function", new ExpressionFactoryHelper<GetUnknownExp>());
+        registry.Register("getjava", "getjava() function", new ExpressionFactoryHelper<GetJavaExp>());
+        registry.Register("getcode", "getcode() function", new ExpressionFactoryHelper<GetCodeExp>());
+        registry.Register("getstack", "getstack() function", new ExpressionFactoryHelper<GetStackExp>());
+        registry.Register("getsystem", "getsystem() function", new ExpressionFactoryHelper<GetSystemExp>());
+        registry.Register("getactivity", "getactivity() function", new ExpressionFactoryHelper<GetActivityExp>());
+        registry.Register("getintent", "getintent() function", new ExpressionFactoryHelper<GetIntentExp>());
+    }
+
+    private static Game s_Instance = null;
+    private static char[] s_WhiteChars = new char[] { ' ', '\t' };
+    private static readonly Dictionary<string, StartupScript.ApiDelegation> s_ApiCache = new Dictionary<string, StartupScript.ApiDelegation>();
+}
+
+
+internal static class MemoryInfo
+{
+    internal static float GetAppMemory()
+    {
+#if UNITY_ANDROID
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        float ret = s_MemoryActivity.CallStatic<int>("getTotalPss")/1024.0f;
+        return ret;
+#elif UNITY_IOS
+        return ios_GetAppMemory();
+#else
+        return 0;
+#endif
+    }
+    internal static float GetNativeMemory()
+    {
+#if UNITY_ANDROID
+        /*
+        if (null == s_DebugObj) {
+            s_DebugObj = new AndroidJavaObject("android.os.Debug");
+        }
+        if (null == s_MemoryInfoObj) {
+            s_MemoryInfoObj = new AndroidJavaObject("android.os.Debug$MemoryInfo");
+        }
+        s_DebugObj.CallStatic("getMemoryInfo", s_MemoryInfoObj);
+        return int.Parse(s_MemoryInfoObj.Call<string>("getMemoryStat", "summary.native-heap")) / 1024.0f;
+        */
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        var infos = s_MemoryActivity.CallStatic<AndroidJavaObject[]>("getMemoryInfo");
+        float mem = 0;
+        if (null != infos && infos.Length > 0) {
+            mem = int.Parse(infos[0].Call<string>("getMemoryStat", "summary.native-heap")) / 1024.0f;
+        }
+        return mem;
+#else
+        return 0;
+#endif
+    }
+    internal static float GetGraphicsMemory()
+    {
+#if UNITY_ANDROID
+        /*
+        if (null == s_DebugObj) {
+            s_DebugObj = new AndroidJavaObject("android.os.Debug");
+        }
+        if (null == s_MemoryInfoObj) {
+            s_MemoryInfoObj = new AndroidJavaObject("android.os.Debug$MemoryInfo");
+        }
+        s_DebugObj.CallStatic("getMemoryInfo", s_MemoryInfoObj);
+        return int.Parse(s_MemoryInfoObj.Call<string>("getMemoryStat", "summary.graphics")) / 1024.0f;
+        */
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        var infos = s_MemoryActivity.CallStatic<AndroidJavaObject[]>("getMemoryInfo");
+        float mem = 0;
+        if (null != infos && infos.Length > 0) {
+            mem = int.Parse(infos[0].Call<string>("getMemoryStat", "summary.graphics")) / 1024.0f;
+        }
+        return mem;
+#else
+        return 0;
+#endif
+    }
+    internal static float GetUnknownMemory()
+    {
+#if UNITY_ANDROID
+        /*
+        if (null == s_DebugObj) {
+            s_DebugObj = new AndroidJavaObject("android.os.Debug");
+        }
+        if (null == s_MemoryInfoObj) {
+            s_MemoryInfoObj = new AndroidJavaObject("android.os.Debug$MemoryInfo");
+        }
+        s_DebugObj.CallStatic("getMemoryInfo", s_MemoryInfoObj);
+        return int.Parse(s_MemoryInfoObj.Call<string>("getMemoryStat", "summary.private-other")) / 1024.0f;
+        */
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        var infos = s_MemoryActivity.CallStatic<AndroidJavaObject[]>("getMemoryInfo");
+        float mem = 0;
+        if (null != infos && infos.Length > 0) {
+            mem = int.Parse(infos[0].Call<string>("getMemoryStat", "summary.private-other")) / 1024.0f;
+        }
+        return mem;
+#else
+        return 0;
+#endif
+    }
+    internal static float GetJavaMemory()
+    {
+#if UNITY_ANDROID
+        /*
+        if (null == s_DebugObj) {
+            s_DebugObj = new AndroidJavaObject("android.os.Debug");
+        }
+        if (null == s_MemoryInfoObj) {
+            s_MemoryInfoObj = new AndroidJavaObject("android.os.Debug$MemoryInfo");
+        }
+        s_DebugObj.CallStatic("getMemoryInfo", s_MemoryInfoObj);
+        return int.Parse(s_MemoryInfoObj.Call<string>("getMemoryStat", "summary.java-heap")) / 1024.0f;
+        */
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        var infos = s_MemoryActivity.CallStatic<AndroidJavaObject[]>("getMemoryInfo");
+        float mem = 0;
+        if (null != infos && infos.Length > 0) {
+            mem = int.Parse(infos[0].Call<string>("getMemoryStat", "summary.java-heap")) / 1024.0f;
+        }
+        return mem;
+#else
+        return 0;
+#endif
+    }
+    internal static float GetCodeMemory()
+    {
+#if UNITY_ANDROID
+        /*
+        if (null == s_DebugObj) {
+            s_DebugObj = new AndroidJavaObject("android.os.Debug");
+        }
+        if (null == s_MemoryInfoObj) {
+            s_MemoryInfoObj = new AndroidJavaObject("android.os.Debug$MemoryInfo");
+        }
+        s_DebugObj.CallStatic("getMemoryInfo", s_MemoryInfoObj);
+        return int.Parse(s_MemoryInfoObj.Call<string>("getMemoryStat", "summary.code")) / 1024.0f;
+        */
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        var infos = s_MemoryActivity.CallStatic<AndroidJavaObject[]>("getMemoryInfo");
+        float mem = 0;
+        if (null != infos && infos.Length > 0) {
+            mem = int.Parse(infos[0].Call<string>("getMemoryStat", "summary.code")) / 1024.0f;
+        }
+        return mem;
+#else
+        return 0;
+#endif
+    }
+    internal static float GetStackMemory()
+    {
+#if UNITY_ANDROID
+        /*
+        if (null == s_DebugObj) {
+            s_DebugObj = new AndroidJavaObject("android.os.Debug");
+        }
+        if (null == s_MemoryInfoObj) {
+            s_MemoryInfoObj = new AndroidJavaObject("android.os.Debug$MemoryInfo");
+        }
+        s_DebugObj.CallStatic("getMemoryInfo", s_MemoryInfoObj);
+        return int.Parse(s_MemoryInfoObj.Call<string>("getMemoryStat", "summary.stack")) / 1024.0f;
+        */
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        var infos = s_MemoryActivity.CallStatic<AndroidJavaObject[]>("getMemoryInfo");
+        float mem = 0;
+        if (null != infos && infos.Length > 0) {
+            mem = int.Parse(infos[0].Call<string>("getMemoryStat", "summary.stack")) / 1024.0f;
+        }
+        return mem;
+#else
+        return 0;
+#endif
+    }
+    internal static float GetSystemMemory()
+    {
+#if UNITY_ANDROID
+        /*
+        if (null == s_DebugObj) {
+            s_DebugObj = new AndroidJavaObject("android.os.Debug");
+        }
+        if (null == s_MemoryInfoObj) {
+            s_MemoryInfoObj = new AndroidJavaObject("android.os.Debug$MemoryInfo");
+        }
+        s_DebugObj.CallStatic("getMemoryInfo", s_MemoryInfoObj);
+        return int.Parse(s_MemoryInfoObj.Call<string>("getMemoryStat", "summary.system")) / 1024.0f;
+        */
+        if (null == s_MemoryActivity) {
+            s_MemoryActivity = new AndroidJavaClass("com.aaa.bbb.MainActivity");
+        }
+        var infos = s_MemoryActivity.CallStatic<AndroidJavaObject[]>("getMemoryInfo");
+        float mem = 0;
+        if (null != infos && infos.Length > 0) {
+            mem = int.Parse(infos[0].Call<string>("getMemoryStat", "summary.system")) / 1024.0f;
+        }
+        return mem;
+#else
+        return 0;
+#endif
+    }
+    internal static float GetVssMemory()
+    {
+        float vss = 0;
+#if UNITY_ANDROID && !UNITY_EDITOR
+        using (FileStream reader = new FileStream("/proc/self/status", FileMode.Open, FileAccess.Read, FileShare.Read, s_VssBuffer.Length, FileOptions.SequentialScan)) {
+            int ct = reader.Read(s_VssBuffer, 0, s_VssBuffer.Length);
+            int index = -1;
+            int k = 0;
+            for (int i = 0; i < ct && k < s_VmPeak.Length; ++i) {
+                if (s_VssBuffer[i] == s_VmPeak[k]) {
+                    ++k;
+                    if (k == s_VmPeak.Length) {
+                        index = i + 1;
+                        break;
+                    }
+                }
+                else {
+                    k = 0;
+                }
+            }
+            if (index >= 0) {
+                for (; index < ct && (s_VssBuffer[index] == ' ' || s_VssBuffer[index] == '\t'); ++index) ;
+                int vssKb = 0;
+                for (; index < ct; ++index) {
+                    int num = s_VssBuffer[index] - '0';
+                    if (num < 0 || num > 9)
+                        break;
+
+                    vssKb = vssKb * 10 + num;
+                }
+                vss = vssKb / 1024.0f;
+            }
+            reader.Close();
+        }
+#endif
+        return vss;
+    }
+#if UNITY_ANDROID && !UNITY_EDITOR
+    private static byte[] s_VssBuffer = new byte[1024];
+    private static byte[] s_VmPeak = new byte[] { (byte)'V', (byte)'m', (byte)'P', (byte)'e', (byte)'a', (byte)'k', (byte)':' };
+#endif
+#if UNITY_ANDROID
+    private static AndroidJavaClass s_MemoryActivity = null;
+    private static AndroidJavaObject s_DebugObj = null;
+    private static AndroidJavaObject s_MemoryInfoObj = null;
+#endif
+#if UNITY_IOS
+    [DllImport ("__Internal")]
+    private static extern float ios_GetAppMemory();
+#endif
+}
+
+namespace ExpressionAPI
+{
+    using BoxedValue = StoryScript.BoxedValue;
+    /// <summary>
+    /// loadscp(dsl_script_file);
+    /// or
+    /// loadscp("name", apiOrFunc(param1, param2, ...));
+    /// or
+    /// loadscp(name => apiOrFunc(param1, param2, ...));
+    /// </summary>
+    internal sealed class LoadScriptCommand : AbstractExpression
+    {
+        protected override BoxedValue DoCalc(DslCalculator calculator)
+        {
+            string f = null != m_FileOrId ? m_FileOrId.Calc(calculator).ToString() : string.Empty;
+            if (m_ArgNum == 1) {
+                if (string.IsNullOrEmpty(m_Name)) {
+                    Game.LoadScript(f);
+                }
+                else {
+                    f = m_Name;
+                    var func = new Dsl.FunctionData();
+                    func.AddParam(m_FuncCall);
+                    Game.EvalAsFunc(f, func, m_Params);
+                }
+            }
+            else if (m_ArgNum == 2 && null != m_FuncCall) {
+                var func = new Dsl.FunctionData();
+                func.AddParam(m_FuncCall);
+                Game.EvalAsFunc(f, func, m_Params);
+            }
+            return BoxedValue.NullObject;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            m_ArgNum = callData.GetParamNum();
+            if (m_ArgNum > 0) {
+                var p0 = callData.GetParam(0);
+                var func = p0 as Dsl.FunctionData;
+                if (null != func && func.IsOperatorParamClass() && func.GetId() == "=>") {
+                    m_Name = func.GetParamId(0);
+                    m_FuncCall = func.GetParam(1) as Dsl.FunctionData;
+                    if (null != m_FuncCall) {
+                        foreach (var p in m_FuncCall.Params) {
+                            m_Params.Add(p.GetId());
+                        }
+                    }
+                }
+                else {
+                    m_FileOrId = CodeStructure.Load(p0);
+                    if (m_ArgNum > 1) {
+                        m_FuncCall = callData.GetParam(1) as Dsl.FunctionData;
+                        if (null != m_FuncCall) {
+                            foreach (var p in m_FuncCall.Params) {
+                                m_Params.Add(p.GetId());
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        private int m_ArgNum = 0;
+        private IExpression m_FileOrId;
+        private string m_Name = string.Empty;
+        private Dsl.FunctionData m_FuncCall;
+        private List<string> m_Params = new List<string>();
+    }
+    /// <summary>
+    /// callscp("func", arg1, arg2, ...);
+    /// or
+    /// callscp(apiOrFunc(arg1, arg2, ...));
+    /// </summary>
+    internal sealed class CallScriptCommand : AbstractExpression
+    {
+        protected override BoxedValue DoCalc(DslCalculator calculator)
+        {
+            if (null != m_Api) {
+                return m_Api.Calc(calculator);
+            }
+            else {
+                string func = m_FuncName;
+                if (string.IsNullOrEmpty(m_FuncName))
+                    func = null != m_Func ? m_Func.Calc(calculator).ToString() : string.Empty;
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_Args.Count; ++i) {
+                    arglist.Add(m_Args[i].Calc(calculator).GetObject());
+                }
+                object[] args = arglist.ToArray();
+                return BoxedValue.FromObject(Game.Call(func, args));
+            }
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                var p0 = callData.GetParam(0);
+                var func = p0 as Dsl.FunctionData;
+                if (null != func) {
+                    var f = func.GetId();
+                    if (Game.TryGetApiFactory(f, out var factory)) {
+                        m_Api = factory.Create();
+                        m_Api.Load(p0, CodeStructure);
+                    }
+                    else {
+                        m_FuncName = f;
+                        for (int i = 0; i < func.GetParamNum(); ++i) {
+                            m_Args.Add(CodeStructure.Load(func.GetParam(i)));
+                        }
+                    }
+                }
+                else {
+                    m_Func = CodeStructure.Load(p0);
+                    for (int i = 1; i < callData.GetParamNum(); ++i) {
+                        m_Args.Add(CodeStructure.Load(callData.GetParam(i)));
+                    }
+                }
+            }
+            return true;
+        }
+
+        private IExpression m_Api;
+
+        private string m_FuncName = string.Empty;
+        private IExpression m_Func;
+        private List<IExpression> m_Args = new List<IExpression>();
+    }
+    /// <summary>
+    /// evalscp(code_string);
+    /// or
+    /// evalscp(code_dsl);
+    /// </summary>
+    internal sealed class EvalScriptCommand : AbstractExpression
+    {
+        protected override BoxedValue DoCalc(DslCalculator calculator)
+        {
+            if (m_IsString)
+                return Game.EvalAndRun(m_Code.Calc(calculator).ToString());
+            else
+                return Game.EvalAndRun(m_Exps);
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                var vd = callData.GetParam(0) as Dsl.ValueData;
+                if (null != vd && vd.IsString()) {
+                    m_IsString = true;
+                    m_Code = CodeStructure.Load(vd);
+                }
+                else {
+                    m_IsString = false;
+                    foreach (var p in callData.Params) {
+                        m_Exps.Add(p);
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool m_IsString = false;
+        private IExpression m_Code;
+        private List<Dsl.ISyntaxComponent> m_Exps = new List<Dsl.ISyntaxComponent>();
+    }
+    internal sealed class ShowMemoryExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            string info = string.Format("pss:{0} n:{1} g:{2} u:{3} j:{4} c:{5} t:{6} s:{7} vss:{8}", MemoryInfo.GetAppMemory(), MemoryInfo.GetNativeMemory(), MemoryInfo.GetGraphicsMemory(), MemoryInfo.GetUnknownMemory(), MemoryInfo.GetJavaMemory(), MemoryInfo.GetCodeMemory(), MemoryInfo.GetStackMemory(), MemoryInfo.GetSystemMemory(), MemoryInfo.GetVssMemory());
+            Debug.LogFormat("{0}", info);
+            return BoxedValue.NullObject;
+        }
+    }
+    internal sealed class GetPssExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetAppMemory();
+        }
+    }
+    internal sealed class GetVssExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetVssMemory();
+        }
+    }
+    internal sealed class GetNativeExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetNativeMemory();
+        }
+    }
+    internal sealed class GetGraphicsExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetGraphicsMemory();
+        }
+    }
+    internal sealed class GetUnknownExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetUnknownMemory();
+        }
+    }
+    internal sealed class GetJavaExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetJavaMemory();
+        }
+    }
+    internal sealed class GetCodeExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetCodeMemory();
+        }
+    }
+    internal sealed class GetStackExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetStackMemory();
+        }
+    }
+    internal sealed class GetSystemExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            return MemoryInfo.GetSystemMemory();
+        }
+    }
+    internal sealed class GetActivityExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+#if UNITY_ANDROID
+            return BoxedValue.FromObject(new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity"));
+#else
+            return BoxedValue.NullObject;
+#endif
+        }
+    }
+    internal sealed class GetIntentExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+#if UNITY_ANDROID
+            var act = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
+            return BoxedValue.FromObject(act.Call<AndroidJavaObject>("getIntent"));
+#else
+            return BoxedValue.NullObject;
+#endif
+        }
+    }
+
+    internal sealed class SetClipboardExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+            if (operands.Count >= 1) {
+                var str = operands[0].AsString;
+                if (null != str) {
+#if UNITY_EDITOR
+                    GUIUtility.systemCopyBuffer = str;
+#elif UNITY_IOS
+                    SetClipboard(str);
+#elif UNITY_ANDROID
+                    AndroidJavaClass cb = new AndroidJavaClass("jp.ne.donuts.uniclipboard.Clipboard");
+                    cb.CallStatic ("setText", str);
+#endif
+                    r = str;
+                }
+            }
+            return r;
+        }
+#if UNITY_IOS
+        [DllImport("__Internal")]
+        static extern void SetClipboard(string str);
+#endif
+    }
+    internal sealed class GetClipboardExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            var r = BoxedValue.NullObject;
+#if UNITY_EDITOR
+            r = GUIUtility.systemCopyBuffer;
+#elif UNITY_IOS
+            r = GetClipboard();
+#elif UNITY_ANDROID
+            AndroidJavaClass cb = new AndroidJavaClass("jp.ne.donuts.uniclipboard.Clipboard");
+            r = cb.CallStatic<string>("getText");
+#endif
+            return r;
+        }
+#if UNITY_IOS
+        [DllImport("__Internal")]
+        static extern string GetClipboard();
+#endif
     }
 }
+

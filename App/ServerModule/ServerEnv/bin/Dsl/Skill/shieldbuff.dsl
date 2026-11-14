@@ -12,6 +12,6 @@ skill(115)
   section(100)
   {
     stopeffect(0);
-    removeshield(0);
+    stopimpact(0,10004);
   };
 };

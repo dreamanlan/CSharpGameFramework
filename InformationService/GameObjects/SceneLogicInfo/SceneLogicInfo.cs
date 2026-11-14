@@ -8,11 +8,20 @@ namespace ScriptableFramework
         public int m_ConfigId = 0;
         public int m_LogicId = 0;
         public string[] m_Params = null;
+        public bool m_IsClient = false;
+        public bool m_IsServer = true;
+        public int m_ParamNum { get { return null == m_Params ? 0 : m_Params.Length; } }
     }
     public enum SceneLogicId
     {
         TIME_OUT = 10001,
         SAND_CLOCK = 10002,
+        USER_ENTER_AREA = 10003,
+        REVIVE_POINT = 10004,
+        AREA_DETECT = 10005,
+        NPC_IN_AREA = 10006,
+        HP_LOSS_BY_TIME = 10007,
+        TRANSPORT = 10008,
     }
 
     public class SceneLogicInfo
