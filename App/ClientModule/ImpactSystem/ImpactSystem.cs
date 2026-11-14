@@ -12,6 +12,10 @@ namespace ScriptableFramework
             List<ImpactInfo> infos = obj.GetSkillStateInfo().GetAllImpact();
             for (int i = infos.Count - 1; i >= 0; --i) {
                 ImpactInfo info = infos[i];
+                // The impact list is shared with the gfx skill pipeline (hit skill / emit skill
+                // impacts added by EntityController.SendImpact/TrackImpact). Those have
+                // ImpactLogicId == 0 and IsActivated == false by default; never touch them here.
+                if (info.ImpactLogicId <= 0) continue;
                 IImpactLogic logic = GetLogic(info);
                 if (info.IsActivated) {
                     if (null != logic) logic.Tick(obj, info.ImpactId);
