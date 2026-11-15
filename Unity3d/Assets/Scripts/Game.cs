@@ -33,6 +33,14 @@ public class Game : MonoBehaviour
     private GameObject m_MainCamera = null;
     private RectTransform m_MainUiRectTransform = null;
     private Camera m_UiCamera = null;
+    private float m_NextExploreTime = 0f;   // local UX cooldown for the explore skill
+
+    // Battle scenes are loaded Additively on top of the story scene. These hold the
+    // story scene visuals disabled while a battle is active, and restore them on unload.
+    private readonly List<Renderer> m_MainSceneRenderers = new List<Renderer>();
+    private readonly List<Camera> m_MainSceneCameras = new List<Camera>();
+    private readonly List<Light> m_MainSceneLights = new List<Light>();
+    private readonly List<Terrain> m_MainSceneTerrains = new List<Terrain>();
 
     void Awake()
     {
@@ -354,6 +362,13 @@ public class Game : MonoBehaviour
             }
         }
 
+        // Active exploration: the player must press E at a visually hinted spot.
+        // Local cooldown is UX only; the server enforces the authoritative gate.
+        if (Input.GetKeyDown(KeyCode.E) && Time.time >= m_NextExploreTime) {
+            m_NextExploreTime = Time.time + 2.0f;
+            GfxStorySystem.Instance.SendMessage("cast_explore");
+        }
+
 #if UNITY_EDITOR
         //Pause
         if (Input.GetKeyDown(KeyCode.Pause))
@@ -431,6 +446,10 @@ public class Game : MonoBehaviour
 
     private IEnumerator UnloadBattle(TableConfig.Level lvl)
     {
+        // The active controller holds the battle-scene camera, which is about
+        // to be destroyed. Drop it before any LateUpdate can run.
+        m_CameraController = null;
+        RestoreMainSceneVisuals();
         LoadingManager.Instance.Show();
         yield return null;
         LoadingManager.Instance.SetProgress(0.1f);
@@ -438,6 +457,9 @@ public class Game : MonoBehaviour
         LoadingManager.Instance.SetProgress(0.9f);
         yield return Resources.UnloadUnusedAssets();
         LoadingManager.Instance.SetProgress(1.0f);
+        // Battle camera is gone and the story-scene camera is restored; bind
+        // a fresh controller to the surviving Camera.main.
+        m_CameraController = (Camera.main != null) ? new CameraController(Camera.main) : null;
         PluginFramework.Instance.OnBattleUnloaded(lvl);
     }
 
@@ -465,6 +487,44 @@ public class Game : MonoBehaviour
 
     private void OnLoadBattleComplete(int levelId)
     {
+        // Battle scenes are added on top of the story scene. Hide the story scene's
+        // static visuals so the themed battle scene is what the player actually sees.
+        m_MainSceneRenderers.Clear();
+        m_MainSceneCameras.Clear();
+        m_MainSceneLights.Clear();
+        m_MainSceneTerrains.Clear();
+        for (int i = 0; i < SceneManager.sceneCount; ++i) {
+            Scene sc = SceneManager.GetSceneAt(i);
+            if (!sc.isLoaded || sc.name.StartsWith("Battle")) continue;
+            foreach (GameObject go in sc.GetRootGameObjects()) {
+                if (go == null) continue;
+                foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
+                    if (r != null && r.enabled) { r.enabled = false; m_MainSceneRenderers.Add(r); }
+                foreach (Camera c in go.GetComponentsInChildren<Camera>(true))
+                    if (c != null && c.enabled) { c.enabled = false; m_MainSceneCameras.Add(c); }
+                foreach (Light l in go.GetComponentsInChildren<Light>(true))
+                    if (l != null && l.enabled) { l.enabled = false; m_MainSceneLights.Add(l); }
+                foreach (Terrain t in go.GetComponentsInChildren<Terrain>(true))
+                    if (t != null && t.enabled) { t.enabled = false; m_MainSceneTerrains.Add(t); }
+            }
+        }
+        // sceneLoaded fires before the story-scene cameras are disabled, so the
+        // CameraController created in OnLevelLoaded may be bound to the wrong
+        // camera. Rebind now that only the battle camera is active.
+        if (Camera.main != null)
+            m_CameraController = new CameraController(Camera.main);
+    }
+
+    private void RestoreMainSceneVisuals()
+    {
+        foreach (Renderer r in m_MainSceneRenderers) if (r != null) r.enabled = true;
+        foreach (Camera c in m_MainSceneCameras) if (c != null) c.enabled = true;
+        foreach (Light l in m_MainSceneLights) if (l != null) l.enabled = true;
+        foreach (Terrain t in m_MainSceneTerrains) if (t != null) t.enabled = true;
+        m_MainSceneRenderers.Clear();
+        m_MainSceneCameras.Clear();
+        m_MainSceneLights.Clear();
+        m_MainSceneTerrains.Clear();
     }
 
     private IEnumerator LoadAssetAsync(object[] args)

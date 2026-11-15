@@ -31,7 +31,20 @@ story(story_main)
   onmessage("dialog_over",2)
   {
     $userId = $0;
-    sendclientstorymessage("open_battle", 10001)touser($userId);
+    $bi = propget("battleIndex", 0);
+    if($bi<10001){
+      $bi=10001;
+    };
+    if($bi>10064){
+      $bi=10001;
+    };
+    sendclientstorymessage("open_battle", $bi)touser($userId);
+    inc($bi);
+    if($bi>10064){
+      $bi=10001;
+    };
+    propset("battleIndex", $bi);
+
   };
   onmessage("refreshmonsters")
   {

@@ -1,0 +1,5 @@
+# Coarse visual hints only. No event ids, exact positions, radii or rewards.
+# hint | coarseX | coarseZ | radius | textKey
+hint | 199.4 | 263.6 | 48.0 | clue_r2c1_0
+hint | 327.8 | 255.8 | 48.0 | clue_r2c1_1
+hint | 311.0 | 393.8 | 48.0 | clue_r2c1_2

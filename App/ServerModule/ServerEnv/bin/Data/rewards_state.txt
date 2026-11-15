@@ -1,0 +1,1 @@
+﻿# roleId | total | claimed event ids (server side only)

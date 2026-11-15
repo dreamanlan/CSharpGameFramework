@@ -9,3 +9,5 @@ id		desc	type	icon	impacttoself	impact	targetType	aoeType	aoeSize	aoeAngleOrLeng
 5	Ä§·¨¹¥»÷		0	16	0	0	1	0	0	0	0	Skill/magicattack.dsl
 6	¼Óbuff		0	16	0	0	1	0	0	0	0	Skill/addbuff.dsl
 7	buff		0	16	0	0	1	0	0	0	0	Skill/buff.dsl
+8	BossAoe		0	0	0	0	1	1	12	0	0	Skill/bossattack.dsl
+100	Ì½Ë÷		0	0	0	0	0	0	0	0	0	Skill/explore.dsl

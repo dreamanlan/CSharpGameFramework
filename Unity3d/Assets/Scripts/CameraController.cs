@@ -51,6 +51,11 @@ public class CameraController
 
 
     public void Update() {
+        // A battle scene unload destroys its camera. UnityEngine.Object's
+        // overloaded == also covers "destroyed but not null", so this guards
+        // LateUpdate from touching a dead reference in the transition frames.
+        if (camera == null)
+            return;
         if (curState == State.FollowPath)
         {
             camera.transform.position = followPose.pos;

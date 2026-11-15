@@ -1,0 +1,3 @@
+﻿EXPLORE_TRAFFIC (server received)
+enter_parallel=8
+battle_pos=1000

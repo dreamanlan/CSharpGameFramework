@@ -25,7 +25,7 @@ skill(5)
 	{
 		section(1000)
 		{
-	    animation(Hit)adjustduration();
+	    animation("Hit")adjustduration();
 	    selfeffect(hitEffect, 1000, hit, 0);
 	    damage(0);
 		};

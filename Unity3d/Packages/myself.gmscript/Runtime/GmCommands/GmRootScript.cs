@@ -23,6 +23,7 @@ public sealed class GmRootScript : MonoBehaviour
     {
         DeinitAndroidReceiver();
         DeinitSocketServer();
+        DeinitSocketClient();
     }
     void Start()
     {
@@ -103,10 +104,10 @@ public sealed class GmRootScript : MonoBehaviour
         m_StoryDocs = DslCalculatorHost.GetSharedApiRegistry().ApiDocs;
 
 #if UNITY_EDITOR
-        InitSocketServer();
+        InitSocketClient();
 #elif UNITY_STANDALONE
 #if DEVELOPMENT_BUILD
-        InitSocketServer();
+        InitSocketClient();
 #endif
 #elif UNITY_ANDROID
 #if DEVELOPMENT_BUILD
@@ -155,6 +156,28 @@ public sealed class GmRootScript : MonoBehaviour
             s_SocketServer = null;
             m_SocketServerInited = false;
             LogSystem.Warn("GmSocketServer stopped.");
+        }
+    }
+    private void InitSocketClient()
+    {
+        StopSocketClient();
+        s_SocketClient = new GmSocketClient("runtime");
+        s_SocketClient.Start();
+        LogSystem.Warn("GmSocketClient(runtime) started, MCP {0}", s_SocketClient.Endpoint);
+    }
+    private void DeinitSocketClient()
+    {
+        StopSocketClient();
+    }
+    // Callable from the editor's beforeAssemblyReload hook so the socket thread is
+    // stopped before the static reference is lost on a domain reload.
+    public static void StopSocketClient()
+    {
+        var client = s_SocketClient;
+        s_SocketClient = null;
+        if (null != client) {
+            client.Stop();
+            LogSystem.Warn("GmSocketClient(runtime) stopped.");
         }
     }
 
@@ -1023,6 +1046,7 @@ public sealed class GmRootScript : MonoBehaviour
     private const int c_TaskCleanupInterval = 1000;
     private static int s_SocketServerPort = 39527;
     private static GmSocketServer s_SocketServer;
+    private static GmSocketClient s_SocketClient;
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     [System.Runtime.InteropServices.DllImport("kernel32.dll")]

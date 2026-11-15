@@ -22,6 +22,7 @@ namespace ScriptableFramework
             if (enter_msg == null) {
                 return;
             }
+            ExploreSystem.EnsureLoaded();   // loads server-only event table + self test
             LogSys.Log(ServerLogType.DEBUG, "user {0}({1},{2},{3}) enter.", user.RoleId, user.GetKey(), user.Guid, user.Name);
             user.UserControlState = (int)UserControlState.User;
             user.IsEntered = true;
@@ -238,6 +239,12 @@ namespace ScriptableFramework
         {
             Msg_CRC_StoryMessage target_msg = msg as Msg_CRC_StoryMessage;
             if (target_msg == null) {
+                return;
+            }
+            // Battle-layer validation is handled in compiled server code, not in
+            // client-reachable story scripts: the event table must never be exposed.
+            if (ExploreSystem.IsExploreMessage(target_msg.m_MsgId)) {
+                ExploreSystem.Handle(user, target_msg.m_MsgId, target_msg.m_Args);
                 return;
             }
             Scene scene = user.OwnRoomUserManager.ActiveScene;

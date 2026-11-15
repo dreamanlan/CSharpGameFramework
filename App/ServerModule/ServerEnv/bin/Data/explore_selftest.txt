@@ -1,0 +1,10 @@
+﻿EXPLORE_SELFTEST
+grids=64 events=148
+table_path=D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\Tables\Server\WorldEvent.txt
+cooldown_ms=2000 max_speed=18 tolerance=1.6 max_jump=16
+hit_exact=True hit_at_radius_edge=True miss_outside_radius=True
+claimed_blocked=True closed_blocked=True
+reward_added=True cannot_rehit=True
+indistinguishable_failures=True gate_active=True
+client_Tables_Server_exists=False client_area_event_rows=0
+RESULT=PASS

@@ -195,7 +195,7 @@ namespace ScriptableFramework
             MovementStateInfo msi = m_Entity.GetMovementStateInfo();
             msi.IsMoving = true;
             msi.TargetPosition = new ScriptRuntime.Vector3(x, y, z);
-            if (null != Agent && Agent.enabled) {
+            if (null != Agent && Agent.enabled && Agent.isOnNavMesh) {
                 try {
                     Agent.SetDestination(new Vector3(x, y, z));
                     Agent.isStopped = false;
@@ -219,7 +219,7 @@ namespace ScriptableFramework
         {
             MovementStateInfo msi = m_Entity.GetMovementStateInfo();
             msi.IsMoving = false;
-            if (null != Agent && Agent.enabled) {
+            if (null != Agent && Agent.enabled && Agent.isOnNavMesh) {
                 try {
                     m_Agent.isStopped = true;
                 } catch {

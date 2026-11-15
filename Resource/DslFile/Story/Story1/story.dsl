@@ -26,6 +26,18 @@ story(story_main)
   onmessage("client:touchnpc")params($userId)
   {
     log("touchnpc");
-    sendclientstorymessage("open_battle", 10001)touser($userId);
+    $bi = propget("battleIndex", 0);
+    if($bi<10001){
+      $bi=10001;
+    };
+    if($bi>10064){
+      $bi=10001;
+    };
+    sendclientstorymessage("open_battle", $bi)touser($userId);
+    inc($bi);
+    if($bi>10064){
+      $bi=10001;
+    };
+    propset("battleIndex", $bi);
   };
 };

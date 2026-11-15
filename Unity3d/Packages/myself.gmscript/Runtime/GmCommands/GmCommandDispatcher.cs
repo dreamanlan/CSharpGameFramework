@@ -107,6 +107,8 @@ public static class GmCommandDispatcher
     // Called on the main thread, once per frame.
     public static void Pump()
     {
+        // Refreshed here so socket threads can read play state without Unity APIs.
+        IsPlaying = Application.isPlaying;
         for (int i = 0; i < c_MaxRequestsPerPump; ++i) {
             GmCommandRequest req;
             lock (s_Lock) {
@@ -247,6 +249,9 @@ public static class GmCommandDispatcher
 
     private static readonly Queue<GmCommandRequest> s_Requests = new Queue<GmCommandRequest>();
     private static readonly object s_Lock = new object();
+
+    // Main thread writes this once per Pump(); socket threads only read it.
+    public static volatile bool IsPlaying;
 }
 
 // Log ring buffer: pollable through the logs command, also attached to exec/console replies.

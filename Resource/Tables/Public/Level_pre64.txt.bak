@@ -1,0 +1,20 @@
+int32	string	int32	string[]	string[]	string[]	int32[]	float	float	float	string[]	int32	int32	int32	bool
+id	prefab	type	SceneDslFile	ClientDslFile	RoomDslFile	SceneUi	EnterX	EnterY	EnterRadius	RoomServer	ThreadCountPerScene	RoomCountPerThread	MaxUserCount	CanPK
+//id	地图prefab名称	类型（0--未分类场景 1--主UI场景 2--剧情场景 3--活动副本 4--战斗场景）	场景脚本文件(剧情/活动服务端运行，其它客户端运行)	逻辑脚本文件（客户端运行）	逻辑脚本文件（服务器端运行）	要加载的UI	进入坐标X	进入坐标Y	进入半径（以进入坐标为圆心的圆是出生点集合）					
+//说明														
+1	Main	1	Story/MainUi/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun_empty.dsl		1;2;100				RoomSvr1	4	4	24	1
+2	SkillViewer	1	Story/SkillViewer/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun_empty.dsl		100;101	110	40	5	RoomSvr1	4	4	24	1
+101	Story1	2	Story/Story1/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	16	54	10	RoomSvr1	4	4	24	1
+102	Story2	2	Story/Story2/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10001	Battle1	4	Story/Battle1/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10002	Battle2	4	Story/Battle2/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10003	Battle3	4	Story/Battle3/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10004	Battle4	4	Story/Battle4/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10005	Battle5	4	Story/Battle5/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10006	Battle6	4	Story/Battle6/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10007	Battle7	4	Story/Battle7/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10008	Battle8	4	Story/Battle8/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10009	Battle9	4	Story/Battle9/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10010	Battle10	4	Story/Battle10/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10011	Battle11	4	Story/Battle11/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10012	Battle12	4	Story/Battle12/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1

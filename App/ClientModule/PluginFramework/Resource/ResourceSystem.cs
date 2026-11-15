@@ -213,6 +213,20 @@ namespace ScriptableFramework
             if (m_LastUnusedCheckTime + c_UnusedCheckInterval < curTime) {
                 m_LastUnusedCheckTime = c_UnusedCheckInterval;
 
+                // An Editor domain reload clears this non-serialized runtime field
+                // while the DontDestroyOnLoad "ResPool" object survives. Recover
+                // it (or rebuild it) instead of throwing every frame.
+                if (null == m_ResPoolRootTransform) {
+                    GameObject pool = GameObject.Find("ResPool");
+                    if (null == pool) {
+                        pool = new GameObject("ResPool");
+                        if (Application.isPlaying)
+                            GameObject.DontDestroyOnLoad(pool);
+                    }
+                    m_ResPoolRoot = pool;
+                    m_ResPoolRootTransform = pool.transform;
+                }
+
                 bool fullCheck = m_ResPoolRootTransform.childCount >= m_MaxUnusedObjectNum;
                 int ct = 0;
                 foreach (var pair in m_UnusedResources) {

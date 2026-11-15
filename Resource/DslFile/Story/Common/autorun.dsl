@@ -26,9 +26,7 @@ story(auto_story)
     objmove(getplayerid(), $pos, "touchnpc");
     inc($index);
     propset(@sceneKey, $index);
-    if($index>=$ct){
-      $index=1;
-    };
+    if($index>=$ct){ $index=1; propset(@sceneKey, $index); };
     wait(1000);
     clearmessage("findnpc");
   };

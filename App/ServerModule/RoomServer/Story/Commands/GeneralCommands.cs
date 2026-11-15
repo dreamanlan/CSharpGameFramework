@@ -19,7 +19,7 @@ namespace ScriptableFramework.Story.Commands
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
                 var storyId = m_StoryId.Calc(calculator);
-                var multiple = m_Multiple.Calc(calculator).GetInt();
+                var multiple = m_Multiple != null ? m_Multiple.Calc(calculator).GetInt() : 0;
                 scene.DelayActionProcessor.QueueAction(() => {
                     if (multiple == 0)
                         scene.StorySystem.StartStory(storyId);
@@ -65,7 +65,7 @@ namespace ScriptableFramework.Story.Commands
             var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var multiple = m_Multiple.Calc(calculator).GetInt();
+                var multiple = m_Multiple != null ? m_Multiple.Calc(calculator).GetInt() : 0;
                 if (multiple == 0)
                     scene.StorySystem.MarkStoryTerminated(m_StoryId.Calc(calculator));
                 else
@@ -235,7 +235,7 @@ namespace ScriptableFramework.Story.Commands
             var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var multiple = m_Multiple.Calc(calculator).GetInt();
+                var multiple = m_Multiple != null ? m_Multiple.Calc(calculator).GetInt() : 0;
                 if (multiple == 0) {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
                         scene.StorySystem.PauseStory(m_StoryIds[i].Calc(calculator).ToString(), true);
@@ -284,7 +284,7 @@ namespace ScriptableFramework.Story.Commands
             var instance = calculator.GetFuncContext<StoryInstance>();
             Scene scene = instance?.Context as Scene;
             if (null != scene) {
-                var multiple = m_Multiple.Calc(calculator).GetInt();
+                var multiple = m_Multiple != null ? m_Multiple.Calc(calculator).GetInt() : 0;
                 if (multiple == 0) {
                     for (int i = 0; i < m_StoryIds.Count; i++) {
                         scene.StorySystem.PauseStory(m_StoryIds[i].Calc(calculator).ToString(), false);

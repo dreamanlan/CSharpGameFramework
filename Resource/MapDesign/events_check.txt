@@ -1,0 +1,6 @@
+EVENTS_CHECK
+tiles=64 events=148
+server_table=D:\GitHub\CSharpGameFramework\Resource\Tables\Server\WorldEvent.txt
+client_Tables_Server_exists=False
+client_area_event_rows=0
+leaks=0

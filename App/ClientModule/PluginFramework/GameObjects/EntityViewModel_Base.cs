@@ -41,7 +41,8 @@ namespace ScriptableFramework
             if (null != m_Actor) {
                 m_Actor.transform.position = new Vector3(x, y, z);
                 m_Actor.transform.localRotation = Quaternion.Euler(0, Utility.RadianToDegree(dir), 0);
-                m_Actor.transform.localScale = new Vector3(scale, scale, scale);
+                Vector3 prefabScale = m_Actor.transform.localScale;
+                m_Actor.transform.localScale = new Vector3(prefabScale.x * scale, prefabScale.y * scale, prefabScale.z * scale);
             }
         }
 

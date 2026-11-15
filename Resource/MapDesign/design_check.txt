@@ -1,0 +1,6 @@
+world_map.png 4096x4096 / world_map_preview.png 1024x1120
+regions.txt rows=64
+terrain R=6..240  B0=9840 B128=1421 B255=54275  arena_R_minmax=32..32
+layout_modern  areas=3310 events=226 rewards=243 portal=149 road=1710 reachable: area1=1793/1793 area2=1517/1517 event=226/226 reward=243/243
+layout_sumer  areas=3310 events=226 rewards=243 portal=149 road=1528 reachable: area1=1793/1793 area2=1517/1517 event=226/226 reward=243/243
+main_route_stops=14  regions=8  tiles=64

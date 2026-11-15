@@ -281,6 +281,7 @@ namespace RoomServer
 
         internal static void Main(string[] args)
         {
+            ScriptableFramework.ExploreSystem.EnsureLoaded();   // server-only event table + self test
             s_Instance = new RoomServer();
             s_Instance.Init(args);
             s_Instance.Loop();
