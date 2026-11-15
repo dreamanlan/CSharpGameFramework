@@ -110,3 +110,5 @@ Unity3d/Assets/Plugins/*.pdb
 .vs/Client/v15/Server/sqlite3/storage.ide-wal
 /.vs
 /Infrastructure/DotnetStoryScript/.codebuddy
+/Unity3d/Assets/ThirdParty/GameRef
+Unity3d/Assets/ThirdParty/GameRef.meta
