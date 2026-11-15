@@ -20,13 +20,11 @@ public class AiKeepAway : ISimpleStoryApiPlugin
     public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
         var args = operands;
-        if (!m_KeepAwayStarted) {
-            m_KeepAwayStarted = true;
-
-            m_ObjId = args[0];
-            m_SkillInfo = args[1].ObjectVal as SkillInfo;
-            m_Ratio = args[2].GetFloat();
-        }
+        // Read args every call: story instances are pooled and recycled (Reset does not touch
+        // plugin fields), a cached objid would point at a destroyed entity after battle restart.
+        m_ObjId = args[0];
+        m_SkillInfo = args[1].ObjectVal as SkillInfo;
+        m_Ratio = args[2].GetFloat();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
         if (null != npc && !npc.IsUnderControl()) {
             AiStateInfo info = npc.GetAiStateInfo();
@@ -57,5 +55,4 @@ public class AiKeepAway : ISimpleStoryApiPlugin
     private int m_ObjId = 0;
     private SkillInfo m_SkillInfo = null;
     private float m_Ratio = 1.0f;
-    private bool m_KeepAwayStarted = false;
 }

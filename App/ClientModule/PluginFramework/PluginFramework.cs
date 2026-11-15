@@ -128,6 +128,7 @@ namespace ScriptableFramework
             EntityController.Instance.Init();
 
             EntityManager.OnDamage += OnDamage;
+            ImpactEvents.EventImpactLogicDamage += OnImpactLogicDamage;
 
             Utility.EventSystem.Subscribe("gm_resetdsl", "gm", ResetDsl);
             Utility.EventSystem.Subscribe<string>("gm_execscript", "gm", ExecScript);
@@ -137,6 +138,7 @@ namespace ScriptableFramework
         }
         public void Release()
         {
+            ImpactEvents.EventImpactLogicDamage -= OnImpactLogicDamage;
             if (m_UseNetwork) {
                 UserNetworkSystem.Instance.QuitClient();
                 NetworkSystem.Instance.QuitClient();
@@ -824,6 +826,15 @@ namespace ScriptableFramework
                     //PluginFrameworkUtility.EventSystem.Publish("ui_show_mp_num", "ui", entity.GetId(), -npDamage);
                 }
             }
+        }
+        // Forward ImpactSystem damage settlement to the attacker-info / damage-event chain so the
+        // hp bar, floating numbers and target lock keep working for impact-driven damage.
+        private void OnImpactLogicDamage(EntityInfo entity, int attackerId, int damage, bool isKiller, bool isCritical, bool isOrdinary)
+        {
+            if (null == entity) return;
+            int hpDamage = -damage;
+            if (hpDamage < 0) hpDamage = 0;
+            entity.SetAttackerInfo(attackerId, isKiller, isOrdinary, isCritical, hpDamage, 0);
         }
         private void PreloadUiStories()
         {

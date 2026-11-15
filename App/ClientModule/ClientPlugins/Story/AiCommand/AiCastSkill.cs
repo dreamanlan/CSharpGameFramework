@@ -55,6 +55,7 @@ public class AiCastSkill : ISimpleStoryApiPlugin
                 if (npc.GetSkillStateInfo().IsSkillActivated()) {
                     return true;
                 } else {
+                    m_SkillCasted = false;  // skill finished: allow the next cast call (pooled plugin state)
                     return false;
                 }
             }

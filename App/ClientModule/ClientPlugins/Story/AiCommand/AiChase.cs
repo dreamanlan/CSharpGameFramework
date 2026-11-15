@@ -20,12 +20,10 @@ public class AiChase : ISimpleStoryApiPlugin
     public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
         var args = operands;
-        if (!m_ChaseStarted) {
-            m_ChaseStarted = true;
-
-            m_ObjId = args[0];
-            m_SkillInfo = args[1].ObjectVal as SkillInfo;
-        }
+        // Read args every call: story instances are pooled and recycled (Reset does not touch
+        // plugin fields), a cached objid would point at a destroyed entity after battle restart.
+        m_ObjId = args[0];
+        m_SkillInfo = args[1].ObjectVal as SkillInfo;
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
         if (null != npc && !npc.IsUnderControl()) {
             AiStateInfo info = npc.GetAiStateInfo();
@@ -52,5 +50,4 @@ public class AiChase : ISimpleStoryApiPlugin
     private DslCalculatorCodeStructure m_CodeStructure = null;
     private int m_ObjId = 0;
     private SkillInfo m_SkillInfo = null;
-    private bool m_ChaseStarted = false;
 }

@@ -20,12 +20,11 @@ public class AiDoMember : ISimpleStoryApiPlugin
     public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
         var args = operands;
-        if (!m_ParamReaded) {
-            m_ParamReaded = true;
-            m_ObjId = args[0];
-            if (args.Count > 1) {
-                m_EnableLearning = args[1].GetInt() != 0;
-            }
+        // Read args every call: story instances are pooled and recycled (Reset does not touch
+        // plugin fields), a cached objid would point at a destroyed entity after battle restart.
+        m_ObjId = args[0];
+        if (args.Count > 1) {
+            m_EnableLearning = args[1].GetInt() != 0;
         }
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
         if (null != npc && !npc.IsUnderControl()) {
@@ -164,6 +163,5 @@ public class AiDoMember : ISimpleStoryApiPlugin
     private DslCalculatorCodeStructure m_CodeStructure = null;
     private int m_ObjId = 0;
     private bool m_EnableLearning = false;
-    private bool m_ParamReaded = false;
     private const long c_IntervalTime = 200;
 }

@@ -362,36 +362,6 @@ internal class Msg_RC_SyncProperty_Handler
         //cb.StateFlag = targetmsg.state;
     }
 }
-internal class Msg_RC_ImpactDamage_Handler
-{
-    internal static void Execute(object msg, NetConnection conn)
-    {
-        Msg_RC_ImpactDamage damage_msg = msg as Msg_RC_ImpactDamage;
-        if (null != damage_msg) {
-            EntityInfo entity = PluginFramework.Instance.SceneContext.GetEntityById(damage_msg.role_id);
-            if (null != entity) {
-                int hpDamage = entity.Hp - damage_msg.hp;
-                int energyDamage = entity.Energy - damage_msg.energy;
-                entity.Hp -= damage_msg.hp;
-                //LogSystem.Info("---set {2} hp to {0}/{1}", entity.Hp, entity.ActualProperty.HpMax, entity.GetId());
-                bool isKiller = false;
-                bool isOrdinary = false;
-                bool isCritical = false;
-                if ((damage_msg.damage_status & (int)Msg_RC_ImpactDamage.Flag.IS_KILLER) != 0) {
-                    isKiller = true;
-                }
-                if ((damage_msg.damage_status & (int)Msg_RC_ImpactDamage.Flag.IS_CRITICAL) != 0) {
-                    isCritical = true;
-                }
-                if ((damage_msg.damage_status & (int)Msg_RC_ImpactDamage.Flag.IS_ORDINARY) != 0) {
-                    isOrdinary = true;
-                }
-                entity.SetAttackerInfo(damage_msg.attacker_id, isKiller, isOrdinary, isCritical, hpDamage, energyDamage);
-            }
-        }
-    }
-}
-
 internal class Msg_RC_ChangeScene_Handler
 {
     internal static void Execute(object msg, NetConnection conn)

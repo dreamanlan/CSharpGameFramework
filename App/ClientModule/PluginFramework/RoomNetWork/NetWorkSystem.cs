@@ -350,7 +350,6 @@ namespace ScriptableFramework.Network
             RegisterMsgHandler(RoomMessageDefine.Msg_RC_RemoveSkill, new MessageDispatch.MsgHandler(Msg_RC_RemoveSkill_Handler.Execute));
             RegisterMsgHandler(RoomMessageDefine.Msg_RC_AdjustPosition, new MessageDispatch.MsgHandler(Msg_RC_AdjustPosition_Handler.Execute));
             RegisterMsgHandler(RoomMessageDefine.Msg_RC_SyncProperty, new MessageDispatch.MsgHandler(Msg_RC_SyncProperty_Handler.Execute));
-            RegisterMsgHandler(RoomMessageDefine.Msg_RC_ImpactDamage, new MessageDispatch.MsgHandler(Msg_RC_ImpactDamage_Handler.Execute));
             RegisterMsgHandler(RoomMessageDefine.Msg_RC_ChangeScene, new MessageDispatch.MsgHandler(Msg_RC_ChangeScene_Handler.Execute));
             RegisterMsgHandler(RoomMessageDefine.Msg_RC_SyncNpcOwnerId, new MessageDispatch.MsgHandler(Msg_RC_SyncNpcOwnerId_Handler.Execute));
             RegisterMsgHandler(RoomMessageDefine.Msg_RC_CampChanged, new MessageDispatch.MsgHandler(Msg_RC_CampChanged_Handler.Execute));

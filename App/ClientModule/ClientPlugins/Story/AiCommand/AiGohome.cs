@@ -19,10 +19,9 @@ public class AiGohome : ISimpleStoryApiPlugin
     public bool OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
     {
         var args = operands;
-        if (!m_ParamReaded) {
-            m_ParamReaded = true;
-            m_ObjId = args[0];
-        }
+        // Read args every call: story instances are pooled and recycled (Reset does not touch
+        // plugin fields), a cached objid would point at a destroyed entity after battle restart.
+        m_ObjId = args[0];
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
         if (null != npc) {
             AiStateInfo info = npc.GetAiStateInfo();
@@ -58,5 +57,4 @@ public class AiGohome : ISimpleStoryApiPlugin
 
     private DslCalculatorCodeStructure m_CodeStructure = null;
     private int m_ObjId = 0;
-    private bool m_ParamReaded = false;
 }

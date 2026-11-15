@@ -65,17 +65,24 @@ namespace ScriptableFramework
         {
             isCritical = false;
             if (null == sender || null == target || null == cfg || null == target.SceneContext) return 0;
+            return CalcDamage(sender, target, (long)(cfg.DamageRate * 1000), cfg.DamageValue, cfg.DamageType, out isCritical);
+        }
+        // Damage numbers come from the skill's SkillDamageData (multiple/damage per hit) instead of
+        // an ImpactData config; the formula itself is shared with the impact-driven path.
+        // damageType: 0 = physical only, 1 = magical only, 2 = both.
+        public static int CalcDamage(EntityInfo sender, EntityInfo target, long multiple, long damage, int damageType, out bool isCritical)
+        {
+            isCritical = false;
+            if (null == sender || null == target || null == target.SceneContext) return 0;
             long critrate = AttrCalculator.Calc(target.SceneContext, sender.ActualProperty, target.ActualProperty, "critrate");
             long blockrate = AttrCalculator.Calc(target.SceneContext, sender.ActualProperty, target.ActualProperty, "blockrate");
             long rnd = Helper.Random.Next();
             long critonoff = rnd <= critrate ? 1 : 0;
             long blockonoff = (rnd > critrate && rnd <= critrate + blockrate) ? 1 : 0;
             isCritical = critonoff > 0;
-            long multiple = (long)(cfg.DamageRate * 1000);
-            long damage = cfg.DamageValue;
             long phy = AttrCalculator.Calc(target.SceneContext, sender.ActualProperty, target.ActualProperty, "phydamage", multiple, damage, critonoff, blockonoff);
             long mag = AttrCalculator.Calc(target.SceneContext, sender.ActualProperty, target.ActualProperty, "magdamage", multiple, damage, critonoff, blockonoff);
-            long total = 0 == cfg.DamageType ? phy : (1 == cfg.DamageType ? mag : phy + mag);
+            long total = 0 == damageType ? phy : (1 == damageType ? mag : phy + mag);
             return (int)total;
         }
         // Extension point for talent-like modifiers; the default framework has no talent system.

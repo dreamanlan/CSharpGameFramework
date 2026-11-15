@@ -28,6 +28,62 @@ namespace ScriptableFramework
             // This framework has no check-copy impact list; removal happens inline above.
         }
 
+        // Settle one damage tick of a gfx hit-skill impact (the "damage" trigger path). The impact
+        // must already sit on the target (added by EntityController.SendImpact/TrackSendImpact);
+        // its DamageData carries the source skill's multiple/damage numbers. Damage numbers are
+        // taken from DamageData, attributes from the real sender entity (unified settlement entry
+        // for skill damage; shield, hp, kill statistics and damage events are handled here).
+        public int SettleSkillDamage(EntityInfo target, EntityInfo sender, int impactId, int seq)
+        {
+            if (null == target || null == sender) return 0;
+            if (ImpactCompat.IsDead(target) || !ImpactCompat.CanSettleDamage(target)) return 0;
+            ImpactInfo info = target.GetSkillStateInfo().GetImpactInfoBySeq(seq);
+            if (null == info || impactId != info.ImpactId) return 0;
+
+            int index = info.CurDamageCount;
+            ++info.CurDamageCount;
+            long multiple = info.DamageData.GetMultiple(index);
+            long damage = info.DamageData.GetDamage(index);
+
+            bool isCritical;
+            int total = ImpactCompat.CalcDamage(sender, target, multiple, damage, 2, out isCritical);
+            if (total < 0) total = 0;
+
+            bool isKiller = false;
+            if (target.Shield >= total) {
+                target.Shield -= total;
+            } else if (target.Shield > 0) {
+                int leftDamage = total - target.Shield;
+                target.Shield = 0;
+                target.Hp -= leftDamage;
+                if (target.Hp <= 0) isKiller = true;
+            } else {
+                target.Hp -= total;
+                if (target.Hp <= 0) isKiller = true;
+            }
+            if (isKiller) {
+                target.GetCombatStatisticInfo().AddDeadCount(1);
+                EntityInfo killer = sender;
+                if (killer.SummonerId > 0) {
+                    EntityInfo summoner = ImpactCompat.GetEntity(target.SceneContext, killer.SummonerId);
+                    if (null != summoner) killer = summoner;
+                }
+                if (target.EntityType == (int)EntityTypeEnum.Tower) {
+                    killer.GetCombatStatisticInfo().AddKillTowerCount(1);
+                } else if (target.EntityType == (int)EntityTypeEnum.Hero) {
+                    killer.GetCombatStatisticInfo().AddKillHeroCount(1);
+                    killer.GetCombatStatisticInfo().AddMultiKillCount(1);
+                } else {
+                    killer.GetCombatStatisticInfo().AddKillNpcCount(1);
+                }
+            }
+            ImpactHitCounter.OnHit(sender, total, isKiller);
+            if (null != ImpactEvents.EventImpactLogicDamage) {
+                ImpactEvents.EventImpactLogicDamage(target, sender.GetId(), -total, isKiller, isCritical, true);
+            }
+            return total;
+        }
+
         public bool SendImpactToCharacter(EntityInfo sender, int impactId, int targetId, int skillId, int duration, Vector3 srcPos, float srcDir)
         {
             bool ret = SendImpactImpl(sender, impactId, targetId, skillId, duration);

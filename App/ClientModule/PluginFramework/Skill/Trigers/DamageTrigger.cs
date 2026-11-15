@@ -30,7 +30,15 @@ namespace ScriptableFramework.Skill.Trigers
             }
             if (curSectionTime >= StartTime) {
                 if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
-                    EntityController.Instance.ImpactDamage(senderObj.TargetObjId, senderObj.ObjId, senderObj.SkillId, senderObj.Seq, IsFinal);
+                    // Settle through the ImpactSystem (unified damage settlement). The impact was
+                    // added on the target by SendImpact/TrackSendImpact and carries the skill's
+                    // DamageData; here we only resolve the entities and hand over for settlement.
+                    EntityViewModel view = EntityController.Instance.GetEntityViewById(senderObj.ObjId);
+                    EntityViewModel srcView = EntityController.Instance.GetEntityViewById(senderObj.TargetObjId);
+                    if (null != view && null != view.Entity && !view.Entity.IsDeadSkillCasting() &&
+                        null != srcView && null != srcView.Entity) {
+                        ImpactSystem.Instance.SettleSkillDamage(view.Entity, srcView.Entity, senderObj.SkillId, senderObj.Seq);
+                    }
                 }
                 return false;
             } else {
