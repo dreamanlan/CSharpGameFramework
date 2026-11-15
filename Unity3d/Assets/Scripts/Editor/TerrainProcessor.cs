@@ -334,7 +334,7 @@ internal static class TerrainEditUtility
             }
             var calc = new DslCalculator();
             calc.NewApiRegistry();
-            UnityEditorApi.Register(calc);
+            EditorDslApi.Register(calc);
             calc.Register("getheight", "getheight(x,y) api", new ExpressionFactoryHelper<GetHeightExp>());
             calc.Register("getalphamap", "getalphamap(x,y,ix) api", new ExpressionFactoryHelper<GetAlphamapExp>());
             calc.Register("getalpha", "getalpha(ix) api", new ExpressionFactoryHelper<GetAlphaExp>());
