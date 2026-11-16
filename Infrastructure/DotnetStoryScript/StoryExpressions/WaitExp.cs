@@ -89,8 +89,8 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// realtimewait(ms)[condition(exp)] - wait for specified real time (in milliseconds)
-    /// realtimewait(ms){
+    /// real_time_wait(ms)[condition(exp)] - wait for specified real time (in milliseconds)
+    /// real_time_wait(ms){
     ///     condition(exp);
     /// };
     /// </summary>

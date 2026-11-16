@@ -49,7 +49,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                 if (!m_IsStarted) {
                     m_IsStarted = true;
 
-                    //LogSystem.Warn("trackbullet start.");
+                    //LogSystem.Warn("track_bullet start.");
 
                     Vector3 dest;
                     string trackBone = m_TrackBone.Get(instance);
@@ -59,7 +59,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                     } else {
                         dest = obj.transform.position;
                         dest.y += 1.5f;
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] track_bullet bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                     }
                     m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
@@ -104,7 +104,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                     string effectPath = SkillParamUtility.RefixResourceVariable("emitEffect", instance, senderObj.ConfigData.resources);
                     m_Effect = ResourceSystem.Instance.NewObject(effectPath, m_Lifetime) as GameObject;
                     if (null != m_Effect) {
-                        //LogSystem.Warn("trackbullet effect {0} {1}", effectPath, m_Lifetime);
+                        //LogSystem.Warn("track_bullet effect {0} {1}", effectPath, m_Lifetime);
 
                         BulletManager.Instance.AddBullet(m_Effect);
                         senderObj.TrackEffectObj = m_Effect;
@@ -114,12 +114,12 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                         m_Effect.transform.localRotation = q;
                         m_Effect.SetActive(true);
 
-                        //LogSystem.Warn("trackbullet effect actived {0} {1} pos {2} {3} {4}", effectPath, m_Lifetime, m_StartPos.x, m_StartPos.y, m_StartPos.z);
+                        //LogSystem.Warn("track_bullet effect actived {0} {1} pos {2} {3} {4}", effectPath, m_Lifetime, m_StartPos.x, m_StartPos.y, m_StartPos.z);
                     } else {
                         if (string.IsNullOrEmpty(effectPath)) {
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet effect is empty.", senderObj.SkillId, instance.DslSkillId);
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] track_bullet effect is empty.", senderObj.SkillId, instance.DslSkillId);
                         } else {
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] track_bullet effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
                         }
                     }
                 } else if (null != m_Effect) {
@@ -138,7 +138,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                         if (CheckCollide(senderObj, instance, obj)) {
                             return true;
                         }
-                        //LogSystem.Warn("trackbullet effect move to {0} {1} {2}", pos.x, pos.y, pos.z);
+                        //LogSystem.Warn("track_bullet effect move to {0} {1} {2}", pos.x, pos.y, pos.z);
                         if ((dest - m_Effect.transform.position).sqrMagnitude <= 0.01f) {
                             m_HitEffectRotation = Quaternion.LookRotation(m_StartPos - dest);
                             if (m_NoImpact) {
@@ -153,7 +153,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                                     args.Add("hitEffectRotation", m_HitEffectRotation);
                                 EntityController.Instance.TrackSendImpact(senderObj.ObjId, senderObj.SkillId, senderObj.Seq, impactId, args);
 
-                                //LogSystem.Warn("trackbullet effect hit target {0} {1} {2}", pos.x, pos.y, pos.z);
+                                //LogSystem.Warn("track_bullet effect hit target {0} {1} {2}", pos.x, pos.y, pos.z);
                             }
                             m_IsHit = true;
                         }
@@ -169,7 +169,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                         m_Effect = null;
                         instance.StopCurSection();
                         
-                        //LogSystem.Warn("trackbullet effect finish.");
+                        //LogSystem.Warn("track_bullet effect finish.");
                         return false;
                     }
                 } else {
@@ -239,7 +239,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
         } else {
             effectObj = ResourceSystem.Instance.NewObject(effectPath, deleteTime / 1000.0f) as GameObject;
             if (null == effectObj) {
-                LogSystem.Warn("[skill:{0} dsl skill id:{1}] selfeffect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
+                LogSystem.Warn("[skill:{0} dsl skill id:{1}] self_effect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
             }
         }
         if (null != effectObj) {
@@ -274,7 +274,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
 
             var pos1 = m_Effect.transform.position;
             var pos2 = other.transform.position;
-            //LogSystem.Warn("trackbullet effect explode {0}({1} {2} {3}) with {4}({5} {6} {7})", m_Effect.name, pos1.x, pos1.y, pos1.z, other.name, pos2.x, pos2.y, pos2.z);
+            //LogSystem.Warn("track_bullet effect explode {0}({1} {2} {3}) with {4}({5} {6} {7})", m_Effect.name, pos1.x, pos1.y, pos1.z, other.name, pos2.x, pos2.y, pos2.z);
             return true;
         }
         return false;

@@ -15,7 +15,7 @@ animatorcontroller("ThirdPersonAnimatorController")
 		weight(0);
 		blendingmode("Override");
 
-		blendtreestate("Grounded",vector3(588,96,0))
+		blendtreestate("Grounded",vector_3(588,96,0))
 		{
 			layerdefaultstate(True);
 			footik(True);
@@ -97,7 +97,7 @@ animatorcontroller("ThirdPersonAnimatorController")
 				condition("OnGround","IfNot",0);
 			};
 		};
-		blendtreestate("Crouching",vector3(444,240,0))
+		blendtreestate("Crouching",vector_3(444,240,0))
 		{
 			footik(True);
 
@@ -114,17 +114,17 @@ animatorcontroller("ThirdPersonAnimatorController")
 				};
 				motion
 				{
-					timescale(2);
+					time_scale(2);
 					position(0,1);
 				};
 				motion
 				{
-					timescale(2);
+					time_scale(2);
 					position(-1,1);
 				};
 				motion
 				{
-					timescale(2);
+					time_scale(2);
 					position(1,1);
 				};
 			};
@@ -138,7 +138,7 @@ animatorcontroller("ThirdPersonAnimatorController")
 				condition("OnGround","IfNot",0);
 			};
 		};
-		blendtreestate("Airborne",vector3(444,-48,0))
+		blendtreestate("Airborne",vector_3(444,-48,0))
 		{
 			blendtree
 			{
@@ -148,37 +148,37 @@ animatorcontroller("ThirdPersonAnimatorController")
 
 				motion
 				{
-					timescale(0.1);
+					time_scale(0.1);
 					position(0,-1);
 				};
 				motion
 				{
-					timescale(0.1);
+					time_scale(0.1);
 					position(5,-1);
 				};
 				motion
 				{
-					timescale(0.1);
+					time_scale(0.1);
 					position(5,1);
 				};
 				motion
 				{
-					timescale(0.1);
+					time_scale(0.1);
 					position(-9,0);
 				};
 				motion
 				{
-					timescale(0.1);
+					time_scale(0.1);
 					position(0,1);
 				};
 				motion
 				{
-					timescale(0.1);
+					time_scale(0.1);
 					position(5,0);
 				};
 				motion
 				{
-					timescale(0.1);
+					time_scale(0.1);
 					position(0,0);
 				};
 			};

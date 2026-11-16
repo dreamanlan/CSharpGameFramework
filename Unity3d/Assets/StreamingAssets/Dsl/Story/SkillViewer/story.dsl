@@ -13,37 +13,37 @@ story(story_main)
   {
     preload();
     wait(1000);
-    publishgfxevent("loading_complete", "ui");
+    publish_gfx_event("loading_complete", "ui");
     log("scene2");
 
-    @myNpcPos = vector3(5,0,7);
+    @myNpcPos = vector_3(5,0,7);
     @myNpcDir = 1.57;
   };
   onmessage("move_to")params($x,$y,$z)
   {
-  	npcmove(1000,vector3($x,$y,$z));
+  	npc_move(1000,vector_3($x,$y,$z));
   };
   onmessage("reload")params($leaderTableId,$targetTableId,$skillIds)
   {
     @leaderTableId = $leaderTableId;
     @targetTableId = $targetTableId;
     @skillIds = $skillIds;
-    publishgfxevent("ui_remove_skill_buttons","ui");
+    publish_gfx_event("ui_remove_skill_buttons","ui");
     wait(1000);
-    destroynpc(1000);
-    destroynpc(1);
+    destroy_npc(1000);
+    destroy_npc(1);
     wait(1000);
 
-    createnpc(1,vector3(0,0,0),0.785,4,@targetTableId);
-    sethp(unitid2objid(1),99999999);
-    createnpc(1000,@myNpcPos,@myNpcDir,3,@leaderTableId,"skill_viewer",stringlist("Ai/ailogic_skill_viewer.dsl"));
-    @leaderObjId=unitid2objid(1000);
-    setleaderid(@leaderObjId);
-    npcsetformation(1000,12);
-    looplist(@skillIds){
-      publishgfxevent("ui_add_skill_button","ui",@leaderTableId,@leaderObjId,$$);
+    create_npc(1,vector_3(0,0,0),0.785,4,@targetTableId);
+    set_hp(unit_id_2_obj_id(1),99999999);
+    create_npc(1000,@myNpcPos,@myNpcDir,3,@leaderTableId,"skill_viewer",string_list("Ai/ailogic_skill_viewer.dsl"));
+    @leaderObjId=unit_id_2_obj_id(1000);
+    set_leader_id(@leaderObjId);
+    npc_set_formation(1000,12);
+    loop_list(@skillIds){
+      publish_gfx_event("ui_add_skill_button","ui",@leaderTableId,@leaderObjId,$$);
     };
-    camerafollow(1000);
+    camera_follow(1000);
   };
   onmessage("objkilled")params($id,$enemy,$friend,$trigger)
   {

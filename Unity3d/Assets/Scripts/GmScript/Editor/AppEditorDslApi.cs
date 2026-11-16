@@ -57,6 +57,7 @@ public sealed class AppEditorDslApi
         calc.Register("map_nav", "map_nav() - bake legacy NavMesh for all 64 era battle scenes", new ExpressionFactoryHelper<MapNavExp>());
         calc.Register("map_camera_fix", "map_camera_fix() - patch all 128 scene cameras to a close follow pose without rebuilding NavMesh", new ExpressionFactoryHelper<MapCameraFixExp>());
         calc.Register("camera_probe", "camera_probe() - report live camera pose and distance to the party leader", new ExpressionFactoryHelper<CameraProbeExp>());
+        calc.Register("combat_probe", "combat_probe() - dump live entity AI state/home/target ranges", new ExpressionFactoryHelper<CombatProbeExp>());
         calc.Register("explore_probe", "explore_probe() - dispatch cast_explore in Play mode to verify the server explore round trip", new ExpressionFactoryHelper<ExploreProbeExp>());
         calc.Register("fix_select_prefab", "fix_select_prefab() - remove colliders/rigidbodies from the selection VFX prefab", new ExpressionFactoryHelper<SelectPrefabFixExp>());
     }

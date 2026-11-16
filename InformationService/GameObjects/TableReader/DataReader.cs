@@ -23,7 +23,7 @@ namespace TableConfig
 			internal int avatar;
 			internal int skill0;
 			internal int skill1;
-			internal int skill2;
+			internal int skill_2;
 			internal int skill3;
 			internal int skill4;
 			internal int skill5;
@@ -72,7 +72,7 @@ namespace TableConfig
 		public string avatar;
 		public int skill0;
 		public int skill1;
-		public int skill2;
+		public int skill_2;
 		public int skill3;
 		public int skill4;
 		public int skill5;
@@ -123,7 +123,7 @@ namespace TableConfig
 			avatar = DataRecordUtility.ExtractString(table, record.avatar, "");
 			skill0 = DataRecordUtility.ExtractInt(table, record.skill0, 0);
 			skill1 = DataRecordUtility.ExtractInt(table, record.skill1, 0);
-			skill2 = DataRecordUtility.ExtractInt(table, record.skill2, 0);
+			skill_2 = DataRecordUtility.ExtractInt(table, record.skill_2, 0);
 			skill3 = DataRecordUtility.ExtractInt(table, record.skill3, 0);
 			skill4 = DataRecordUtility.ExtractInt(table, record.skill4, 0);
 			skill5 = DataRecordUtility.ExtractInt(table, record.skill5, 0);
@@ -176,7 +176,7 @@ namespace TableConfig
 			record.avatar = DataRecordUtility.SetValue(table, avatar, "");
 			record.skill0 = DataRecordUtility.SetValue(table, skill0, 0);
 			record.skill1 = DataRecordUtility.SetValue(table, skill1, 0);
-			record.skill2 = DataRecordUtility.SetValue(table, skill2, 0);
+			record.skill_2 = DataRecordUtility.SetValue(table, skill_2, 0);
 			record.skill3 = DataRecordUtility.SetValue(table, skill3, 0);
 			record.skill4 = DataRecordUtility.SetValue(table, skill4, 0);
 			record.skill5 = DataRecordUtility.SetValue(table, skill5, 0);
@@ -427,7 +427,7 @@ namespace TableConfig
 			internal int desc;
 			internal int attr1;
 			internal int value1;
-			internal int attr2;
+			internal int attr_2;
 			internal int value2;
 			internal int attr3;
 			internal int value3;
@@ -447,7 +447,7 @@ namespace TableConfig
 		public string desc;
 		public int attr1;
 		public int value1;
-		public int attr2;
+		public int attr_2;
 		public int value2;
 		public int attr3;
 		public int value3;
@@ -469,7 +469,7 @@ namespace TableConfig
 			desc = DataRecordUtility.ExtractString(table, record.desc, "");
 			attr1 = DataRecordUtility.ExtractInt(table, record.attr1, 0);
 			value1 = DataRecordUtility.ExtractInt(table, record.value1, 0);
-			attr2 = DataRecordUtility.ExtractInt(table, record.attr2, 0);
+			attr_2 = DataRecordUtility.ExtractInt(table, record.attr_2, 0);
 			value2 = DataRecordUtility.ExtractInt(table, record.value2, 0);
 			attr3 = DataRecordUtility.ExtractInt(table, record.attr3, 0);
 			value3 = DataRecordUtility.ExtractInt(table, record.value3, 0);
@@ -493,7 +493,7 @@ namespace TableConfig
 			record.desc = DataRecordUtility.SetValue(table, desc, "");
 			record.attr1 = DataRecordUtility.SetValue(table, attr1, 0);
 			record.value1 = DataRecordUtility.SetValue(table, value1, 0);
-			record.attr2 = DataRecordUtility.SetValue(table, attr2, 0);
+			record.attr_2 = DataRecordUtility.SetValue(table, attr_2, 0);
 			record.value2 = DataRecordUtility.SetValue(table, value2, 0);
 			record.attr3 = DataRecordUtility.SetValue(table, attr3, 0);
 			record.value3 = DataRecordUtility.SetValue(table, value3, 0);
@@ -952,7 +952,7 @@ namespace TableConfig
 			internal int vampire;
 			internal int attr1;
 			internal int value1;
-			internal int attr2;
+			internal int attr_2;
 			internal int value2;
 			internal int attr3;
 			internal int value3;
@@ -1008,7 +1008,7 @@ namespace TableConfig
 		public List<int> vampire;
 		public int attr1;
 		public int value1;
-		public int attr2;
+		public int attr_2;
 		public int value2;
 		public int attr3;
 		public int value3;
@@ -1066,7 +1066,7 @@ namespace TableConfig
 			vampire = DataRecordUtility.ExtractIntList(table, record.vampire, null);
 			attr1 = DataRecordUtility.ExtractInt(table, record.attr1, 0);
 			value1 = DataRecordUtility.ExtractInt(table, record.value1, 0);
-			attr2 = DataRecordUtility.ExtractInt(table, record.attr2, 0);
+			attr_2 = DataRecordUtility.ExtractInt(table, record.attr_2, 0);
 			value2 = DataRecordUtility.ExtractInt(table, record.value2, 0);
 			attr3 = DataRecordUtility.ExtractInt(table, record.attr3, 0);
 			value3 = DataRecordUtility.ExtractInt(table, record.value3, 0);
@@ -1126,7 +1126,7 @@ namespace TableConfig
 			record.vampire = DataRecordUtility.SetValue(table, vampire, null);
 			record.attr1 = DataRecordUtility.SetValue(table, attr1, 0);
 			record.value1 = DataRecordUtility.SetValue(table, value1, 0);
-			record.attr2 = DataRecordUtility.SetValue(table, attr2, 0);
+			record.attr_2 = DataRecordUtility.SetValue(table, attr_2, 0);
 			record.value2 = DataRecordUtility.SetValue(table, value2, 0);
 			record.attr3 = DataRecordUtility.SetValue(table, attr3, 0);
 			record.value3 = DataRecordUtility.SetValue(table, value3, 0);
@@ -1728,7 +1728,7 @@ namespace TableConfig
 			internal int beadduc;
 			internal int attr1;
 			internal int value1;
-			internal int attr2;
+			internal int attr_2;
 			internal int value2;
 			internal int attr3;
 			internal int value3;
@@ -1765,7 +1765,7 @@ namespace TableConfig
 		public int beadduc;
 		public int attr1;
 		public int value1;
-		public int attr2;
+		public int attr_2;
 		public int value2;
 		public int attr3;
 		public int value3;
@@ -1804,7 +1804,7 @@ namespace TableConfig
 			beadduc = DataRecordUtility.ExtractInt(table, record.beadduc, 0);
 			attr1 = DataRecordUtility.ExtractInt(table, record.attr1, 0);
 			value1 = DataRecordUtility.ExtractInt(table, record.value1, 0);
-			attr2 = DataRecordUtility.ExtractInt(table, record.attr2, 0);
+			attr_2 = DataRecordUtility.ExtractInt(table, record.attr_2, 0);
 			value2 = DataRecordUtility.ExtractInt(table, record.value2, 0);
 			attr3 = DataRecordUtility.ExtractInt(table, record.attr3, 0);
 			value3 = DataRecordUtility.ExtractInt(table, record.value3, 0);
@@ -1845,7 +1845,7 @@ namespace TableConfig
 			record.beadduc = DataRecordUtility.SetValue(table, beadduc, 0);
 			record.attr1 = DataRecordUtility.SetValue(table, attr1, 0);
 			record.value1 = DataRecordUtility.SetValue(table, value1, 0);
-			record.attr2 = DataRecordUtility.SetValue(table, attr2, 0);
+			record.attr_2 = DataRecordUtility.SetValue(table, attr_2, 0);
 			record.value2 = DataRecordUtility.SetValue(table, value2, 0);
 			record.attr3 = DataRecordUtility.SetValue(table, attr3, 0);
 			record.value3 = DataRecordUtility.SetValue(table, value3, 0);
@@ -2687,5 +2687,139 @@ namespace TableConfig
 			get { return s_Instance; }
 		}
 		private static UserScriptProvider s_Instance = new UserScriptProvider();
+	}
+}
+
+namespace TableConfig
+{
+	public sealed partial class WorldEvent : IDataRecord<string>
+	{
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 36)]
+		private struct WorldEventRecord
+		{
+			internal int id;
+			internal int grid_id;
+			internal int era;
+			internal float x;
+			internal float z;
+			internal float radius;
+			internal int reward;
+			internal int token;
+			internal int title;
+		}
+
+		public string id;
+		public string grid_id;
+		public string era;
+		public float x;
+		public float z;
+		public float radius;
+		public int reward;
+		public string token;
+		public string title;
+
+		public bool ReadFromBinary(BinaryTable table, int index)
+		{
+			WorldEventRecord record = GetRecord(table,index);
+			id = DataRecordUtility.ExtractString(table, record.id, "");
+			grid_id = DataRecordUtility.ExtractString(table, record.grid_id, "");
+			era = DataRecordUtility.ExtractString(table, record.era, "");
+			x = DataRecordUtility.ExtractFloat(table, record.x, 0);
+			z = DataRecordUtility.ExtractFloat(table, record.z, 0);
+			radius = DataRecordUtility.ExtractFloat(table, record.radius, 0);
+			reward = DataRecordUtility.ExtractInt(table, record.reward, 0);
+			token = DataRecordUtility.ExtractString(table, record.token, "");
+			title = DataRecordUtility.ExtractString(table, record.title, "");
+			return true;
+		}
+
+		public void WriteToBinary(BinaryTable table)
+		{
+			WorldEventRecord record = new WorldEventRecord();
+			record.id = DataRecordUtility.SetValue(table, id, "");
+			record.grid_id = DataRecordUtility.SetValue(table, grid_id, "");
+			record.era = DataRecordUtility.SetValue(table, era, "");
+			record.x = DataRecordUtility.SetValue(table, x, 0);
+			record.z = DataRecordUtility.SetValue(table, z, 0);
+			record.radius = DataRecordUtility.SetValue(table, radius, 0);
+			record.reward = DataRecordUtility.SetValue(table, reward, 0);
+			record.token = DataRecordUtility.SetValue(table, token, "");
+			record.title = DataRecordUtility.SetValue(table, title, "");
+			byte[] bytes = GetRecordBytes(record);
+			table.Records.Add(bytes);
+		}
+
+		public string GetId()
+		{
+			return id;
+		}
+
+		private unsafe WorldEventRecord GetRecord(BinaryTable table, int index)
+		{
+			WorldEventRecord record;
+			byte[] bytes = table.Records[index];
+			fixed (byte* p = bytes) {
+				record = *(WorldEventRecord*)p;
+			}
+			return record;
+		}
+		private static unsafe byte[] GetRecordBytes(WorldEventRecord record)
+		{
+			byte[] bytes = new byte[sizeof(WorldEventRecord)];
+			fixed (byte* p = bytes) {
+				WorldEventRecord* temp = (WorldEventRecord*)p;
+				*temp = record;
+			}
+			return bytes;
+		}
+	}
+
+	public sealed partial class WorldEventProvider
+	{
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_WorldEvent);
+		}
+		public void Load(string file)
+		{
+			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
+				m_WorldEventMgr.LoadFromBinary(file);
+			} else {
+				LogSystem.Error("WorldEvent is not a table !");
+			}
+		}
+		public void Save(string file)
+		{
+		#if DEBUG
+			m_WorldEventMgr.SaveToBinary(file);
+		#endif
+		}
+		public void Clear()
+		{
+			m_WorldEventMgr.Clear();
+		}
+
+		public DataDictionaryMgr<WorldEvent,string> WorldEventMgr
+		{
+			get { return m_WorldEventMgr; }
+		}
+
+		public int GetWorldEventCount()
+		{
+			return m_WorldEventMgr.GetDataCount();
+		}
+
+		public WorldEvent GetWorldEvent(string id)
+		{
+			return m_WorldEventMgr.GetDataById(id);
+		}
+
+		private DataDictionaryMgr<WorldEvent,string> m_WorldEventMgr = new DataDictionaryMgr<WorldEvent,string>();
+
+		public static WorldEventProvider Instance
+		{
+			get { return s_Instance; }
+		}
+		private static WorldEventProvider s_Instance = new WorldEventProvider();
 	}
 }

@@ -5,28 +5,28 @@ story(main)
   };
   onmessage("start")
   {
-    bindui(@window){
+    bind_ui(@window){
       inputs("Panel/Account","Panel/Passwd");
       onevent("button","ok","Panel/Button");
     };
   	log("LoginDlg start");
-    @window.SetActive(changetype(0,"bool"));
+    @window.SetActive(change_type(0,"bool"));
   };
   onmessage("show_login")
   {
-    publishgfxevent("ui_hide","ui");
-    @window.SetActive(changetype(1,"bool"));
+    publish_gfx_event("ui_hide","ui");
+    @window.SetActive(change_type(1,"bool"));
   };
   onnamespacedmessage("on_click")
   {
   	log("LoginDlg on click");
-  	$user=listget(arg(1),0,"");
-  	$pass=listget(arg(1),1,"");
+  	$user=list_get(arg(1),0,"");
+  	$pass=list_get(arg(1),1,"");
   	if($user=="" || $pass==""){
-    	highlightprompt(0,"Err_LoginNameOrPass");
+    	highlight_prompt(0,"Err_LoginNameOrPass");
   	}else{
-	  	firemessage("do_login",$user,$pass);
-    	@window.SetActive(changetype(0,"bool"));
+	  	fire_message("do_login",$user,$pass);
+    	@window.SetActive(change_type(0,"bool"));
 	  };
   };
 };

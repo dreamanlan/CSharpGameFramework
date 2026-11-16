@@ -6,33 +6,33 @@ story(auto_story)
   };
   onmessage("start")
   {
-    @sceneKey="_"+getsceneid();
+    @sceneKey="_"+get_scene_id();
     wait(3000);
-    if(getplayerid()>0 && getleaderid()<=0){
-      setleaderid(getplayerid());
+    if(get_player_id()>0 && get_leader_id()<=0){
+      set_leader_id(get_player_id());
     };
-    firemessage("findnpc");
+    fire_message("findnpc");
   };
   onmessage("findnpc")
   {
-    $ct = getchildcount("Config");
-    $index=propget(@sceneKey, 0);
+    $ct = get_child_count("Config");
+    $index=prop_get(@sceneKey, 0);
     if($index<=0){
       $index=1;
-      propset(@sceneKey, $index);
+      prop_set(@sceneKey, $index);
     };
-    $pos = getposition("Config/"+$index);
+    $pos = get_position("Config/"+$index);
     log("findnpc, scene key:{0}, index:{1}, pos:{2}", @sceneKey, $index, $pos);
-    objmove(getplayerid(), $pos, "touchnpc");
+    obj_move(get_player_id(), $pos, "touchnpc");
     inc($index);
-    propset(@sceneKey, $index);
-    if($index>=$ct){ $index=1; propset(@sceneKey, $index); };
+    prop_set(@sceneKey, $index);
+    if($index>=$ct){ $index=1; prop_set(@sceneKey, $index); };
     wait(1000);
-    clearmessage("findnpc");
+    clear_message("findnpc");
   };
   onmessage("touchnpc")
   {
     log("touchnpc");
-    sendroomstorymessage("touchnpc");
+    send_room_story_message("touchnpc");
   };
 };

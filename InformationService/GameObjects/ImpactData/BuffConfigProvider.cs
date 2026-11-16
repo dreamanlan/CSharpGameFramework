@@ -23,7 +23,7 @@ namespace ScriptableFramework
             BuffConfig cfg = new BuffConfig();
             cfg.BuffId = row.id;
             cfg.Desc = row.desc;
-            int[] attrs = { row.attr1, row.attr2, row.attr3, row.attr4, row.attr5, row.attr6, row.attr7, row.attr8 };
+            int[] attrs = { row.attr1, row.attr_2, row.attr3, row.attr4, row.attr5, row.attr6, row.attr7, row.attr8 };
             int[] vals = { row.value1, row.value2, row.value3, row.value4, row.value5, row.value6, row.value7, row.value8 };
             for (int i = 0; i < attrs.Length; ++i) {
                 if (attrs[i] > 0) { cfg.Attrs.Add(attrs[i]); cfg.Values.Add(vals[i]); }

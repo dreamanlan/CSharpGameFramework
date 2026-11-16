@@ -143,20 +143,20 @@ namespace DotnetStoryScript
                 { "elseif", (int)PairTagEnum.PAIR_TAG_ELSEIF },
                 { "elif", (int)PairTagEnum.PAIR_TAG_ELIF },
                 { "while", (int)PairTagEnum.PAIR_TAG_WHILE },
-                { "foreachvalue", (int)PairTagEnum.PAIR_TAG_FOREACH },
+                { "for_each_value", (int)PairTagEnum.PAIR_TAG_FOREACH },
                 { "loop", (int)PairTagEnum.PAIR_TAG_LOOP },
                 { "loopi", (int)PairTagEnum.PAIR_TAG_LOOPI },
                 { "loopd", (int)PairTagEnum.PAIR_TAG_LOOPD },
-                { "looplist", (int)PairTagEnum.PAIR_TAG_LOOPLIST }
+                { "loop_list", (int)PairTagEnum.PAIR_TAG_LOOPLIST }
             };
         private Dictionary<string, string> m_FirstLastKeyOfCompoundStatements = new Dictionary<string, string> {
                 { "if", "else" },
                 { "while", "while" },
-                { "foreachvalue", "foreachvalue" },
+                { "for_each_value", "for_each_value" },
                 { "loop", "loop" },
                 { "loopi", "loopi" },
                 { "loopd", "loopd" },
-                { "looplist", "looplist" },
+                { "loop_list", "loop_list" },
                 { "struct", "struct" }
             };
         private Dictionary<string, HashSet<string>> m_SuccessorsOfCompoundStatements = new Dictionary<string, HashSet<string>> {
@@ -165,11 +165,11 @@ namespace DotnetStoryScript
                 { "elif", new HashSet<string> { "elseif", "elif", "else" } },
                 { "else", new HashSet<string> { } },
                 { "while", new HashSet<string> { } },
-                { "foreachvalue", new HashSet<string> { } },
+                { "for_each_value", new HashSet<string> { } },
                 { "loop", new HashSet<string> { } },
                 { "loopi", new HashSet<string> { } },
                 { "loopd", new HashSet<string> { } },
-                { "looplist", new HashSet<string> { } },
+                { "loop_list", new HashSet<string> { } },
                 { "struct", new HashSet<string> { } },
                 { "script", new HashSet<string> { "params", "args" } },
                 { "story", new HashSet<string> { "params", "args" } }
@@ -177,11 +177,11 @@ namespace DotnetStoryScript
         private HashSet<string> m_CompoundStatements = new HashSet<string> {
                 "if",
                 "while",
-                "foreachvalue",
+                "for_each_value",
                 "loop",
                 "loopi",
                 "loopd",
-                "looplist",
+                "loop_list",
                 "struct",
                 "script",
                 "story"

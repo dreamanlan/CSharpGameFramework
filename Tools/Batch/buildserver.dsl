@@ -1,26 +1,26 @@
 script(main)
 {
-    fileecho(true);
+    file_echo(true);
 
     cfg=arg(1);
     Configuration=arg(1);
     
     paused=true;
-    if(argnum()>=3){
-    	paused=changetype(arg(2), "bool");
+    if(arg_num()>=3){
+    	paused=change_type(arg(2), "bool");
     };
 
     call("setcolor");
-    $encoding = getinputencoding();
-    setencoding(936);
+    $encoding = get_input_encoding();
+    set_encoding(936);
     echo("encoding:{0} {1}", $encoding.EncodingName, $encoding.EncodingName);
-    echo("commandline:{0}", cmdline());
-    echo("commandline args:{0}", stringjoin(",",cmdlineargs()));
-    echo("args:{0}", stringjoin(",",args()));
+    echo("command_line:{0}", cmd_line());
+    echo("command_line args:{0}", string_join(",",cmd_line_args()));
+    echo("args:{0}", string_join(",",args()));
     echo("current directory:{0}", pwd());
-    echo("script directory:{0}", getscriptdir());
+    echo("script directory:{0}", get_script_directory());
 
-    rootdir=getscriptdir()+"/../..";
+    rootdir=get_script_directory()+"/../..";
     logdir=rootdir+"/BuildLog";
     libdir=rootdir+"/ExternLibrary";
     
@@ -41,13 +41,13 @@ script(main)
     msbuild2019="C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
     msbuild2017="C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\MSBuild\\15.0\\Bin\\MSBuild.exe";
 
-    if(fileexist(msbuild2022)){
+    if(file_exist(msbuild2022)){
         xbuild=msbuild2022;
     }
-    elseif(fileexist(msbuild2019)){
+    elseif(file_exist(msbuild2019)){
         xbuild=msbuild2019;
     }
-    elseif(fileexist(msbuild2017)){
+    elseif(file_exist(msbuild2017)){
         xbuild=msbuild2017;
     }
     else{
@@ -61,7 +61,7 @@ script(main)
     tablecopy=expand("%rootdir%/Tools/TableReaderGenerator/bin/Debug/net9.0/TableReaderGenerator.exe");
     
     echo();
-    looplist(listhashtable(envs())){
+    loop_list(list_hashtable(envs())){
         echo("{0}={1}",$$.Key,$$.Value);
     };
     echo();
@@ -82,7 +82,7 @@ script(main)
         :};
     };
     
-    createdir(logdir);
+    create_dir(logdir);
 
     echo("building Server.sln ...");
     $var0 = command{
@@ -98,29 +98,29 @@ script(main)
     
     echo("result:{0}", $var0);
     if($var0){
-        setfgcolor("Red");
+        set_fg_color("Red");
         echo("compile Server.sln failed, see BuildLog/Server.sln.log");
         call("setcolor");
     };
 
-    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.pdb");
-    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.pdb");
-    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.pdb");
-    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.exe");
-    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.dll");
-    copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.pdb");
+    copy_dir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copy_dir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copy_dir("%rootdir%/App/ServerModule/Lobby/bin/%cfg%/net9.0", svrbin, "*.pdb");
+    copy_dir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copy_dir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copy_dir("%rootdir%/App/ServerModule/UserServer/bin/%cfg%/net9.0", svrbin, "*.pdb");
+    copy_dir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copy_dir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copy_dir("%rootdir%/App/ServerModule/RoomServer/bin/%cfg%/net9.0", svrbin, "*.pdb");
+    copy_dir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.exe");
+    copy_dir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.dll");
+    copy_dir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%/net9.0", svrbin, "*.pdb");
 
     cd(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1");
     echo("curdir:{0}",pwd());
-    looplist(listfiles(svrbin,"*.dll")){
-        $filename = getfilename($$);
-        if(osplatform()=="Unix"){
+    loop_list(list_files(svrbin,"*.dll")){
+        $filename = get_file_name($$);
+        if(os_platform()=="Unix"){
 			process(mono, pdb2mdb + " " + $filename);
         }else{
             echo("{0} {1}", pdb2mdb, $filename);
@@ -153,12 +153,12 @@ script(main)
     };
 
     if($var0 || $var1 || $var2){
-        setfgcolor("Red");
+        set_fg_color("Red");
         echo("compile failed !");
         call("setcolor");
     };
 
-    resetcolor();
+    reset_color();
     if(paused){
 	    echo("press any key ...");
 	    pause();
@@ -168,9 +168,9 @@ script(main)
 
 script(setcolor)
 {
-    if(osplatform()=="Unix"){
-        setfgcolor("Blue");
+    if(os_platform()=="Unix"){
+        set_fg_color("Blue");
     }else{
-        setfgcolor("Yellow");
+        set_fg_color("Yellow");
     };
 };

@@ -16,15 +16,10 @@ public static class AiCommand
     }
     public static void AiTarget(EntityInfo npc, EntityInfo target)
     {
-        if (null != target) {
-            if (null != PluginFramework.Instance.SelectedTarget) {
-                EntityInfo curTarget = PluginFramework.Instance.GetEntityById(PluginFramework.Instance.SelectedTarget.TargetId);
-                if (curTarget == PluginFramework.Instance.SelectedTarget.Target) {
-                    return;
-                }
-            }
-            PluginFramework.Instance.SetLockTarget(target.GetId());
-        }
+        if (null == target || target.IsDead()) return;
+        var sel = PluginFramework.Instance.SelectedTarget;
+        if (null != sel && sel.TargetId == target.GetId()) return;
+        PluginFramework.Instance.SetLockTarget(target.GetId());
     }
     public static void AiFace(EntityInfo npc)
     {

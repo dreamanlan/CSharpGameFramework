@@ -11,7 +11,7 @@ using ScriptableFramework.Story;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,tableId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];
+    /// create_npc(npc_unit_id,vector_3(x,y,z),dir,camp,tableId[,ai,string_list("param1 param2 param3 ..."),leaderId])[objid("@objid")];
     /// </summary>
     internal class CreateNpcCommand : AbstractExpression
     {
@@ -114,7 +114,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjIdVarName;
     }
     /// <summary>
-    /// destroynpc(npc_unit_id);
+    /// destroy_npc(npc_unit_id);
     /// </summary>
     internal class DestroyNpcCommand : SimpleExpressionBase
     {
@@ -131,7 +131,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// destroynpcwithobjid(npc_obj_id);
+    /// destroy_npc_with_obj_id(npc_obj_id);
     /// </summary>
     internal class DestroyNpcWithObjIdCommand : SimpleExpressionBase
     {
@@ -148,7 +148,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcface(npc_unit_id, dir[, immediately]);
+    /// npc_face(npc_unit_id, dir[, immediately]);
     /// </summary>
     internal class NpcFaceCommand : SimpleExpressionBase
     {
@@ -177,7 +177,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcmove(npc_unit_id,vector3(x,y,z)[,event]);
+    /// npc_move(npc_unit_id,vector_3(x,y,z)[,event]);
     /// </summary>
     internal class NpcMoveCommand : SimpleExpressionBase
     {
@@ -211,7 +211,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcmovewithwaypoints(npc_unit_id,vector3list("1 2 3 4 5 6")[,event]);
+    /// npc_move_with_waypoints(npc_unit_id,vector_3_list("1 2 3 4 5 6")[,event]);
     /// </summary>
     internal class NpcMoveWithWaypointsCommand : SimpleExpressionBase
     {
@@ -248,7 +248,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcstop(npc_unit_id);
+    /// npc_stop(npc_unit_id);
     /// </summary>
     internal class NpcStopCommand : SimpleExpressionBase
     {
@@ -276,7 +276,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcattack(npc_unit_id[,target_unit_id]);
+    /// npc_attack(npc_unit_id[,target_unit_id]);
     /// </summary>
     internal class NpcAttackCommand : SimpleExpressionBase
     {
@@ -299,7 +299,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcsetformation(npc_unit_id,index);
+    /// npc_set_formation(npc_unit_id,index);
     /// </summary>
     internal class NpcSetFormationCommand : SimpleExpressionBase
     {
@@ -315,7 +315,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcenableai(npc_unit_id,1_or_0);
+    /// npc_enable_ai(npc_unit_id,1_or_0);
     /// </summary>
     internal class NpcEnableAiCommand : SimpleExpressionBase
     {
@@ -336,7 +336,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcsetai(unitid,ai_logic_id,stringlist("param1 param2 param3 ..."));
+    /// npc_set_ai(unitid,ai_logic_id,string_list("param1 param2 param3 ..."));
     /// </summary>
     internal class NpcSetAiCommand : SimpleExpressionBase
     {
@@ -365,7 +365,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcsetaitarget(unitid,targetId);
+    /// npc_set_ai_target(unitid,targetId);
     /// </summary>
     internal class NpcSetAiTargetCommand : SimpleExpressionBase
     {
@@ -384,7 +384,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcanimation(unit_id, anim[, normalized_time]);
+    /// npc_animation(unit_id, anim[, normalized_time]);
     /// </summary>
     internal class NpcAnimationCommand : SimpleExpressionBase
     {
@@ -409,7 +409,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcanimationparam(unit_id)
+    /// npc_animation_param(unit_id)
     /// {
     ///     float(name,val);
     ///     int(name,val);
@@ -498,7 +498,7 @@ namespace ScriptableFramework.Story.Commands
         private List<ParamInfo> m_Params = new List<ParamInfo>();
     }
     /// <summary>
-    /// npcaddimpact(unit_id, impactid, arg1, arg2, ...)[seq("@seq")];
+    /// npc_add_impact(unit_id, impactid, arg1, arg2, ...)[seq("@seq")];
     /// </summary>
     internal class NpcAddImpactCommand : AbstractExpression
     {
@@ -575,7 +575,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_SeqVarName;
     }
     /// <summary>
-    /// npcremoveimpact(unit_id, seq);
+    /// npc_remove_impact(unit_id, seq);
     /// </summary>
     internal class NpcRemoveImpactCommand : SimpleExpressionBase
     {
@@ -597,7 +597,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npccastskill(unit_id, skillid, arg1, arg2, ...);
+    /// npc_cast_skill(unit_id, skillid, arg1, arg2, ...);
     /// </summary>
     internal class NpcCastSkillCommand : SimpleExpressionBase
     {
@@ -626,7 +626,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npcstopskill(unit_id);
+    /// npc_stop_skill(unit_id);
     /// </summary>
     internal class NpcStopSkillCommand : SimpleExpressionBase
     {
@@ -643,7 +643,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npclisten(unit_id, message_type, true_or_false);
+    /// npc_listen(unit_id, message_type, true_or_false);
     /// </summary>
     internal class NpcListenCommand : SimpleExpressionBase
     {

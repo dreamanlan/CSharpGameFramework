@@ -17,11 +17,11 @@ Impact£ºÔÚÊÜ»÷·½¶ÔÏóÉÏÉúĞ§µÄĞ§¹ûÊµÀı£¬ÓÉ logicId ¾ö¶¨ĞĞÎª£¬ÓÉ buffDataId ¾ö¶¨ÊôĞ
 Ò»¸ö¶ÔÏóÉÏÍ¬Ê±Ö»ÄÜ¼¤»îÒ»¸öSkill£¬Í¬Ê±¿ÉÒÔ¼¤»î¶à¸öImpact¡£
 
 ¼¼ÄÜ DSL Àï¿ÉÓÃµÄ impact ´¥·¢Æ÷£º
-addimpacttoself(start_time, impact_id[, duration]);
-addimpacttotarget(start_time, impact_id[, duration]);
-stateimpact(start_time, impact_id[, duration]);
-stopimpact(start_time, impact_id);
-removeimpact(start_time);
+add_impact_to_self(start_time, impact_id[, duration]);
+add_impact_to_target(start_time, impact_id[, duration]);
+state_impact(start_time, impact_id[, duration]);
+stop_impact(start_time, impact_id);
+remove_impact(start_time);
 
 ¶Ô²»Í¬µÄ¼¼ÄÜ£¬ÍêÕû¹ı³Ì¿ÉÄÜÓĞÈçÏÂ¼¸ÖÖÇéĞÎ£º
 
@@ -67,17 +67,17 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
     section(time)
     {
       animation(hit);
-      selfeffect(hitEffect,1000,hit,0);
+      self_effect(hitEffect,1000,hit,0);
       damage(0);
     };
   };
 };
 
 * ½Ó¿ÚËµÃ÷
-1. curvemove(triggertime, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+[, isForRoundMove])
+1. curve_move(triggertime, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+[, isForRoundMove])
    ¹¦ÄÜ£ºÇúÏßÒÆ¶¯£¬ÔÚtriggertimeÊ±¼ä¿ªÊ¼ÒÆ¶¯£¬Ã¿¸ö½×¶ÎËÙ¶Èspeed, ¼ÓËÙ¶Èaccel£¬Ê±¼ämovetime
    Example£º
-     curvemove(300, 0.05, 0, 0, 0, 0, 0, 160, 0.05, 0, 0, 8, 0, 0, 320);
+     curve_move(300, 0.05, 0, 0, 0, 0, 0, 160, 0.05, 0, 0, 8, 0, 0, 320);
 
 2. consume([starttime])
    ¹¦ÄÜ£º´¥·¢¼¼ÄÜÏûºÄ¼ÆËã
@@ -97,9 +97,9 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
        playmode(1, 50);
      };
 
-4. playsound(starttime, name, audio_source, audio_remain_time, audio_clip, is_need_collide) {
+4. play_sound(starttime, name, audio_source, audio_remain_time, audio_clip, is_need_collide) {
       audiogroup(clip, [clip...]);
-      position(vector3(pos), is_attach);
+      position(vector_3(pos), is_attach);
       bone(bone_name, is_attach);
       volume(volume_value);
   };
@@ -123,27 +123,27 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
    - volume ²¥·ÅÉùÒôµÄ´óĞ¡
      - volume_value ÉùÒô´óĞ¡µÄÖµ£¨0.0-1.0£©
    Example£º
-     playsound(100, "test", "Sound/Swordman/SkillSound", 1000, "Sound/Swordman/JianShi_Step_01", false);
+     play_sound(100, "test", "Sound/Swordman/SkillSound", 1000, "Sound/Swordman/JianShi_Step_01", false);
 
-5. stopsound(startime, name);
+5. stop_sound(startime, name);
      ¹¦ÄÜ£ºÍ£Ö¹ÉùÒô
      ²ÎÊı£º
    - name ÉùÒô±êÊ¶
      Example
-       stopsound(200, "test");
+       stop_sound(200, "test");
 
-6. selfeffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
+6. self_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
    »ò
-   selfeffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
+   self_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
    {
-     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
    };
    »ò
-   targeteffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
+   target_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
    »ò
-   targeteffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
+   target_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
    {
-     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
    };
    ¹¦ÄÜ£ºÔÚÈËÎï¹ÒµãÔö¼Ó²¢²¥·ÅÌØĞ§
    ²ÎÊı£º
@@ -152,35 +152,35 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
    - attach_bone ¹Ò½Óµã
    - is_attach ÊÇ·ñ¹Ò½Ó, Ä¬ÈÏÎªtrue
    Example£º
-     selfeffect("Hero_FX/1_Swordman/1_Hero_JianShi_PuGong2_01",533,"Bone004",300, true);
+     self_effect("Hero_FX/1_Swordman/1_Hero_JianShi_PuGong2_01",533,"Bone004",300, true);
 
-7. sceneeffect(effect_path,delete_time[,vector3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector3(sx,sy,sz)[,is_rotate_relative_user]]]]]);
+7. scene_effect(effect_path,delete_time[,vector_3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector_3(sx,sy,sz)[,is_rotate_relative_user]]]]]);
    ¹¦ÄÜ£ºÔÚ³¡¾°ÄÚÔö¼Ó²¢²¥·ÅÌØĞ§
    ²ÎÊı£º
     - effect_path ÎïĞ§Ãû
     - delete_time ³ÖĞøÊ±¼ä
-    - vector3(x,y,z) Ïà¶ÔÓÚÍæ¼ÒµÄÎ»ÖÃ
+    - vector_3(x,y,z) Ïà¶ÔÓÚÍæ¼ÒµÄÎ»ÖÃ
     - start_time ¿ªÊ¼Ê±¼ä
     - eular(rx,ry,rz) Ğı×ª½Ç¶È
-    - vector3(sx, sy, sz) Ëõ·Å
+    - vector_3(sx, sy, sz) Ëõ·Å
     - is_rotate_relative_user Ğı×ª½Ç¶ÈÊÇ·ñÏà¶ÔÓÚÍæ¼Ò, Ä¬ÈÏfalse
    Example£º
-      sceneeffect("Hero_FX/1_Swordman/1_Hero_JianShi_PuGong1_01",300,vector3(0,1,0));
+      scene_effect("Hero_FX/1_Swordman/1_Hero_JianShi_PuGong1_01",300,vector_3(0,1,0));
 
-8.  rotate(startime, remain_time, vector3(rotate_speed));
+8.  rotate(startime, remain_time, vector_3(rotate_speed));
     ¹¦ÄÜ£ºĞı×ªÎïÌå
     ²ÎÊı£º
      - remain_time ³ÖĞøÊ±¼ä
      - rotate_speed Ğı×ª½Ç/s
      Example
-       rotate(0, 500, vector3(720, 0, 0));
+       rotate(0, 500, vector_3(720, 0, 0));
 
-9. stopeffect(starttime);
+9. stop_effect(starttime);
     ¹¦ÄÜ£ºÍ£Ö¹µ±Ç°ËùÓĞµÄÌØĞ§
     ²ÎÊı£º
      Example
 
-10. facetotarget(starttime, remain_time[, rotate_speed[, selecttype]]);
+10. face_to_target(starttime, remain_time[, rotate_speed[, selecttype]]);
     ¹¦ÄÜ£ºÃæÏòÄ¿±ê, Ã»ÓĞÄ¿±êÊ±²»×÷·½Ïòµ÷Õû
     ²ÎÊı£º
        - remain_time ³ÖĞøÊ±¼ä£¬²»¹ÜÊ±¼ä³¤¶Ì£¬ÖÁÉÙ±£Ö¤»áÖ´ĞĞÒ»´Î
@@ -191,29 +191,29 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
           randenemy   --  Ñ¡ÔñËæ»úµĞÈË      
           randfriend  -- Ñ¡ÔñËæ»úÓÑ·½
     Example
-       - facetotarget(10, 200, 360);
+       - face_to_target(10, 200, 360);
 
-11. storepos(starttime);
+11. store_pos(starttime);
     ¹¦ÄÜ£º±£´æµ±Ç°Íæ¼ÒµÄÎ»ÖÃ
     ²ÎÊı£º
     Example£º
-      storepos(20)
+      store_pos(20)
 
-12. restorepos(starttime);
+12. restore_pos(starttime);
     ¹¦ÄÜ£º½«Íæ¼ÒµÄÎ»ÖÃÉèÖÃÎªÇ°Ò»¸östorecurpos±£´æµÄÎ»ÖÃ£¬Ö»ÓĞÔÚÒ»¸ö¼¼ÄÜÖĞµÄstorecurposÓĞĞ§
     ²ÎÊı£º
     Example£º
-     restorepos(8000);
+     restore_pos(8000);
 
-13. timescale(starttime, scale[, duration])
+13. time_scale(starttime, scale[, duration])
     ¹¦ÄÜ£º¼õÂıÊÀ½çËÙ¶È
     ²ÎÊı£º
      - scale ¼õÂı±ÈÀı, 1ÎªÕı³£ËÙ¶È
      - duration ³ÖĞøÊ±¼ä, ×¢Òâ£ºÊµ¼ÊÊ±¼äÊÜµ½scaleµÄÓ°Ïì
     Example£º
-     timescale(0, 0.2, 500);
+     time_scale(0, 0.2, 500);
 
-14. fadecolor(starttime,remaintime,"path","shadername",startcolor,changecolor[,changetime]);
+14. fade_color(starttime,remaintime,"path","shadername",startcolor,changecolor[,changetime]);
     ¹¦ÄÜ£º½¥±äÓµÓĞÌØ¶¨shaderµÄmaterialµÄÑÕÉ«£¨ÑÕÉ«»áÆØ£©
     ²ÎÊı£º
      - remaintime ³ÖĞøÊ±¼ä
@@ -223,44 +223,44 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
      - changecolorÔÚremaintimeÄÚÃ¿Ãë±ä»¯µÄÑÕÉ«
      - changetimeÑÕÉ«±ä»¯µÄÊ±¼ä
     Example£º
-      fadecolor(0,1000,"1_TieQuan_01","AlphaBlendDisorderWithLight",color(0,0,0,0),color(100,100,100,100));
+      fade_color(0,1000,"1_TieQuan_01","AlphaBlendDisorderWithLight",color(0,0,0,0),color(100,100,100,100));
       
 15. damage([start_time]);
     ¹¦ÄÜ£º²úÉú¼¼ÄÜÉËº¦¡£
    
-16. charge(duration,velocity,stopAtTarget[,vector3(x,y,z)[,start_time[, isForRoundMove]]]);
+16. charge(duration,velocity,stopAtTarget[,vector_3(x,y,z)[,start_time[, isForRoundMove]]]);
     ¹¦ÄÜ£º³å·æ¡£
     ²ÎÊı£º
      - duration ³å·æÊ±¼ä
      - velocity ³å·æËÙ¶È
      - stopAtTarget ÊÇ·ñ³åµ½Ä¿±êÍ£Ö¹£¨0--µ÷Õû 1--µ÷ÕûËÙ¶È 2--µ÷ÕûÊ±¼ä£©
-     - vector3(x,y,z) Ä¿±êµãµÄµ÷ÕûÆ«ÒÆ£¨ÑØµ½Ä¿±êµÄ·½Ïò£©
+     - vector_3(x,y,z) Ä¿±êµãµÄµ÷ÕûÆ«ÒÆ£¨ÑØµ½Ä¿±êµÄ·½Ïò£©
      - start_time ´¥·¢Æ÷¿ªÊ¼¹¤×÷Ê±¼ä£¨Ïà¶ÔÓÚËùÔÚsection£©
 
-17. jump(duration,height,velocity,stopAtTarget[,vector3(x,y,z)[,start_time[, isForRoundMove]]]);
+17. jump(duration,height,velocity,stopAtTarget[,vector_3(x,y,z)[,start_time[, isForRoundMove]]]);
     ¹¦ÄÜ£ºÌø¡£
     ²ÎÊı£º
      - duration ÌøµÄÊ±¼ä
      - height ÌøµÄ¸ß¶È
      - velocity ÌøµÄË®Æ½ËÙ¶È
      - stopAtTarget ÊÇ·ñÌøµ½Ä¿±êÍ£Ö¹£¨0--µ÷Õû 1--µ÷ÕûËÙ¶È 2--µ÷ÕûÊ±¼ä£©
-     - vector3(x,y,z) Ä¿±êµãµÄµ÷ÕûÆ«ÒÆ£¨ÑØµ½Ä¿±êµÄ·½Ïò£©
+     - vector_3(x,y,z) Ä¿±êµãµÄµ÷ÕûÆ«ÒÆ£¨ÑØµ½Ä¿±êµÄ·½Ïò£©
      - start_time ´¥·¢Æ÷¿ªÊ¼¹¤×÷Ê±¼ä£¨Ïà¶ÔÓÚËùÔÚsection£©
 
-18. bornfinish([tart_time]);
+18. born_finish([tart_time]);
     ¹¦ÄÜ£ºÍ¨ÖªÂß¼­²ã³öÉú¹ı³Ì½áÊø¡£
 
-19. deadfinish([start_time]);
+19. dead_finish([start_time]);
     ¹¦ÄÜ£ºÍ¨ÖªÂß¼­²ãËÀÍö¹ı³Ì½áÊø¡£
 
-20. animationspeed(start_time, speed [, is_effect_skill_time]);
+20. animation_speed(start_time, speed [, is_effect_skill_time]);
     ¹¦ÄÜ£ºÉèÖÃ¶¯»­µÄËÙ¶È
     ²ÎÊı£º
      - is_effect_skill_time ÊÇ·ñÓ°Ïì¼¼ÄÜÊ±¼ä, Ä¬ÈÏfalse, Ó°Ïì¼¼ÄÜÊ±¼ä»áÓ°Ïì¼¼ÄÜµÄÒÆ¶¯¡¢ÌØĞ§ÕñÆÁµÈĞ§¹û
     Example£º
-     animationspeed(200, 0.1, true);
+     animation_speed(200, 0.1, true);
 
-21. transform(startime, bone, vector3(position), eular(rotate), relaitve_type,
+21. transform(startime, bone, vector_3(position), eular(rotate), relaitve_type,
                  is_attach[, is_use_terrain_height=false][,randomrotate = Vector3.zero]);
     ¹¦ÄÜ£ºÉèÖÃµ±Ç°¼¼ÄÜµÄÊ©·¨ÕßµÄÎ»ÖÃ
     ²ÎÊı£º
@@ -275,13 +275,13 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
     - is_use_terrain_height ÊÇ·ñÊ¹ÓÃµØĞÎ¸ß¶È, Ä¬ÈÏfalse
     - randomrotate Ëæ»úĞı×ªµÄ·¶Î§£¨ÔÚÃ¿¸ö×ø±êÖáÉÏµÄÖµ¶¼ÊÇÒÔÁãÎªÖĞĞÄ£¬Õı¸º²îµÄ¾ø¶ÔÖµÎª´Ë·¶Î§£©
     Example
-      transform(0, " ", vector3(0, 0, 3), eular(0, 0, 0), "RelativeSelf", false, true, vector3(10, 10, 10));
+      transform(0, " ", vector_3(0, 0, 3), eular(0, 0, 0), "RelativeSelf", false, true, vector_3(10, 10, 10));
       
-22. emiteffect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]]);
+22. emit_effect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     »ò
-    emiteffect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]])
+    emit_effect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]])
     {
-     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
     };
     
     ¹¦ÄÜ£º·¢³öÒ»¸ö·ÉÏòÄ¿±êµÄÌØĞ§£¬Õâ¸öÖ»ÊÇÒ»¸ö·¢Æğ´¥·¢Æ÷£¬Êµ¼ÊÂß¼­ÔÚemitskillÀï»òÕßÍâ²¿Åä±íµÄemit skill´¦Àí¡£
@@ -290,14 +290,14 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
     transformµÄ3¸ö²ÎÊı·Ö±ğÊÇÎ»ÖÃÆ«ÒÆ£¬·¢Éä¹ì¼£Æ«×ª·½ÏòÓë¿ØÖÆµãÎ»ÖÃ²ÎÊı
     -Î»ÖÃÆ«ÒÆÖ¸Ã÷ÌØĞ§Ïà¶ÔÓÚÊ©·¨Õß³¯ÏòµÄÎ»ÖÃ
     -Ä¬ÈÏ×Óµ¯ÊÇÑØ³õÊ¼Î»ÖÃµ½Ä¿±êµÄÖ±ÏßÔË¶¯£¬·¢Éä¹ì¼£Æ«×ª·½ÏòÓÃÒÔÓë¿ØÖÆµãÎ»ÖÃ²ÎÊıÒ»ÆğÈ·¶¨¿ØÖÆµãµÄÎ»ÖÃ£¬Ò»°ãÖ»Ê¹ÓÃµÚ¶ş¸öÅ·À­½Ç¼´¿É£¨¸©ÊÓÇéĞÎ£¬ÕıÊıÎªË³Ê±Õë×ª¶¯½Ç£¬¸ºÊıÎªÄæÊ±Õë×ª¶¯½Ç£©¡£
-    -¿ØÖÆµãÎ»ÖÃ²ÎÊıÊÇÒ»¸öËõ·ÅÊ¸Á¿£¬·¶Î§Îªvector3(0,0,0)~vector3(2,2,2)£¬Ä¬ÈÏÎªvector3(1,1,1)£¬´ËÊ±¿ØÖÆµãÔÚ¾àÄ¿±ê¾àÀëÖĞµã´¦¡£
+    -¿ØÖÆµãÎ»ÖÃ²ÎÊıÊÇÒ»¸öËõ·ÅÊ¸Á¿£¬·¶Î§Îªvector3(0,0,0)~vector_3(2,2,2)£¬Ä¬ÈÏÎªvector3(1,1,1)£¬´ËÊ±¿ØÖÆµãÔÚ¾àÄ¿±ê¾àÀëÖĞµã´¦¡£
     
     ¿ØÖÆµãµÄ¼ÆËã·½·¨£º¼ÙÉè³õÊ¼Î»ÖÃ¾àÄ¿±êS£¬Ôò¿ØÖÆµãÔÚ³õÊ¼Î»ÖÃ³¯Ä¿±ê°´Æ«×ª·½Ïò¡°S/2*Ëõ·ÅÊ¸Á¿¡±¾àÀë´¦¡£
     
 23. track(trackBone[,start_time[,duration[,not_move]]]);
     ¹¦ÄÜ£º½«ÌØĞ§ÒÆÏòÖ÷½Ç£¬ÕâÒ»´¥·¢Æ÷ÓÃÔÚÔ¤¶¨Òå¼¼ÄÜemit_skillÀïÓÃÀ´ÒÆ¶¯×Óµ¯ÌØĞ§²¢´¥·¢ÊÜ»÷¡£
     
-24. replaceshaderandfadecolor(starttime,remaintime,"shadername",startcolor,changecolor[,changetime]);
+24. replace_shader_and_fade_color(starttime,remaintime,"shadername",startcolor,changecolor[,changetime]);
     ¹¦ÄÜ£º¸Ä±äshader²¢½¥±ämaterialµÄÑÕÉ«
     ²ÎÊı£º
      - remaintime ³ÖĞøÊ±¼ä
@@ -306,7 +306,7 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
      - changecolorÔÚchangetimeÄÚÃ¿Ãë±ä»¯µÄÑÕÉ«
      - changetimeÑÕÉ«±ä»¯µÄÊ±¼ä
      
-25. adjustsectionduration(type[,startTime[,deltaTime]]);
+25. adjust_section_duration(type[,startTime[,deltaTime]]);
     ¹¦ÄÜ£ºµ÷Õûµ±Ç°sectionµÄ³ÖĞøÊ±¼ä¡£
     ²ÎÊı£º
      - type anim/impact£¬°´¶¯»­»òimpactÊ±¼äµ÷Õû
@@ -319,7 +319,7 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
       impact(200);
       
 27. (ÒÑÒÆ³ı) keepsectionforbuff(interval[, starttime[, deltatime]]);
-    ¾ÉµÄ buff ³ÖĞøÊ±¼ä¸úËæ»úÖÆÒÑÒÆ³ı£»section ³ÖĞøÊ±¼äÓÉ DSL Ö¸¶¨£¬»òÓÃ adjustsectionduration µ÷Õû¡£
+    ¾ÉµÄ buff ³ÖĞøÊ±¼ä¸úËæ»úÖÆÒÑÒÆ³ı£»section ³ÖĞøÊ±¼äÓÉ DSL Ö¸¶¨£¬»òÓÃ adjust_section_duration µ÷Õû¡£
 
 28. params([startTime])
     {
@@ -333,19 +333,19 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
     ¹¦ÄÜ£º¶¨Òå¼¼ÄÜ²ÎÊı£¬¿ÉÒÔ¶à´Î¶¨Òå£¨´ËÊ±startTimeÓ¦²»Í¬ÇÒÔÚ¼ä¸ôÀï»áÓĞÊ¹ÓÃ²ÎÊıµÄµØ·½£©¡£
         
 29. (ÒÑÒÆ³ı) addstate(state[,starttime]);
-    ×´Ì¬¸ÄÓÉ impact µÄ stateId Çı¶¯£¬ÓÃ addimpacttoself/addimpacttotarget/stateimpact Ê©¼Ó¡£
+    ×´Ì¬¸ÄÓÉ impact µÄ stateId Çı¶¯£¬ÓÃ add_impact_to_self/add_impact_to_target/state_impact Ê©¼Ó¡£
     
 30. (ÒÑÒÆ³ı) removestate(state[,starttime]);
-    ×´Ì¬Ëæ impact ÉúÃüÖÜÆÚ½áÊøÓÉ stopimpact/removeimpact Í³Ò»ÒÆ³ı¡£
+    ×´Ì¬Ëæ impact ÉúÃüÖÜÆÚ½áÊøÓÉ stop_impact/remove_impact Í³Ò»ÒÆ³ı¡£
     
-31. aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
+31. aoe_impact(start_time, center_x, center_y, center_z, relativeToTarget);
     ¹¦ÄÜ£º°´Ö¸¶¨Æ«ÒÆÎ»ÖÃÓëÅä±íµÄ·¶Î§¶ÔÖ¸¶¨Ä¿±ê²úÉúaoe impact
     
-32. aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]]);
+32. aoe_emit_effect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     »ò
-    aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
+    aoe_emit_effect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
     {
-     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
     };
     ¹¦ÄÜ£º°´Ö¸¶¨Æ«ÒÆÎ»ÖÃÓëÅä±íµÄ·¶Î§¶ÔÖ¸¶¨Ä¿±ê·¢ËÍ¹ì¼£impact
    
@@ -355,35 +355,35 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
     transformµÄ3¸ö²ÎÊı·Ö±ğÊÇÎ»ÖÃÆ«ÒÆ£¬·¢Éä¹ì¼£Æ«×ª·½ÏòÓë¿ØÖÆµãÎ»ÖÃ²ÎÊı
     -Î»ÖÃÆ«ÒÆÖ¸Ã÷ÌØĞ§Ïà¶ÔÓÚÊ©·¨Õß³¯ÏòµÄÎ»ÖÃ
     -Ä¬ÈÏ×Óµ¯ÊÇÑØ³õÊ¼Î»ÖÃµ½Ä¿±êµÄÖ±ÏßÔË¶¯£¬·¢Éä¹ì¼£Æ«×ª·½ÏòÓÃÒÔÓë¿ØÖÆµãÎ»ÖÃ²ÎÊıÒ»ÆğÈ·¶¨¿ØÖÆµãµÄÎ»ÖÃ£¬Ò»°ãÖ»Ê¹ÓÃµÚ¶ş¸öÅ·À­½Ç¼´¿É£¨¸©ÊÓÇéĞÎ£¬ÕıÊıÎªË³Ê±Õë×ª¶¯½Ç£¬¸ºÊıÎªÄæÊ±Õë×ª¶¯½Ç£©¡£
-    -¿ØÖÆµãÎ»ÖÃ²ÎÊıÊÇÒ»¸öËõ·ÅÊ¸Á¿£¬·¶Î§Îªvector3(0,0,0)~vector3(2,2,2)£¬Ä¬ÈÏÎªvector3(1,1,1)£¬´ËÊ±¿ØÖÆµãÔÚ¾àÄ¿±ê¾àÀëÖĞµã´¦¡£
+    -¿ØÖÆµãÎ»ÖÃ²ÎÊıÊÇÒ»¸öËõ·ÅÊ¸Á¿£¬·¶Î§Îªvector3(0,0,0)~vector_3(2,2,2)£¬Ä¬ÈÏÎªvector3(1,1,1)£¬´ËÊ±¿ØÖÆµãÔÚ¾àÄ¿±ê¾àÀëÖĞµã´¦¡£
     
     ¿ØÖÆµãµÄ¼ÆËã·½·¨£º¼ÙÉè³õÊ¼Î»ÖÃ¾àÄ¿±êS£¬Ôò¿ØÖÆµãÔÚ³õÊ¼Î»ÖÃ³¯Ä¿±ê°´Æ«×ª·½Ïò¡°S/2*Ëõ·ÅÊ¸Á¿¡±¾àÀë´¦¡£
     
-33. stopsection([start_time]);
+33. stop_section([start_time]);
     ¹¦ÄÜ£ºÔÚ start_time ÖÕÖ¹µ±Ç°section£¨´ËÖÖÇéĞÎÒ»°ãÓÃÔÚonmessageÀïÃæ£©¡£¾ÉµÄ if(shield) Ìõ¼ş·ÖÖ§ÒÑËæ shield »úÖÆÒÆ³ı¡£
     
-34. periodicallyimpact(starttime,centerx,centery,centerz,relativeToTarget,duration,interval);
+34. periodically_impact(starttime,centerx,centery,centerz,relativeToTarget,duration,interval);
     ¹¦ÄÜ£º°´Ö¸¶¨µÄÖÜÆÚ²úÉúimpact
 
-35. sendstorymessage(start_time,msg,arg1,arg2,arg3,...);
+35. send_story_message(start_time,msg,arg1,arg2,arg3,...);
     ¹¦ÄÜ£º·¢ËÍ¾çÇéÏûÏ¢
 
-36. sendgfxmessage(start_time,objname,msg,arg1,arg2,arg3,...);
+36. send_gfx_message(start_time,objname,msg,arg1,arg2,arg3,...);
     ¹¦ÄÜ£º»ùÓÚgameobjectÃû×Ö·¢ËÍgfx½Å±¾µ÷ÓÃÏûÏ¢
 
-37. sendgfxmessagewithtag(start_time,tag,msg,arg1,arg2,arg3,...);
+37. send_gfx_message_with_tag(start_time,tag,msg,arg1,arg2,arg3,...);
     ¹¦ÄÜ£º»ùÓÚgameobject Tag·¢ËÍgfx½Å±¾µ÷ÓÃÏûÏ¢
 
-38. publishgfxevent(start_time,event,group,arg1,arg2,arg3,...);
+38. publish_gfx_event(start_time,event,group,arg1,arg2,arg3,...);
     ¹¦ÄÜ£º·¢ËÍgfx¶©ÔÄÊÂ¼ş£¬´¥·¢¶©ÔÄÁË´ËeventµÄº¯Êı
     
 39. (ÒÑÒÆ³ı) addshield([start_time]);
-    »¤¶Ü¸ÄÓÉ impact logic ³ĞÔØ£¬ÓÃ addimpacttoself/addimpacttotarget Ê©¼Ó¶ÔÓ¦ impact¡£
+    »¤¶Ü¸ÄÓÉ impact logic ³ĞÔØ£¬ÓÃ add_impact_to_self/add_impact_to_target Ê©¼Ó¶ÔÓ¦ impact¡£
     
 40. (ÒÑÒÆ³ı) removeshield([start_time]);
-    »¤¶ÜËæ impact ÉúÃüÖÜÆÚ½áÊøÓÉ stopimpact/removeimpact ÒÆ³ı¡£
+    »¤¶ÜËæ impact ÉúÃüÖÜÆÚ½áÊøÓÉ stop_impact/remove_impact ÒÆ³ı¡£
     
-41. selecttarget(type[,start_time]);
+41. select_target(type[,start_time]);
     ¹¦ÄÜ£º°´Ö¸¶¨Àà±ğÑ¡ÔñÄ¿±ê
     type¿ÉÎª£º
       minhp       --  Ñ¡ÔñÑª×îÉÙµÄÄ¿±ê
@@ -391,7 +391,7 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
       randenemy   --  Ñ¡ÔñËæ»úµĞÈË      
       randfriend  -- Ñ¡ÔñËæ»úÓÑ·½
     
-42. lockframe(startime, lock_speed, locktime[,
+42. lock_frame(startime, lock_speed, locktime[,
               after_lock_anim_speed, restore_time[, is_effect_skill_time,
               after_lock_effect_speed, after_lock_move_speed,
               after_lock_skill_speed]])
@@ -416,33 +416,33 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
          ÎÄ¼şÖĞ³öÏÖ¿ÆÑ§¼ÆÊı·¨Èç1.221E-7»òÆäËûÊı×Ö±í´ï·½Ê½£¬ĞèÒªÊÖ¶¯¸ÄÎªÒ»°ãµÄÊı×Ö
       4. ±à¼­ÍêºóÉ¾³ı1ÖĞ´´½¨µÄGameObject
    Example£º
-     lockframe(700, 0, 100, 1, 50, true, 1, 1, 1);
+     lock_frame(700, 0, 100, 1, 50, true, 1, 1, 1);
      
-43. periodicallyaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
+43. periodically_aoe_impact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
     ÖÜÆÚĞÔµÄ²úÉú·¶Î§impact¡£
     
-44. chainaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
+44. chain_aoe_impact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
     Á´Ê½·¶Î§impact£¬Ê×´ÎÈ·¶¨Ä¿±ê£¬Ö®ºóÒÀ´Î¶ÔÄ¿±ê²úÉúimpact¡£
     
-45. enablemoveagent(true_or_false[,start_time]);
+45. enable_move_agent(true_or_false[,start_time]);
     ÔÊĞí»ò½ûÓÃÒÆ¶¯¹¦ÄÜ¡££¨¼¼ÄÜÒª¿ØÖÆ½ÇÉ«Î»ÖÃÊ±ĞèÒªÏÈ½ûÓÃÒÆ¶¯¹¦ÄÜ£©
     
 46. teleport(starttime, offset_x, offset_y, offset_z);
     Ë²ÒÆµ½Ä¿±êËùÔÚÎ»ÖÃ¡£
     
-47. hiteffect(hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime, hitDelayTime);
+47. hit_effect(hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime, hitDelayTime);
     ÃèÊö¼¼ÄÜµÄÊÜ»÷ÌØĞ§µÈĞÅÏ¢¡£
     
-48. cleartargets(starttime);
+48. clear_targets(starttime);
     Çå¿Õµ±Ç°¼¼ÄÜÑ¡Ôñ¹ıµÄÄ¿±êµÄ¼ÇÂ¼¡£
     
-49. colliderimpact(start_time, center_x, center_y, center_z, duration[, finishOnCollide, singleHit]);
+49. collider_impact(start_time, center_x, center_y, center_z, duration[, finishOnCollide, singleHit]);
     ÔÚÖ¸¶¨Ê±¼ä¶Î³ÖĞø¶Ôµ±Ç°¶ÔÏó¾­¹ıµÄÂ·¾¶£¨aoe°ë¾¶¶Á±í£©ÉÏÅöµ½µÄµĞÈË²úÉúimpact¡£
     
 50. follow(start_time, offset_x, offset_y, offset_z, duration);
     ÔÚÒ»¶ÎÊ±¼äÄÚ¸úËæÄ¿±ê(·Åµ½Ö¸¶¨µÄÆ«ÒÆÎ»ÖÃ)¡£
     
-51. animationparameter([start_time])
+51. animation_parameter([start_time])
     {
         float(name,val);    //valÎª¸¡µãÊı
         int(name,val);      //valÎªÕûÊı
@@ -451,20 +451,20 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
     };
     ÔÚÖ¸¶¨Ê±¼äĞŞ¸Ä¶¯»­¿ØÖÆÆ÷µÄ²ÎÊı£¬nameÎª¿ØÖÆÆ÷ÅäÖÃÀïÖ¸¶¨µÄÃû×Ö¡£
     
-52. keeptarget([starttime[,remaintime]]);
+52. keep_target([starttime[,remaintime]]);
     
     or
     
-    keeptarget([starttime[,remaintime]]){
+    keep_target([starttime[,remaintime]]){
       aoecenter(x,y,z,relativeToTarget);
     };
     ÔÚÃ¿¸öTick±£Ö¤Ä¿±ê²»»á½øÈëËÀÍö¹ı³Ì¡£
     
-53. animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+53. animation_event(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
     
     or
     
-    animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+    animation_event(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
     {
         int(name,value);
         long(name,value);
@@ -475,6 +475,6 @@ skill(id)  // id¶ÔÓ¦¼¼ÄÜÅäÖÃ±ískillÖĞµÄdslSkillId
     };
     Ö¸¶¨¶¯»­ÊÂ¼ş£¬µ±¶¯»­²¥·Åµ½Ö¸¶¨Ê±¼ä£¨0~1µÄnormalized time£©Ê±·¢ËÍÖ¸¶¨µÄÏûÏ¢£¬¿ÉÑ¡ÉèÖÃ¼¼ÄÜµÄ±äÁ¿¡£
   
-54. useimpact(impactid,[starttime[,is_external_impact]])[if(type)];
+54. use_impact(impactid,[starttime[,is_external_impact]])[if(type)];
     Ö¸¶¨ºóĞø´¥·¢µÄimpactid£¬Ä¬ÈÏÊÇÄÚÇ¶µÄhitskillµÄid£¬is_external_impactÎªtrueÖ¸Ã÷Ê¹ÓÃÍâ²¿Åä±íµÄhitskill¡£
     if²¿·ÖÎª¿ÉÑ¡£¬ÓÃÒÔÖ¸Ã÷ÉèÖÃ/ĞŞ¸Ä²ÎÊıµÄÌõ¼ş£¬Ä¿Ç°Ö§³Öblock£¬ÓÃÓÚÖ¸Ã÷´¥·¢¸ñµµÊ±µÄÊÜ»÷impact¡£

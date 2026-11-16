@@ -33,11 +33,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
+      "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
       "projectName": "DotnetStoryScript",
-      "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
+      "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
       "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-      "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\obj\\",
+      "outputPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

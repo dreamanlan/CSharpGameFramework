@@ -56,8 +56,8 @@ public class Game : MonoBehaviour
     {
         try {
 			StartupScript.TryInit();
-        	StartupScript.Calculator.Register("setclipboard", "setclipboard(str) api", new ExpressionFactoryHelper<SetClipboardExp>());
-        	StartupScript.Calculator.Register("getclipboard", "getclipboard() api", new ExpressionFactoryHelper<GetClipboardExp>());
+        	StartupScript.Calculator.Register("set_clipboard", "set_clipboard(str) api", new ExpressionFactoryHelper<SetClipboardExp>());
+        	StartupScript.Calculator.Register("get_clipboard", "get_clipboard() api", new ExpressionFactoryHelper<GetClipboardExp>());
 			RunStartup(true);
             DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(eventSystem.gameObject);
@@ -707,7 +707,7 @@ public class Game : MonoBehaviour
     {
         m_CameraController.ClearFollow();
         m_CameraController.ToFollowPath();
-        GfxStorySystem.Instance.SendMessage("camerafollowpath");
+        GfxStorySystem.Instance.SendMessage("camera_follow_path");
     }
 
     private void LogToConsole(string msg)
@@ -783,21 +783,21 @@ public class Game : MonoBehaviour
     }
     public static void RegisterGmApi(DslCalculatorApiRegistry registry)
     {
-        registry.Register("loadscp", "loadscp(dsl_script_file) or loadscp(\"name\", func(param1, param2, ...)) or loadscp(name => func(param1, param2, ...)) command", new ExpressionFactoryHelper<LoadScriptCommand>());
-        registry.Register("callscp", "callscp(\"func\", arg1, arg2, ...) or callscp(apiOrFunc(arg1, arg2, ...)) command", new ExpressionFactoryHelper<CallScriptCommand>());
-        registry.Register("evalscp", "evalscp(code_str) or evalscp(exp1,exp2,...) command", new ExpressionFactoryHelper<EvalScriptCommand>());
-        registry.Register("showmemory", "showmemory() command", new ExpressionFactoryHelper<ShowMemoryExp>());
-        registry.Register("getpss", "getpss() function", new ExpressionFactoryHelper<GetPssExp>());
-        registry.Register("getvss", "getvss() function", new ExpressionFactoryHelper<GetVssExp>());
-        registry.Register("getnative", "getnative() function", new ExpressionFactoryHelper<GetNativeExp>());
-        registry.Register("getgraphics", "getgraphics() function", new ExpressionFactoryHelper<GetGraphicsExp>());
-        registry.Register("getunknown", "getunknown() function", new ExpressionFactoryHelper<GetUnknownExp>());
-        registry.Register("getjava", "getjava() function", new ExpressionFactoryHelper<GetJavaExp>());
-        registry.Register("getcode", "getcode() function", new ExpressionFactoryHelper<GetCodeExp>());
-        registry.Register("getstack", "getstack() function", new ExpressionFactoryHelper<GetStackExp>());
-        registry.Register("getsystem", "getsystem() function", new ExpressionFactoryHelper<GetSystemExp>());
-        registry.Register("getactivity", "getactivity() function", new ExpressionFactoryHelper<GetActivityExp>());
-        registry.Register("getintent", "getintent() function", new ExpressionFactoryHelper<GetIntentExp>());
+        registry.Register("load_scp", "load_scp(dsl_script_file) or load_scp(\"name\", func(param1, param2, ...)) or load_scp(name => func(param1, param2, ...)) command", new ExpressionFactoryHelper<LoadScriptCommand>());
+        registry.Register("call_scp", "call_scp(\"func\", arg1, arg2, ...) or call_scp(apiOrFunc(arg1, arg2, ...)) command", new ExpressionFactoryHelper<CallScriptCommand>());
+        registry.Register("eval_scp", "eval_scp(code_str) or eval_scp(exp1,exp_2,...) command", new ExpressionFactoryHelper<EvalScriptCommand>());
+        registry.Register("show_memory", "show_memory() command", new ExpressionFactoryHelper<ShowMemoryExp>());
+        registry.Register("get_pss", "get_pss() function", new ExpressionFactoryHelper<GetPssExp>());
+        registry.Register("get_vss", "get_vss() function", new ExpressionFactoryHelper<GetVssExp>());
+        registry.Register("get_native", "get_native() function", new ExpressionFactoryHelper<GetNativeExp>());
+        registry.Register("get_graphics", "get_graphics() function", new ExpressionFactoryHelper<GetGraphicsExp>());
+        registry.Register("get_unknown", "get_unknown() function", new ExpressionFactoryHelper<GetUnknownExp>());
+        registry.Register("get_java", "get_java() function", new ExpressionFactoryHelper<GetJavaExp>());
+        registry.Register("get_code", "get_code() function", new ExpressionFactoryHelper<GetCodeExp>());
+        registry.Register("get_stack", "get_stack() function", new ExpressionFactoryHelper<GetStackExp>());
+        registry.Register("get_system", "get_system() function", new ExpressionFactoryHelper<GetSystemExp>());
+        registry.Register("get_activity", "get_activity() function", new ExpressionFactoryHelper<GetActivityExp>());
+        registry.Register("get_intent", "get_intent() function", new ExpressionFactoryHelper<GetIntentExp>());
     }
 
     private static Game s_Instance = null;
@@ -1060,11 +1060,11 @@ namespace ExpressionAPI
 {
     using BoxedValue = StoryScript.BoxedValue;
     /// <summary>
-    /// loadscp(dsl_script_file);
+    /// load_scp(dsl_script_file);
     /// or
-    /// loadscp("name", apiOrFunc(param1, param2, ...));
+    /// load_scp("name", apiOrFunc(param1, param2, ...));
     /// or
-    /// loadscp(name => apiOrFunc(param1, param2, ...));
+    /// load_scp(name => apiOrFunc(param1, param2, ...));
     /// </summary>
     internal sealed class LoadScriptCommand : AbstractExpression
     {
@@ -1126,9 +1126,9 @@ namespace ExpressionAPI
         private List<string> m_Params = new List<string>();
     }
     /// <summary>
-    /// callscp("func", arg1, arg2, ...);
+    /// call_scp("func", arg1, arg2, ...);
     /// or
-    /// callscp(apiOrFunc(arg1, arg2, ...));
+    /// call_scp(apiOrFunc(arg1, arg2, ...));
     /// </summary>
     internal sealed class CallScriptCommand : AbstractExpression
     {
@@ -1185,9 +1185,9 @@ namespace ExpressionAPI
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// evalscp(code_string);
+    /// eval_scp(code_string);
     /// or
-    /// evalscp(code_dsl);
+    /// eval_scp(code_dsl);
     /// </summary>
     internal sealed class EvalScriptCommand : AbstractExpression
     {

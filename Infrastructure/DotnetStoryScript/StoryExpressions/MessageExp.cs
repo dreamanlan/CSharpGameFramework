@@ -7,14 +7,14 @@ using ScriptableFramework;
 namespace DotnetStoryScript
 {
     /// <summary>
-    /// localmessage(msgId, args...) - send a sequential message to the current StoryInstance
+    /// local_message(msgId, args...) - send a sequential message to the current StoryInstance
     /// </summary>
     internal sealed class LocalMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: localmessage(msgId, args...)");
+                throw new Exception("Expected: local_message(msgId, args...)");
             var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
@@ -29,14 +29,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// localconcurrentmessage(msgId, args...) - send a concurrent message to the current StoryInstance
+    /// local_concurrent_message(msgId, args...) - send a concurrent message to the current StoryInstance
     /// </summary>
     internal sealed class LocalConcurrentMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: localconcurrentmessage(msgId, args...)");
+                throw new Exception("Expected: local_concurrent_message(msgId, args...)");
             var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
@@ -51,14 +51,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storylocalmessage(msgId, args...) - send message, skipped if story is skipped
+    /// story_local_message(msgId, args...) - send message, skipped if story is skipped
     /// </summary>
     internal sealed class StoryLocalMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: storylocalmessage(msgId, args...)");
+                throw new Exception("Expected: story_local_message(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
             var storyInst = calculator.GetFuncContext<StoryInstance>();
@@ -75,14 +75,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storylocalconcurrentmessage(msgId, args...) - send concurrent message, skipped if story is skipped
+    /// story_local_concurrent_message(msgId, args...) - send concurrent message, skipped if story is skipped
     /// </summary>
     internal sealed class StoryLocalConcurrentMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: storylocalconcurrentmessage(msgId, args...)");
+                throw new Exception("Expected: story_local_concurrent_message(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
             var storyInst = calculator.GetFuncContext<StoryInstance>();
@@ -99,7 +99,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// clearmessage(msgId1, msgId2, ...) - clear message queues for specified message IDs
+    /// clear_message(msgId1, msgId2, ...) - clear message queues for specified message IDs
     /// </summary>
     internal sealed class ClearMessageExp : SimpleExpressionBase
     {
@@ -118,7 +118,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// waitlocalmessage(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for message trigger
+    /// wait_local_message(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for message trigger
     /// </summary>
     internal sealed class WaitLocalMessageExp : AbstractExpression
     {
@@ -231,7 +231,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// waitlocalmessagehandler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for message handler completion
+    /// wait_local_message_handler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for message handler completion
     /// </summary>
     internal sealed class WaitLocalMessageHandlerExp : AbstractExpression
     {
@@ -337,7 +337,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storywaitlocalmessage(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for message, skipped if story is skipped
+    /// story_wait_local_message(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for message, skipped if story is skipped
     /// </summary>
     internal sealed class StoryWaitLocalMessageExp : AbstractExpression
     {
@@ -450,7 +450,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storywaitlocalmessagehandler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for handler, skipped if story is skipped
+    /// story_wait_local_message_handler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for handler, skipped if story is skipped
     /// </summary>
     internal sealed class StoryWaitLocalMessageHandlerExp : AbstractExpression
     {
@@ -559,7 +559,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// suspendlocalmessagehandler(msgId1, msgId2, ...) - suspend message handlers
+    /// suspend_local_message_handler(msgId1, msgId2, ...) - suspend message handlers
     /// </summary>
     internal sealed class SuspendLocalMessageHandlerExp : SimpleExpressionBase
     {
@@ -576,7 +576,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// resumelocalmessagehandler(msgId1, msgId2, ...) - resume message handlers
+    /// resume_local_message_handler(msgId1, msgId2, ...) - resume message handlers
     /// </summary>
     internal sealed class ResumeLocalMessageHandlerExp : SimpleExpressionBase
     {
@@ -595,14 +595,14 @@ namespace DotnetStoryScript
     // ========== Namespaced Message Expressions ==========
 
     /// <summary>
-    /// localnamespacedmessage(msgId, args...) - send namespaced message
+    /// local_namespaced_message(msgId, args...) - send namespaced message
     /// </summary>
     internal sealed class LocalNamespacedMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: localnamespacedmessage(msgId, args...)");
+                throw new Exception("Expected: local_namespaced_message(msgId, args...)");
             var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
@@ -617,14 +617,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// localconcurrentnamespacedmessage(msgId, args...) - send concurrent namespaced message
+    /// local_concurrent_namespaced_message(msgId, args...) - send concurrent namespaced message
     /// </summary>
     internal sealed class LocalConcurrentNamespacedMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: localconcurrentnamespacedmessage(msgId, args...)");
+                throw new Exception("Expected: local_concurrent_namespaced_message(msgId, args...)");
             var storyInst = calculator.GetFuncContext<StoryInstance>();
             if (storyInst == null)
                 return BoxedValue.NullObject;
@@ -639,14 +639,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storylocalnamespacedmessage(msgId, args...) - send namespaced message, skipped if story is skipped
+    /// story_local_namespaced_message(msgId, args...) - send namespaced message, skipped if story is skipped
     /// </summary>
     internal sealed class StoryLocalNamespacedMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: storylocalnamespacedmessage(msgId, args...)");
+                throw new Exception("Expected: story_local_namespaced_message(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
             var storyInst = calculator.GetFuncContext<StoryInstance>();
@@ -663,14 +663,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storylocalconcurrentnamespacedmessage(msgId, args...) - send concurrent namespaced message, skipped if story is skipped
+    /// story_local_concurrent_namespaced_message(msgId, args...) - send concurrent namespaced message, skipped if story is skipped
     /// </summary>
     internal sealed class StoryLocalConcurrentNamespacedMessageExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: storylocalconcurrentnamespacedmessage(msgId, args...)");
+                throw new Exception("Expected: story_local_concurrent_namespaced_message(msgId, args...)");
             if (StoryConfigManager.Instance.IsStorySkipped)
                 return BoxedValue.NullObject;
             var storyInst = calculator.GetFuncContext<StoryInstance>();
@@ -687,7 +687,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// clearnamespacedmessage(msgId1, msgId2, ...) - clear namespaced message queues
+    /// clear_namespaced_message(msgId1, msgId2, ...) - clear namespaced message queues
     /// </summary>
     internal sealed class ClearNamespacedMessageExp : SimpleExpressionBase
     {
@@ -712,7 +712,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// waitlocalnamespacedmessage(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced message trigger
+    /// wait_local_namespaced_message(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced message trigger
     /// </summary>
     internal sealed class WaitLocalNamespacedMessageExp : AbstractExpression
     {
@@ -823,7 +823,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// waitlocalnamespacedmessagehandler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced message handler
+    /// wait_local_namespaced_message_handler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced message handler
     /// </summary>
     internal sealed class WaitLocalNamespacedMessageHandlerExp : AbstractExpression
     {
@@ -930,7 +930,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storywaitlocalnamespacedmessage(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced message, skipped if story is skipped
+    /// story_wait_local_namespaced_message(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced message, skipped if story is skipped
     /// </summary>
     internal sealed class StoryWaitLocalNamespacedMessageExp : AbstractExpression
     {
@@ -1044,7 +1044,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storywaitlocalnamespacedmessagehandler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced handler, skipped if story is skipped
+    /// story_wait_local_namespaced_message_handler(msgId1, msgId2, ...)[set(var, val) timeoutset(timeout, var, val)] - wait for namespaced handler, skipped if story is skipped
     /// </summary>
     internal sealed class StoryWaitLocalNamespacedMessageHandlerExp : AbstractExpression
     {
@@ -1154,7 +1154,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// suspendlocalnamespacedmessagehandler(msgId1, msgId2, ...) - suspend namespaced message handlers
+    /// suspend_local_namespaced_message_handler(msgId1, msgId2, ...) - suspend namespaced message handlers
     /// </summary>
     internal sealed class SuspendLocalNamespacedMessageHandlerExp : SimpleExpressionBase
     {
@@ -1177,7 +1177,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// resumelocalnamespacedmessagehandler(msgId1, msgId2, ...) - resume namespaced message handlers
+    /// resume_local_namespaced_message_handler(msgId1, msgId2, ...) - resume namespaced message handlers
     /// </summary>
     internal sealed class ResumeLocalNamespacedMessageHandlerExp : SimpleExpressionBase
     {

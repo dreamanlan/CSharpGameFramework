@@ -10,7 +10,7 @@ namespace DotnetStoryScript
     // ========== Context Info ==========
 
     /// <summary>
-    /// eval(exp1, exp2, ...) - evaluate all expressions and return the last value
+    /// eval(exp1, exp_2, ...) - evaluate all expressions and return the last value
     /// </summary>
     internal sealed class EvalExp : SimpleExpressionBase
     {
@@ -37,7 +37,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storyid() - get current story ID
+    /// story_id() - get current story ID
     /// </summary>
     internal sealed class StoryIdExp : SimpleExpressionBase
     {
@@ -51,7 +51,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// messageid() - get current message ID
+    /// message_id() - get current message ID
     /// </summary>
     internal sealed class MessageIdExp : SimpleExpressionBase
     {
@@ -67,14 +67,14 @@ namespace DotnetStoryScript
     // ========== List Utilities ==========
 
     /// <summary>
-    /// stringlist(str_split_by_sep) - parse comma-separated string into list of strings
+    /// string_list(str_split_by_sep) - parse comma-separated string into list of strings
     /// </summary>
     internal sealed class StringListExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: stringlist(str_split_by_sep)");
+                throw new Exception("Expected: string_list(str_split_by_sep)");
 
             string str = operands[0].ToString();
             var list = new List<string>();
@@ -88,14 +88,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// intlist(str_split_by_sep) - parse comma-separated string into list of ints
+    /// int_list(str_split_by_sep) - parse comma-separated string into list of ints
     /// </summary>
     internal sealed class IntListExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: intlist(str_split_by_sep)");
+                throw new Exception("Expected: int_list(str_split_by_sep)");
 
             string str = operands[0].ToString();
             var list = Converter.ConvertNumericList<int>(str);
@@ -104,14 +104,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// floatlist(str_split_by_sep) - parse comma-separated string into list of floats
+    /// float_list(str_split_by_sep) - parse comma-separated string into list of floats
     /// </summary>
     internal sealed class FloatListExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: floatlist(str_split_by_sep)");
+                throw new Exception("Expected: float_list(str_split_by_sep)");
 
             string str = operands[0].ToString();
             var list = Converter.ConvertNumericList<float>(str);
@@ -120,14 +120,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// rndfromlist(list[, defval]) - return a random element from list
+    /// rnd_from_list(list[, defval]) - return a random element from list
     /// </summary>
     internal sealed class RndFromListExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: rndfromlist(list[, defval])");
+                throw new Exception("Expected: rnd_from_list(list[, defval])");
 
             var listVal = operands[0].ObjectVal as IList;
             if (listVal == null)
@@ -147,14 +147,14 @@ namespace DotnetStoryScript
     // ========== JSON ==========
 
     /// <summary>
-    /// tojson(obj) - serialize object to JSON string
+    /// to_json(obj) - serialize object to JSON string
     /// </summary>
     internal sealed class ToJsonExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: tojson(obj)");
+                throw new Exception("Expected: to_json(obj)");
 
             object obj = operands[0].GetObject();
             if (obj == null)
@@ -209,14 +209,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// fromjson(json_str) - deserialize JSON string to object
+    /// from_json(json_str) - deserialize JSON string to object
     /// </summary>
     internal sealed class FromJsonExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: fromjson(json_str)");
+                throw new Exception("Expected: from_json(json_str)");
 
             string str = operands[0].ToString();
             var json = LitJson.JsonMapper.ToObject(str);

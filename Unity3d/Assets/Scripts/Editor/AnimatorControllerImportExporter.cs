@@ -594,7 +594,7 @@ public static class AnimatorControllerUtility
                 string val = callData.GetParamId(0);
                 if (id == "mirror") {
                     motion.mirror = bool.Parse(val);
-                } else if (id == "timescale") {
+                } else if (id == "time_scale") {
                     motion.timeScale = float.Parse(val);
                 } else if (id == "threshold") {
                     motion.threshold = float.Parse(val);
@@ -979,7 +979,7 @@ public static class AnimatorControllerUtility
     }
     private static Vector3 ReadPosition(Dsl.FunctionData posDsl)
     {
-        if (posDsl.GetId() == "vector3") {
+        if (posDsl.GetId() == "vector_3") {
             float x = float.Parse(posDsl.GetParamId(0));
             float y = float.Parse(posDsl.GetParamId(1));
             float z = float.Parse(posDsl.GetParamId(2));
@@ -1139,7 +1139,7 @@ public static class AnimatorControllerUtility
         }
         sw.WriteLine();
         foreach (var sm in stateMachine.stateMachines) {
-            sw.WriteLine("{0}statemachine(\"{1}\",vector3({2},{3},{4}))", GetIndent(indent), sm.stateMachine.name, pos.x, pos.y, pos.z);
+            sw.WriteLine("{0}statemachine(\"{1}\",vector_3({2},{3},{4}))", GetIndent(indent), sm.stateMachine.name, pos.x, pos.y, pos.z);
             sw.WriteLine("{0}{1}", GetIndent(indent), "{");
             ++indent;
             WriteAnimatorStateMachine(sw, indent, sm.stateMachine, sm.position, layer);
@@ -1165,9 +1165,9 @@ public static class AnimatorControllerUtility
     {
         BlendTree blendTree = state.motion as BlendTree;
         if (null != blendTree) {
-            sw.WriteLine("{0}blendtreestate(\"{1}\",vector3({2},{3},{4}))", GetIndent(indent), state.name, pos.x, pos.y, pos.z);
+            sw.WriteLine("{0}blendtreestate(\"{1}\",vector_3({2},{3},{4}))", GetIndent(indent), state.name, pos.x, pos.y, pos.z);
         } else {
-            sw.WriteLine("{0}state(\"{1}\",vector3({2},{3},{4}))", GetIndent(indent), state.name, pos.x, pos.y, pos.z);
+            sw.WriteLine("{0}state(\"{1}\",vector_3({2},{3},{4}))", GetIndent(indent), state.name, pos.x, pos.y, pos.z);
         }
         sw.WriteLine("{0}{1}", GetIndent(indent), "{");
         ++indent;
@@ -1255,7 +1255,7 @@ public static class AnimatorControllerUtility
                 sw.WriteLine("{0}mirror({1});", GetIndent(indent), motion.mirror);
             }
             if (motion.timeScale != 1.0f) {
-                sw.WriteLine("{0}timescale({1});", GetIndent(indent), motion.timeScale);
+                sw.WriteLine("{0}time_scale({1});", GetIndent(indent), motion.timeScale);
             }
             if (tree.blendType == BlendTreeType.Simple1D) {
                 sw.WriteLine("{0}threshold({1});", GetIndent(indent), motion.threshold);

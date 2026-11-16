@@ -9,7 +9,7 @@ using ScriptableFrameworkMessage;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// startstory(story_id);
+    /// start_story(story_id);
     /// </summary>
     public class StartStoryCommand : AbstractExpression
     {
@@ -56,7 +56,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Multiple;
     }
     /// <summary>
-    /// stopstory(story_id);
+    /// stop_story(story_id);
     /// </summary>
     public class StopStoryCommand : AbstractExpression
     {
@@ -100,7 +100,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Multiple;
     }
     /// <summary>
-    /// waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// wait_story(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
     public class WaitStoryCommand : AbstractExpression
     {
@@ -226,7 +226,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// pausestory(storyid1,storyid2,...);
+    /// pause_story(storyid1,storyid2,...);
     /// </summary>
     public class PauseStoryCommand : AbstractExpression
     {
@@ -275,7 +275,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Multiple;
     }
     /// <summary>
-    /// resumestory(storyid1,storyid2,...);
+    /// resume_story(storyid1,storyid2,...);
     /// </summary>
     public class ResumeStoryCommand : AbstractExpression
     {
@@ -324,7 +324,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Multiple;
     }
     /// <summary>
-    /// firemessage(msgid,arg1,arg2,...);
+    /// fire_message(msgid,arg1,arg2,...);
     /// </summary>
     public class FireMessageCommand : SimpleExpressionBase
     {
@@ -365,7 +365,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// wait_all_message(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
     public class WaitAllMessageCommand : AbstractExpression
     {
@@ -481,7 +481,7 @@ namespace ScriptableFramework.Story.Commands
         private long m_StartTime = 0;
     }
     /// <summary>
-    /// waitallmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// wait_all_message_handler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
     public class WaitAllMessageHandlerCommand : AbstractExpression
     {
@@ -603,7 +603,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// resumeallmessagehandler(msgid1,msgid2,...);
+    /// resume_all_message_handler(msgid1,msgid2,...);
     /// </summary>
     public class ResumeAllMessageHandlerCommand : SimpleExpressionBase
     {
@@ -620,7 +620,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// sendserverstorymessage(msg,arg1,arg2,...)[touser(userid)];
+    /// send_server_story_message(msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     public class SendServerStoryMessageCommand : AbstractExpression
     {
@@ -712,7 +712,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendclientstorymessage(msg,arg1,arg2,...)[touser(userid)];
+    /// send_client_story_message(msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     public class SendClientStoryMessageCommand : AbstractExpression
     {
@@ -803,7 +803,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// publishgfxevent(ev_name,group,arg1,arg2,...)[touser(userid)];
+    /// publish_gfx_event(ev_name,group,arg1,arg2,...)[touser(userid)];
     /// </summary>
     public class PublishGfxEventCommand : AbstractExpression
     {
@@ -899,7 +899,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendgfxmessage(objname,msg,arg1,arg2,...)[touser(userid)];
+    /// send_gfx_message(objname,msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     public class SendGfxMessageCommand : AbstractExpression
     {
@@ -995,7 +995,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendgfxmessagewithtag(tagname,msg,arg1,arg2,...)[touser(userid)];
+    /// send_gfx_message_with_tag(tagname,msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     public class SendGfxMessageWithTagCommand : AbstractExpression
     {
@@ -1091,7 +1091,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// activescene(target_scene_id, obj_id);
+    /// active_scene(target_scene_id, obj_id);
     /// </summary>
     public class ActiveSceneCommand : SimpleExpressionBase
     {
@@ -1136,7 +1136,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// changescene(target_scene_id, obj_id);
+    /// change_scene(target_scene_id, obj_id);
     /// </summary>
     public class ChangeSceneCommand : SimpleExpressionBase
     {
@@ -1181,7 +1181,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// changeroomscene(target_scene_id);
+    /// change_room_scene(target_scene_id);
     /// </summary>
     public class ChangeRoomSceneCommand : SimpleExpressionBase
     {
@@ -1199,7 +1199,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// createscenelogic(config_id,logic_id,stringlist("param1 param2 param3 ..."));
+    /// create_scene_logic(config_id,logic_id,string_list("param1 param2 param3 ..."));
     /// </summary>
     public class CreateSceneLogicCommand : SimpleExpressionBase
     {
@@ -1223,7 +1223,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// destroyscenelogic(config_id);
+    /// destroy_scene_logic(config_id);
     /// </summary>
     public class DestroySceneLogicCommand : SimpleExpressionBase
     {
@@ -1241,7 +1241,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// pausescenelogic(scene_logic_config_id,true_or_false);
+    /// pause_scene_logic(scene_logic_config_id,true_or_false);
     /// </summary>
     public class PauseSceneLogicCommand : SimpleExpressionBase
     {
@@ -1258,14 +1258,14 @@ namespace ScriptableFramework.Story.Commands
                 if (null != info) {
                     info.IsLogicPaused = (0 == string.Compare(enabled, "true"));
                 } else {
-                    LogSystem.Error("pausescenelogic can't find scenelogic {0}", cfgId);
+                    LogSystem.Error("pause_scene_logic can't find scenelogic {0}", cfgId);
                 }
             }
             return BoxedValue.NullObject;
         }
     }
     /// <summary>
-    /// restarttimeout(scene_logic_config_id[,timeout]);
+    /// restart_timeout(scene_logic_config_id[,timeout]);
     /// </summary>
     public class RestartTimeoutCommand : SimpleExpressionBase
     {
@@ -1287,17 +1287,17 @@ namespace ScriptableFramework.Story.Commands
                             data.m_Timeout = operands[1].GetInt();
                         }
                     } else {
-                        LogSystem.Warn("restarttimeout scenelogic {0} dosen't start, add wait command !", cfgId);
+                        LogSystem.Warn("restart_timeout scenelogic {0} dosen't start, add wait command !", cfgId);
                     }
                 } else {
-                    LogSystem.Error("restarttimeout can't find scenelogic {0}", cfgId);
+                    LogSystem.Error("restart_timeout can't find scenelogic {0}", cfgId);
                 }
             }
             return BoxedValue.NullObject;
         }
     }
     /// <summary>
-    /// highlightprompt(objid,dictid,arg1,arg2,...);
+    /// highlight_prompt(objid,dictid,arg1,arg2,...);
     /// </summary>
     public class HighlightPromptCommand : SimpleExpressionBase
     {

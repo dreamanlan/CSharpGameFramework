@@ -8,7 +8,7 @@ public static class SkillTriggerRegister
 {
     public static void Register()
     {
-        Plugin.Proxy.RegisterSkillTrigger("trackbullet", "TrackBulletTrigger");
-        Plugin.Proxy.RegisterSkillTrigger("track2", "Track2Trigger");
+        Plugin.Proxy.RegisterSkillTrigger("track_bullet", "TrackBulletTrigger");
+        Plugin.Proxy.RegisterSkillTrigger("track_2", "Track2Trigger");
     }        
 }

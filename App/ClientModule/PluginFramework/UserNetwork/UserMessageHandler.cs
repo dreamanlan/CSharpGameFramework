@@ -99,7 +99,7 @@ namespace ScriptableFramework.Network
         private void StopLoginLobby()
         {
             try {
-                //Account login failed, cancel automatic login, disconnect from the network
+                //Account log_in failed, cancel automatic log_in, disconnect from the network
                 m_IsWaitStart = true;
                 m_HasLoggedOn = false;
                 if (IsConnected) {
@@ -172,7 +172,7 @@ namespace ScriptableFramework.Network
                 } else {
                     GameControler.FileLogger.Enabled = true;
                 }
-                //Send login message to server
+                //Send log_in message to server
                 NodeMessage loginMsg = new NodeMessage(LobbyMessageDefine.AccountLogin, m_AccountId);
                 ScriptableFrameworkMessage.AccountLogin protoMsg = new ScriptableFrameworkMessage.AccountLogin();
                 loginMsg.m_ProtoData = protoMsg;
@@ -208,7 +208,7 @@ namespace ScriptableFramework.Network
                 } else {
                     //PluginFramework.Instance.ReturnToLogin();
                 }
-            } else {//First time login processing
+            } else {//First time log_in processing
                 if (ret == AccountLoginResult.AccountLoginResultEnum.Success) {
                     m_Guid = userGuid;
                     //Login successful, request player character from server
@@ -225,7 +225,7 @@ namespace ScriptableFramework.Network
                     //Too many people are logging in at the same time. You need to wait for a while before logging in again.
                     PluginFramework.Instance.HighlightPrompt("Tip_TooManyPeople");
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.Banned) {
-                    //The account has been blocked and login is prohibited.
+                    //The account has been blocked and log_in is prohibited.
                 }
                 else if (ret == AccountLoginResult.AccountLoginResultEnum.Queueing) {
                     PluginFramework.Instance.HighlightPrompt("Tip_Queueing");
@@ -236,7 +236,7 @@ namespace ScriptableFramework.Network
                     StopLoginLobby();
                     PluginFramework.Instance.HighlightPrompt("Tip_QueueFull");
                 } else {
-                    //Account login failed
+                    //Account log_in failed
                     PluginFramework.Instance.HighlightPrompt("Tip_AccountLoginFailed");
                 }
             }

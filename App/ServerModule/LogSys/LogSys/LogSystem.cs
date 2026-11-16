@@ -147,10 +147,10 @@ public class LogSys
   private bool InitConfig(string config)
   {
     /// norm log
-    RegisterNormModuleLogByName("login", "rolebuild", "rolelogin", "logout", 
+    RegisterNormModuleLogByName("log_in", "rolebuild", "rolelogin", "logout", 
                                 "PVEfight", "gettask", "finishtask", "acquire", 
                                 "customacquire", "moneycost", "customcost", 
-                                "getitem", "removeitem", "heart", "levelup", 
+                                "getitem", "remove_item", "heart", "levelup", 
                                 "newstages", "activity", "partner", "pvp", 
                                 "arena", "serverevent", "recharge", "shoptrade",
                                 "equiprefit", "corps", "roundtrip", "skilllevelup",

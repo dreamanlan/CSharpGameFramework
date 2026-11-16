@@ -209,71 +209,71 @@ namespace ScriptableFramework.Skill
         public void Init()
         {
             //Register skill trigger
-            SkillTrigerManager.Instance.RegisterTrigerFactory("timescale", new SkillTrigerFactoryHelper<Trigers.TimeScaleTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("bornfinish", new SkillTrigerFactoryHelper<Trigers.BornFinishTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("deadfinish", new SkillTrigerFactoryHelper<Trigers.DeadFinishTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("sendstorymessage", new Trigers.SendStoryMessageTriggerFactory());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("sendconcurrentstorymessage", new Trigers.SendConcurrentStoryMessageTriggerFactory());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessage", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessagewithtag", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithTagTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessagewithgameobject", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithGameObjectTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("publishgfxevent", new SkillTrigerFactoryHelper<Trigers.PublishGfxEventTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("time_scale", new SkillTrigerFactoryHelper<Trigers.TimeScaleTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("born_finish", new SkillTrigerFactoryHelper<Trigers.BornFinishTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("dead_finish", new SkillTrigerFactoryHelper<Trigers.DeadFinishTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("send_story_message", new Trigers.SendStoryMessageTriggerFactory());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("send_concurrent_story_message", new Trigers.SendConcurrentStoryMessageTriggerFactory());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("send_gfx_message", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("send_gfx_message_with_tag", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithTagTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("send_gfx_message_with_game_object", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithGameObjectTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("publish_gfx_event", new SkillTrigerFactoryHelper<Trigers.PublishGfxEventTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("params", new SkillTrigerFactoryHelper<Trigers.ParamsTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("keeptarget", new SkillTrigerFactoryHelper<Trigers.KeepTargetTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("useimpact", new SkillTrigerFactoryHelper<Trigers.UseImpactTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("keep_target", new SkillTrigerFactoryHelper<Trigers.KeepTargetTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("use_impact", new SkillTrigerFactoryHelper<Trigers.UseImpactTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("animation", new SkillTrigerFactoryHelper<Trigers.AnimationTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("animationspeed", new SkillTrigerFactoryHelper<Trigers.AnimationSpeedTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("animationparameter", new SkillTrigerFactoryHelper<Trigers.AnimationParameterTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("animationevent", new SkillTrigerFactoryHelper<Trigers.AnimationEventTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("animation_speed", new SkillTrigerFactoryHelper<Trigers.AnimationSpeedTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("animation_parameter", new SkillTrigerFactoryHelper<Trigers.AnimationParameterTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("animation_event", new SkillTrigerFactoryHelper<Trigers.AnimationEventTriger>());
 
-            SkillTrigerManager.Instance.RegisterTrigerFactory("playsound", new SkillTrigerFactoryHelper<Trigers.PlaySoundTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("stopsound", new SkillTrigerFactoryHelper<Trigers.StopSoundTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("selfeffect", new SkillTrigerFactoryHelper<Trigers.SelfEffectTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("targeteffect", new SkillTrigerFactoryHelper<Trigers.TargetEffectTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("sceneeffect", new SkillTrigerFactoryHelper<Trigers.SceneEffectTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("emiteffect", new SkillTrigerFactoryHelper<Trigers.EmitEffectTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("aoeemiteffect", new SkillTrigerFactoryHelper<Trigers.AoeEmitEffectTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("stopeffect", new SkillTrigerFactoryHelper<Trigers.StopEffectTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("lockframe", new SkillTrigerFactoryHelper<Trigers.LockFrameTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("hiteffect", new SkillTrigerFactoryHelper<Trigers.HitEffectTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("play_sound", new SkillTrigerFactoryHelper<Trigers.PlaySoundTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("stop_sound", new SkillTrigerFactoryHelper<Trigers.StopSoundTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("self_effect", new SkillTrigerFactoryHelper<Trigers.SelfEffectTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("target_effect", new SkillTrigerFactoryHelper<Trigers.TargetEffectTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("scene_effect", new SkillTrigerFactoryHelper<Trigers.SceneEffectTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("emit_effect", new SkillTrigerFactoryHelper<Trigers.EmitEffectTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("aoe_emit_effect", new SkillTrigerFactoryHelper<Trigers.AoeEmitEffectTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("stop_effect", new SkillTrigerFactoryHelper<Trigers.StopEffectTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("lock_frame", new SkillTrigerFactoryHelper<Trigers.LockFrameTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("hit_effect", new SkillTrigerFactoryHelper<Trigers.HitEffectTriger>());
 
-            SkillTrigerManager.Instance.RegisterTrigerFactory("fadecolor", new SkillTrigerFactoryHelper<Trigers.FadeColorTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("replaceshaderandfadecolor", new SkillTrigerFactoryHelper<Trigers.ReplaceShaderAndFadeColorTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("fade_color", new SkillTrigerFactoryHelper<Trigers.FadeColorTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("replace_shader_and_fade_color", new SkillTrigerFactoryHelper<Trigers.ReplaceShaderAndFadeColorTrigger>());
 
-            SkillTrigerManager.Instance.RegisterTrigerFactory("enablemoveagent", new SkillTrigerFactoryHelper<Trigers.EnableMoveAgentTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("enable_move_agent", new SkillTrigerFactoryHelper<Trigers.EnableMoveAgentTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("charge", new SkillTrigerFactoryHelper<Trigers.ChargeTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("parabola", new SkillTrigerFactoryHelper<Trigers.ParabolaTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("curvemove", new SkillTrigerFactoryHelper<Trigers.CurveMovementTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("curve_move", new SkillTrigerFactoryHelper<Trigers.CurveMovementTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("damage", new SkillTrigerFactoryHelper<Trigers.DamageTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("addimpacttoself", new SkillTrigerFactoryHelper<Trigers.AddImpactToSelfTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("addimpacttotarget", new SkillTrigerFactoryHelper<Trigers.AddImpactToTargetTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("stateimpact", new SkillTrigerFactoryHelper<Trigers.StateImpactTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("stopimpact", new SkillTrigerFactoryHelper<Trigers.StopImpactTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("removeimpact", new SkillTrigerFactoryHelper<Trigers.RemoveImpactTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("add_impact_to_self", new SkillTrigerFactoryHelper<Trigers.AddImpactToSelfTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("add_impact_to_target", new SkillTrigerFactoryHelper<Trigers.AddImpactToTargetTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("state_impact", new SkillTrigerFactoryHelper<Trigers.StateImpactTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("stop_impact", new SkillTrigerFactoryHelper<Trigers.StopImpactTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("remove_impact", new SkillTrigerFactoryHelper<Trigers.RemoveImpactTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("impact", new SkillTrigerFactoryHelper<Trigers.ImpactTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("aoeimpact", new SkillTrigerFactoryHelper<Trigers.AoeImpactTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("periodicallyaoeimpact", new SkillTrigerFactoryHelper<Trigers.PeriodicallyAoeImpactTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("chainaoeimpact", new SkillTrigerFactoryHelper<Trigers.ChainAoeImpactTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("periodicallyimpact", new SkillTrigerFactoryHelper<Trigers.PeriodicallyImpactTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("aoe_impact", new SkillTrigerFactoryHelper<Trigers.AoeImpactTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("periodically_aoe_impact", new SkillTrigerFactoryHelper<Trigers.PeriodicallyAoeImpactTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("chain_aoe_impact", new SkillTrigerFactoryHelper<Trigers.ChainAoeImpactTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("periodically_impact", new SkillTrigerFactoryHelper<Trigers.PeriodicallyImpactTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("track", new SkillTrigerFactoryHelper<Trigers.TrackTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("colliderimpact", new SkillTrigerFactoryHelper<Trigers.ColliderImpactTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("collider_impact", new SkillTrigerFactoryHelper<Trigers.ColliderImpactTriger>());
 
-            SkillTrigerManager.Instance.RegisterTrigerFactory("selecttarget", new SkillTrigerFactoryHelper<Trigers.SelectTargetTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("facetotarget", new SkillTrigerFactoryHelper<Trigers.FaceToTargetTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("cleartargets", new SkillTrigerFactoryHelper<Trigers.ClearTargetsTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("select_target", new SkillTrigerFactoryHelper<Trigers.SelectTargetTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("face_to_target", new SkillTrigerFactoryHelper<Trigers.FaceToTargetTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("clear_targets", new SkillTrigerFactoryHelper<Trigers.ClearTargetsTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("rotate", new SkillTrigerFactoryHelper<Trigers.RotateTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("transform", new SkillTrigerFactoryHelper<Trigers.TransformTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("teleport", new SkillTrigerFactoryHelper<Trigers.TeleportTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("follow", new SkillTrigerFactoryHelper<Trigers.FollowTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("storepos", new SkillTrigerFactoryHelper<Trigers.StorePosTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("restorepos", new SkillTrigerFactoryHelper<Trigers.RestorePosTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("store_pos", new SkillTrigerFactoryHelper<Trigers.StorePosTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("restore_pos", new SkillTrigerFactoryHelper<Trigers.RestorePosTrigger>());
 
-            SkillTrigerManager.Instance.RegisterTrigerFactory("adjustsectionduration", new SkillTrigerFactoryHelper<Trigers.AdjustSectionDurationTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("stopsection", new SkillTrigerFactoryHelper<Trigers.StopSectionTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("gotosection", new SkillTrigerFactoryHelper<Trigers.GotoSectionTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("adjust_section_duration", new SkillTrigerFactoryHelper<Trigers.AdjustSectionDurationTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("stop_section", new SkillTrigerFactoryHelper<Trigers.StopSectionTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("goto_section", new SkillTrigerFactoryHelper<Trigers.GotoSectionTrigger>());
         }
         public void Reset()
         {

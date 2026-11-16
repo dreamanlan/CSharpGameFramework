@@ -1,0 +1,26 @@
+
+D:\GitHub\CSharpGameFramework>rem working directory 
+
+D:\GitHub\CSharpGameFramework>set workdir=D:\GitHub\CSharpGameFramework\ 
+
+D:\GitHub\CSharpGameFramework>cd D:\GitHub\CSharpGameFramework\ 
+
+D:\GitHub\CSharpGameFramework>cd App\ServerModule\ServerEnv\bin 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>start "center" ServerCenter.exe bigworld 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>start "center" ServerCenter.exe 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>start "node" node.exe nodejs/app.js 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>start "lobby" Lobby.exe nostore 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>start "datacache" DataCache.exe 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>start "userserver" UserServer.exe 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>start "roomserver" RoomServer.exe 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>rem start "roomserver" RoomServer.exe 21 
+
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin>rem start "roomserver" RoomServer.exe 22 

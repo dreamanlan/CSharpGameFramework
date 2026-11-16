@@ -22,6 +22,9 @@ namespace RoomServer
                 TableConfig.SkillDataProvider.Instance.LoadForServer();
                 TableConfig.ImpactDataProvider.Instance.LoadForServer();
                 TableConfig.SkillEventProvider.Instance.LoadForServer();
+                // Server-only exploration event table (Server/WorldEvent.dat).
+                // Loaded here with all other project tables, after HomePath.InitHomePath().
+                TableConfig.WorldEventProvider.Instance.LoadForServer();
                 JoinSkillDslResource();
                 BuildSkillEvent();
                 TableConfig.FormationProvider.Instance.LoadForServer();
@@ -49,8 +52,8 @@ namespace RoomServer
 
                         if (skillData.attr1 > 0 && skillData.value1 > 0)
                             skill.attrValues[skillData.attr1] = skillData.value1;
-                        if (skillData.attr2 > 0 && skillData.value2 > 0)
-                            skill.attrValues[skillData.attr2] = skillData.value2;
+                        if (skillData.attr_2 > 0 && skillData.value2 > 0)
+                            skill.attrValues[skillData.attr_2] = skillData.value2;
                         if (skillData.attr3 > 0 && skillData.value3 > 0)
                             skill.attrValues[skillData.attr3] = skillData.value3;
                         if (skillData.attr4 > 0 && skillData.value4 > 0)

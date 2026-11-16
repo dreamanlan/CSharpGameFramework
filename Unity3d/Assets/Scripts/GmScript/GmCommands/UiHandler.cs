@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 /// This file handles all GM-related UI logic. Considering that one project may be used for
 /// experiments with multiple functions, the UI is configurable, but the logic is all written
 /// here.
-/// We provide a loadui ("ui configuration resource") command to load resources, but generally
+/// We provide a load_ui ("ui configuration resource") command to load resources, but generally
 /// you can load the resources you want to use for the current experiment directly in Start.
 /// If you don't want to re-output the package, you can use the command to switch ui.
 /// The ui configuration uses MetaDSL syntax, but the script interpreter is not considered here,

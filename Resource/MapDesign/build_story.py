@@ -6,17 +6,19 @@
   regions.txt                       格名 / 大区 / 时代层 / 主线支线 / 素材引用 / 难度
   MapData/{tid}_areas.txt           战斗区中心（来自布局图）
   tiles/{tid}_terrain.png           真实地表高度（R 通道）
-  Tables/Server/WorldEvent.txt      仅用于统计本格线索数（不下发坐标）
+  Tables/Server/WorldEvent.txt      仅用于统计本格线索数（不下发坐标，GBK 标准表）
 
 生成结构：
-  开场叙事 -> 逐战斗区推进（objmove 带玩家过去 + 分段文案 + 分波刷怪）
+  开场叙事 -> 逐战斗区推进（obj_move 带玩家过去 + 分段文案 + 分波刷怪）
   -> all_killed 推进下一波 -> 最后一波清完结算
-  怪刷在玩家当前位置附近，保证 objmove 若不生效也仍能打完、循环不卡。
+  怪刷在玩家当前位置附近，保证 obj_move 若不生效也仍能打完、循环不卡。
 
-坐标：terrain PNG 256x256，1px=2 世界单位；C# 读图时做了上下翻转，
-      故 pil_y = 255 - worldZ/2，height = R/255*70。
+坐标：terrain PNG 256x256，1px=2 世界单位。Unity GetPixels32 自下而上，
+      C# ReadPng 反转回自上而下，故 design_y == pil_y，pil_y = worldZ/2，
+      height = R/255*70（与 TerrainData / areas.txt 一致）。
 """
 import os
+import math
 from PIL import Image
 
 ROOT = r'D:\GitHub\CSharpGameFramework'
@@ -94,7 +96,7 @@ def event_count(tid):
     if not os.path.exists(EVENTS):
         return 0
     n = 0
-    with open(EVENTS, encoding='utf-8') as f:
+    with open(EVENTS, encoding='gbk') as f:
         for line in f:
             p = line.split('\t')
             if len(p) > 1 and p[1] == tid:
@@ -118,15 +120,16 @@ def wave_branch(code, name, w, x, y, z, diff, src):
     zone = ZONES[code][(w - 1) % len(ZONES[code])]
     count = 4 + diff // 2
     base = 1006 + w * 20
+    # Spawn the wave around the party instead of dragging the leader hundreds
+    # of units to the designed area circle. Mobs have view=15 / gohome=20 by
+    # default: a long obj_move made them oscillate between chase and go-home
+    # without ever engaging, and the leader cast skills at targets far offscreen.
+    # The area still drives the narrative beat and the designed point is kept
+    # for a later pass that gives mobs a proper roaming/leash radius.
     lines = [
         '      if(@wave<%d){' % (w + 1),
-        '        firemessage("push_tip_info", "%s：%s·%s");' % (esc(name), esc(zone), esc(src)),
-        # Move first, then spawn on arrival. A timed fallback guarantees the
-        # wave still spawns (at the player's current position) if objmove never
-        # completes, so the battle loop can never stall.
-        '        objmove(getleaderid(), vector3(%.0f,%.1f,%.0f), "wave_spawn_%d");' % (x, y, z, w),
-        '        wait(3000);',
-        '        firemessage("wave_spawn_%d");' % w,
+        '        fire_message("push_tip_info", "%s：%s·%s");' % (esc(name), esc(zone), esc(src)),
+        '        fire_message("wave_spawn_%d");' % w,
         '      } else {',
     ]
     return lines
@@ -135,17 +138,30 @@ def wave_branch(code, name, w, x, y, z, diff, src):
 def spawn_handler(w, diff):
     count = 4 + diff // 2
     base = 1006 + w * 20
-    return [
+    radius = 14.0
+    # Fixed ring layout instead of random scatter: with random ±8 offsets the
+    # mobs overlapped, and they all converged on the same pursuit point.
+    lines = [
         '  onmessage("wave_spawn_%d")' % w,
         '  {',
         '    if(@spawned<@wave){',
         '      @spawned=@wave;',
-        '      loop(%d){' % count,
-        '        createnpc(%d+$$,vector3(getpositionx(getleaderid())+rndint(0,18),getpositiony(getleaderid()),getpositionz(getleaderid())+rndint(0,18)),0,4,$$+6,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));' % base,
-        '      };',
-        '    };',
-        '  };',
     ]
+    for i in range(count):
+        ang = 2.0 * math.pi * i / count
+        dx = round(radius * math.cos(ang), 1)
+        dz = round(radius * math.sin(ang), 1)
+        # Emit an explicit + or - operator; "+-11.3" is not a valid DSL term.
+        dxs = ('+%.1f' % dx) if dx >= 0 else ('-%.1f' % -dx)
+        dzs = ('+%.1f' % dz) if dz >= 0 else ('-%.1f' % -dz)
+        lines.append(
+            '      create_npc(%d,vector_3(get_position_x(get_leader_id())%s,'
+            'get_position_y(get_leader_id()),get_position_z(get_leader_id())%s),'
+            '0,4,%d,"ai_normal",string_list("Ai/ailogic_normal.dsl"));'
+            % (base + i, dxs, dzs, 6 + i)
+        )
+    lines += ['    };', '  };']
+    return lines
 
 
 def build(t, rank):
@@ -177,32 +193,36 @@ def build(t, rank):
     L.append('  };')
     L.append('  onmessage("start")')
     L.append('  {')
-    L.append('    createnpc(1000,vector3(60,%.1f,70),0,3,1,"ai_player",stringlist("Ai/ailogic_player.dsl"));' % py)
-    L.append('    setleaderid(unitid2objid(1000));')
-    L.append('    npcsetformation(1000,0);')
+    L.append('    create_npc(1000,vector_3(60,%.1f,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));' % py)
+    L.append('    set_leader_id(unit_id_2_obj_id(1000));')
+    L.append('    npc_set_formation(1000,0);')
     L.append('    loop(4){')
-    L.append('      createnpc(1001+$$,vector3(60+rndint(0,10),%.1f,70+rndint(0,10)),0,3,$$+2,"ai_member",stringlist("Ai/ailogic_member.dsl"),getleaderid());' % py)
-    L.append('      npcsetformation(1001+$$,$$+1);')
+    L.append('      create_npc(1001+$$,vector_3(60+rnd_int(0,10),%.1f,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());' % py)
+    L.append('      npc_set_formation(1001+$$,$$+1);')
     L.append('    };')
     # No-arg form uses the already-set LeaderId directly; the unit-id form
     # silently does nothing when GetEntityByUnitId misses.
-    L.append('    camerafollow();')
-    L.append('    publishgfxevent("loading_complete", "ui");')
-    L.append('    firemessage("set_map_image", "Minimap/%s_minimap_%s");' % (tid, era_suffix))
-    L.append('    startstory("auto_battle");')
-    L.append('    firemessage("push_tip_info", "【%s】%s");' % (esc(name), esc(opening)))
-    L.append('    firemessage("push_tip_info", "时代层：%s。%s");' % (esc(era), esc(main)))
+    L.append('    camera_follow();')
+    L.append('    publish_gfx_event("loading_complete", "ui");')
+    L.append('    fire_message("set_map_image", "Minimap/%s_minimap_%s");' % (tid, era_suffix))
+    # Each scene declares its own grid. get_scene_id() in the shared autorun
+    # story returns the story scene id (101/102), which the server cannot map
+    # to a treasure-map grid, so every explore request used to miss the table.
+    L.append('    send_room_story_message("enter_parallel", "%s");' % tid)
+    L.append('    start_story("auto_battle");')
+    L.append('    fire_message("push_tip_info", "【%s】%s");' % (esc(name), esc(opening)))
+    L.append('    fire_message("push_tip_info", "时代层：%s。%s");' % (esc(era), esc(main)))
     if ev > 0:
-        L.append('    firemessage("push_tip_info", "这一带留着线索，靠近后按 E 调查");')
-    L.append('    firemessage("wave_go");')
+        L.append('    fire_message("push_tip_info", "这一带留着线索，靠近后按 E 调查");')
+    L.append('    fire_message("wave_go");')
     L.append('  };')
     L.append('  onmessage("wave_go")')
     L.append('  {')
     L.append('    inc(@wave);')
     L.append('    if(@wave>@total){')
-    L.append('      firemessage("push_tip_info", "%s");' % esc(ENDING[code]))
-    L.append('      clearmessage("show_dlg");')
-    L.append('      firemessage("show_dlg",998);')
+    L.append('      fire_message("push_tip_info", "%s");' % esc(ENDING[code]))
+    L.append('      clear_message("show_dlg");')
+    L.append('      fire_message("show_dlg",998);')
     L.append('    } else {')
     # Nested < comparisons only (no == dependency): wave 1 / 2 / 3 / 4.
     for i, (x, z, _r) in enumerate(zones):
@@ -217,27 +237,27 @@ def build(t, rank):
         L.extend(spawn_handler(w, t['diff']))
     L.append('  onmessage("all_killed")')
     L.append('  {')
-    L.append('    firemessage("wave_go");')
+    L.append('    fire_message("wave_go");')
     L.append('  };')
     L.append('  onmessage("npc_killed:1000")')
     L.append('  {')
-    L.append('    clearmessage("show_dlg");')
-    L.append('    firemessage("show_dlg",999);')
+    L.append('    clear_message("show_dlg");')
+    L.append('    fire_message("show_dlg",999);')
     L.append('  };')
     L.append('  onmessage("all_died")')
     L.append('  {')
-    L.append('    clearmessage("show_dlg");')
-    L.append('    firemessage("show_dlg",999);')
+    L.append('    clear_message("show_dlg");')
+    L.append('    fire_message("show_dlg",999);')
     L.append('  };')
     L.append('  onmessage("dialog_over",998)')
     L.append('  {')
     L.append('    terminate();')
-    L.append('    closebattle(%d);' % level_id)
+    L.append('    close_battle(%d);' % level_id)
     L.append('  };')
     L.append('  onmessage("dialog_over",999)')
     L.append('  {')
     L.append('    terminate();')
-    L.append('    closebattle(%d);' % level_id)
+    L.append('    close_battle(%d);' % level_id)
     L.append('  };')
     L.append('};')
     return '\n'.join(L) + '\n'

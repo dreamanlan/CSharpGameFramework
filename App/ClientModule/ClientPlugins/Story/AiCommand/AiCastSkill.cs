@@ -46,6 +46,12 @@ public class AiCastSkill : ISimpleStoryApiPlugin
                     m_SkillCasted = true;
                     AiCommand.AiStopPursue(npc);
                     AiCommand.AiSkill(npc, m_SkillInfo.SkillId);
+                } else if (null != target && !target.IsDead()) {
+                    // Out of range: take one pursuit step but return false so
+                    // the story keeps ticking. ai_chase used to suspend the
+                    // story here, so the leader never got to cast anything.
+                    ScriptRuntime.Vector3 tp = target.GetMovementStateInfo().GetPosition3D();
+                    AiCommand.AiPursue(npc, tp);
                 }
             }
         } else {

@@ -665,7 +665,7 @@ public static class StartupScript
                 sb.AppendLine("{0}}}", Literal.GetIndentString(indent));
                 s_IteratorStack.Pop();
             }
-            else if (id == "looplist") {
+            else if (id == "loop_list") {
                 string iter = "iter_" + GenNextId();
                 s_IteratorStack.Push(iter);
                 sb.AppendFormat("{0}foreach (var {1} in ", Literal.GetIndentString(indent), iter);

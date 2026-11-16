@@ -59,7 +59,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: newstringbuilder() api");
+                throw new Exception("Expected: new_string_builder() api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 0) {
                 r = BoxedValue.FromObject(new StringBuilder());
@@ -72,7 +72,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: appendformat(sb,fmt,arg1,arg2,...) api");
+                throw new Exception("Expected: append_format(sb,fmt,arg1,arg2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var sb = operands[0].As<StringBuilder>();
@@ -97,7 +97,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: appendformatline(sb,fmt,arg1,arg2,...) api");
+                throw new Exception("Expected: append_format_line(sb,fmt,arg1,arg2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var sb = operands[0].As<StringBuilder>();
@@ -144,7 +144,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: stringjoin(sep,list) api");
+                throw new Exception("Expected: string_join(sep,list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var sep = operands[0].AsString;
@@ -174,7 +174,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: stringsplit(str,sep_list) api");
+                throw new Exception("Expected: string_split(str,sep_list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
@@ -220,7 +220,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: stringtrim(str) api");
+                throw new Exception("Expected: string_trim(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -236,7 +236,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: stringtrimstart(str) api");
+                throw new Exception("Expected: string_trim_start(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -252,7 +252,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: stringtrimend(str) api");
+                throw new Exception("Expected: string_trim_end(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -268,7 +268,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: stringtolower(str) api");
+                throw new Exception("Expected: string_to_lower(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -284,7 +284,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: stringtoupper(str) api");
+                throw new Exception("Expected: string_to_upper(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -300,7 +300,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
-                throw new Exception("Expected: stringreplace(str,key,rep_str) api");
+                throw new Exception("Expected: string_replace(str,key,rep_str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var str = operands[0].AsString;
@@ -316,7 +316,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
-                throw new Exception("Expected: stringreplacechar(str,key,char_as_str) api");
+                throw new Exception("Expected: string_replace_char(str,key,char_as_str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var str = operands[0].AsString;
@@ -357,7 +357,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: stringcontains(str,str_or_list_1,str_or_list_2,...) api");
+                throw new Exception("Expected: string_contains(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
@@ -390,7 +390,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: stringnotcontains(str,str_or_list_1,str_or_list_2,...) api");
+                throw new Exception("Expected: string_not_contains(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
@@ -423,7 +423,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: stringcontainsany(str,str_or_list_1,str_or_list_2,...) api");
+                throw new Exception("Expected: string_contains_any(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
@@ -466,7 +466,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: stringnotcontainsany(str,str_or_list_1,str_or_list_2,...) api");
+                throw new Exception("Expected: string_not_contains_any(str,str_or_list_1,str_or_list_2,...) api");
             bool r = false;
             if (operands.Count >= 2) {
                 string str = operands[0].AsString;
@@ -509,7 +509,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: str2int(str) api");
+                throw new Exception("Expected: str_2_int(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -528,7 +528,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: str2uint(str) api");
+                throw new Exception("Expected: str_2_uint(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -547,7 +547,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: str2long(str) api");
+                throw new Exception("Expected: str_2_long(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -566,7 +566,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: str2ulong(str) api");
+                throw new Exception("Expected: str_2_ulong(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -585,7 +585,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: str2float(str) api");
+                throw new Exception("Expected: str_2_float(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -604,7 +604,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: str2double(str) api");
+                throw new Exception("Expected: str_2_double(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -623,7 +623,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hex2int(str) api");
+                throw new Exception("Expected: hex_2_int(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -642,7 +642,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hex2uint(str) api");
+                throw new Exception("Expected: hex_2_uint(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -661,7 +661,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hex2long(str) api");
+                throw new Exception("Expected: hex_2_long(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -680,7 +680,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hex2ulong(str) api");
+                throw new Exception("Expected: hex_2_ulong(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -699,7 +699,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
-                throw new Exception("Expected: datetimestr([fmt]) api");
+                throw new Exception("Expected: datetime_str([fmt]) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var fmt = operands[0].AsString;
@@ -718,7 +718,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: longdatestr() api");
+                throw new Exception("Expected: long_date_str() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToLongDateString());
             return r;
         }
@@ -728,7 +728,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: longtimestr() api");
+                throw new Exception("Expected: long_time_str() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToShortDateString());
             return r;
         }
@@ -738,7 +738,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: shortdatestr() api");
+                throw new Exception("Expected: short_date_str() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToShortDateString());
             return r;
         }
@@ -748,7 +748,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: shorttimestr() api");
+                throw new Exception("Expected: short_time_str() api");
             var r = BoxedValue.FromObject(DateTime.Now.ToShortTimeString());
             return r;
         }
@@ -768,7 +768,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: parsedatetime(str) api");
+                throw new Exception("Expected: parse_date_time(str) api");
             DateTime.TryParse(operands[0].ToString(), out var dt);
             var r = BoxedValue.FromDateTime(dt);
             return r;
@@ -779,7 +779,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: formatdatetime(str,datetime) api");
+                throw new Exception("Expected: format_date_time(str,date_time) api");
             string fmt = operands[0].ToString();
             DateTime dt = operands[1].GetDateTime();
             var r = BoxedValue.FromString(dt.ToString(fmt));
@@ -791,7 +791,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: isnullorempty(str) api");
+                throw new Exception("Expected: is_null_or_empty(str) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
@@ -816,7 +816,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: toarray(list) api");
+                throw new Exception("Expected: to_array(list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var list = operands[0];
@@ -844,7 +844,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: listsize(list) api");
+                throw new Exception("Expected: list_size(list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var list = operands[0].As<IList>();
@@ -873,7 +873,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
-                throw new Exception("Expected: listget(list,index[,defval]) api");
+                throw new Exception("Expected: list_get(list,index[,defval]) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -899,7 +899,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
-                throw new Exception("Expected: listset(list,index,val) api");
+                throw new Exception("Expected: list_set(list,index,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var list = operands[0].As<IList>();
@@ -924,7 +924,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: listindexof(list,val) api");
+                throw new Exception("Expected: list_index_of(list,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -944,7 +944,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: listadd(list,val) api");
+                throw new Exception("Expected: list_add(list,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -964,7 +964,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: listremove(list,val) api");
+                throw new Exception("Expected: list_remove(list,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -984,7 +984,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
-                throw new Exception("Expected: listinsert(list,index,val) api");
+                throw new Exception("Expected: list_insert(list,index,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var list = operands[0].As<IList>();
@@ -1005,7 +1005,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: listremoveat(list,index) api");
+                throw new Exception("Expected: list_remove_at(list,index) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
@@ -1022,7 +1022,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: listclear(list) api");
+                throw new Exception("Expected: list_clear(list) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var list = operands[0].As<IList>();
@@ -1038,7 +1038,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: listsplit(list,ct) api, return list of list");
+                throw new Exception("Expected: list_split(list,ct) api, return list of list");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var enumer = operands[0].As<IEnumerable>();
@@ -1106,7 +1106,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hashtablesize(hash) api");
+                throw new Exception("Expected: hashtable_size(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -1163,7 +1163,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
-                throw new Exception("Expected: hashtableget(hash,key[,defval]) api");
+                throw new Exception("Expected: hashtable_get(hash,key[,defval]) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
@@ -1193,7 +1193,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
-                throw new Exception("Expected: hashtableset(hash,key,val) api");
+                throw new Exception("Expected: hashtable_set(hash,key,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var dict = operands[0].As<IDictionary>();
@@ -1218,7 +1218,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 3)
-                throw new Exception("Expected: hashtableadd(hash,key,val) api");
+                throw new Exception("Expected: hashtable_add(hash,key,val) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 3) {
                 var dict = operands[0].As<IDictionary>();
@@ -1243,7 +1243,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: hashtableremove(hash,key) api");
+                throw new Exception("Expected: hashtable_remove(hash,key) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
@@ -1266,7 +1266,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hashtableclear(hash) api");
+                throw new Exception("Expected: hashtable_clear(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -1282,7 +1282,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hashtablekeys(hash) api");
+                throw new Exception("Expected: hashtable_keys(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -1309,7 +1309,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hashtablevalues(hash) api");
+                throw new Exception("Expected: hashtable_values(hash) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -1336,7 +1336,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: listhashtable(hash) api, return list of pair");
+                throw new Exception("Expected: list_hashtable(hash) api, return list of pair");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dict = operands[0].As<IDictionary>();
@@ -1356,7 +1356,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: hashtablesplit(hash,ct) api, return list of hashtable");
+                throw new Exception("Expected: hashtable_split(hash,ct) api, return list of hashtable");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
@@ -1445,7 +1445,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: stacksize(stack) api");
+                throw new Exception("Expected: stack_size(stack) api");
             int r = 0;
             if (operands.Count >= 1) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
@@ -1507,7 +1507,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: stackclear(stack) api");
+                throw new Exception("Expected: stack_clear(stack) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var stack = operands[0].As<Stack<BoxedValue>>();
@@ -1523,7 +1523,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: queuesize(queue) api");
+                throw new Exception("Expected: queue_size(queue) api");
             int r = 0;
             if (operands.Count >= 1) {
                 var queue = operands[0].As<Queue<BoxedValue>>();
@@ -1585,7 +1585,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: queueclear(queue) api");
+                throw new Exception("Expected: queue_clear(queue) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var queue = operands[0].As<Queue<BoxedValue>>();
@@ -1601,7 +1601,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: setenv(k,v) api");
+                throw new Exception("Expected: set_env(k,v) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var key = operands[0].AsString;
@@ -1617,7 +1617,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getenv(k) api");
+                throw new Exception("Expected: get_env(k) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var key = operands[0].AsString;
@@ -1684,7 +1684,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: cmdline() api");
+                throw new Exception("Expected: cmd_line() api");
             return Environment.CommandLine;
         }
     }
@@ -1693,7 +1693,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
-                throw new Exception("Expected: cmdlineargs(prev_arg) or cmdlineargs() api, first return next arg, second return array of arg");
+                throw new Exception("Expected: cmd_line_args(prev_arg) or cmd_line_args() api, first return next arg, second return array of arg");
             if (operands.Count >= 1) {
                 string name = operands[0].AsString;
                 if (!string.IsNullOrEmpty(name)) {
@@ -1724,7 +1724,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: osplatform() api");
+                throw new Exception("Expected: os_platform() api");
             return Environment.OSVersion.Platform.ToString();
         }
     }
@@ -1733,7 +1733,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: osversion() api");
+                throw new Exception("Expected: os_version() api");
             return Environment.OSVersion.Version.ToString();
         }
     }
@@ -1742,7 +1742,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getfullpath(path) api");
+                throw new Exception("Expected: get_full_path(path) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1759,7 +1759,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getpathroot(path) api");
+                throw new Exception("Expected: get_path_root(path) api");
             string ret = string.Empty;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1776,7 +1776,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: getrandomfilename() api");
+                throw new Exception("Expected: get_random_file_name() api");
             return Path.GetRandomFileName();
         }
     }
@@ -1785,7 +1785,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: gettempfilename() api");
+                throw new Exception("Expected: get_temp_file_name() api");
             return Path.GetTempFileName();
         }
     }
@@ -1794,7 +1794,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: gettemppath() api");
+                throw new Exception("Expected: get_temp_path() api");
             return Path.GetTempPath();
         }
     }
@@ -1803,7 +1803,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: hasextension(path) api");
+                throw new Exception("Expected: has_extension(path) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1820,7 +1820,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: ispathrooted(path) api");
+                throw new Exception("Expected: is_path_rooted(path) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1837,7 +1837,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getfilename(path) api");
+                throw new Exception("Expected: get_file_name(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1854,7 +1854,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getfilenamewithoutextension(path) api");
+                throw new Exception("Expected: get_file_name_without_extension(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1871,7 +1871,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getextension(path) api");
+                throw new Exception("Expected: get_extension(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1888,7 +1888,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getdirectoryname(path) api");
+                throw new Exception("Expected: get_directory_name(path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -1905,7 +1905,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: combinepath(path1,path2,...) api");
+                throw new Exception("Expected: combine_path(path1,path2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 List<string> list = new List<string>();
@@ -1929,7 +1929,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: changeextension(path,ext) api");
+                throw new Exception("Expected: change_extension(path,ext) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var path = operands[0].AsString;
@@ -1947,7 +1947,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1 || operands.Count > 3)
-                throw new Exception("Expected: quotepath(path[,only_needed,single_quote]) api");
+                throw new Exception("Expected: quote_path(path[,only_needed,single_quote]) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -2042,7 +2042,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
-                throw new Exception("Expected: fileecho(bool) or fileecho() api");
+                throw new Exception("Expected: file_echo(bool) or file_echo() api");
             if (operands.Count >= 1) {
                 DslCalculator.FileEchoOn = operands[0].GetBool();
             }
@@ -2054,7 +2054,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: direxists(dir) api");
+                throw new Exception("Expected: dir_exists(dir) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -2069,7 +2069,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: fileexists(file) api");
+                throw new Exception("Expected: file_exists(file) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -2084,7 +2084,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: pathexists(dir) api");
+                throw new Exception("Expected: path_exists(dir) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var path = operands[0].AsString;
@@ -2099,7 +2099,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: listdirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
+                throw new Exception("Expected: list_dirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -2142,7 +2142,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: listfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
+                throw new Exception("Expected: list_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -2185,7 +2185,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: listalldirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
+                throw new Exception("Expected: list_all_dirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -2228,7 +2228,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: listallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
+                throw new Exception("Expected: list_all_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var baseDir = operands[0].AsString;
@@ -2271,7 +2271,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: createdir(dir) api");
+                throw new Exception("Expected: create_dir(dir) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -2293,7 +2293,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: copydir(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
+                throw new Exception("Expected: copy_dir(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
             int ct = 0;
             if (operands.Count >= 2) {
                 var dir1 = operands[0].AsString;
@@ -2373,7 +2373,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: movedir(dir1,dir2) api");
+                throw new Exception("Expected: move_dir(dir1,dir2) api");
             bool ret = false;
             if (operands.Count >= 2) {
                 var dir1 = operands[0].AsString;
@@ -2400,7 +2400,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: deletedir(dir) api");
+                throw new Exception("Expected: delete_dir(dir) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -2422,7 +2422,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: copyfile(file1,file2) api");
+                throw new Exception("Expected: copy_file(file1,file2) api");
             bool ret = false;
             if (operands.Count >= 2) {
                 var file1 = operands[0].AsString;
@@ -2450,7 +2450,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: copyfiles(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
+                throw new Exception("Expected: copy_files(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
             int ct = 0;
             if (operands.Count >= 2) {
                 var dir1 = operands[0].AsString;
@@ -2515,7 +2515,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 2)
-                throw new Exception("Expected: movefile(file1,file2) api");
+                throw new Exception("Expected: move_file(file1,file2) api");
             bool ret = false;
             if (operands.Count >= 2) {
                 var file1 = operands[0].AsString;
@@ -2546,7 +2546,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: deletefile(file) api");
+                throw new Exception("Expected: delete_file(file) api");
             bool ret = false;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -2568,7 +2568,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: deletefiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
+                throw new Exception("Expected: delete_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir");
             int ct = 0;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -2614,7 +2614,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: deleteallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
+                throw new Exception("Expected: delete_all_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir");
             int ct = 0;
             if (operands.Count >= 1) {
                 var dir = operands[0].AsString;
@@ -2660,7 +2660,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getfileinfo(file) api");
+                throw new Exception("Expected: get_file_info(file) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -2677,7 +2677,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getdirinfo(dir) api");
+                throw new Exception("Expected: get_dir_info(dir) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -2694,7 +2694,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: getdriveinfo(drive) api");
+                throw new Exception("Expected: get_drive_info(drive) api");
             var ret = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var drive = operands[0].AsString;
@@ -2708,7 +2708,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: getdrivesinfo() api");
+                throw new Exception("Expected: get_drives_info() api");
             var ret = DriveInfo.GetDrives();
             return BoxedValue.FromObject(ret);
         }
@@ -2718,7 +2718,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1 || operands.Count > 2)
-                throw new Exception("Expected: readalllines(file[,encoding]) api");
+                throw new Exception("Expected: read_all_lines(file[,encoding]) api");
             if (operands.Count >= 1) {
                 string path = operands[0].AsString;
                 if (!string.IsNullOrEmpty(path)) {
@@ -2739,7 +2739,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
-                throw new Exception("Expected: writealllines(file,lines[,encoding]) api");
+                throw new Exception("Expected: write_all_lines(file,lines[,encoding]) api");
             if (operands.Count >= 2) {
                 string path = operands[0].AsString;
                 var lines = operands[1].As<IList>();
@@ -2766,7 +2766,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1 || operands.Count > 2)
-                throw new Exception("Expected: readalltext(file[,encoding]) api");
+                throw new Exception("Expected: read_all_text(file[,encoding]) api");
             if (operands.Count >= 1) {
                 string path = operands[0].AsString;
                 if (!string.IsNullOrEmpty(path)) {
@@ -2787,7 +2787,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3)
-                throw new Exception("Expected: writealltext(file,txt[,encoding]) api");
+                throw new Exception("Expected: write_all_text(file,txt[,encoding]) api");
             if (operands.Count >= 2) {
                 string path = operands[0].AsString;
                 var text = operands[1].AsString;
@@ -3474,7 +3474,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
-                throw new Exception("Expected: killme([exit_code]) api");
+                throw new Exception("Expected: kill_me([exit_code]) api");
             int ret = 0;
             var p = System.Diagnostics.Process.GetCurrentProcess();
             if (null != p) {
@@ -3484,7 +3484,7 @@ namespace DotnetStoryScript.DslExpression
                     exitCode = operands[0].GetInt();
                 }
                 if (DslCalculator.FileEchoOn) {
-                    Console.WriteLine("killme {0}[pid:{1},session id:{2}] exit code:{3}", p.ProcessName, p.Id, p.SessionId, exitCode);
+                    Console.WriteLine("kill_me {0}[pid:{1},session id:{2}] exit code:{3}", p.ProcessName, p.Id, p.SessionId, exitCode);
                 }
                 Environment.Exit(exitCode);
             }
@@ -3560,7 +3560,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
-                throw new Exception("Expected: waitall([timeout]) api, wait all task to exit");
+                throw new Exception("Expected: wait_all([timeout]) api, wait all task to exit");
             var tasks = DslCalculator.Tasks;
             int timeout = -1;
             if (operands.Count >= 1) {
@@ -3580,7 +3580,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count > 1)
-                throw new Exception("Expected: waitstartinterval(time) or waitstartinterval() api, used in Task.Wait for process/command");
+                throw new Exception("Expected: wait_start_interval(time) or wait_start_interval() api, used in Task.Wait for process/command");
             if (operands.Count >= 1) {
                 var v = operands[0];
                 if (!v.IsNullObject) {
@@ -3595,7 +3595,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: cleanupcompletedtasks() api");
+                throw new Exception("Expected: cleanup_completed_tasks() api");
             DslCalculator.CleanupCompletedTasks();
             return BoxedValue.NullObject;
         }
@@ -3605,7 +3605,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: gettaskcount() api");
+                throw new Exception("Expected: get_task_count() api");
             return DslCalculator.Tasks.Count;
         }
     }
@@ -3614,7 +3614,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: calcmd5(file) api");
+                throw new Exception("Expected: calc_md_5(file) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -3707,7 +3707,7 @@ namespace DotnetStoryScript.DslExpression
 
             Register("args", "args() api", new ExpressionFactoryHelper<ArgsGet>());
             Register("arg", "arg(ix) api", new ExpressionFactoryHelper<ArgGet>());
-            Register("argnum", "argnum() api", new ExpressionFactoryHelper<ArgNumGet>());
+            Register("arg_num", "arg_num() api", new ExpressionFactoryHelper<ArgNumGet>());
             Register("inc", "inc(var) or inc(var,val) api", new ExpressionFactoryHelper<IncExp>());
             Register("dec", "dec(var) or dec(var,val) api", new ExpressionFactoryHelper<DecExp>());
             Register("+", "add operator", new ExpressionFactoryHelper<AddExp>());
@@ -3730,25 +3730,25 @@ namespace DotnetStoryScript.DslExpression
             Register("asin", "asin(v) api", new ExpressionFactoryHelper<AsinExp>());
             Register("acos", "acos(v) api", new ExpressionFactoryHelper<AcosExp>());
             Register("atan", "atan(v) api", new ExpressionFactoryHelper<AtanExp>());
-            Register("atan2", "atan2(v1,v2) api", new ExpressionFactoryHelper<Atan2Exp>());
+            Register("atan_2", "atan_2(v1,v2) api", new ExpressionFactoryHelper<Atan2Exp>());
             Register("sinh", "sinh(v) api", new ExpressionFactoryHelper<SinhExp>());
             Register("cosh", "cosh(v) api", new ExpressionFactoryHelper<CoshExp>());
             Register("tanh", "tanh(v) api", new ExpressionFactoryHelper<TanhExp>());
-            Register("rndint", "rndint(min,max) api", new ExpressionFactoryHelper<RndIntExp>());
-            Register("rndfloat", "rndfloat(min,max) api", new ExpressionFactoryHelper<RndFloatExp>());
+            Register("rnd_int", "rnd_int(min,max) api", new ExpressionFactoryHelper<RndIntExp>());
+            Register("rnd_float", "rnd_float(min,max) api", new ExpressionFactoryHelper<RndFloatExp>());
             Register("pow", "pow(v1,v2) api", new ExpressionFactoryHelper<PowExp>());
             Register("sqrt", "sqrt(v) api", new ExpressionFactoryHelper<SqrtExp>());
             Register("exp", "exp(v) api", new ExpressionFactoryHelper<ExpExp>());
-            Register("exp2", "exp2(v) api", new ExpressionFactoryHelper<Exp2Exp>());
+            Register("exp_2", "exp_2(v) api", new ExpressionFactoryHelper<Exp2Exp>());
             Register("log", "log(v) api", new ExpressionFactoryHelper<LogExp>());
-            Register("log2", "log2(v) api", new ExpressionFactoryHelper<Log2Exp>());
-            Register("log10", "log10(v) api", new ExpressionFactoryHelper<Log10Exp>());
+            Register("log_2", "log_2(v) api", new ExpressionFactoryHelper<Log2Exp>());
+            Register("log_10", "log_10(v) api", new ExpressionFactoryHelper<Log10Exp>());
             Register("floor", "floor(v) api", new ExpressionFactoryHelper<FloorExp>());
             Register("ceiling", "ceiling(v) api", new ExpressionFactoryHelper<CeilingExp>());
             Register("round", "round(v) api", new ExpressionFactoryHelper<RoundExp>());
-            Register("floortoint", "floortoint(v) api", new ExpressionFactoryHelper<FloorToIntExp>());
-            Register("ceilingtoint", "ceilingtoint(v) api", new ExpressionFactoryHelper<CeilingToIntExp>());
-            Register("roundtoint", "roundtoint(v) api", new ExpressionFactoryHelper<RoundToIntExp>());
+            Register("floor_to_int", "floor_to_int(v) api", new ExpressionFactoryHelper<FloorToIntExp>());
+            Register("ceiling_to_int", "ceiling_to_int(v) api", new ExpressionFactoryHelper<CeilingToIntExp>());
+            Register("round_to_int", "round_to_int(v) api", new ExpressionFactoryHelper<RoundToIntExp>());
             Register("bool", "bool(v) api", new ExpressionFactoryHelper<BoolExp>());
             Register("sbyte", "sbyte(v) api", new ExpressionFactoryHelper<SByteExp>());
             Register("byte", "byte(v) api", new ExpressionFactoryHelper<ByteExp>());
@@ -3762,19 +3762,19 @@ namespace DotnetStoryScript.DslExpression
             Register("float", "float(v) api", new ExpressionFactoryHelper<FloatExp>());
             Register("double", "double(v) api", new ExpressionFactoryHelper<DoubleExp>());
             Register("decimal", "decimal(v) api", new ExpressionFactoryHelper<DecimalExp>());
-            Register("datetime", "datetime(v) api", new ExpressionFactoryHelper<DateTimeExp>());
-            Register("isobject", "isobject(v)", new ExpressionFactoryHelper<IsObjectExp>());
-            Register("isstring", "isstring(v)", new ExpressionFactoryHelper<IsStringExp>());
-            Register("isboolean", "isboolean(v)", new ExpressionFactoryHelper<IsBooleanExp>());
-            Register("ischar", "ischar(v)", new ExpressionFactoryHelper<IsCharExp>());
-            Register("isinteger", "isinteger(v)", new ExpressionFactoryHelper<IsIntegerExp>());
-            Register("issignedinteger", "issignedinteger(v)", new ExpressionFactoryHelper<IsSignedIntegerExp>());
-            Register("isunsignedinteger", "isunsignedinteger(v)", new ExpressionFactoryHelper<IsUnsignedIntegerExp>());
-            Register("isnumber", "isnumber(v)", new ExpressionFactoryHelper<IsNumberExp>());
-            Register("isdatetime", "isdatetime(v)", new ExpressionFactoryHelper<IsDateTimeExp>());
-            Register("istuple", "istuple(v)", new ExpressionFactoryHelper<IsTupleExp>());
-            Register("boxedvaluetype", "boxedvaluetype(v)", new ExpressionFactoryHelper<BoxedValueTypeExp>());
-            Register("boxedvaluetypename", "boxedvaluetypename(v)", new ExpressionFactoryHelper<BoxedValueTypeNameExp>());
+            Register("date_time", "date_time(v) api", new ExpressionFactoryHelper<DateTimeExp>());
+            Register("is_object", "is_object(v)", new ExpressionFactoryHelper<IsObjectExp>());
+            Register("is_string", "is_string(v)", new ExpressionFactoryHelper<IsStringExp>());
+            Register("is_boolean", "is_boolean(v)", new ExpressionFactoryHelper<IsBooleanExp>());
+            Register("is_char", "is_char(v)", new ExpressionFactoryHelper<IsCharExp>());
+            Register("is_integer", "is_integer(v)", new ExpressionFactoryHelper<IsIntegerExp>());
+            Register("is_signed_integer", "is_signed_integer(v)", new ExpressionFactoryHelper<IsSignedIntegerExp>());
+            Register("is_unsigned_integer", "is_unsigned_integer(v)", new ExpressionFactoryHelper<IsUnsignedIntegerExp>());
+            Register("is_number", "is_number(v)", new ExpressionFactoryHelper<IsNumberExp>());
+            Register("is_date_time", "is_date_time(v)", new ExpressionFactoryHelper<IsDateTimeExp>());
+            Register("is_tuple", "is_tuple(v)", new ExpressionFactoryHelper<IsTupleExp>());
+            Register("boxed_value_type", "boxed_value_type(v)", new ExpressionFactoryHelper<BoxedValueTypeExp>());
+            Register("boxed_value_type_name", "boxed_value_type_name(v)", new ExpressionFactoryHelper<BoxedValueTypeNameExp>());
             Register("ftoi", "ftoi(v) api", new ExpressionFactoryHelper<FtoiExp>());
             Register("itof", "itof(v) api", new ExpressionFactoryHelper<ItofExp>());
             Register("ftou", "ftou(v) api", new ExpressionFactoryHelper<FtouExp>());
@@ -3784,17 +3784,17 @@ namespace DotnetStoryScript.DslExpression
             Register("dtou", "dtou(v) api", new ExpressionFactoryHelper<DtouExp>());
             Register("utod", "utod(v) api", new ExpressionFactoryHelper<UtodExp>());
             Register("lerp", "lerp(a,b,t) api", new ExpressionFactoryHelper<LerpExp>());
-            Register("lerpunclamped", "lerpunclamped(a,b,t) api", new ExpressionFactoryHelper<LerpUnclampedExp>());
-            Register("lerpangle", "lerpangle(a,b,t) api", new ExpressionFactoryHelper<LerpAngleExp>());
-            Register("smoothstep", "smoothstep(from,to,t) api", new ExpressionFactoryHelper<SmoothStepExp>());
-            Register("clamp01", "clamp01(v) api", new ExpressionFactoryHelper<Clamp01Exp>());
+            Register("lerp_unclamped", "lerp_unclamped(a,b,t) api", new ExpressionFactoryHelper<LerpUnclampedExp>());
+            Register("lerp_angle", "lerp_angle(a,b,t) api", new ExpressionFactoryHelper<LerpAngleExp>());
+            Register("smooth_step", "smooth_step(from,to,t) api", new ExpressionFactoryHelper<SmoothStepExp>());
+            Register("clamp_01", "clamp_01(v) api", new ExpressionFactoryHelper<Clamp01Exp>());
             Register("clamp", "clamp(v,v1,v2) api", new ExpressionFactoryHelper<ClampExp>());
             Register("approximately", "approximately(v1,v2) api", new ExpressionFactoryHelper<ApproximatelyExp>());
-            Register("ispoweroftwo", "ispoweroftwo(v) api", new ExpressionFactoryHelper<IsPowerOfTwoExp>());
-            Register("closestpoweroftwo", "closestpoweroftwo(v) api", new ExpressionFactoryHelper<ClosestPowerOfTwoExp>());
-            Register("nextpoweroftwo", "nextpoweroftwo(v) api", new ExpressionFactoryHelper<NextPowerOfTwoExp>());
+            Register("is_power_of_two", "is_power_of_two(v) api", new ExpressionFactoryHelper<IsPowerOfTwoExp>());
+            Register("closest_power_of_two", "closest_power_of_two(v) api", new ExpressionFactoryHelper<ClosestPowerOfTwoExp>());
+            Register("next_power_of_two", "next_power_of_two(v) api", new ExpressionFactoryHelper<NextPowerOfTwoExp>());
             Register("dist", "dist(x1,y1,x2,y2) api", new ExpressionFactoryHelper<DistExp>());
-            Register("distsqr", "distsqr(x1,y1,x2,y2) api", new ExpressionFactoryHelper<DistSqrExp>());
+            Register("dist_sqr", "dist_sqr(x1,y1,x2,y2) api", new ExpressionFactoryHelper<DistSqrExp>());
             Register(">", "great operator", new ExpressionFactoryHelper<GreatExp>());
             Register(">=", "great equal operator", new ExpressionFactoryHelper<GreatEqualExp>());
             Register("<", "less operator", new ExpressionFactoryHelper<LessExp>());
@@ -3808,186 +3808,186 @@ namespace DotnetStoryScript.DslExpression
             Register("if", "if(cond)func(args); or if(cond){...}[elseif/elif(cond){...}else{...}]; statement", new ExpressionFactoryHelper<IfExp>());
             Register("while", "while(cond)func(args); or while(cond){...}; statement, iterator is $$", new ExpressionFactoryHelper<WhileExp>());
             Register("loop", "loop(ct)func(args); or loop(ct){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopExp>());
-            Register("looplist", "looplist(list)func(args); or looplist(list){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopListExp>());
-            Register("foreachvalue", "foreachvalue(args)func(args); or foreachvalue(args){...}; statement, iterator is $$", new ExpressionFactoryHelper<ForEachValueExp>());
+            Register("loop_list", "loop_list(list)func(args); or loop_list(list){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopListExp>());
+            Register("for_each_value", "for_each_value(args)func(args); or for_each_value(args){...}; statement, iterator is $$", new ExpressionFactoryHelper<ForEachValueExp>());
             Register("format", "format(fmt,arg1,arg2,...) api", new ExpressionFactoryHelper<FormatExp>());
-            Register("gettypeassembly", "gettypeassembly(obj) api", new ExpressionFactoryHelper<GetTypeAssemblyExp>());
-            Register("gettypeassemblyname", "gettypeassemblyname(obj) api", new ExpressionFactoryHelper<GetTypeAssemblyNameExp>());
-            Register("gettypefullname", "gettypefullname(obj) api", new ExpressionFactoryHelper<GetTypeFullNameExp>());
-            Register("gettypename", "gettypename(obj) api", new ExpressionFactoryHelper<GetTypeNameExp>());
-            Register("gettype", "gettype(type_str) api", new ExpressionFactoryHelper<GetTypeExp>());
-            Register("changetype", "changetype(obj,type_str) api", new ExpressionFactoryHelper<ChangeTypeExp>());
-            Register("parseenum", "parseenum(type_str,val_str) api", new ExpressionFactoryHelper<ParseEnumExp>());
-            Register("typecall", "typecall(obj_or_type,method,...) api, call Type's method", new ExpressionFactoryHelper<TypeCallExp>());
-            Register("typeset", "typeset(obj_or_type,name,val) api, set Type's property", new ExpressionFactoryHelper<TypeSetExp>());
-            Register("typeget", "typeget(obj_or_type,name) api, get Type's property", new ExpressionFactoryHelper<TypeGetExp>());
-            Register("dotnetcall", "dotnetcall api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetCallExp>());
-            Register("dotnetset", "dotnetset api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetSetExp>());
-            Register("dotnetget", "dotnetget api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetGetExp>());
-            Register("collectioncall", "collectioncall api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionCallExp>());
-            Register("collectionset", "collectionset api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionSetExp>());
-            Register("collectionget", "collectionget api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionGetExp>());
-            Register("linq", "linq(list,method,arg1,arg2,...) statement, internal implementation, using obj.method(arg1,arg2,...) syntax, method can be where/filter/select/map/top/take/skip/distinct/concat/groupby/orderby/orderbydesc/aggregate/reduce/any/all/count/first/last/tolist/sum/min/max/average, iterator is $$ (An additional iterator $$acc for aggregate/reduce operators)", new ExpressionFactoryHelper<LinqExp>());
-            Register("isnull", "isnull(obj) api", new ExpressionFactoryHelper<IsNullExp>());
+            Register("get_type_assembly", "get_type_assembly(obj) api", new ExpressionFactoryHelper<GetTypeAssemblyExp>());
+            Register("get_type_assembly_name", "get_type_assembly_name(obj) api", new ExpressionFactoryHelper<GetTypeAssemblyNameExp>());
+            Register("get_type_full_name", "get_type_full_name(obj) api", new ExpressionFactoryHelper<GetTypeFullNameExp>());
+            Register("get_type_name", "get_type_name(obj) api", new ExpressionFactoryHelper<GetTypeNameExp>());
+            Register("get_type", "get_type(type_str) api", new ExpressionFactoryHelper<GetTypeExp>());
+            Register("change_type", "change_type(obj,type_str) api", new ExpressionFactoryHelper<ChangeTypeExp>());
+            Register("parse_enum", "parse_enum(type_str,val_str) api", new ExpressionFactoryHelper<ParseEnumExp>());
+            Register("type_call", "type_call(obj_or_type,method,...) api, call Type's method", new ExpressionFactoryHelper<TypeCallExp>());
+            Register("type_set", "type_set(obj_or_type,name,val) api, set Type's property", new ExpressionFactoryHelper<TypeSetExp>());
+            Register("type_get", "type_get(obj_or_type,name) api, get Type's property", new ExpressionFactoryHelper<TypeGetExp>());
+            Register("dotnet_call", "dotnet_call api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetCallExp>());
+            Register("dotnet_set", "dotnet_set api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetSetExp>());
+            Register("dotnet_get", "dotnet_get api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<DotnetGetExp>());
+            Register("collection_call", "collection_call api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionCallExp>());
+            Register("collection_set", "collection_set api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionSetExp>());
+            Register("collection_get", "collection_get api, internal implementation, using csharp object syntax", new ExpressionFactoryHelper<CollectionGetExp>());
+            Register("linq", "linq(list,method,arg1,arg2,...) statement, internal implementation, using obj.method(arg1,arg2,...) syntax, method can be where/filter/select/map/top/take/skip/distinct/concat/group_by/orderby/order_by_desc/aggregate/reduce/any/all/count/first/last/to_list/sum/min/max/average, iterator is $$ (An additional iterator $$acc for aggregate/reduce operators)", new ExpressionFactoryHelper<LinqExp>());
+            Register("is_null", "is_null(obj) api", new ExpressionFactoryHelper<IsNullExp>());
             Register("null", "null() api", new ExpressionFactoryHelper<NullExp>());
-            Register("equalsnull", "equalsnull(obj) api", new ExpressionFactoryHelper<EqualsNullExp>());
-            Register("dotnetload", "dotnetload(dll_path) api", new ExpressionFactoryHelper<DotnetLoadExp>());
-            Register("dotnetnew", "dotnetnew(assembly,type_name,arg1,arg2,...) api", new ExpressionFactoryHelper<DotnetNewExp>());
-            Register("callstack", "callstack() api", new ExpressionFactoryHelper<CallStackExp>());
+            Register("equals_null", "equals_null(obj) api", new ExpressionFactoryHelper<EqualsNullExp>());
+            Register("dotnet_load", "dotnet_load(dll_path) api", new ExpressionFactoryHelper<DotnetLoadExp>());
+            Register("dotnet_new", "dotnet_new(assembly,type_name,arg1,arg2,...) api", new ExpressionFactoryHelper<DotnetNewExp>());
+            Register("call_stack", "call_stack() api", new ExpressionFactoryHelper<CallStackExp>());
             Register("call", "call(func_name,arg1,arg2,...) api", new ExpressionFactoryHelper<CallExp>());
             Register("return", "return([val]) api", new ExpressionFactoryHelper<ReturnExp>());
             Register("redirect", "redirect(arg1,arg2,...) api", new ExpressionFactoryHelper<RedirectExp>());
-            Register("propset", "propset(varname,val) - set variable", new ExpressionFactoryHelper<PropSetExp>());
-            Register("propget", "propget(varname[,defval]) - get variable", new ExpressionFactoryHelper<PropGetExp>());
-            Register("propexists", "propexists(varname) - check variable", new ExpressionFactoryHelper<PropExistsExp>());
-            Register("funcexists", "funcexists(funcname) - check function", new ExpressionFactoryHelper<FuncExistsExp>());
+            Register("prop_set", "prop_set(varname,val) - set variable", new ExpressionFactoryHelper<PropSetExp>());
+            Register("prop_get", "prop_get(varname[,defval]) - get variable", new ExpressionFactoryHelper<PropGetExp>());
+            Register("prop_exists", "prop_exists(varname) - check variable", new ExpressionFactoryHelper<PropExistsExp>());
+            Register("func_exists", "func_exists(funcname) - check function", new ExpressionFactoryHelper<FuncExistsExp>());
             Register("await", "await(\"func_name\", arg1, arg2, ...) api, call async function", new ExpressionFactoryHelper<AwaitExp>());
-            Register("awaitwhile", "awaitwhile(\"func_name\", arg1, arg2, ...) api, loop call sync function while result is true", new ExpressionFactoryHelper<AwaitWhileExp>());
-            Register("awaituntil", "awaituntil(\"func_name\", arg1, arg2, ...) api, loop call sync function until result is true", new ExpressionFactoryHelper<AwaitUntilExp>());
-            Register("awaittime", "awaittime(milliseconds) api, async wait specified time", new ExpressionFactoryHelper<AwaitTimeExp>());
+            Register("await_while", "await_while(\"func_name\", arg1, arg2, ...) api, loop call sync function while result is true", new ExpressionFactoryHelper<AwaitWhileExp>());
+            Register("await_until", "await_until(\"func_name\", arg1, arg2, ...) api, loop call sync function until result is true", new ExpressionFactoryHelper<AwaitUntilExp>());
+            Register("await_time", "await_time(milliseconds) api, async wait specified time", new ExpressionFactoryHelper<AwaitTimeExp>());
 
             Register("substring", "substring(str[,start,len]) function", new ExpressionFactoryHelper<SubstringExp>());
-            Register("newstringbuilder", "newstringbuilder() api", new ExpressionFactoryHelper<NewStringBuilderExp>());
-            Register("appendformat", "appendformat(sb,fmt,arg1,arg2,...) api", new ExpressionFactoryHelper<AppendFormatExp>());
-            Register("appendformatline", "appendformatline(sb,fmt,arg1,arg2,...) api", new ExpressionFactoryHelper<AppendFormatLineExp>());
+            Register("new_string_builder", "new_string_builder() api", new ExpressionFactoryHelper<NewStringBuilderExp>());
+            Register("append_format", "append_format(sb,fmt,arg1,arg2,...) api", new ExpressionFactoryHelper<AppendFormatExp>());
+            Register("append_format_line", "append_format_line(sb,fmt,arg1,arg2,...) api", new ExpressionFactoryHelper<AppendFormatLineExp>());
             Register("stringbuilder_tostring", "stringbuilder_tostring(sb)", new ExpressionFactoryHelper<StringBuilderToStringExp>());
-            Register("stringjoin", "stringjoin(sep,list) api", new ExpressionFactoryHelper<StringJoinExp>());
-            Register("stringsplit", "stringsplit(str,sep_list) api", new ExpressionFactoryHelper<StringSplitExp>());
-            Register("stringtrim", "stringtrim(str) api", new ExpressionFactoryHelper<StringTrimExp>());
-            Register("stringtrimstart", "stringtrimstart(str) api", new ExpressionFactoryHelper<StringTrimStartExp>());
-            Register("stringtrimend", "stringtrimend(str) api", new ExpressionFactoryHelper<StringTrimEndExp>());
-            Register("stringtolower", "stringtolower(str) api", new ExpressionFactoryHelper<StringToLowerExp>());
-            Register("stringtoupper", "stringtoupper(str) api", new ExpressionFactoryHelper<StringToUpperExp>());
-            Register("stringreplace", "stringreplace(str,key,rep_str) api", new ExpressionFactoryHelper<StringReplaceExp>());
-            Register("stringreplacechar", "stringreplacechar(str,key,char_as_str) api", new ExpressionFactoryHelper<StringReplaceCharExp>());
-            Register("makestring", "makestring(char1_as_str_or_int,char2_as_str_or_int,...) api", new ExpressionFactoryHelper<MakeStringExp>());
-            Register("stringcontains", "stringcontains(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringContainsExp>());
-            Register("stringnotcontains", "stringnotcontains(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringNotContainsExp>());
-            Register("stringcontainsany", "stringcontainsany(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringContainsAnyExp>());
-            Register("stringnotcontainsany", "stringnotcontainsany(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringNotContainsAnyExp>());
-            Register("str2int", "str2int(str) api", new ExpressionFactoryHelper<Str2IntExp>());
-            Register("str2uint", "str2uint(str) api", new ExpressionFactoryHelper<Str2UintExp>());
-            Register("str2long", "str2long(str) api", new ExpressionFactoryHelper<Str2LongExp>());
-            Register("str2ulong", "str2ulong(str) api", new ExpressionFactoryHelper<Str2UlongExp>());
-            Register("str2float", "str2float(str) api", new ExpressionFactoryHelper<Str2FloatExp>());
-            Register("str2double", "str2double(str) api", new ExpressionFactoryHelper<Str2DoubleExp>());
-            Register("hex2int", "hex2int(str) api", new ExpressionFactoryHelper<Hex2IntExp>());
-            Register("hex2uint", "hex2uint(str) api", new ExpressionFactoryHelper<Hex2UintExp>());
-            Register("hex2long", "hex2long(str) api", new ExpressionFactoryHelper<Hex2LongExp>());
-            Register("hex2ulong", "hex2ulong(str) api", new ExpressionFactoryHelper<Hex2UlongExp>());
-            Register("datetimestr", "datetimestr([fmt]) api", new ExpressionFactoryHelper<DatetimeStrExp>());
-            Register("longdatestr", "longdatestr() api", new ExpressionFactoryHelper<LongDateStrExp>());
-            Register("longtimestr", "longtimestr() api", new ExpressionFactoryHelper<LongTimeStrExp>());
-            Register("shortdatestr", "shortdatestr() api", new ExpressionFactoryHelper<ShortDateStrExp>());
-            Register("shorttimestr", "shorttimestr() api", new ExpressionFactoryHelper<ShortTimeStrExp>());
+            Register("string_join", "string_join(sep,list) api", new ExpressionFactoryHelper<StringJoinExp>());
+            Register("string_split", "string_split(str,sep_list) api", new ExpressionFactoryHelper<StringSplitExp>());
+            Register("string_trim", "string_trim(str) api", new ExpressionFactoryHelper<StringTrimExp>());
+            Register("string_trim_start", "string_trim_start(str) api", new ExpressionFactoryHelper<StringTrimStartExp>());
+            Register("string_trim_end", "string_trim_end(str) api", new ExpressionFactoryHelper<StringTrimEndExp>());
+            Register("string_to_lower", "string_to_lower(str) api", new ExpressionFactoryHelper<StringToLowerExp>());
+            Register("string_to_upper", "string_to_upper(str) api", new ExpressionFactoryHelper<StringToUpperExp>());
+            Register("string_replace", "string_replace(str,key,rep_str) api", new ExpressionFactoryHelper<StringReplaceExp>());
+            Register("string_replace_char", "string_replace_char(str,key,char_as_str) api", new ExpressionFactoryHelper<StringReplaceCharExp>());
+            Register("make_string", "make_string(char1_as_str_or_int,char2_as_str_or_int,...) api", new ExpressionFactoryHelper<MakeStringExp>());
+            Register("string_contains", "string_contains(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringContainsExp>());
+            Register("string_not_contains", "string_not_contains(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringNotContainsExp>());
+            Register("string_contains_any", "string_contains_any(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringContainsAnyExp>());
+            Register("string_not_contains_any", "string_not_contains_any(str,str_or_list_1,str_or_list_2,...) api", new ExpressionFactoryHelper<StringNotContainsAnyExp>());
+            Register("str_2_int", "str_2_int(str) api", new ExpressionFactoryHelper<Str2IntExp>());
+            Register("str_2_uint", "str_2_uint(str) api", new ExpressionFactoryHelper<Str2UintExp>());
+            Register("str_2_long", "str_2_long(str) api", new ExpressionFactoryHelper<Str2LongExp>());
+            Register("str_2_ulong", "str_2_ulong(str) api", new ExpressionFactoryHelper<Str2UlongExp>());
+            Register("str_2_float", "str_2_float(str) api", new ExpressionFactoryHelper<Str2FloatExp>());
+            Register("str_2_double", "str_2_double(str) api", new ExpressionFactoryHelper<Str2DoubleExp>());
+            Register("hex_2_int", "hex_2_int(str) api", new ExpressionFactoryHelper<Hex2IntExp>());
+            Register("hex_2_uint", "hex_2_uint(str) api", new ExpressionFactoryHelper<Hex2UintExp>());
+            Register("hex_2_long", "hex_2_long(str) api", new ExpressionFactoryHelper<Hex2LongExp>());
+            Register("hex_2_ulong", "hex_2_ulong(str) api", new ExpressionFactoryHelper<Hex2UlongExp>());
+            Register("datetime_str", "datetime_str([fmt]) api", new ExpressionFactoryHelper<DatetimeStrExp>());
+            Register("long_date_str", "long_date_str() api", new ExpressionFactoryHelper<LongDateStrExp>());
+            Register("long_time_str", "long_time_str() api", new ExpressionFactoryHelper<LongTimeStrExp>());
+            Register("short_date_str", "short_date_str() api", new ExpressionFactoryHelper<ShortDateStrExp>());
+            Register("short_time_str", "short_time_str() api", new ExpressionFactoryHelper<ShortTimeStrExp>());
             Register("now", "now() api", new ExpressionFactoryHelper<NowExp>());
-            Register("parsedatetime", "parsedatetime(str) api", new ExpressionFactoryHelper<ParseDateTimeExp>());
-            Register("formatdatetime", "formatdatetime(fmt,datetime) api", new ExpressionFactoryHelper<FormatDateTimeExp>());
-            Register("isnullorempty", "isnullorempty(str) api", new ExpressionFactoryHelper<IsNullOrEmptyExp>());
+            Register("parse_date_time", "parse_date_time(str) api", new ExpressionFactoryHelper<ParseDateTimeExp>());
+            Register("format_date_time", "format_date_time(fmt,date_time) api", new ExpressionFactoryHelper<FormatDateTimeExp>());
+            Register("is_null_or_empty", "is_null_or_empty(str) api", new ExpressionFactoryHelper<IsNullOrEmptyExp>());
             Register("tuple", "(v1,v2,...) or tuple(v1,v2,...) object", new ExpressionFactoryHelper<TupleExp>());
-            Register("tupleset", "(var1,var2,...) = (v1,v2,...) or tupleset((var1,var2,...), (v1,v2,...))", new ExpressionFactoryHelper<TupleSetExp>());
+            Register("tuple_set", "(var1,var2,...) = (v1,v2,...) or tuple_set((var1,var2,...), (v1,v2,...))", new ExpressionFactoryHelper<TupleSetExp>());
             Register("array", "[v1,v2,...] or array(v1,v2,...) object", new ExpressionFactoryHelper<ArrayExp>());
-            Register("toarray", "toarray(list) api", new ExpressionFactoryHelper<ToArrayExp>());
-            Register("listsize", "listsize(list) api", new ExpressionFactoryHelper<ListSizeExp>());
+            Register("to_array", "to_array(list) api", new ExpressionFactoryHelper<ToArrayExp>());
+            Register("list_size", "list_size(list) api", new ExpressionFactoryHelper<ListSizeExp>());
             Register("list", "list(v1,v2,...) object", new ExpressionFactoryHelper<ListExp>());
-            Register("listget", "listget(list,index[,defval]) api", new ExpressionFactoryHelper<ListGetExp>());
-            Register("listset", "listset(list,index,val) api", new ExpressionFactoryHelper<ListSetExp>());
-            Register("listindexof", "listindexof(list,val) api", new ExpressionFactoryHelper<ListIndexOfExp>());
-            Register("listadd", "listadd(list,val) api", new ExpressionFactoryHelper<ListAddExp>());
-            Register("listremove", "listremove(list,val) api", new ExpressionFactoryHelper<ListRemoveExp>());
-            Register("listinsert", "listinsert(list,index,val) api", new ExpressionFactoryHelper<ListInsertExp>());
-            Register("listremoveat", "listremoveat(list,index) api", new ExpressionFactoryHelper<ListRemoveAtExp>());
-            Register("listclear", "listclear(list) api", new ExpressionFactoryHelper<ListClearExp>());
-            Register("listsplit", "listsplit(list,ct) api, return list of list", new ExpressionFactoryHelper<ListSplitExp>());
-            Register("hashtablesize", "hashtablesize(hash) api", new ExpressionFactoryHelper<HashtableSizeExp>());
+            Register("list_get", "list_get(list,index[,defval]) api", new ExpressionFactoryHelper<ListGetExp>());
+            Register("list_set", "list_set(list,index,val) api", new ExpressionFactoryHelper<ListSetExp>());
+            Register("list_index_of", "list_index_of(list,val) api", new ExpressionFactoryHelper<ListIndexOfExp>());
+            Register("list_add", "list_add(list,val) api", new ExpressionFactoryHelper<ListAddExp>());
+            Register("list_remove", "list_remove(list,val) api", new ExpressionFactoryHelper<ListRemoveExp>());
+            Register("list_insert", "list_insert(list,index,val) api", new ExpressionFactoryHelper<ListInsertExp>());
+            Register("list_remove_at", "list_remove_at(list,index) api", new ExpressionFactoryHelper<ListRemoveAtExp>());
+            Register("list_clear", "list_clear(list) api", new ExpressionFactoryHelper<ListClearExp>());
+            Register("list_split", "list_split(list,ct) api, return list of list", new ExpressionFactoryHelper<ListSplitExp>());
+            Register("hashtable_size", "hashtable_size(hash) api", new ExpressionFactoryHelper<HashtableSizeExp>());
             Register("hashtable", "{k1=>v1,k2=>v2,...} or {k1:v1,k2:v2,...} or hashtable(k1=>v1,k2=>v2,...) or hashtable(k1:v1,k2:v2,...) object", new ExpressionFactoryHelper<HashtableExp>());
-            Register("hashtableget", "hashtableget(hash,key[,defval]) api", new ExpressionFactoryHelper<HashtableGetExp>());
-            Register("hashtableset", "hashtableset(hash,key,val) api", new ExpressionFactoryHelper<HashtableSetExp>());
-            Register("hashtableadd", "hashtableadd(hash,key,val) api", new ExpressionFactoryHelper<HashtableAddExp>());
-            Register("hashtableremove", "hashtableremove(hash,key) api", new ExpressionFactoryHelper<HashtableRemoveExp>());
-            Register("hashtableclear", "hashtableclear(hash) api", new ExpressionFactoryHelper<HashtableClearExp>());
-            Register("hashtablekeys", "hashtablekeys(hash) api", new ExpressionFactoryHelper<HashtableKeysExp>());
-            Register("hashtablevalues", "hashtablevalues(hash) api", new ExpressionFactoryHelper<HashtableValuesExp>());
-            Register("listhashtable", "listhashtable(hash) api, return list of pair", new ExpressionFactoryHelper<ListHashtableExp>());
-            Register("hashtablesplit", "hashtablesplit(hash,ct) api, return list of hashtable", new ExpressionFactoryHelper<HashtableSplitExp>());
+            Register("hashtable_get", "hashtable_get(hash,key[,defval]) api", new ExpressionFactoryHelper<HashtableGetExp>());
+            Register("hashtable_set", "hashtable_set(hash,key,val) api", new ExpressionFactoryHelper<HashtableSetExp>());
+            Register("hashtable_add", "hashtable_add(hash,key,val) api", new ExpressionFactoryHelper<HashtableAddExp>());
+            Register("hashtable_remove", "hashtable_remove(hash,key) api", new ExpressionFactoryHelper<HashtableRemoveExp>());
+            Register("hashtable_clear", "hashtable_clear(hash) api", new ExpressionFactoryHelper<HashtableClearExp>());
+            Register("hashtable_keys", "hashtable_keys(hash) api", new ExpressionFactoryHelper<HashtableKeysExp>());
+            Register("hashtable_values", "hashtable_values(hash) api", new ExpressionFactoryHelper<HashtableValuesExp>());
+            Register("list_hashtable", "list_hashtable(hash) api, return list of pair", new ExpressionFactoryHelper<ListHashtableExp>());
+            Register("hashtable_split", "hashtable_split(hash,ct) api, return list of hashtable", new ExpressionFactoryHelper<HashtableSplitExp>());
             Register("peek", "peek(queue_or_stack) api", new ExpressionFactoryHelper<PeekExp>());
-            Register("stacksize", "stacksize(stack) api", new ExpressionFactoryHelper<StackSizeExp>());
+            Register("stack_size", "stack_size(stack) api", new ExpressionFactoryHelper<StackSizeExp>());
             Register("stack", "stack(v1,v2,...) object", new ExpressionFactoryHelper<StackExp>());
             Register("push", "push(stack,v) api", new ExpressionFactoryHelper<PushExp>());
             Register("pop", "pop(stack) api", new ExpressionFactoryHelper<PopExp>());
-            Register("stackclear", "stackclear(stack) api", new ExpressionFactoryHelper<StackClearExp>());
-            Register("queuesize", "queuesize(queue) api", new ExpressionFactoryHelper<QueueSizeExp>());
+            Register("stack_clear", "stack_clear(stack) api", new ExpressionFactoryHelper<StackClearExp>());
+            Register("queue_size", "queue_size(queue) api", new ExpressionFactoryHelper<QueueSizeExp>());
             Register("queue", "queue(v1,v2,...) object", new ExpressionFactoryHelper<QueueExp>());
             Register("enqueue", "enqueue(queue,v) api", new ExpressionFactoryHelper<EnqueueExp>());
             Register("dequeue", "dequeue(queue) api", new ExpressionFactoryHelper<DequeueExp>());
-            Register("queueclear", "queueclear(queue) api", new ExpressionFactoryHelper<QueueClearExp>());
-            Register("setenv", "setenv(k,v) api", new ExpressionFactoryHelper<SetEnvironmentExp>());
-            Register("getenv", "getenv(k) api", new ExpressionFactoryHelper<GetEnvironmentExp>());
+            Register("queue_clear", "queue_clear(queue) api", new ExpressionFactoryHelper<QueueClearExp>());
+            Register("set_env", "set_env(k,v) api", new ExpressionFactoryHelper<SetEnvironmentExp>());
+            Register("get_env", "get_env(k) api", new ExpressionFactoryHelper<GetEnvironmentExp>());
             Register("expand", "expand(str) api", new ExpressionFactoryHelper<ExpandEnvironmentsExp>());
             Register("envs", "envs() api", new ExpressionFactoryHelper<EnvironmentsExp>());
             Register("cd", "cd(path) api", new ExpressionFactoryHelper<SetCurrentDirectoryExp>());
             Register("pwd", "pwd() api", new ExpressionFactoryHelper<GetCurrentDirectoryExp>());
-            Register("cmdline", "cmdline() api", new ExpressionFactoryHelper<CommandLineExp>());
-            Register("cmdlineargs", "cmdlineargs(prev_arg) or cmdlineargs() api, first return next arg, second return array of arg", new ExpressionFactoryHelper<CommandLineArgsExp>());
+            Register("cmd_line", "cmd_line() api", new ExpressionFactoryHelper<CommandLineExp>());
+            Register("cmd_line_args", "cmd_line_args(prev_arg) or cmd_line_args() api, first return next arg, second return array of arg", new ExpressionFactoryHelper<CommandLineArgsExp>());
             Register("os", "os() api", new ExpressionFactoryHelper<OsExp>());
-            Register("osplatform", "osplatform() api", new ExpressionFactoryHelper<OsPlatformExp>());
-            Register("osversion", "osversion() api", new ExpressionFactoryHelper<OsVersionExp>());
-            Register("getfullpath", "getfullpath(path) api", new ExpressionFactoryHelper<GetFullPathExp>());
-            Register("getpathroot", "getpathroot(path) api", new ExpressionFactoryHelper<GetPathRootExp>());
-            Register("getrandomfilename", "getrandomfilename() api", new ExpressionFactoryHelper<GetRandomFileNameExp>());
-            Register("gettempfilename", "gettempfilename() api", new ExpressionFactoryHelper<GetTempFileNameExp>());
-            Register("gettemppath", "gettemppath() api", new ExpressionFactoryHelper<GetTempPathExp>());
-            Register("hasextension", "hasextension(path) api", new ExpressionFactoryHelper<HasExtensionExp>());
-            Register("ispathrooted", "ispathrooted(path) api", new ExpressionFactoryHelper<IsPathRootedExp>());
-            Register("getfilename", "getfilename(path) api", new ExpressionFactoryHelper<GetFileNameExp>());
-            Register("getfilenamewithoutextension", "getfilenamewithoutextension(path) api", new ExpressionFactoryHelper<GetFileNameWithoutExtensionExp>());
-            Register("getextension", "getextension(path) api", new ExpressionFactoryHelper<GetExtensionExp>());
-            Register("getdirectoryname", "getdirectoryname(path) api", new ExpressionFactoryHelper<GetDirectoryNameExp>());
-            Register("combinepath", "combinepath(path1,path2,...) api", new ExpressionFactoryHelper<CombinePathExp>());
-            Register("changeextension", "changeextension(path,ext) api", new ExpressionFactoryHelper<ChangeExtensionExp>());
-            Register("quotepath", "quotepath(path[,only_needed,single_quote]) api", new ExpressionFactoryHelper<QuotePathExp>());
+            Register("os_platform", "os_platform() api", new ExpressionFactoryHelper<OsPlatformExp>());
+            Register("os_version", "os_version() api", new ExpressionFactoryHelper<OsVersionExp>());
+            Register("get_full_path", "get_full_path(path) api", new ExpressionFactoryHelper<GetFullPathExp>());
+            Register("get_path_root", "get_path_root(path) api", new ExpressionFactoryHelper<GetPathRootExp>());
+            Register("get_random_file_name", "get_random_file_name() api", new ExpressionFactoryHelper<GetRandomFileNameExp>());
+            Register("get_temp_file_name", "get_temp_file_name() api", new ExpressionFactoryHelper<GetTempFileNameExp>());
+            Register("get_temp_path", "get_temp_path() api", new ExpressionFactoryHelper<GetTempPathExp>());
+            Register("has_extension", "has_extension(path) api", new ExpressionFactoryHelper<HasExtensionExp>());
+            Register("is_path_rooted", "is_path_rooted(path) api", new ExpressionFactoryHelper<IsPathRootedExp>());
+            Register("get_file_name", "get_file_name(path) api", new ExpressionFactoryHelper<GetFileNameExp>());
+            Register("get_file_name_without_extension", "get_file_name_without_extension(path) api", new ExpressionFactoryHelper<GetFileNameWithoutExtensionExp>());
+            Register("get_extension", "get_extension(path) api", new ExpressionFactoryHelper<GetExtensionExp>());
+            Register("get_directory_name", "get_directory_name(path) api", new ExpressionFactoryHelper<GetDirectoryNameExp>());
+            Register("combine_path", "combine_path(path1,path2,...) api", new ExpressionFactoryHelper<CombinePathExp>());
+            Register("change_extension", "change_extension(path,ext) api", new ExpressionFactoryHelper<ChangeExtensionExp>());
+            Register("quote_path", "quote_path(path[,only_needed,single_quote]) api", new ExpressionFactoryHelper<QuotePathExp>());
             Register("echo", "echo(fmt,arg1,arg2,...) api, Console.WriteLine", new ExpressionFactoryHelper<EchoExp>());
-            Register("fileecho", "fileecho(bool) or fileecho() api", new ExpressionFactoryHelper<FileEchoExp>());
-            Register("direxist", "direxist(dir) api", new ExpressionFactoryHelper<DirectoryExistsExp>());
-            Register("fileexist", "fileexist(file) api", new ExpressionFactoryHelper<FileExistsExp>());
-            Register("pathexist", "pathexist(path) api", new ExpressionFactoryHelper<PathExistsExp>());
-            Register("direxists", "direxists(dir) api", new ExpressionFactoryHelper<DirectoryExistsExp>());
-            Register("fileexists", "fileexists(file) api", new ExpressionFactoryHelper<FileExistsExp>());
-            Register("pathexists", "pathexists(path) api", new ExpressionFactoryHelper<PathExistsExp>());
-            Register("listdirs", "listdirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListDirectoriesExp>());
-            Register("listfiles", "listfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListFilesExp>());
-            Register("listalldirs", "listalldirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListAllDirectoriesExp>());
-            Register("listallfiles", "listallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListAllFilesExp>());
-            Register("createdir", "createdir(dir) api", new ExpressionFactoryHelper<CreateDirectoryExp>());
-            Register("copydir", "copydir(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir", new ExpressionFactoryHelper<CopyDirectoryExp>());
-            Register("movedir", "movedir(dir1,dir2) api", new ExpressionFactoryHelper<MoveDirectoryExp>());
-            Register("deletedir", "deletedir(dir) api", new ExpressionFactoryHelper<DeleteDirectoryExp>());
-            Register("copyfile", "copyfile(file1,file2) api", new ExpressionFactoryHelper<CopyFileExp>());
-            Register("copyfiles", "copyfiles(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir", new ExpressionFactoryHelper<CopyFilesExp>());
-            Register("movefile", "movefile(file1,file2) api", new ExpressionFactoryHelper<MoveFileExp>());
-            Register("deletefile", "deletefile(file) api", new ExpressionFactoryHelper<DeleteFileExp>());
-            Register("deletefiles", "deletefiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir", new ExpressionFactoryHelper<DeleteFilesExp>());
-            Register("deleteallfiles", "deleteallfiles(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir", new ExpressionFactoryHelper<DeleteAllFilesExp>());
-            Register("getfileinfo", "getfileinfo(file) api", new ExpressionFactoryHelper<GetFileInfoExp>());
-            Register("getdirinfo", "getdirinfo(dir) api", new ExpressionFactoryHelper<GetDirectoryInfoExp>());
-            Register("getdriveinfo", "getdriveinfo(drive) api", new ExpressionFactoryHelper<GetDriveInfoExp>());
-            Register("getdrivesinfo", "getdrivesinfo() api", new ExpressionFactoryHelper<GetDrivesInfoExp>());
-            Register("readalllines", "readalllines(file[,encoding]) api", new ExpressionFactoryHelper<ReadAllLinesExp>());
-            Register("writealllines", "writealllines(file,lines[,encoding]) api", new ExpressionFactoryHelper<WriteAllLinesExp>());
-            Register("readalltext", "readalltext(file[,encoding]) api", new ExpressionFactoryHelper<ReadAllTextExp>());
-            Register("writealltext", "writealltext(file,txt[,encoding]) api", new ExpressionFactoryHelper<WriteAllTextExp>());
+            Register("file_echo", "file_echo(bool) or file_echo() api", new ExpressionFactoryHelper<FileEchoExp>());
+            Register("dir_exist", "dir_exist(dir) api", new ExpressionFactoryHelper<DirectoryExistsExp>());
+            Register("file_exist", "file_exist(file) api", new ExpressionFactoryHelper<FileExistsExp>());
+            Register("path_exist", "path_exist(path) api", new ExpressionFactoryHelper<PathExistsExp>());
+            Register("dir_exists", "dir_exists(dir) api", new ExpressionFactoryHelper<DirectoryExistsExp>());
+            Register("file_exists", "file_exists(file) api", new ExpressionFactoryHelper<FileExistsExp>());
+            Register("path_exists", "path_exists(path) api", new ExpressionFactoryHelper<PathExistsExp>());
+            Register("list_dirs", "list_dirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListDirectoriesExp>());
+            Register("list_files", "list_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListFilesExp>());
+            Register("list_all_dirs", "list_all_dirs(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListAllDirectoriesExp>());
+            Register("list_all_files", "list_all_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api", new ExpressionFactoryHelper<ListAllFilesExp>());
+            Register("create_dir", "create_dir(dir) api", new ExpressionFactoryHelper<CreateDirectoryExp>());
+            Register("copy_dir", "copy_dir(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir", new ExpressionFactoryHelper<CopyDirectoryExp>());
+            Register("move_dir", "move_dir(dir1,dir2) api", new ExpressionFactoryHelper<MoveDirectoryExp>());
+            Register("delete_dir", "delete_dir(dir) api", new ExpressionFactoryHelper<DeleteDirectoryExp>());
+            Register("copy_file", "copy_file(file1,file2) api", new ExpressionFactoryHelper<CopyFileExp>());
+            Register("copy_files", "copy_files(dir1,dir2,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir", new ExpressionFactoryHelper<CopyFilesExp>());
+            Register("move_file", "move_file(file1,file2) api", new ExpressionFactoryHelper<MoveFileExp>());
+            Register("delete_file", "delete_file(file) api", new ExpressionFactoryHelper<DeleteFileExp>());
+            Register("delete_files", "delete_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, dont include subdir", new ExpressionFactoryHelper<DeleteFilesExp>());
+            Register("delete_all_files", "delete_all_files(dir,filter_list_or_str_1,filter_list_or_str_2,...) api, include subdir", new ExpressionFactoryHelper<DeleteAllFilesExp>());
+            Register("get_file_info", "get_file_info(file) api", new ExpressionFactoryHelper<GetFileInfoExp>());
+            Register("get_dir_info", "get_dir_info(dir) api", new ExpressionFactoryHelper<GetDirectoryInfoExp>());
+            Register("get_drive_info", "get_drive_info(drive) api", new ExpressionFactoryHelper<GetDriveInfoExp>());
+            Register("get_drives_info", "get_drives_info() api", new ExpressionFactoryHelper<GetDrivesInfoExp>());
+            Register("read_all_lines", "read_all_lines(file[,encoding]) api", new ExpressionFactoryHelper<ReadAllLinesExp>());
+            Register("write_all_lines", "write_all_lines(file,lines[,encoding]) api", new ExpressionFactoryHelper<WriteAllLinesExp>());
+            Register("read_all_text", "read_all_text(file[,encoding]) api", new ExpressionFactoryHelper<ReadAllTextExp>());
+            Register("write_all_text", "write_all_text(file,txt[,encoding]) api", new ExpressionFactoryHelper<WriteAllTextExp>());
             Register("process", "process(file,arg_str) or process(file,arg_str){[options;]} api", new ExpressionFactoryHelper<CommandExp>());
             Register("command", "command{win{:cmd_str:};unix{:cmd_str:};common{:cmd_str:};[options;]} api", new ExpressionFactoryHelper<CommandExp>());
             Register("kill", "kill(name_or_pid) api", new ExpressionFactoryHelper<KillExp>());
-            Register("killme", "killme([exit_code]) api", new ExpressionFactoryHelper<KillMeExp>());
+            Register("kill_me", "kill_me([exit_code]) api", new ExpressionFactoryHelper<KillMeExp>());
             Register("pid", "pid() api", new ExpressionFactoryHelper<GetCurrentProcessIdExp>());
             Register("plist", "plist([filter]) api, return list", new ExpressionFactoryHelper<ListProcessesExp>());
             Register("sleep", "sleep(milliseconds) api", new ExpressionFactoryHelper<SleepExp>());
-            Register("waitall", "waitall([timeout]) api, wait all task to exit", new ExpressionFactoryHelper<WaitAllExp>());
-            Register("waitstartinterval", "waitstartinterval(time) or waitstartinterval() api, used in Task.Wait for process/command", new ExpressionFactoryHelper<WaitStartIntervalExp>());
-            Register("cleanupcompletedtasks", "cleanupcompletedtasks() api", new ExpressionFactoryHelper<CleanupCompletedTasksExp>());
-            Register("gettaskcount", "gettaskcount() api", new ExpressionFactoryHelper<GetTaskCountExp>());
-            Register("calcmd5", "calcmd5(file) api", new ExpressionFactoryHelper<CalcMd5Exp>());
+            Register("wait_all", "wait_all([timeout]) api, wait all task to exit", new ExpressionFactoryHelper<WaitAllExp>());
+            Register("wait_start_interval", "wait_start_interval(time) or wait_start_interval() api, used in Task.Wait for process/command", new ExpressionFactoryHelper<WaitStartIntervalExp>());
+            Register("cleanup_completed_tasks", "cleanup_completed_tasks() api", new ExpressionFactoryHelper<CleanupCompletedTasksExp>());
+            Register("get_task_count", "get_task_count() api", new ExpressionFactoryHelper<GetTaskCountExp>());
+            Register("calc_md_5", "calc_md_5(file) api", new ExpressionFactoryHelper<CalcMd5Exp>());
         }
 
         private LinqOperatorRegistry m_LinqOperatorRegistry = new LinqOperatorRegistry();

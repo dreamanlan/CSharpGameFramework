@@ -8,7 +8,7 @@ using System.Threading;
 using StoryScript;
 
 // GM channel for AI / external tools: one JSON request per line, one reply per request.
-//   {"id":1,"cmd":"exec","code":"getposition(findobj(\"Main Camera\"))"}
+//   {"id":1,"cmd":"exec","code":"get_position(find_obj(\"Main Camera\"))"}
 //   <- {"id":1,"ok":true,"result":"...","elapsedMs":1,"logs":[...]}
 // Plain text lines are still accepted (executed as DebugConsole commands).
 public sealed class GmSocketServer

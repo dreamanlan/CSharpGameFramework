@@ -12,7 +12,7 @@ using ScriptableFramework.Story;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// blackboardclear();
+    /// blackboard_clear();
     /// </summary>
     internal class BlackboardClearCommand : SimpleExpressionBase
     {
@@ -23,7 +23,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// blackboardset(name,value);
+    /// blackboard_set(name,value);
     /// </summary>
     internal class BlackboardSetCommand : SimpleExpressionBase
     {
@@ -38,7 +38,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// camerafollow(npc_unit_id1,npc_unit_id2,...)[with(camera_path)];
+    /// camera_follow(npc_unit_id1,npc_unit_id2,...)[with(camera_path)];
     /// </summary>
     internal class CameraFollowCommand : AbstractExpression
     {
@@ -98,7 +98,7 @@ namespace ScriptableFramework.Story.Commands
     /// <summary>
     /// cameralookat(npc_unit_id)[with(camera_path)];
     /// or
-    /// cameralookat(vector3(x,y,z))[with(camera_path)];
+    /// cameralookat(vector_3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookCommand : AbstractExpression
     {
@@ -157,7 +157,7 @@ namespace ScriptableFramework.Story.Commands
     /// <summary>
     /// cameralookatimmediately(npc_unit_id)[with(camera_path)];
     /// or
-    /// cameralookatimmediately(vector3(x,y,z))[with(camera_path)];
+    /// cameralookatimmediately(vector_3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookImmediatelyCommand : AbstractExpression
     {
@@ -214,9 +214,9 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg;
     }
     /// <summary>
-    /// cameralooktoward(npc_unit_id)[with(camera_path)];
+    /// camera_look_toward(npc_unit_id)[with(camera_path)];
     /// or
-    /// cameralooktoward(vector3(x,y,z))[with(camera_path)];
+    /// camera_look_toward(vector_3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookTowardCommand : AbstractExpression
     {
@@ -273,7 +273,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg;
     }
     /// <summary>
-    /// camerafixedyaw(yaw)[with(camera_path)];
+    /// camera_fixed_yaw(yaw)[with(camera_path)];
     /// </summary>
     internal class CameraFixedYawCommand : AbstractExpression
     {
@@ -320,7 +320,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg1;
     }
     /// <summary>
-    /// camerayaw(yaw, anglelag, snaplag)[with(camera_path)];
+    /// camera_yaw(yaw, anglelag, snaplag)[with(camera_path)];
     /// </summary>
     internal class CameraYawCommand : AbstractExpression
     {
@@ -373,7 +373,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg3;
     }
     /// <summary>
-    /// cameraheight(height, lag)[with(camera_path)];
+    /// camera_height(height, lag)[with(camera_path)];
     /// </summary>
     internal class CameraHeightCommand : AbstractExpression
     {
@@ -423,7 +423,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg2;
     }
     /// <summary>
-    /// cameradistance(distance, lag)[with(camera_path)];
+    /// camera_distance(distance, lag)[with(camera_path)];
     /// </summary>
     internal class CameraDistanceCommand : AbstractExpression
     {
@@ -473,7 +473,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg2;
     }
     /// <summary>
-    /// camerasetdistanceheight(distance, height)[with(camera_path)];
+    /// camera_set_distance_height(distance, height)[with(camera_path)];
     /// </summary>
     internal class CameraSetDistanceHeightCommand : AbstractExpression
     {
@@ -523,7 +523,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg2;
     }
     /// <summary>
-    /// cameraresetdistanceheight()[with(camera_path)];
+    /// camera_reset_distance_height()[with(camera_path)];
     /// </summary>
     internal class CameraResetDistanceHeightCommand : AbstractExpression
     {
@@ -564,7 +564,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_CameraPath;
     }
     /// <summary>
-    /// camerasetfollowspeed(maxdist, mindist, maxspeed, minspeed, power)[with(camera_path)];
+    /// camera_set_follow_speed(maxdist, mindist, maxspeed, minspeed, power)[with(camera_path)];
     /// </summary>
     internal class CameraSetFollowSpeedCommand : AbstractExpression
     {
@@ -623,7 +623,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg5;
     }
     /// <summary>
-    /// cameraresetfollowspeed()[with(camera_path)];
+    /// camera_reset_follow_speed()[with(camera_path)];
     /// </summary>
     internal class CameraResetFollowSpeedCommand : AbstractExpression
     {
@@ -664,7 +664,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_CameraPath;
     }
     /// <summary>
-    /// camerafollowobj(objid)[with(camera_path)];
+    /// camera_follow_obj(objid)[with(camera_path)];
     /// </summary>
     internal class CameraFollowObjCommand : AbstractExpression
     {
@@ -713,7 +713,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjId;
     }
     /// <summary>
-    /// cameralookobj(objid)[with(camera_path)];
+    /// camera_look_obj(objid)[with(camera_path)];
     /// </summary>
     internal class CameraLookObjCommand : AbstractExpression
     {
@@ -763,7 +763,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjId;
     }
     /// <summary>
-    /// cameralookobjimmediately(objid)[with(camera_path)];
+    /// camera_look_obj_immediately(objid)[with(camera_path)];
     /// </summary>
     internal class CameraLookObjImmediatelyCommand : AbstractExpression
     {
@@ -813,7 +813,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjId;
     }
     /// <summary>
-    /// cameralooktowardobj(objid)[with(camera_path)];
+    /// camera_look_toward_obj(objid)[with(camera_path)];
     /// </summary>
     internal class CameraLookTowardObjCommand : AbstractExpression
     {
@@ -863,7 +863,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjId;
     }
     /// <summary>
-    /// cameralookcopy(objpath, unitid or vector3(x,y,z))[with(camera_path)];
+    /// camera_look_copy(objpath, unitid or vector_3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookCopyCommand : AbstractExpression
     {
@@ -931,7 +931,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg;
     }
     /// <summary>
-    /// cameralookobjcopy(objpath, objid)[with(camera_path)];
+    /// camera_look_obj_copy(objpath, objid)[with(camera_path)];
     /// </summary>
     internal class CameraLookObjCopyCommand : AbstractExpression
     {
@@ -990,7 +990,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjId;
     }
     /// <summary>
-    /// cameraenable(name, 0_or_1);
+    /// camera_enable(name, 0_or_1);
     /// </summary>
     internal class CameraEnableCommand : SimpleExpressionBase
     {
@@ -1005,7 +1005,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// lockframe(scale);
+    /// lock_frame(scale);
     /// </summary>
     internal class LockFrameCommand : AbstractExpression
     {
@@ -1027,7 +1027,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Scale;
     }
     /// <summary>
-    /// setleaderid([objid,]leaderid);
+    /// set_leader_id([objid,]leaderid);
     /// </summary>
     internal class SetLeaderIdCommand : SimpleExpressionBase
     {
@@ -1050,7 +1050,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// showdlg(storyDlgId);
+    /// show_dlg(storyDlgId);
     /// </summary>
     internal class ShowDlgCommand : AbstractExpression
     {
@@ -1058,7 +1058,7 @@ namespace ScriptableFramework.Story.Commands
         {
             int storyDlgId = m_StoryDlgId.Calc(calculator).GetInt();
             GfxStorySystem.Instance.SendMessage("show_dlg", storyDlgId);
-            LogSystem.Info("showdlg {0}", storyDlgId);
+            LogSystem.Info("show_dlg {0}", storyDlgId);
             return BoxedValue.NullObject;
         }
         protected override bool Load(Dsl.FunctionData callData)
@@ -1073,7 +1073,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_StoryDlgId;
     }
     /// <summary>
-    /// areadetect(name,radius,type,callback)[set(var,val)];
+    /// area_detect(name,radius,type,callback)[set(var,val)];
     /// </summary>
     internal class AreaDetectCommand : AbstractExpression
     {
@@ -1165,7 +1165,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// loadui(name, prefab, dslfile[, dontDestroyOld]);
+    /// load_ui(name, prefab, dslfile[, dontDestroyOld]);
     /// </summary>
     internal class LoadUiCommand : SimpleExpressionBase
     {
@@ -1210,7 +1210,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// bindui(gameobject){
+    /// bind_ui(gameobject){
     ///     var("@varname","Panel/Input");
     ///     inputs("",...);
     ///     toggles("",...);

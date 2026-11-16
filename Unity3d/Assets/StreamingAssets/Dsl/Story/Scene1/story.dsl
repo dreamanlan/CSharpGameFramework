@@ -2,33 +2,33 @@ story(story_main)
 {
   onmessage("start")
   {
-    publishgfxevent("loading_complete", "ui");
-    //changescene(3);
-  	publishgfxevent("ge_select_server", "lobby", "ws://127.0.0.1:9001");
-    highlightprompt(0,"Tip_0");
-    firemessage("show_login");
+    publish_gfx_event("loading_complete", "ui");
+    //change_scene(3);
+  	publish_gfx_event("ge_select_server", "lobby", "ws://127.0.0.1:9001");
+    highlight_prompt(0,"Tip_0");
+    fire_message("show_login");
   };
   onmessage("version_verify_failed")
   {
-    highlightprompt(0,"Err_VerifyVersion");
+    highlight_prompt(0,"Err_VerifyVersion");
     wait(3000);
     quit();
   };
   onmessage("dialog_over",1)
   {
-    //changescene(3);
-    changescene(4);
+    //change_scene(3);
+    change_scene(4);
   };
   onmessage("do_login")params($user,$pwd)
   {
-  	publishgfxevent("ge_account_login", "lobby", $user, $pwd, "");
+  	publish_gfx_event("ge_account_login", "lobby", $user, $pwd, "");
   };
   onmessage("do_nickname")params($nickname)
   {
-  	publishgfxevent("ge_change_name", "lobby", $nickname);
+  	publish_gfx_event("ge_change_name", "lobby", $nickname);
   };
   onmessage("start_game")
   {
-  	showdlg(1);
+  	show_dlg(1);
   };
 };

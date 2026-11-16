@@ -2,9 +2,9 @@ skill(101)
 {
   section(1433)
   {
-    facetotarget(0,100,0,"minhp");
+    face_to_target(0,100,0,"minhp");
     animation(@castAnim);
-    adjustsectionduration("anim",100);
+    adjust_section_duration("anim",100);
     impact(-3,0,0,0,false);
   };
 };

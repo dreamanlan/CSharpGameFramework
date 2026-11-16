@@ -60,8 +60,8 @@ Dsl/Calc/AttrCalc.dsl
 Dsl/Calc/AttrCalc.dsl.meta
 Dsl/Calc/SkillCalc.dsl
 Dsl/Calc/SkillCalc.dsl.meta
-Dsl/Skill/addbuff.dsl
-Dsl/Skill/addbuff.dsl.meta
+Dsl/Skill/add_buff.dsl
+Dsl/Skill/add_buff.dsl.meta
 Dsl/Skill/anni_r.dsl
 Dsl/Skill/anni_r.dsl.meta
 Dsl/Skill/aoeaddblood.dsl

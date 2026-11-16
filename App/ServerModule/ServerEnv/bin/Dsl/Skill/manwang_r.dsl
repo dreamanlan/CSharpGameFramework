@@ -2,28 +2,28 @@ skill(105)
 {
 	section(10)
 	{
-    hiteffect(hitEffect, "eyes", 0, 1000, "Stand", 100);
+    hit_effect(hitEffect, "eyes", 0, 1000, "Stand", 100);
 	};
   section(500)
   {
-  	rotate(0, 3000, vector3(0, 1440, 0));
-    selfeffect(selfEffect,1000,"eyes",0)
+  	rotate(0, 3000, vector_3(0, 1440, 0));
+    self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector3(0,1,0));
+      transform(vector_3(0,1,0));
     };
-    facetotarget(0,100);
-  	enablemoveagent(false);
-    charge(500,13,0,vector3(0,0,0),0);
-    aoeimpact(500,0,0,3,false);
+    face_to_target(0,100);
+  	enable_move_agent(false);
+    charge(500,13,0,vector_3(0,0,0),0);
+    aoe_impact(500,0,0,3,false);
   };
   section(100)
   {
     animation("Stand");
-    enablemoveagent(true);
+    enable_move_agent(true);
   };
   onstop
   {
     animation("Stand");
-    enablemoveagent(true);
+    enable_move_agent(true);
   };
 };

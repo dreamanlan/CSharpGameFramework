@@ -6,32 +6,32 @@ story(auto_battle)
   // event positions, radii or rewards.
   onmessage("start")
   {
-    sendroomstorymessage("enter_parallel", getsceneid());
-    firemessage("report_pos");
+    // The grid id is sent by each per-scene story (it knows its own tile).
+    fire_message("report_pos");
   };
   onmessage("report_pos")
   {
-    $obj = getleaderid();
-    sendroomstorymessage("battle_pos", getpositionx($obj), getpositionz($obj));
+    $obj = get_leader_id();
+    send_room_story_message("battle_pos", get_position_x($obj), get_position_z($obj));
     wait(300);
-    firemessage("report_pos");
+    fire_message("report_pos");
   };
   onmessage("cast_explore")
   {
-    $obj = getleaderid();
-    objcastskill($obj, 100);
-    firemessage("push_tip_info", "正在调查周围…");
-    sendroomstorymessage("explore", getpositionx($obj), getpositionz($obj));
+    $obj = get_leader_id();
+    obj_cast_skill($obj, 100);
+    fire_message("push_tip_info", "正在调查周围…");
+    send_room_story_message("explore", get_position_x($obj), get_position_z($obj));
   };
   onmessage("explore_skill")
   {
-    firemessage("cast_explore");
+    fire_message("cast_explore");
   };
   // GM diagnostic path: simulate a player standing at the given spot.
   onmessage("cast_explore_at")params($x,$z)
   {
-    objcastskill(getleaderid(), 100);
-    sendroomstorymessage("battle_pos", $x, $z);
-    sendroomstorymessage("explore", $x, $z);
+    obj_cast_skill(get_leader_id(), 100);
+    send_room_story_message("battle_pos", $x, $z);
+    send_room_story_message("explore", $x, $z);
   };
 };

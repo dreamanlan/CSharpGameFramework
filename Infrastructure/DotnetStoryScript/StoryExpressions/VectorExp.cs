@@ -9,14 +9,14 @@ namespace DotnetStoryScript
     // ========== Vector Constructors ==========
 
     /// <summary>
-    /// vector2(x, y) - create Vector2
+    /// vector_2(x, y) - create Vector2
     /// </summary>
     internal sealed class Vector2Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: vector2(x, y)");
+                throw new Exception("Expected: vector_2(x, y)");
 
             float x = operands[0].GetFloat();
             float y = operands[1].GetFloat();
@@ -26,14 +26,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// vector3(x, y, z) - create Vector3
+    /// vector_3(x, y, z) - create Vector3
     /// </summary>
     internal sealed class Vector3Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
-                throw new Exception("Expected: vector3(x, y, z)");
+                throw new Exception("Expected: vector_3(x, y, z)");
 
             float x = operands[0].GetFloat();
             float y = operands[1].GetFloat();
@@ -44,14 +44,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// vector4(x, y, z, w) - create Vector4
+    /// vector_4(x, y, z, w) - create Vector4
     /// </summary>
     internal sealed class Vector4Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 4)
-                throw new Exception("Expected: vector4(x, y, z, w)");
+                throw new Exception("Expected: vector_4(x, y, z, w)");
 
             float x = operands[0].GetFloat();
             float y = operands[1].GetFloat();
@@ -137,14 +137,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// color32(r, g, b, a) - create Color32
+    /// color_32(r, g, b, a) - create Color32
     /// </summary>
     internal sealed class Color32Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 4)
-                throw new Exception("Expected: color32(r, g, b, a)");
+                throw new Exception("Expected: color_32(r, g, b, a)");
 
             byte r = (byte)operands[0].GetInt();
             byte g = (byte)operands[1].GetInt();
@@ -158,14 +158,14 @@ namespace DotnetStoryScript
     // ========== Integer Vectors ==========
 
     /// <summary>
-    /// vector2int(x, y) - create Vector2Int
+    /// vector_2_int(x, y) - create Vector2Int
     /// </summary>
     internal sealed class Vector2IntExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: vector2int(x, y)");
+                throw new Exception("Expected: vector_2_int(x, y)");
 
             int x = operands[0].GetInt();
             int y = operands[1].GetInt();
@@ -175,14 +175,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// vector3int(x, y, z) - create Vector3Int
+    /// vector_3_int(x, y, z) - create Vector3Int
     /// </summary>
     internal sealed class Vector3IntExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
-                throw new Exception("Expected: vector3int(x, y, z)");
+                throw new Exception("Expected: vector_3_int(x, y, z)");
 
             int x = operands[0].GetInt();
             int y = operands[1].GetInt();
@@ -195,14 +195,14 @@ namespace DotnetStoryScript
     // ========== Vector List Parsing ==========
 
     /// <summary>
-    /// vector2list(str_split_by_sep) - parse string into list of Vector2 (2 elements per vector)
+    /// vector_2_list(str_split_by_sep) - parse string into list of Vector2 (2 elements per vector)
     /// </summary>
     internal sealed class Vector2ListExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: vector2list(str_split_by_sep)");
+                throw new Exception("Expected: vector_2_list(str_split_by_sep)");
 
             string str = operands[0].ToString();
             var list = Converter.ConvertVector2DList(str);
@@ -211,14 +211,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// vector3list(str_split_by_sep) - parse string into list of Vector3 (3 elements per vector)
+    /// vector_3_list(str_split_by_sep) - parse string into list of Vector3 (3 elements per vector)
     /// </summary>
     internal sealed class Vector3ListExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: vector3list(str_split_by_sep)");
+                throw new Exception("Expected: vector_3_list(str_split_by_sep)");
 
             string str = operands[0].ToString();
             var list = Converter.ConvertVector3DList(str);
@@ -229,14 +229,14 @@ namespace DotnetStoryScript
     // ========== Vector Math ==========
 
     /// <summary>
-    /// vector2dist(pt1, pt2) - distance between two Vector2 points
+    /// vector_2_dist(pt1, pt2) - distance between two Vector2 points
     /// </summary>
     internal sealed class Vector2DistExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: vector2dist(pt1, pt2)");
+                throw new Exception("Expected: vector_2_dist(pt1, pt2)");
 
             Vector2Obj pt1Obj = operands[0];
             Vector2Obj pt2Obj = operands[1];
@@ -248,14 +248,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// vector3dist(pt1, pt2) - distance between two Vector3 points
+    /// vector_3_dist(pt1, pt2) - distance between two Vector3 points
     /// </summary>
     internal sealed class Vector3DistExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: vector3dist(pt1, pt2)");
+                throw new Exception("Expected: vector_3_dist(pt1, pt2)");
 
             Vector3Obj pt1Obj = operands[0];
             Vector3Obj pt2Obj = operands[1];
@@ -267,14 +267,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// vector2to3(pt) - convert Vector2(x,y) to Vector3(x, 0, y)
+    /// vector_2_to_3(pt) - convert Vector2(x,y) to Vector3(x, 0, y)
     /// </summary>
     internal sealed class Vector2To3Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: vector2to3(pt)");
+                throw new Exception("Expected: vector_2_to_3(pt)");
 
             Vector2Obj ptObj = operands[0];
             Vector2 pt = ptObj;
@@ -284,14 +284,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// vector3to2(pt) - convert Vector3(x,y,z) to Vector2(x, y)
+    /// vector_3_to_2(pt) - convert Vector3(x,y,z) to Vector2(x, y)
     /// </summary>
     internal sealed class Vector3To2Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: vector3to2(pt)");
+                throw new Exception("Expected: vector_3_to_2(pt)");
 
             Vector3Obj ptObj = operands[0];
             Vector3 pt = ptObj;
@@ -308,14 +308,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// rndvector3(pt, radius) - random Vector3 offset within radius (horizontal plane)
+    /// rnd_vector_3(pt, radius) - random Vector3 offset within radius (horizontal plane)
     /// </summary>
     internal sealed class RndVector3Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: rndvector3(pt, radius)");
+                throw new Exception("Expected: rnd_vector_3(pt, radius)");
 
             Vector3Obj ptObj = operands[0];
             Vector3 pt = ptObj;
@@ -331,14 +331,14 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// rndvector2(pt, radius) - random Vector2 offset within radius
+    /// rnd_vector_2(pt, radius) - random Vector2 offset within radius
     /// </summary>
     internal sealed class RndVector2Exp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: rndvector2(pt, radius)");
+                throw new Exception("Expected: rnd_vector_2(pt, radius)");
 
             Vector2Obj ptObj = operands[0];
             Vector2 pt = ptObj;

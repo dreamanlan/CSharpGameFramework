@@ -36,8 +36,8 @@ public class InplaceSkillInfo : MonoBehaviour
                 args.Add(actor.skill0);
             if (actor.skill1 > 0)
                 args.Add(actor.skill1);
-            if (actor.skill2 > 0)
-                args.Add(actor.skill2);
+            if (actor.skill_2 > 0)
+                args.Add(actor.skill_2);
             if (actor.skill3 > 0)
                 args.Add(actor.skill3);
             if (actor.skill4 > 0)

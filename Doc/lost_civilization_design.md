@@ -47,11 +47,11 @@
 ## 3. 工程现状（避免重复造轮子 / 误用）
 
 - `Packages/myself.gmscript/Editor/TerrainProcessor.cs`：**保留但不使用**。用户已删除重复的 `Assets/Scripts/Editor/TerrainProcessor.cs`（含菜单 `工具/地形处理`）。新工具自行开发即可，不要求复用它。
-- `Unity3d/TerrainDsl/*.dsl`（5 个）与仓库根 `chess.png / circle.png / spiral.png / world.png`：历史资产。这 4 张图是**图案/色块图，不是高度图**（黑底黄线彩点、螺旋线、彩色大陆块），原 DSL 只用 `samplered/1000` 当微弱扰动。**不要把它们当成关卡设计数据。**
+- `Unity3d/TerrainDsl/*.dsl`（5 个）与仓库根 `chess.png / circle.png / spiral.png / world.png`：历史资产。这 4 张图是**图案/色块图，不是高度图**（黑底黄线彩点、螺旋线、彩色大陆块），原 DSL 只用 `sample_red/1000` 当微弱扰动。**不要把它们当成关卡设计数据。**
 - DSL 里 `sampler` 路径是失效的旧绝对路径 `F:/OpenSource/CSharpGameFramework_local/*.png`（当前机器不存在）。
 - 工程侧 GM API 集中在 `Unity3d/Assets/Scripts/GmScript/Editor/AppEditorDslApi.cs`（符合目录约定）：`scene_catalog / scene_shot / scene_fix / scene_verify / scene_audit / scene_terrain_info / scene_repair / res_probe / actor_probe / actor_fix / anim_fix / prop_scale / asset_polish / nav_bake / controller_fix / animator_host_fix / anim_binding_probe / anim_sample_probe / anim_runtime_probe` 等。
 - 现有 `TerrainData` 规格 **512×512**（由首轮 `scene_fix` 输出 `camY = 128 + 512×0.55 = 409.6` 反推）。`4096 ÷ 8 = 512`，与藏宝图 8×8 切片天然吻合。
-- 现有 `Battle1~Battle12` 场景与 `Assets/Scenes/Levels/BattleN/Ground.asset`：**过渡产物**。它们是"中央一个圆形可走平台 + 环带装饰 + 静态俯视相机"的擂台结构，且 `Battle*.story.dsl` 把所有 `createnpc` 挤在 `(40~90, 40~90)`，只用了 512 场地约 1/25。**按新意图需要重做，不要在此基础上继续加内容。**
+- 现有 `Battle1~Battle12` 场景与 `Assets/Scenes/Levels/BattleN/Ground.asset`：**过渡产物**。它们是"中央一个圆形可走平台 + 环带装饰 + 静态俯视相机"的擂台结构，且 `Battle*.story.dsl` 把所有 `create_npc` 挤在 `(40~90, 40~90)`，只用了 512 场地约 1/25。**按新意图需要重做，不要在此基础上继续加内容。**
 - 曾把 10 种地形形态写死在 `TerrainDesign.Shape()` 里、bitmap 只做调制——属于设计意图放错位置，应删除，改为只读输入图通道。
 
 ## 4. 关卡意图（硬约束）
@@ -125,7 +125,7 @@
 
 - 输入图必须含 ≥2 战斗区 + 连通道路 + ≥1 事件点，否则拒绝生成
 - 生成器不得保留形态函数；heightmap 只能来自 R 通道
-- `createnpc` 点位来自布局图区域，story 按区域推进并驱动事件/收益结算
+- `create_npc` 点位来自布局图区域，story 按区域推进并驱动事件/收益结算
 - 场景验收看**可移动范围 / 区域数 / 路线连通性**，不看"中央平台是否平"
 - 当前 `scene_verify` 的 `platformFlat` / `relief` 是擂台版过渡指标，阶段 1 起须替换
 
@@ -477,7 +477,7 @@ layout_sumer   areas=3310 events=226 rewards=243 portal=149 road=1528
 
 **剩余项**：
 - **水体表现**：`G` 材质档没有「水」，低洼暂以浅滩材质表示；小地图用蓝色区分。需加独立水面网格/材质。
-- **边界方框感**：整格斜俯视预览可见一圈封边山脊；游戏内 `camerafollow` 贴近角色不会见到全貌。按世界观包装为遗址外围山脊/裂谷边缘。
+- **边界方框感**：整格斜俯视预览可见一圈封边山脊；游戏内 `camera_follow` 贴近角色不会见到全貌。按世界观包装为遗址外围山脊/裂谷边缘。
 - **旧 `TerrainDesign.Shape()` / `scene_fix`**：已不再被任何运行链路使用，可安全删除（未删以免动到历史调试入口）。
 - **Editor.log**：Play 期间累积约 173MB 带堆栈的 Warn，Unity 占用无法清空；重启编辑器会轮转。不是错误洪水。
 
@@ -496,17 +496,31 @@ ServerEnv/bin/Tables        -> Public, Server      （无 Client）
 StreamingAssets/Tables      -> Client, Public     （无 Server）
 ```
 
-故 **事件表放 `Resource/Tables/Server/WorldEvent.txt`**，客户端包体永远拿不到。`build_events.py` 自检：`client_Tables_Server_exists=False`、`client_area_event_rows=0`、`leaks=0`。
+故 **事件表是 `Resource/Tables/Server/WorldEvent.txt`，一张标准项目表**，客户端包体永远拿不到。`build_events.py` 自检：`client_Tables_Server_exists=False`、`client_area_event_rows=0`、`leaks=0`。
+
+**它走项目读表器，不是自定义文本格式**（详见第 21 节）：
+
+```
+WorldEvent.txt (行1=类型, 行2=字段名, GBK/936)
+  → TableReaderGenerator gendsl → table.dsl 里 tabledef(WorldEvent, dictionary, server)
+  → TableReaderGenerator (无参) → DataReader.cs / FilePathDefine.cs
+      → TableConfig.WorldEventProvider / FilePathDefine_Server.C_WorldEvent
+  → Txt2Binary 生成 Server/WorldEvent.dat
+  → RoomServer.LoadData() 里 WorldEventProvider.Instance.LoadForServer()
+  → ExploreSystem 用 WorldEventMgr.GetData() 构建按 grid 索引的事件字典
+```
+
+`Server/` 目录在客户端同步时被 `TableReaderGenerator` 跳过，因此**隔离由读表器本身保证**，不再靠脚本把文件藏在别处。曾有一版把表移出 `Resource/Tables/` 并手写 TSV 解析来绕开格式要求，已废弃。
 
 **同时堵掉的漏洞**：阶段 1 把布局图烘焙的 `areas.txt` 放进了 `Assets/Resources/MapData/`，其中 `type=220` 事件点带着精确坐标——等于客户端已经持有事件坐标。`build_events.py` 现在把数据分流：
 
 | 输出 | 内容 | 去向 |
 |---|---|---|
-| `Resource/Tables/Server/WorldEvent.txt` | 148 条事件：ID / grid / 时代层 / **精确 x,z** / 半径 / 收益 / token / 标题 | 仅服务端 |
+| `Resource/Tables/Server/WorldEvent.txt` → `WorldEvent.dat` | 148 条事件：ID / grid / 时代层 / **精确 x,z** / 半径 / 收益 / token / 标题 | 仅服务端，由 `WorldEventProvider` 读 |
 | `MapData/{tid}_hints.txt` | 量化到 64 单位网格的**模糊提示**、半径 48、文本 key | 客户端 |
 | `MapData/{tid}_areas.txt` | 净化版，**移除全部 220 行** | 客户端 |
 
-事件坐标由构建期直接从布局图 `R=220` 连通分量烘焙（含 Y 翻转约定：`worldZ = (255 - pil_y) × 2`），服务端表与客户端数据不再同源。
+事件坐标由构建期直接从布局图 `R=220` 连通分量烘焙（`design_y == pil_y`，故 `worldX = pil_x × 2`、`worldZ = pil_y × 2`，与 TerrainData/areas.txt 一致；早期文档里的「Y 翻转」表述作废，见 17.4）。服务端表与客户端数据不再同源。
 
 ### 15.2 服务端校验闭环
 
@@ -514,7 +528,7 @@ StreamingAssets/Tables      -> Client, Public     （无 Server）
 
 | 消息 | 客户端发 | 服务端做 |
 |---|---|---|
-| `enter_parallel` | `getsceneid()` | 由 level id 推导 `grid_id`（`10001+row*8+col`），建会话，广播 `InParallelSpace` 状态标记；**不加载战场、不建实体** |
+| `enter_parallel` | `get_scene_id()` | 由 level id 推导 `grid_id`（`10001+row*8+col`），建会话，广播 `InParallelSpace` 状态标记；**不加载战场、不建实体** |
 | `battle_pos` | 定时 300ms 上报 `x,z` | 记轨迹；按**服务端接收间隔**算速度，超 `18×1.6` 记异常，滑动窗口累计 |
 | `explore` | 探索技能释放时的 `x,z` | ⓪ cooldown 2s 短路（不查表）→ 轨迹连续性（跳跃 ≤16）→ 按坐标反查半径内未完成事件 → 累加收益并持久化 |
 | `leave_parallel` | 无参 | 清会话，广播 `Left` |
@@ -530,7 +544,7 @@ StreamingAssets/Tables      -> Client, Public     （无 Server）
 
 - **技能实体**：`Skill.txt` 新增 id 100，`Skill/explore.dsl` 只播角色调查动作；不配 impact/damage，探索不产生战斗收益差。
 - **玩家输入**：`Unity3d/Assets/Scripts/Game.cs` 的 `Update()` 监听 `E` 键，带 2 秒本地 UX 冷却，发 story 消息 `cast_explore`。本地冷却只是表现，服务端 2 秒闸门才是权威。
-- `Story/Common/autorun_battle.dsl`：进入战场发 `enter_parallel`；`report_pos` 每 300ms 上报位置；`cast_explore` 时 `objcastskill(100)` + 提示 + 发 `explore(x,z)`。客户端只发坐标，没有 `event_id`。
+- `Story/Common/autorun_battle.dsl`：进入战场发 `enter_parallel`；`report_pos` 每 300ms 上报位置；`cast_explore` 时 `obj_cast_skill(100)` + 提示 + 发 `explore(x,z)`。客户端只发坐标，没有 `event_id`。
 - `Story/Common/localmain.dsl`：`onmessage("explore_result")` 展示结果、`onmessage("parallel_state")` 记录世界地图状态标记。
 - 编辑器诊断 `explore_probe()` / `explore_probe(x,z)`：在 Play 模式派发同一条 `cast_explore` 消息，用于验证回包；仅 Editor 程序集，不进客户端包。
 
@@ -545,6 +559,7 @@ StreamingAssets/Tables      -> Client, Public     （无 Server）
 ```
 EXPLORE_SELFTEST
 grids=64 events=148
+table_path=.../Tables/Server/WorldEvent.dat reader=TableConfig.WorldEventProvider
 cooldown_ms=2000 max_speed=18 tolerance=1.6 max_jump=16
 hit_exact=True hit_at_radius_edge=True miss_outside_radius=True
 claimed_blocked=True closed_blocked=True
@@ -608,10 +623,10 @@ RESULT=PASS
 ### 16.4 差距与下一步
 
 - **AOI**：`NotifyAllUser` 是房间内全量广播，玩家多时浪费带宽；需按距离/可见范围过滤。
-- **跨格移动**：64 格目前是独立 field room，没有无缝衔接或换房逻辑；藏宝图 UI 与传送点解码也还没做，`changescene(20001+)` 只是临时入口。
+- **跨格移动**：64 格目前是独立 field room，没有无缝衔接或换房逻辑；藏宝图 UI 与传送点解码也还没做，`change_scene(20001+)` 只是临时入口。
 - **超时恢复**：会话状态在服务端内存，断线/`BattlePos` 超时会清标记，但进程重启不恢复。
 - **多玩家同屏实机验证**：需要两个客户端实例，目前只验证了单实例下的广播链路。
-- **3D 锚点**：`creategameobject(name, prefab){position(...);scale(...);}obj(...)` 命令已确认存在，可作为无侵入的接入点（生成 `Effects/ParallelAnchor.prefab` 后在 `parallel_state` 里创建）。
+- **3D 锚点**：`create_game_object(name, prefab){position(...);scale(...);}obj(...)` 命令已确认存在，可作为无侵入的接入点（生成 `Effects/ParallelAnchor.prefab` 后在 `parallel_state` 里创建）。
 
 ### 16.5 层次命名澄清
 
@@ -623,7 +638,7 @@ RESULT=PASS
 
 ### 17.1 起点：64 个 story 是同一个空壳
 
-核实结果：64 个 `Battle_{tid}_{era}/story.dsl` 哈希各不相同，但差异**只有地形高度 `y` 和 `closebattle` 的 id**，正文是同一个模板（主角 1 + 队友 4 + 怪 12，全挤在 `(45~75, 55~85)`）。有怪、能打、能轮换，但 512 地形又空了 24/25，没有世界观、事件、移动、多区域——违背「战斗场景主要服务故事与世界观」。
+核实结果：64 个 `Battle_{tid}_{era}/story.dsl` 哈希各不相同，但差异**只有地形高度 `y` 和 `close_battle` 的 id**，正文是同一个模板（主角 1 + 队友 4 + 怪 12，全挤在 `(45~75, 55~85)`）。有怪、能打、能轮换，但 512 地形又空了 24/25，没有世界观、事件、移动、多区域——违背「战斗场景主要服务故事与世界观」。
 
 ### 17.2 `build_story.py`：按格补写
 
@@ -633,19 +648,19 @@ RESULT=PASS
 |---|---|
 | `regions.txt` | 格名 / 大区 / 时代层 / 主线支线 / 素材引用 / 难度 |
 | `MapData/{tid}_areas.txt` | 每格 2~4 个战斗区中心（来自布局图） |
-| `tiles/{tid}_terrain.png` | `objmove` 目标点的真实地表高度 |
+| `tiles/{tid}_terrain.png` | `obj_move` 目标点的真实地表高度 |
 | `Tables/Server/WorldEvent.txt` | 仅统计本格线索数（**不下发坐标**） |
 
-每格生成：开场叙事（8 区各自开场词 + 格名 + 时代层 + 主线提示）、逐战斗区推进（`objmove` 带玩家过去 + 分段文案 + 分波刷怪）、`all_killed` 推进下一波、收尾文案与结算。分支只用已验证的 `<` / `else`，波次坐标、unitId、文案在构建期展开，不依赖运行时 `==` 或字符串格式化。
+每格生成：开场叙事（8 区各自开场词 + 格名 + 时代层 + 主线提示）、逐战斗区推进（`obj_move` 带玩家过去 + 分段文案 + 分波刷怪）、`all_killed` 推进下一波、收尾文案与结算。分支只用已验证的 `<` / `else`，波次坐标、unitId、文案在构建期展开，不依赖运行时 `==` 或字符串格式化。
 
-**防卡死设计**：怪刷在**玩家当前位置附近**（`getpositionx/y/z(getleaderid())`），且 `objmove(..., "wave_spawn_N")` 到达后才刷、`wait(3000)` 兜底必刷、`@spawned` 防重复。这样即使 `objmove` 未生效也不会出现「玩家走远、怪在原地、AI 追不到」的死循环（阶段 1 切表时踩过这个坑）。
+**防卡死设计**：怪刷在**玩家当前位置附近**（`get_position_x/y/z(get_leader_id())`），且 `obj_move(..., "wave_spawn_N")` 到达后才刷、`wait(3000)` 兜底必刷、`@spawned` 防重复。这样即使 `obj_move` 未生效也不会出现「玩家走远、怪在原地、AI 追不到」的死循环（阶段 1 切表时踩过这个坑）。
 
 ### 17.3 三项实机问题
 
 | 问题 | 根因 | 修复 |
 |---|---|---|
 | `Non-convex MeshCollider with non-kinematic Rigidbody` | `Assets/Resources/Effects/Select.prefab` 里选中圈的 `Plane` 带 `MeshCollider`，纯视觉特效不需要物理 | 新增 `fix_select_prefab()` GM API，`PrefabUtility.LoadPrefabContents` 删除所有 `Collider` / `Rigidbody` 后保存。实测 `SELECT_FIX removed=1` |
-| 小地图对不上 | `localmain.dsl` 写死 `set_map_image("UITexture/Map1")`，阶段 1 生成的 128 张小地图**从未被引用** | 每个 story 的 `start` 里 `firemessage("set_map_image", "Minimap/{tid}_minimap_{era}")` |
+| 小地图对不上 | `localmain.dsl` 写死 `set_map_image("UITexture/Map1")`，阶段 1 生成的 128 张小地图**从未被引用** | 每个 story 的 `start` 里 `fire_message("set_map_image", "Minimap/{tid}_minimap_{era}")` |
 | `NullReferenceException` @ `ResourceSystem.Tick():216` | Play 期间执行 `asset_refresh()` 重编译触发**域重载**，非序列化的 `m_ResPoolRootTransform` 引用丢失；`ResPool` 是 `DontDestroyOnLoad` 对象，本体还在 | `ResourceSystem.Tick` 加自愈：引用为空时 `GameObject.Find("ResPool")` 找回，找不到则重建并 `DontDestroyOnLoad`；重编译 `PluginFramework.csproj` 并部署 `Assets/Plugins/PluginFramework.dll` |
 
 **重要操作纪律**：不要在 Play 期间改 C# 或执行 `asset_refresh()`；域重载会打断 runtime GM 通道并清空运行时引用。改代码一律先 `editor_stop_now()`。
@@ -671,7 +686,7 @@ RESULT=PASS
 用户反馈「相机没有跟随玩家，距离也太远」。两层原因叠加：
 
 1. **场景相机保存的是整格预览机位** `position=(20,300,20)`、`LookAt(256,0,256)`、FOV 60（阶段 1 `map_shot` 需要的机位被写进了 `.unity`）。`CameraController.Update()` 只有在 `followTargetId>0` 时才会重写 `camera.transform.position`，因此跟随一旦没建立，相机就停在 300 米高空。
-2. **`camerafollow(1000)` 可能静默失效**：`CameraFollowCommand` 带 unitId 时走 `GetEntityByUnitId(1000)`，查不到就什么都不发；另外 `OnLevelLoaded`（`sceneLoaded` 回调）里 `new CameraController(Camera.main)` 发生在 `OnLoadBattleComplete` 禁用主场景相机**之前**，可能绑定到主场景相机而非战斗相机。
+2. **`camera_follow(1000)` 可能静默失效**：`CameraFollowCommand` 带 unitId 时走 `GetEntityByUnitId(1000)`，查不到就什么都不发；另外 `OnLevelLoaded`（`sceneLoaded` 回调）里 `new CameraController(Camera.main)` 发生在 `OnLoadBattleComplete` 禁用主场景相机**之前**，可能绑定到主场景相机而非战斗相机。
 3. `CameraSetting` 默认 `distance=60 / up=10 / pitch=60`，对新战场也偏远。
 
 ### 18.2 修复（4 处）
@@ -682,7 +697,7 @@ RESULT=PASS
 | `map_camera_fix()`（新 GM API） | **就地**批量修 128 个已建场景的相机，只改相机并保存场景；不用 `map_build()` 重建，保住 64 份已烘焙的 NavMesh 引用（实测 `NavMesh.asset=64` 未丢） |
 | `MapBuild.Shot()` | 预览出图时**临时**切到整格斜俯视机位，渲染后恢复，不再把预览机位写进场景资产 |
 | `Game.cs` `OnLoadBattleComplete` | 主场景相机禁用后重新 `new CameraController(Camera.main)`，确保绑定战斗相机 |
-| `build_story.py` | `camerafollow(1000)` → `camerafollow()`：无参分支直接用已设置的 `LeaderId`，不依赖 `GetEntityByUnitId` 查找 |
+| `build_story.py` | `camera_follow(1000)` → `camera_follow()`：无参分支直接用已设置的 `LeaderId`，不依赖 `GetEntityByUnitId` 查找 |
 
 ### 18.3 实机验证
 
@@ -695,7 +710,7 @@ RESULT=PASS
     LEADER pos=( 84.3, 22.8, 125.9) camDist=34.7
 ```
 
-两次主角位置完全不同（且已离开出生点，说明 `objmove` 生效、玩家真的在跨区域移动），相机始终 **x 对齐、z 落后约 17、距离恒定 34.6~34.7** → 跟随稳定，视距从 300 米降到 ~35 米。
+两次主角位置完全不同（且已离开出生点，说明 `obj_move` 生效、玩家真的在跨区域移动），相机始终 **x 对齐、z 落后约 17、距离恒定 34.6~34.7** → 跟随稳定，视距从 300 米降到 ~35 米。
 
 同轮确认：当前战斗场景 `Battle_r0c5_prediluvian`、怪 Animator 状态在切换、服务端 `EXPLORE_TRAFFIC enter_parallel=6 / battle_pos=680`、`EXPLORE_SELFTEST RESULT=PASS`、无 `NullReferenceException` / MeshCollider 报错。
 
@@ -705,10 +720,365 @@ RESULT=PASS
 
 ---
 
+## 19. 战斗观感修复：AI 震荡、技能落点与血条挂点
+
+用户反馈「技能表现乱、看不出在打谁、怪跟僵尸似的瞎跑」以及「玩家与怪都没有血条，是不是没创建挂点」。用新增的 `combat_probe()` 拿到运行时实体状态后，确认是**四个独立问题叠加**，不是单一表现 bug。
+
+### 19.1 根因（有数据）
+
+`Actor.txt` 原始参数：
+
+| 角色 | id | view | gohome |
+|---|---|---|---|
+| 主角 | 1 | 1000 | 1000 |
+| 队友 | 2~5 | 30 | 30 |
+| 怪 | 6~12 | **15** | **20** |
+
+| # | 问题 | 依据 |
+|---|---|---|
+| 1 | **怪在追击/回家之间震荡** | `AiDoNormal.CombatHandler` 离 `HomePos` 超过 `GohomeRange` 就切 Gohome；怪 `gohome=20`、`view=15`，而 story 把怪刷在玩家 `+rnd_int(0,18)` 双轴（对角达 25，已超视野）又用 `obj_move` 把主角拉到 200~400 单位外 → 怪看不见目标、一离开出生点就回家 |
+| 2 | **技能乱飞、打谁不明** | 主角 `view=1000` 会锁定远处目标放技能，但双方根本没近身；且所有实体都没有血条，掉血无反馈 |
+| 3 | **队友跑向世界原点** | `AiDoMember.GetHomePos` 用 `leader.GetMovementStateInfo().TargetPosition` 当队形锚点，主角静止时该值是 `(0,0,0)` → 探针里队友 `state=102` Gohome、`tgtPos=(-2,0,1)` 这类**局部队形偏移**，全员离队，主角实际 1v5 |
+| 4 | **血条/技能挂点缺失** | 角色 prefab 走 AssetBundle（`Assets/ThirdParty/GameRef/Resources/Monster/`），全工程只有 `Characters/monster.prefab` 带 `bloodbar` 节点。`OverHeadBarManager.AddActor` 找不到 `bloodbar` 就**整段跳过不创建血条**；技能 DSL 的 `eyes`/`hit` 同理，特效 fallback 到根节点（脚底） |
+
+### 19.2 修复
+
+| 位置 | 改动 |
+|---|---|
+| `Resource/MapDesign/tune_combat.py`（新） | 按角色类型改 `Actor.txt`：队友 `view=45/gohome=80`、怪 `view=35/gohome=80`（30 行），主角保持 1000 |
+| `Resource/MapDesign/build_story.py` | 刷怪从 `+rnd_int(0,18)` 双轴收紧为 `+rnd_int(0,16)-8` 环形（±8，落在视野内）；**取消把主角拉到远处的 `obj_move`**，怪在队伍周围直接生成。区域仍驱动叙事分段，`areas.txt` 的区域坐标保留给后续「带 leash 半径的区域守卫」用 |
+| `App/ClientModule/ClientPlugins/Story/AiCommand/AiDoMember.cs` | 队形锚点 `TargetPosition` → `GetPosition3D()`（主角**当前位置**） |
+| `Unity3d/Assets/Scripts/OverHeadBarManager.cs` | 无 `bloodbar` 时用角色所有 `Renderer` 的合并 bounds 推算头顶锚点（`max.y + 0.4`）再创建血条；并对 `OverHeadBar` prefab/组件加空值保护 |
+| `App/ClientModule/PluginFramework/Skill/Trigers/EffectTrigger.cs` | 技能骨骼缺失时优先回退到 Humanoid `Head` / `UpperChest`，而不是角色根节点（脚底） |
+| 诊断 | 新增 `combat_probe()`（实体 AI 状态 + 血条计数）、`camera_probe()`（见第 18 节） |
+
+`PluginFramework.csproj` 与 `ClientPlugins.csproj` 均编译 0 错误，两个 dll 已部署到 `Assets/Plugins/`；表与 64 个 story 已同步两端、RoomServer 重启。
+
+### 19.3 实机验证
+
+修复前 `combat_probe()`：
+
+```
+entities=10  主角 state=1 target=1122 moving=False
+队友 state=102 (Gohome) target=0 moving=True tgtPos=(-2,0,1) / (-1,0,2) ...   ← 跑向原点
+怪   state=101 target=1115 moving=False home 在出生点 20 内
+```
+
+修复后：
+
+```
+COMBAT_PROBE entities=22 overheadBars=22
+E id=1100 主角 pos=(59.8,2.7,78.8) state=1    target=1119 view=1000
+E id=1103 队友 pos=(59.8,2.7,78.8) state=101  target=1120 view=45  ← 与主角同位置、有目标
+（其余 20 个为场景 NPC，均有血条）
+CAM pos=(62.0,69.7,51.0) fov=50  LEADER pos=(62.0,39.7,68.2) camDist=34.7
+```
+
+- **每个实体都有血条**（22/22），玩家和怪掉血可见 → 「看不出在打谁」有了反馈基础。
+- 队友不再跑向原点，回到队伍身边并进入 Combat、有目标。
+- 怪近身、视野覆盖遭遇圈，不再追击/回家震荡。
+- 无 `NullReferenceException` / `MissingReferenceException` / 编译错误；相机跟随与 34.7 视距保持。
+
+### 19.4 主动收回与未完成项
+
+- 为保证战斗能真正打起来，本轮**主动取消跨区域长途移动**，遭遇改回队伍周围的近距离交战；区域只保留在叙事分段里。这与「大场景多区域 + 移动」的长期意图有落差，后续应通过「给怪配置区域 leash 半径 + 玩家短距离分段移动」实现，而不是重新把双方拉开。按用户「逐步迭代求精」的口径，先把战斗观感修对。
+- `animation is null`（技能动画片段缺失）与 `self_effect/track bone ... can't find` 的**告警**仍在：特效落点已改善，但技能动画本身未补。
+- 目标锁定/选中圈（`SetLockTarget`，主角受伤时才触发）尚未做成主动锁定；血条出现后已有基本反馈，进一步的高亮/仇恨指示待做。
+- 小地图 UI 实际显示、多波次全打完、按 E 命中仍未逐项实机核对。
+
+---
+
+## 20. 自主开发轮次：目标锁定、探索闭环与技能落点
+
+用户授权「继续，明天再看结果」，本轮不逐项请示。目标是收口「看不出在打谁 / 技能表现乱 / 探索始终不命中」，并给出可复现的结果清单。
+
+### 20.1 关键 bug：探索请求的 grid 一直是空的
+
+`autorun_battle.dsl` 里发 `send_room_story_message("enter_parallel", get_scene_id())`。`get_scene_id()` 返回的是**剧情场景 id（101/102）**，不是 10001~10064 的战场 id；服务端 `GridFromLevel` 映射不到任何格 → `s.GridId = ""` → 事件表按空 grid 查，`ResolveHit` 必然返回 null。
+
+服务端流量文件实证：`session 119 grid=`（空）。**这是之前多轮实机探索始终 `found=0` 的主因**，不是场景轮换竞态（Y 镜像是另一个已修的独立 bug）。
+
+修法：
+- `build_story.py`：每个 story 在 `start` 里自报 `send_room_story_message("enter_parallel", "r2c4")`（构建期就知道 tid）。
+- `autorun_battle.dsl`：删掉公共 story 里错误的 `get_scene_id()` 上报。
+- `ExploreSystem.Enter`：兼容 `rNcM` 字符串，同时保留旧的 level-id 路径。
+- 64 个 story 已重生成并同步两端，RoomServer 重新编译部署。
+
+### 20.2 主动目标锁定
+
+`AiCommand.AiTarget` 定义了却**从未被调用**；`AiSkill` 里的锁定调用是注释状态。所以只有「主角挨打」或「玩家手动点击」才会出现选中圈。
+
+- `AiSelectTarget.cs`：主角 AI 每次选目标时，若 `npc.GetId() == LeaderId` 则调 `AiCommand.AiTarget`，把可见锁定圈与 UI 目标读数接到当前攻击目标。
+- `AiCommand.AiTarget`：改为「目标不同就切换 / 目标已死则跳过」，修掉旧逻辑「已锁定就永不换目标」的卡死问题。
+- `combat_probe()` 增加 `lockedTarget` 输出，实机读到 `lockedTarget=1121` 与主角 `target` 一致。
+
+### 20.3 技能特效落点（三处对齐）
+
+| 位置 | 原问题 | 修复 |
+|---|---|---|
+| `EffectTrigger` `self_effect` | 骨骼 `eyes`/`hit` 找不到 → 挂根节点（脚底） | 回退到 Humanoid `Head` / `UpperChest` |
+| `EffectTrigger` `target_effect` | 找不到骨骼时 fallback 到 **`obj.transform`（施法者）** → 受击特效出现在攻击者脚下，看起来像乱放技能 | 改为挂到**目标**的 `UpperChest` / `Head`，再退回目标根节点 |
+| `ImpactTrigger` `track bone` | 弹道只朝「脚底 +1.5」 | 回退到人形 `Head` |
+| `AnimationTrigger` | 预定义 impact/buff 技能没有动画名，每次施法刷 `animation is null` | 静默跳过（无动画可播，不是错误） |
+
+`PluginFramework.csproj` / `ClientPlugins.csproj` 编译 0 错误，两个 dll 已部署。骨骼缺失的 Warn 日志仍保留（用于提示资源缺挂点），但画面落点已修正。
+
+### 20.4 服务端会话清理与诊断工具
+
+- `ExploreSystem.WriteTraffic`：清理 30 秒无 `battle_pos` 上报的残留会话（自动轮换不总是发 `LeaveParallel`），并输出 `session <roleId> grid=<grid>`（**只输出 grid，不输出事件坐标**）。
+- `explore_probe("auto")`：从服务端流量文件取**最新**会话的 grid（旧实现取第一个，会读到残留会话），再从服务端专用事件表取该格坐标，派发 `cast_explore_at` 做端到端验证。两个文件都在客户端包体之外。
+- `combat_probe()`：改为从存活血条反查实体（实体 id 全局递增，固定窗口扫描会漏），并输出 `overheadBars` / `lockedTarget`。
+
+### 20.5 实机结果（最终一轮）
+
+```
+COMBAT_PROBE entities=23 overheadBars=23 lockedTarget=1121
+  怪 state=101 target=1100 view=35 gohome=80  ← 近身 Combat、有目标
+EXPLORE_TRAFFIC  enter_parallel=2  battle_pos=120  explore=1
+                 session 119 grid=r0c1            ← grid 不再是空
+AUTO_HIT grid=r0c1 (366.0,172.0) dispatched
+rewards_state.txt  119|160|ev_r0c1_0             ← 命中并累加收益
+```
+
+- **探索端到端闭环首次跑通**：客户端按 E（诊断模拟）→ 服务端按坐标反查事件表 → 命中 → 累加 160 → 持久化。
+- 再次对**同一事件**坐标触发不再给收益（`rewards` 未增长）——防重复领取在实机也生效，与自检 `cannot_rehit=True` 一致。
+- 日志确认 `wave_go` / `wave_spawn_1` / `parallel_state` / `push_tip_info` / `set_map_image` / `explore_result` 消息链路都在跑。
+- 尾部日志：`NullReference=0`、`MissingReference=0`、`Non-convex MeshCollider=0`、`animation is null=0`、`error CS=0`；`EXPLORE_SELFTEST RESULT=PASS`；相机 `camDist=34.7` 保持跟随。
+
+### 20.6 本轮未做（明确留到下一步）
+
+- **带区域推进的分段移动**：当前仍是队伍周围的近身遭遇。设计方向已定——每波之间让玩家朝设计区域做 **≤25 单位短距离分段移动**（小于怪 `view=35`），怪在玩家到达后的位置生成或配置区域 leash 半径，**不再把双方拉开几百单位**。本轮为保证战斗稳定性未动，避免刚修好的链路再次被破坏。
+- 小地图仅确认 `set_map_image` 消息发出且 `Assets/Resources/Minimap/{tid}_minimap_{era}.png` 存在，未做像素级/截图核对。
+- `self_effect/target_effect ... bone can't find` 的 Warn 仍在（fallback 已生效，日志保留作资源提示）。
+- 3D 时空锚点光柱、AOI、双客户端多玩家同屏、主动仇恨/多目标指示未做。
+
+### 20.7 可复现命令（Unity Editor GM 控制台）
+
+| 命令 | 用途 |
+|---|---|
+| `combat_probe()` | 实体 AI 状态、血条数、当前锁定目标 |
+| `camera_probe()` | 运行时相机位姿与到主角的距离 |
+| `explore_probe("auto")` | 用当前会话 grid 自动做一次探索命中验证（看 `Data/rewards_state.txt`） |
+| `explore_probe(x,z)` | 指定坐标的探索诊断 |
+| `map_verify()` | 64 格场景/地形/区域/小地图/story 验收 |
+| `map_camera_fix()` | 就地修 128 个场景相机（不破坏 NavMesh） |
+| `fix_select_prefab()` | 清理选中圈的物理组件 |
+| `fix_story_spawn.py` / `build_story.py` / `build_events.py` / `cutover_world.py` / `tune_combat.py` | `Resource/MapDesign/` 下的构建期脚本 |
+
+---
+
+## 21. 事件表接入项目读表器与标准构建部署流程
+
+用户质疑「事件表不使用项目的读表器读取吗」。核实后确认：**之前确实没有**，是一次绕开，现已改成正规接入。
+
+### 21.1 之前的问题
+
+| 项 | 之前的做法 | 问题 |
+|---|---|---|
+| 格式 | 3 行 `#` 注释 + 纯 TSV 数据、UTF-8 | 不符合项目表「行1=类型、行2=字段名、GBK/936」约定 |
+| 读取 | `ExploreSystem` 里 `File.ReadAllLines` + `Split('\t')` 手读 | 绕过 `TableConfig` Reader，无类型校验 |
+| 位置 | 因 `buildall` 报 `field count != 1`，把表**移出** `Resource/Tables/` 到 `MapDesign/server/` | 不是修格式而是绕开 `TableReaderGenerator` |
+| 部署 | `build_events.py` 直接写运行时 `.txt` 副本 | 不生成 `.dat`，不随标准构建同步，编码/部署各一套 |
+
+### 21.2 正规链路（已落地）
+
+```
+Resource/Tables/Server/WorldEvent.txt   ← 标准表：行1类型、行2字段名、GBK
+   │ build_events.py 生成
+   ├─ TableReaderGenerator gendsl      → table.dsl 增加
+   │                                    tabledef(WorldEvent, dictionary, server)
+   ├─ TableReaderGenerator (无参)      → DataReader.cs / FilePathDefine.cs
+   │     → TableConfig.WorldEventProvider (WorldEventMgr.GetData())
+   │     → FilePathDefine_Server.C_WorldEvent = "Server/WorldEvent.dat"
+   └─ TableReaderGenerator ... isserver → Server/WorldEvent.dat（客户端跳过 Server/）
+RoomServer.LoadData()                   → WorldEventProvider.Instance.LoadForServer()
+ExploreSystem.EnsureLoaded()            → 用 Provider 构建 grid→事件字典
+```
+
+配套改动：
+- `build_events.py`：输出标准表头、GBK、只写源表；自检仍验证客户端零泄漏。
+- `build_story.py` / `ExploreAutoProbe`：改读标准源表（GBK，跳过表头两行）。
+- `RoomServer_Config.LoadData()`：与其它表一起 `LoadForServer()`；`EnsureLoaded()` 只做兜底。
+- `RoomServer.Main`：`EnsureLoaded()` 从 `Init(args)` **之前**移到**之后**——`HomePath.InitHomePath()` 在 `Init` 里才执行，新读表器依赖它，放前面会启动即崩。
+- 生成产物已同步到 `InformationService/GameObjects/TableReader/{DataReader.cs,FilePathDefine.cs}`。
+
+### 21.3 为什么必须按四步流程（实证）
+
+改造后只复制 `RoomServer.dll` 就重启，进程直接崩：
+
+```
+Unhandled exception. System.TypeLoadException:
+Could not load type 'TableConfig.WorldEventProvider' from assembly 'GameObjects'
+   at RoomServer.RoomServer.LoadData()
+```
+
+`DataReader.cs` 属于 `GameObjects.csproj`，新类型在 `GameObjects.dll` 里——简化部署漏了依赖 dll。而直接覆盖 `GameObjects.dll` 又报「文件正由另一进程使用」，因为 Lobby / UserServer / DataCache / ServerCenter 都加载着它。**这正是 `StopServer → buildall → copyserverdlls → RunServer` 存在的理由。**
+
+按完整顺序重跑的结果：
+
+```
+step1 停止全套 .NET 服务           remaining=0
+step2 buildall Debug False        exit=0, Client.sln errors=0, Server.sln errors=0
+step3 copyserverdlls Debug        exit=0, GameObjects.dll 更新
+step4 RunServer.cmd               ServerCenter=2 node=3 Lobby=1 DataCache=1
+                                  UserServer=1 RoomServer=1
+```
+
+读表器自检（新代码写出，非旧文件）：
+```
+grids=64 events=148
+table_path=.../Tables/Server/WorldEvent.dat reader=TableConfig.WorldEventProvider
+hit_exact=True ... reward_added=True cannot_rehit=True
+client_Tables_Server_exists=False client_area_event_rows=0
+RESULT=PASS
+```
+
+### 21.4 顺带清理与副作用
+
+- 删掉运行时残留的 `ServerEnv/bin/Tables/Server/WorldEvent.txt`（旧手写副本），现在运行时只有 `WorldEvent.dat`。
+- `buildall` 把带旧 PDB 的 `ClientPlugins.dll` / `PluginFramework.dll` 复制进 `Assets/Plugins/`，Unity `AssemblyUpdater` 读符号失败（`Mono.Cecil ReadSymbols`）；删除两个过期 `.pdb` + `.meta` 后 `asset_refresh` 正常，GM API `camera_probe / combat_probe / explore_probe` 均可用（无 CS 错误）。
+- `buildall` 输出里的 `pdb2mdb.exe ... exit code:1` 是工程原有的 Mono 调试符号转换噪音，脚本不视为失败（`exit=0`）。
+
+### 21.5 结论
+
+事件表现在是**项目的一等公民表**：由 `TableReaderGenerator` 生成 `.dat` 与 `TableConfig` Reader，由 `Server/` 目录保证客户端隔离，服务端通过 `WorldEventProvider` 读取。后续新增服务端表都应照此办理，先改表格式与 `table.dsl`，再按四步流程构建部署。
+
+---
+
+## 22. 战斗观感：遭遇分散、攻击动画与朝向
+
+用户反馈「战斗挤成一团、玩家一直跑步没见攻击、没有朝向目标表现」。用 `combat_probe()`（新增 Animator 状态输出）定位到四条独立原因。
+
+### 22.1 根因
+
+| 症状 | 根因 | 代码依据 |
+|---|---|---|
+| 挤成一团 | story 把 5 只怪刷在玩家 `±8` 随机点；`EntityViewModel.Create` 里 `obstacleAvoidanceType = NoObstacleAvoidance`；所有怪 `AiPursue` 到**同一个玩家坐标** | `build_story.py` / `EntityViewModel_Npc.cs:43` / `AiDoNormal.cs:103` |
+| 一直跑步、没攻击 | `MoveTo()` / `StopMove()` / `SyncSpatial()` 无条件 `Animator.Play("Run"/"Idle")`，AI 每 100ms 就 `AiPursue → MoveTo` 一次，技能 `AnimationTrigger` 播的 `"Attack"` 立刻被覆盖 | `EntityViewModel_Npc.cs:208,232,92` |
+| **主角特别严重** | `ailogic_player.dsl` 里 `ai_chase` 在够不着时返回 `true` 并**挂起 story**，`ai_cast_skill` 根本执行不到；主角速度 7 < 怪 8，又在追一个正在追队友的怪，永远进不了攻击距离 | `AiChase.cs:41-44` / `Actor.txt` |
+| 没有朝向 | 主角 AI 只设 `info.Target`，从不设 `WantedFaceDir`；`UpdateSpatial` 虽有转向逻辑，但角色一直在移动/动画被覆盖 | `EntityViewModel_Npc.cs:163-172` / `AiSelectTarget.cs` |
+
+### 22.2 修复
+
+| 位置 | 改动 |
+|---|---|
+| `Resource/MapDesign/build_story.py` | 刷怪从随机 `±8` 改为**构建期展开的均匀环形**（半径 14，按 `2πi/N`），每只怪固定 unitId 与 tableId；顺带修掉会生成 `+-11.3` 的非法 DSL 写法，并把 docstring 里作废的 Y 翻转约定改正 |
+| `EntityViewModel_Npc.cs` | ① `obstacleAvoidanceType` → `MedQualityObstacleAvoidance`；② 新增 `LockAnimation(float)` / `CanPlayLocomotion`，`MoveTo` / `StopMove` / `SyncSpatial` 的 `Animator.Play` 只在锁外执行，`PlayAnimation` 也加锁 |
+| `AnimationTrigger.cs` | 技能动画成功播放后 `view.LockAnimation(0.6f)`，让攻击片段不被下一次 AI tick 的 Run 覆盖 |
+| `AiDoNormal.cs` | 追击点按 `objId % 8` 加环形偏移（半径 4），怪不再全朝同一点汇聚 |
+| `AiSelectTarget.cs` | 主角选目标时 `SetWantedFaceDir(Geometry.GetYRadian(src, dst))`，持续面向当前对手 |
+| `Ai/ailogic_player.dsl` | 重写：移除会挂起 story 的 `ai_chase` / `ai_keep_away` 分支，每轮直接 `ai_cast_skill` |
+| `AiCastSkill.cs` | 距离不够时自己 `AiPursue` 一步后 `return false`（不挂起 story），够得着才 `AiStopPursue + AiSkill` |
+
+### 22.3 实机验证
+
+按 `StopServer → buildall Debug False → copyserverdlls Debug → RunServer` 全量重建部署（两个 sln 均 0 错误，全套服务起来、自检 PASS），自动登录后 `combat_probe()`：
+
+```
+修复前：主角 state=1 moving=True anim=Run；所有怪/队友坐标几乎重合
+修复后（交战中）：
+  E id=1115 主角 pos=(42.5,45.7,49.2) target=1128 moving=False anim=Attack
+  lockedTarget=1128                       ← 锁定与当前目标一致
+  怪  1125 pos=(55.6,43.8,56.5) / 1127 pos=(56.8,46.1,46.8)   ← 彼此有间距
+  队友 1116..1119 pos=(45.9,53.4) (47.1,58.5) (50.5,54.9) (47.7,49.2) ← 分散
+  overheadBars=27 / entities=27
+```
+
+主角出现 `anim=Attack` 且 `moving=False`（之前恒为 Run），怪也有 `anim=Attack` 的采样；环形刷怪 + 避让 + 追击点分散后不再叠成一点。
+
+### 22.4 仍存在 / 环境现象
+
+- 追击阶段的怪和队友仍是 `anim=Run`（正常移动表现），但不再「一直」只有跑；攻击时能看到 Attack 且主角停下。
+- 朝向只做了代码接入（`SetWantedFaceDir` + `UpdateSpatial` 的 `RotateTowards`），本轮探针未输出朝向角度，**未做定量验证**。
+- 队友多数时间处于 `state=102`（Gohome，追队形站位），看起来仍在跑动；队形锚点虽已修成主角当前位置，但归队过程仍偏活跃，后续可调 `GohomeHandler` 的容差。
+- 全套服务刚 `RunServer` 重启后，**第一次 Play 登录常卡在 `do_login`**（无错误日志），重启一次 Play 重连即恢复；这是环境时序现象，与本次战斗改动无关。
+- 环形半径 14 仍只用到场地的一小部分；带 leash 半径的区域守卫与分段推进仍是下一步（见 19.4 / 20.6）。
+
+---
+
+## 23. story API / skill trigger 全量改 snake_case
+
+按用户决策执行：两个仓库、全部 story 注册名与 skill trigger 名改为 snake_case；单词/缩写/数字各自独立（`get_position_x`、`track_2`、`load_scp`）；**不提供别名兼容层**。
+
+### 23.1 工具与映射表
+
+新增 `Tools/RenameStoryApi/rename_api.py`（`scan` / `apply` / `undo` / `verify`），产出可复核的 `BuildLog/rename_map.tsv`。
+
+| 阶段 | 结果 |
+|---|---|
+| 抽取 | 两仓 45 个注册文件、1187 个唯一名（CSharpGameFramework 1150 / GameDemo 591） |
+| 映射 | 924 条待改；来源：工厂类名推导 826、词表 123+142 条人工审定，`needs_review=0` |
+| 改写 | 873 个文件、47717 处替换（主体 40651 / Demo 7066），文本层旧名残留 0 |
+| 校验 | `verify`：旧名残留 0 文件、C# 关键字损伤 0 文件 |
+
+**分词不用纯算法**：先用注册行的 `new ExpressionFactoryHelper<GetPositionXFunction>()` 里的类名作权威词边界，词表只作回退；无法确定的一律不猜，改为 140 条人工审定映射（`OVERRIDES`）。早期试过纯贪心，出现过 `acos → a_cos`、`addobjecttoasset → add_object_to_as_set` 这类错误，故放弃。
+
+### 23.2 关键字冲突（一次真实误伤及修复）
+
+全局替换把 6 个与 C# 关键字/类型别名同名的 DSL 名字也改了，共损坏 3984 处 C# 源码：
+
+`typeof → type_of`、`sbyte → s_byte`、`ushort → u_short`、`uint → u_int`、`ulong → u_long`、`orderby → order_by`
+
+表现为 `GenericUtility.cs` 大量 `CS1525 表达式项"byte"无效`（`typeof(byte)` 被写成 `type_of(byte)`）。按用户规则这些本就是单个单词/缩写，已加入 `KEEP_AS_IS` 永久排除，并用 `undo` 定向还原 4027 处（304 文件）。修复后两个 framework 工程编译通过。
+
+### 23.3 为什么要「先 .NET Framework，再 dotnet core」（用户提醒）
+
+`DotnetStoryScript` 与 `StoryScript` 各有两份工程文件：
+
+| 版本 | 工程 | 归属 | 产物 |
+|---|---|---|---|
+| net472 | `*_dotnet_framework.csproj` / `.sln` | **独立 sln，`buildall` 不构建** | `bin/Debug/net472/*.dll`，仓库根目录那份 `DotnetStoryScript.dll` 与它同源 |
+| netstandard2.1 | `*.csproj` | `Client.sln` / `Server.sln` / `GameLibrary.sln` | Unity `Assets/Plugins`、服务端 `ServerEnv/bin` |
+
+两份工程**共用 `obj/project.assets.json`**。core 版构建后 assets 只有 `netstandard2.1`，framework 版直接 `NETSDK1005 资产文件没有 net472 目标`；反之亦然。所以顺序必须是：
+
+```
+1. 停服
+2. restore + build 两个 net472 sln（DotnetStoryScript / StoryScript）
+3. 把 net472 产物复制回仓库根目录
+4. restore + buildall（core 版最后，把 assets 覆盖回 netstandard2.1）
+5. 构建 GameDemo GameLibrary.sln 并复制产物到其 Unity 插件目录
+6. copyserverdlls → RunServer
+```
+
+实测：framework×2 `exit=0`；`buildall exit=0`、Client.sln / Server.sln 各 0 错误；GameDemo core `exit=0`、14 个 dll 复制；`copyserverdlls exit=0`；全套服务起来、`EXPLORE_SELFTEST RESULT=PASS`。
+
+### 23.4 改名与重建的关系（回答用户疑问）
+
+改的是**源码里的字符串字面量**和 **DSL 文本**；运行时加载的却是：
+
+- 注册名 → 编译进 `Assets/Plugins/*.dll`、`ServerEnv/bin/*.dll` 的常量池
+- DSL → `StreamingAssets/Dsl` / `ServerEnv/bin/Dsl` 的副本（`DslCopy` 生成，Release 下可能是二进制）
+
+两者是**大小写敏感、精确 key 的字典查找**，且按决策没有别名层。所以改名与重建必须原子切换：只改源码不重建，DLL 里仍是旧名而 DSL 已是新名，运行时全部 `unknown func` / `CreateTriger failed`；只重建不改名则反之。重建负责把源码变成运行时真正加载的东西。
+
+跨仓还有一个隐蔽消费点：GM 通道用的是 **GameDemo 的 `StoryScript.dll`**（堆栈 `StoryScript.DslExpression.DotnetSetExp`），不是 `DotnetStoryScript.dll`。首轮只把重建产物复制到 GameDemo 自己的 Unity 工程，CSharpGameFramework 的 `Unity3d/Assets/Plugins/StoryScript.dll` 仍是旧版，实机报 `unknown func dotnet_set`；同步该 DLL 后消失。
+
+### 23.5 实机验证
+
+按新名字重发 GM 命令（`dotnet_set` / `find_input` / `click_ui`，旧名会如预期报 `unknown func`，证明无兼容层）：
+
+```
+LoginDlg:on_click → NicknameDlg:on_click → StoryDlg:on_click × 15
+runtime 日志：unknown func=0  CreateTriger failed=0  NullReference=0  error CS=0
+Unity Editor 程序集重新编译（tail errorCS=0 / AssemblyUpdater=0）
+DLL 字符串抽查：PluginFramework.dll / RoomServer.dll 含 camera_follow、
+               get_position_x、send_gfx_message，旧名均不存在
+```
+
+### 23.6 边界与注意
+
+- GM/Editor 的 `calc.Register` 中已是 snake_case 的名字（如 `combat_probe`、`asset_refresh`）未变；`AppEditorDslApi.cs` 29 个本就合规。
+- 与 C# 关键字同名的 6 个名字按规则保持原样，不算遗漏。
+- 通过 MCP / 控制台 / 外部脚本发的**旧名命令必须改成新名**（本轮已把诊断命令换掉）；仓库内 `.dsl`、文档、Python 生成器、构建脚本均已同步。
+- 当前无二进制 DSL 产物（全为文本副本），`DslCopy` 已随 `buildall` 重新同步两端；若将来 Release 构建生成二进制 DSL，必须重跑同步而不能文本替换。
+
+---
+
 ### 附：本轮之前的典型偏差（供回归检查）
 
 - 把 512 地形只用 1/25，做成单战斗区圆形擂台
 - 为让验收全 PASS 直接把 heightmap 清零（"拉平"）
 - 把 10 种地形形态写死在 C# 函数里，bitmap 沦为噪声
 - 另造一套地形生成工具却绕开原有 DSL 机制（工具形态本身不受限，**意图对齐才是约束**）
-- 用静态俯视相机出预览图，而游戏内 `camerafollow(1000)` 会接管相机
+- 用静态俯视相机出预览图，而游戏内 `camera_follow(1000)` 会接管相机

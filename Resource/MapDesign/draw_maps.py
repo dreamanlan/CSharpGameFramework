@@ -437,7 +437,7 @@ def main():
 
 def shutil_copy_minimap(src, dst):
     import shutil
-    shutil.copyfile(os.path.join(TILES, src), os.path.join(TILES, dst))
+    shutil.copy_file(os.path.join(TILES, src), os.path.join(TILES, dst))
 
 if __name__ == '__main__':
     main()

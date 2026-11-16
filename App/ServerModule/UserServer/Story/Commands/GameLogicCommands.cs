@@ -10,7 +10,7 @@ using ScriptableFrameworkMessage;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// sendmail(guid, title, content, sender, levelDemand, validPeriod, money, gold, item1, item1num, item2, item2num, ...);
+    /// send_mail(guid, title, content, sender, levelDemand, validPeriod, money, gold, item1, item1num, item2, item2num, ...);
     /// </summary>
     internal sealed class SendMailCommand : SimpleExpressionBase
     {
@@ -59,7 +59,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// clearmembers(guid);
+    /// clear_members(guid);
     /// </summary>
     internal sealed class ClearMembersCommand : SimpleExpressionBase
     {
@@ -80,7 +80,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// addmember(guid, tableid, level);
+    /// add_member(guid, tableid, level);
     /// </summary>
     internal sealed class AddMemberCommand : SimpleExpressionBase
     {
@@ -107,7 +107,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// removemember(guid, id_or_guid);
+    /// remove_member(guid, id_or_guid);
     /// </summary>
     internal sealed class RemoveMemberCommand : SimpleExpressionBase
     {
@@ -149,7 +149,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// syncmembers(guid);
+    /// sync_members(guid);
     /// </summary>
     internal sealed class SyncMembersCommand : SimpleExpressionBase
     {
@@ -167,7 +167,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// clearitems(guid);
+    /// clear_items(guid);
     /// </summary>
     internal sealed class ClearItemsCommand : SimpleExpressionBase
     {
@@ -188,7 +188,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// additem(guid, itemid, num);
+    /// add_item(guid, itemid, num);
     /// </summary>
     internal sealed class AddItemCommand : SimpleExpressionBase
     {
@@ -211,7 +211,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// reduceitem(guid, itemid, num);
+    /// reduce_item(guid, itemid, num);
     /// </summary>
     internal sealed class ReduceItemCommand : SimpleExpressionBase
     {
@@ -234,7 +234,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// removeitem(guid, id_or_guid);
+    /// remove_item(guid, id_or_guid);
     /// </summary>
     internal sealed class RemoveItemCommand : SimpleExpressionBase
     {
@@ -266,7 +266,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// syncitems(guid);
+    /// sync_items(guid);
     /// </summary>
     internal sealed class SyncItemsCommand : SimpleExpressionBase
     {
@@ -284,7 +284,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// clearuserdatas(guid);
+    /// clear_user_datas(guid);
     /// </summary>
     internal sealed class ClearUserDatasCommand : SimpleExpressionBase
     {
@@ -307,7 +307,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// adduserdata(guid, key, val);
+    /// add_user_data(guid, key, val);
     /// </summary>
     internal sealed class AddUserDataCommand : SimpleExpressionBase
     {
@@ -350,7 +350,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// removeuserdata(guid, key, type);
+    /// remove_user_data(guid, key, type);
     /// </summary>
     internal sealed class RemoveUserDataCommand : SimpleExpressionBase
     {
@@ -379,7 +379,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// clearglobaldatas();
+    /// clear_global_datas();
     /// </summary>
     internal sealed class ClearGlobalDatasCommand : SimpleExpressionBase
     {
@@ -394,7 +394,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// addglobaldata(key, val);
+    /// add_global_data(key, val);
     /// </summary>
     internal sealed class AddGlobalDataCommand : SimpleExpressionBase
     {
@@ -424,7 +424,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// removeglobaldata(key, type);
+    /// remove_global_data(key, type);
     /// </summary>
     internal sealed class RemoveGlobalDataCommand : SimpleExpressionBase
     {

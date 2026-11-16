@@ -281,9 +281,10 @@ namespace RoomServer
 
         internal static void Main(string[] args)
         {
-            ScriptableFramework.ExploreSystem.EnsureLoaded();   // server-only event table + self test
             s_Instance = new RoomServer();
-            s_Instance.Init(args);
+            s_Instance.Init(args);   // HomePath.InitHomePath() + LoadData() happen here
+            // The generated table reader needs HomePath, so this must run after Init.
+            ScriptableFramework.ExploreSystem.EnsureLoaded();
             s_Instance.Loop();
             s_Instance.Release();
         }        

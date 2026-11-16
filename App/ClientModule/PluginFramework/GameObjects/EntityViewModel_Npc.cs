@@ -40,7 +40,9 @@ namespace ScriptableFramework
                         m_Agent.acceleration = c_Acceleration;
                         m_Agent.radius = entity.GetRadius();
                         m_Agent.speed = entity.ActualProperty.GetFloat(CharacterPropertyEnum.x2011_最终速度);
-                        m_Agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
+                        // Mobs used to share one pursuit point with no avoidance,
+                        // stacking into a single blob at the player's feet.
+                        m_Agent.obstacleAvoidanceType = ObstacleAvoidanceType.MedQualityObstacleAvoidance;
                     }
                     m_Animator = Actor.GetComponentInChildren<Animator>();
                     EntityDrawGizmos gizmos = Actor.GetComponent<EntityDrawGizmos>();
@@ -87,11 +89,10 @@ namespace ScriptableFramework
                     Vector3 tpos = new Vector3(msi.TargetPosition.X, msi.TargetPosition.Y, msi.TargetPosition.Z);
                     if ((tpos - v3).sqrMagnitude < c_StopDistSqr) {
                         msi.IsMoving = false;
-                        if (null != Animator) {
-                            //Animator.CrossFade(c_StandAnim, c_CrossFadeTime);
+                        if (null != Animator && CanPlayLocomotion) {
                             Animator.Play(c_StandAnim);
-                            msi.IsMoving = false;
                         }
+                        msi.IsMoving = false;
                     }
                 }
             }
@@ -205,13 +206,8 @@ namespace ScriptableFramework
                     LogSystem.Error("MoveTo({0}, {1}, {2}) agent {3}({4}) failed.", x, y, z, m_ObjId, m_Entity.GetUnitId());
                 }
             }
-            if (null != Animator) {
-                if (ObjId == PluginFramework.Instance.LeaderId) {
-                    //Animator.CrossFade(c_MoveAnim, c_CrossFadeTime);
-                    Animator.Play(c_MoveAnim);
-                } else {
-                    Animator.Play(c_MoveAnim);
-                }
+            if (null != Animator && CanPlayLocomotion) {
+                Animator.Play(c_MoveAnim);
             }
         }
 
@@ -226,25 +222,16 @@ namespace ScriptableFramework
                     m_Agent.enabled = true;
                 }
             }
-            if (null != Animator) {
-                if (ObjId == PluginFramework.Instance.LeaderId) {
-                    //Animator.CrossFade(c_StandAnim, c_CrossFadeTime);
-                    Animator.Play(c_StandAnim);
-                } else {
-                    Animator.Play(c_StandAnim);
-                }
+            if (null != Animator && CanPlayLocomotion) {
+                Animator.Play(c_StandAnim);
             }
         }
 
         public void PlayAnimation(string anim)
         {
             if (null != Animator) {
-                if (ObjId == PluginFramework.Instance.LeaderId) {
-                    //Animator.CrossFade(anim, c_CrossFadeTime);
-                    Animator.Play(anim);
-                } else {
-                    Animator.Play(anim);
-                }
+                Animator.Play(anim);
+                LockAnimation(0.6f);
             }
         }
 
@@ -253,6 +240,16 @@ namespace ScriptableFramework
         private Animator m_Animator = null;
 
         private float m_LastSyncTime = 0;
+        // AI ticks call MoveTo every 100ms, which used to restart the Run clip
+        // on every tick and stomp any attack/skill animation. Skill clips hold
+        // locomotion off briefly so they are actually visible.
+        private float m_AnimLockUntil = 0f;
+        private bool CanPlayLocomotion { get { return Time.time >= m_AnimLockUntil; } }
+
+        public void LockAnimation(float seconds)
+        {
+            m_AnimLockUntil = Time.time + Mathf.Max(0f, seconds);
+        }
 
         private const float c_SyncInterval = 0.5f;
         private const float c_StopDistSqr = 0.25f;

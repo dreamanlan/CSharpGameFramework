@@ -11,7 +11,7 @@ using ScriptableFramework.Story;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// objface(obj_id, dir[, immediately]);
+    /// obj_face(obj_id, dir[, immediately]);
     /// </summary>
     internal class ObjFaceCommand : SimpleExpressionBase
     {
@@ -42,7 +42,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objmove(obj_id, vector3(x,y,z)[, event]);
+    /// obj_move(obj_id, vector_3(x,y,z)[, event]);
     /// </summary>
     internal class ObjMoveCommand : SimpleExpressionBase
     {
@@ -75,7 +75,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objmovewithwaypoints(obj_id, vector3list("1 2 3 4 5 6")[, event]);
+    /// obj_move_with_waypoints(obj_id, vector_3_list("1 2 3 4 5 6")[, event]);
     /// </summary>
     internal class ObjMoveWithWaypointsCommand : SimpleExpressionBase
     {
@@ -112,7 +112,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objstop(obj_id);
+    /// obj_stop(obj_id);
     /// </summary>
     internal class ObjStopCommand : SimpleExpressionBase
     {
@@ -140,7 +140,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objattack(npc_obj_id[,target_obj_id]);
+    /// obj_attack(npc_obj_id[,target_obj_id]);
     /// </summary>
     internal class ObjAttackCommand : SimpleExpressionBase
     {
@@ -162,7 +162,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetformation(obj_id, index);
+    /// obj_set_formation(obj_id, index);
     /// </summary>
     internal class ObjSetFormationCommand : SimpleExpressionBase
     {
@@ -179,7 +179,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objenableai(obj_id, 1_or_0);
+    /// obj_enable_ai(obj_id, 1_or_0);
     /// </summary>
     internal class ObjEnableAiCommand : SimpleExpressionBase
     {
@@ -200,7 +200,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetai(objid,ai_logic_id,stringlist("param1 param2 param3 ..."));
+    /// obj_set_ai(objid,ai_logic_id,string_list("param1 param2 param3 ..."));
     /// </summary>
     internal class ObjSetAiCommand : SimpleExpressionBase
     {
@@ -229,7 +229,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetaitarget(objid,targetid);
+    /// obj_set_ai_target(objid,targetid);
     /// </summary>
     internal class ObjSetAiTargetCommand : SimpleExpressionBase
     {
@@ -248,7 +248,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objanimation(obj_id, anim[, normalized_time]);
+    /// obj_animation(obj_id, anim[, normalized_time]);
     /// </summary>
     internal class ObjAnimationCommand : SimpleExpressionBase
     {
@@ -273,7 +273,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objanimationparam(obj_id)
+    /// obj_animation_param(obj_id)
     /// {
     ///     float(name,val);
     ///     int(name,val);
@@ -364,7 +364,7 @@ namespace ScriptableFramework.Story.Commands
         private List<ParamInfo> m_Params = new List<ParamInfo>();
     }
     /// <summary>
-    /// objaddimpact(obj_id, impactid, arg1, arg2, ...)[seq("@seq")];
+    /// obj_add_impact(obj_id, impactid, arg1, arg2, ...)[seq("@seq")];
     /// </summary>
     internal class ObjAddImpactCommand : AbstractExpression
     {
@@ -442,7 +442,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_SeqVarName;
     }
     /// <summary>
-    /// objremoveimpact(obj_id, seq);
+    /// obj_remove_impact(obj_id, seq);
     /// </summary>
     internal class ObjRemoveImpactCommand : SimpleExpressionBase
     {
@@ -464,7 +464,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objcastskill(obj_id, skillid, arg1, arg2, ...);
+    /// obj_cast_skill(obj_id, skillid, arg1, arg2, ...);
     /// </summary>
     internal class ObjCastSkillCommand : SimpleExpressionBase
     {
@@ -493,7 +493,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objstopskill(obj_id);
+    /// obj_stop_skill(obj_id);
     /// </summary>
     internal class ObjStopSkillCommand : SimpleExpressionBase
     {
@@ -507,7 +507,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objlisten(unit_id, message_type, true_or_false);
+    /// obj_listen(unit_id, message_type, true_or_false);
     /// </summary>
     internal class ObjListenCommand : SimpleExpressionBase
     {
@@ -531,7 +531,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// sethp(objid,value);
+    /// set_hp(objid,value);
     /// </summary>
     internal class SetHpCommand : SimpleExpressionBase
     {
@@ -549,7 +549,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setenergy(objid,value);
+    /// set_energy(objid,value);
     /// </summary>
     internal class SetEnergyCommand : SimpleExpressionBase
     {
@@ -567,7 +567,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objset(uniqueid,localname,value);
+    /// obj_set(uniqueid,localname,value);
     /// </summary>
     internal class ObjSetCommand : SimpleExpressionBase
     {
@@ -583,7 +583,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setlevel(objid,value);
+    /// set_level(objid,value);
     /// </summary>
     internal class SetLevelCommand : SimpleExpressionBase
     {
@@ -601,7 +601,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setattr(objid,attrid,value);
+    /// set_attr(objid,attrid,value);
     /// </summary>
     internal class SetAttrCommand : SimpleExpressionBase
     {
@@ -619,14 +619,14 @@ namespace ScriptableFramework.Story.Commands
                     charObj.BaseProperty.SetLong((CharacterPropertyEnum)attrId, val);
                     charObj.ActualProperty.SetLong((CharacterPropertyEnum)attrId, val);
                 } catch (Exception ex) {
-                    LogSystem.Warn("setattr throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    LogSystem.Warn("set_attr throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
             return BoxedValue.NullObject;
         }
     }
     /// <summary>
-    /// markcontrolbystory(objid,true_or_false);
+    /// mark_control_by_story(objid,true_or_false);
     /// </summary>
     internal class MarkControlByStoryCommand : SimpleExpressionBase
     {
@@ -644,7 +644,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setunitid(obj_id, dir);
+    /// set_unit_id(obj_id, dir);
     /// </summary>
     internal class SetUnitIdCommand : SimpleExpressionBase
     {
@@ -662,7 +662,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetcamp(objid,camp_id);
+    /// obj_set_camp(objid,camp_id);
     /// </summary>
     internal class ObjSetCampCommand : SimpleExpressionBase
     {
@@ -679,7 +679,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetsummonerid(objid, objid);
+    /// obj_set_summoner_id(objid, objid);
     /// </summary>
     internal class ObjSetSummonerIdCommand : SimpleExpressionBase
     {
@@ -697,7 +697,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetsummonskillid(objid, objid);
+    /// obj_set_summon_skill_id(objid, objid);
     /// </summary>
     internal class ObjSetSummonSkillIdCommand : SimpleExpressionBase
     {

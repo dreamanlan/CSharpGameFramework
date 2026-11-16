@@ -3,10 +3,10 @@ skill(7)
   section(60000)
   {
     animation("Attack");
-    selfeffect(selfEffect,1000,"eyes",0)
+    self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector3(0,1,0));
+      transform(vector_3(0,1,0));
     };
-    adjustsectionduration("impact",100);
+    adjust_section_duration("impact",100);
   };
 };

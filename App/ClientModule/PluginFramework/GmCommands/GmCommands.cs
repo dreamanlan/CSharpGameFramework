@@ -11,7 +11,7 @@ namespace ScriptableFramework.GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
-                throw new Exception("Expected: enablecalculatorlog(val1, val2, val3)");
+                throw new Exception("Expected: enable_calculator_log(val1, val2, val3)");
 
             int val1 = operands[0].GetInt();
             int val2 = operands[1].GetInt();
@@ -28,7 +28,7 @@ namespace ScriptableFramework.GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: resetdsl(val)");
+                throw new Exception("Expected: reset_dsl(val)");
 
             string val = operands[0].ToString();
             if (Network.NetworkSystem.Instance.CanSendMessage) {
@@ -78,7 +78,7 @@ namespace ScriptableFramework.GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: setdebug(flag)");
+                throw new Exception("Expected: set_debug(flag)");
 
             int val = operands[0].GetInt();
             GlobalVariables.Instance.IsDebug = val != 0;
@@ -93,7 +93,7 @@ namespace ScriptableFramework.GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: allocmemory(key, size)");
+                throw new Exception("Expected: alloc_memory(key, size)");
 
             string key = operands[0].ToString();
             int size = operands[1].GetInt();
@@ -116,7 +116,7 @@ namespace ScriptableFramework.GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: freememory(key)");
+                throw new Exception("Expected: free_memory(key)");
 
             string key = operands[0].ToString();
 
@@ -138,7 +138,7 @@ namespace ScriptableFramework.GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: consumecpu(time_us)");
+                throw new Exception("Expected: consume_cpu(time_us)");
 
             int time = operands[0].GetInt();
             long startTime = TimeUtility.GetElapsedTimeUs();

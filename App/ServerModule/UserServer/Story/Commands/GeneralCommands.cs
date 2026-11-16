@@ -9,7 +9,7 @@ using ScriptableFrameworkMessage;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// startstory(story_id)[multiple(n)];
+    /// start_story(story_id)[multiple(n)];
     /// </summary>
     internal sealed class StartStoryCommand : AbstractExpression
     {
@@ -57,7 +57,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveMultiple = false;
     }
     /// <summary>
-    /// stopstory(story_id)[multiple(n)];
+    /// stop_story(story_id)[multiple(n)];
     /// </summary>
     internal sealed class StopStoryCommand : AbstractExpression
     {
@@ -103,7 +103,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveMultiple = false;
     }
     /// <summary>
-    /// waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)][multiple(n)];
+    /// wait_story(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)][multiple(n)];
     /// </summary>
     internal sealed class WaitStoryCommand : AbstractExpression
     {
@@ -239,7 +239,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// pausestory(storyid1,storyid2,...)[multiple(n)];
+    /// pause_story(storyid1,storyid2,...)[multiple(n)];
     /// </summary>
     internal sealed class PauseStoryCommand : AbstractExpression
     {
@@ -292,7 +292,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveMultiple = false;
     }
     /// <summary>
-    /// resumestory(storyid1,storyid2,...)[multiple(n)];
+    /// resume_story(storyid1,storyid2,...)[multiple(n)];
     /// </summary>
     internal sealed class ResumeStoryCommand : AbstractExpression
     {
@@ -345,7 +345,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveMultiple = false;
     }
     /// <summary>
-    /// firemessage(msgid,arg1,arg2,...);
+    /// fire_message(msgid,arg1,arg2,...);
     /// </summary>
     internal sealed class FireMessageCommand : SimpleExpressionBase
     {
@@ -367,7 +367,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// fireconcurrentmessage(msgid,arg1,arg2,...);
+    /// fire_concurrent_message(msgid,arg1,arg2,...);
     /// </summary>
     internal sealed class FireConcurrentMessageCommand : SimpleExpressionBase
     {
@@ -389,7 +389,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// wait_all_message(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
     internal sealed class WaitAllMessageCommand : AbstractExpression
     {
@@ -499,7 +499,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// waitallmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// wait_all_message_handler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
     internal sealed class WaitAllMessageHandlerCommand : AbstractExpression
     {
@@ -621,7 +621,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// resumeallmessagehandler(msgid1,msgid2,...);
+    /// resume_all_message_handler(msgid1,msgid2,...);
     /// </summary>
     public sealed class ResumeAllMessageHandlerCommand : SimpleExpressionBase
     {
@@ -638,7 +638,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// sendserverstorymessage(msg,arg1,arg2,...)[touser(userid)];
+    /// send_server_story_message(msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     internal sealed class SendServerStoryMessageCommand : AbstractExpression
     {
@@ -726,7 +726,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendclientstorymessage(msg,arg1,arg2,...)[touser(userid)];
+    /// send_client_story_message(msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     internal sealed class SendClientStoryMessageCommand : AbstractExpression
     {
@@ -813,7 +813,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// publishgfxevent(ev_name,group,arg1,arg2,...)[touser(userid)];
+    /// publish_gfx_event(ev_name,group,arg1,arg2,...)[touser(userid)];
     /// </summary>
     internal sealed class PublishGfxEventCommand : AbstractExpression
     {
@@ -905,7 +905,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendgfxmessage(objname,msg,arg1,arg2,...)[touser(userid)];
+    /// send_gfx_message(objname,msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     internal sealed class SendGfxMessageCommand : AbstractExpression
     {
@@ -997,7 +997,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendgfxmessagewithtag(tagname,msg,arg1,arg2,...)[touser(userid)];
+    /// send_gfx_message_with_tag(tagname,msg,arg1,arg2,...)[touser(userid)];
     /// </summary>
     internal sealed class SendGfxMessageWithTagCommand : AbstractExpression
     {
@@ -1089,7 +1089,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// highlightprompt(userguid,dictid,arg1,arg2,...);
+    /// highlight_prompt(userguid,dictid,arg1,arg2,...);
     /// </summary>
     internal sealed class HighlightPromptCommand : SimpleExpressionBase
     {

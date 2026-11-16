@@ -92,29 +92,33 @@ namespace ScriptableFramework
                 s_ByGrid = new Dictionary<string, List<EventDef>>();
                 try
                 {
-                    string table = Path.Combine(BaseDir, "Tables", "Server", "WorldEvent.txt");
-                    if (File.Exists(table))
+                    // Use the project's generated table reader instead of
+                    // hand-parsing a TSV. TableReaderGenerator converts the
+                    // server-only WorldEvent.txt to WorldEvent.dat and generates
+                    // TableConfig.WorldEventProvider; LoadForServer resolves it
+                    // through FilePathDefine_Server.C_WorldEvent.
+                    var provider = TableConfig.WorldEventProvider.Instance;
+                    // LoadData() loads it with the other tables; this is only a
+                    // fallback for callers that reach here before LoadData().
+                    if (provider.GetWorldEventCount() == 0)
+                        provider.LoadForServer();
+                    foreach (var pair in provider.WorldEventMgr.GetData())
                     {
-                        foreach (string raw in File.ReadAllLines(table, Encoding.UTF8))
+                        TableConfig.WorldEvent row = pair.Value as TableConfig.WorldEvent;
+                        if (row == null) continue;
+                        var e = new EventDef
                         {
-                            string line = raw.Trim();
-                            if (line.Length == 0 || line.StartsWith("#")) continue;
-                            string[] p = line.Split('\t');
-                            if (p.Length < 9) continue;
-                            var e = new EventDef
-                            {
-                                Id = p[0], GridId = p[1], Era = p[2],
-                                X = F(p[3]), Z = F(p[4]), Radius = F(p[5]),
-                                Reward = I(p[6]), Token = p[7], Title = p[8]
-                            };
-                            List<EventDef> list;
-                            if (!s_ByGrid.TryGetValue(e.GridId, out list))
-                            {
-                                list = new List<EventDef>();
-                                s_ByGrid[e.GridId] = list;
-                            }
-                            list.Add(e);
+                            Id = row.id, GridId = row.grid_id, Era = row.era,
+                            X = row.x, Z = row.z, Radius = row.radius,
+                            Reward = row.reward, Token = row.token, Title = row.title
+                        };
+                        List<EventDef> list;
+                        if (!s_ByGrid.TryGetValue(e.GridId, out list))
+                        {
+                            list = new List<EventDef>();
+                            s_ByGrid[e.GridId] = list;
                         }
+                        list.Add(e);
                     }
                     LoadRewards();
                     s_Loaded = true;
@@ -301,7 +305,13 @@ namespace ScriptableFramework
 
         private static void Enter(User user, long roleId, List<string> a)
         {
-            string grid = GridFromLevel(a.Count > 0 ? I(a[0]) : 0);
+            string arg = a.Count > 0 ? a[0] : "";
+            // Per-scene stories send their grid id ("r2c4") directly. The old
+            // shared autorun story sent get_scene_id() (101/102), which mapped to
+            // no grid and made every explore request fail the table lookup.
+            string grid = (arg.Length >= 3 && arg[0] == 'r' && arg.IndexOf('c') > 0)
+                ? arg
+                : GridFromLevel(I(arg));
             string era = "";
             List<EventDef> list;
             if (grid.Length > 0 && s_ByGrid != null && s_ByGrid.TryGetValue(grid, out list) && list.Count > 0)
@@ -412,10 +422,23 @@ namespace ScriptableFramework
             try
             {
                 Directory.CreateDirectory(Path.Combine(BaseDir, "Data"));
+                // Battle rotations do not always send LeaveParallel, so drop
+                // sessions whose client stopped reporting positions.
+                long now = NowMs;
+                var stale = new List<long>();
+                foreach (var kv in s_Sessions)
+                    if (kv.Value.HasPos && now - kv.Value.LastPosMs > 30000) stale.Add(kv.Key);
+                foreach (long id in stale) s_Sessions.Remove(id);
+
                 var sb = new StringBuilder("EXPLORE_TRAFFIC (server received)\n");
                 foreach (var kv in s_Traffic) sb.AppendLine(kv.Key + "=" + kv.Value);
+                // Expose only the grid id (never event coordinates) so Editor
+                // diagnostics can pick this session's event position from the
+                // server-only table without guessing the loaded scene name.
+                foreach (var kv in s_Sessions)
+                    sb.AppendLine("session " + kv.Key + " grid=" + kv.Value.GridId);
                 File.WriteAllText(Path.Combine(BaseDir, "Data", "explore_traffic.txt"),
-                                 sb.ToString(), Encoding.UTF8);
+                                  sb.ToString(), Encoding.UTF8);
             }
             catch { }
         }
@@ -427,7 +450,8 @@ namespace ScriptableFramework
             int events = s_ByGrid == null ? 0 : s_ByGrid.Values.Sum(l => l.Count);
             sb.AppendLine("EXPLORE_SELFTEST");
             sb.AppendLine("grids=" + grids + " events=" + events);
-            sb.AppendLine("table_path=" + Path.Combine(BaseDir, "Tables", "Server", "WorldEvent.txt"));
+            sb.AppendLine("table_path=" + Path.Combine(BaseDir, "Tables", "Server", "WorldEvent.dat") +
+                          " reader=TableConfig.WorldEventProvider");
             sb.AppendLine("cooldown_ms=" + CooldownMs + " max_speed=" + MaxSpeed +
                           " tolerance=" + SpeedTolerance + " max_jump=" + MaxTriggerJump);
             bool ok = grids >= 64 && events >= 100;

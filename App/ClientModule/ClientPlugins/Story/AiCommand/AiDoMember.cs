@@ -143,7 +143,11 @@ public class AiDoMember : ISimpleStoryApiPlugin
         if (null != formation) {
             TableConfig.Formation.PosDir posDir = formation.GetPosDir(formationIndex);
             float dir;
-            pos = posDir.CalcPosDir(leader.GetMovementStateInfo().TargetPosition, leader.GetMovementStateInfo().GetFaceDir(), out dir);
+            // Formation must be anchored on where the leader actually is, not
+            // on its movement target. When the leader is idle TargetPosition is
+            // often (0,0,0), which used to send every follower marching toward
+            // the world origin instead of staying in combat formation.
+            pos = posDir.CalcPosDir(leader.GetMovementStateInfo().GetPosition3D(), leader.GetMovementStateInfo().GetFaceDir(), out dir);
         } else {
             pos = ScriptRuntime.Vector3.Zero;
         }

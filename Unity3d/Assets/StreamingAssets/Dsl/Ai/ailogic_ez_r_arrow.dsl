@@ -3,12 +3,12 @@ story(ez_r_arrow)
   onmessage(start)
   {
     wait(10000);
-    destroynpcwithobjid(@objid);
+    destroy_npc_with_obj_id(@objid);
   };
   onmessage(ez_r_arrow_kill)
   {
     if(@objid==$0.ActorId){
-      destroynpcwithobjid(@objid);
+      destroy_npc_with_obj_id(@objid);
     };
   };
 };

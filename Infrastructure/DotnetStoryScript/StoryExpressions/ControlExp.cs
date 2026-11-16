@@ -122,7 +122,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// realtime() - get local real milliseconds (not affected by time scale)
+    /// real_time() - get local real milliseconds (not affected by time scale)
     /// </summary>
     internal sealed class RealTimeExp : SimpleExpressionBase
     {
@@ -133,7 +133,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// elapsedtimeus() - get elapsed time in microseconds
+    /// elapsed_time_us() - get elapsed time in microseconds
     /// </summary>
     internal sealed class ElapsedTimeUsExp : SimpleExpressionBase
     {
@@ -144,7 +144,7 @@ namespace DotnetStoryScript
     }
 
     /// <summary>
-    /// storybreak([condition]) - break until condition is met or story is skipped/speedup
+    /// story_break([condition]) - break until condition is met or story is skipped/speedup
     /// </summary>
     internal sealed class StoryBreakExp : AbstractExpression
     {

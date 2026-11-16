@@ -6,6 +6,6 @@ skill(1)
   };
   onstop
   {
-  	bornfinish();
+  	born_finish();
   };
 };

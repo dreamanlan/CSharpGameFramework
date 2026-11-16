@@ -2,23 +2,23 @@ story(local_main)
 {
   onmessage("start")
   {
-  	startstory("skill_main");
-    startstory("auto_story");
+  	start_story("skill_main");
+    start_story("auto_story");
   };
   onmessage("open_battle")params($sceneId)
   {
     log("open_battle");
-    openbattle($sceneId);
-    firemessage("set_map_image", "UITexture/Map1");
+    open_battle($sceneId);
+    fire_message("set_map_image", "UITexture/Map1");
   };
   onmessage("on_battle_closed")params($objId,$unitId)
   {
-    setleaderid($objId);
-    camerafollow($unitId);
-    publishgfxevent("loading_complete", "ui");
-    firemessage("set_map_image", "UITexture/Story1");
+    set_leader_id($objId);
+    camera_follow($unitId);
+    publish_gfx_event("loading_complete", "ui");
+    fire_message("set_map_image", "UITexture/Story1");
     wait(3000);
-    firemessage("findnpc");
+    fire_message("findnpc");
   };
   // Server-authoritative exploration result. A miss, a cooldown rejection and a
   // closed event are deliberately indistinguishable to the client.
@@ -26,9 +26,9 @@ story(local_main)
   {
     log("explore_result found={0} token={1} delta={2} total={3}", $found, $token, $delta, $total);
     if($found>0){
-      firemessage("push_tip_info", "发现新的线索，真知累积中");
+      fire_message("push_tip_info", "发现新的线索，真知累积中");
     } else {
-      firemessage("push_tip_info", "这里似乎没有发现");
+      fire_message("push_tip_info", "这里似乎没有发现");
     };
   };
   // World-map visible state marker: the player stays at the portal while
@@ -36,10 +36,10 @@ story(local_main)
   onmessage("parallel_state")params($roleId,$state,$grid,$era)
   {
     log("parallel_state role={0} state={1} grid={2} era={3}", $roleId, $state, $grid, $era);
-    firemessage("push_tip_info", "时空锚点亮起：有调查者正在穿越时代层");
+    fire_message("push_tip_info", "时空锚点亮起：有调查者正在穿越时代层");
   };
   onmessage("quit")
   {
-    changescene(1);
+    change_scene(1);
   };
 };

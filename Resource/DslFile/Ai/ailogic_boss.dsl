@@ -13,7 +13,7 @@
     while(1){
       //每隔12~18秒释放技能c
       $curTime = time();    
-      $var = rndint(9000,15000);  
+      $var = rnd_int(9000,15000);  
       if($curTime>$lastTime+$var){
         $lastTime=$curTime;
         //log("cast skill C");
@@ -23,8 +23,8 @@
         ai_cast_skill($objid, $skillInfoC);
       };
 
-      $hp = gethp($objid);
-      $maxHp = getmaxhp($objid);
+      $hp = get_hp($objid);
+      $maxHp = get_max_hp($objid);
       //血量少于75%、50%、25%释放一次技能d
       if($hp<$maxHp*1/4 && $countOfD<3){
         log("cast skill D count {0} ({1} - {2})", $countOfD, $hp, $maxHp);
@@ -52,9 +52,9 @@
       };
       
       $target = ai_select_target($objid, 0);
-      if(!isnull($target)){
+      if(!is_null($target)){
         $skillInfo = ai_select_skill_by_distance($objid);
-        if(!isnull($skillInfo)){
+        if(!is_null($skillInfo)){
           $needChase = ai_need_chase($objid,$skillInfo);
           $needKeepAway = ai_need_keep_away($objid,$skillInfo,0.5);
           if($needChase){

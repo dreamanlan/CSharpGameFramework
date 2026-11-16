@@ -19,34 +19,34 @@ story(story_main)
     @userId=$userId;
     @userUnitId=$userUnitId;
     @campId=$campId;
-    objsetformation(@userId,0);
+    obj_set_formation(@userId,0);
     loop(4){
       @unitId = @userId*100+$$;
-      createnpc(@unitId,vector3(25+rndint(0,10),0,25+rndint(0,10)),0,@campId,$$+2,"ai_member",stringlist("Ai/ailogic_member.dsl"),@userId);
-      npcsetformation(@unitId,$$+1);
+      create_npc(@unitId,vector_3(25+rnd_int(0,10),0,25+rnd_int(0,10)),0,@campId,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),@userId);
+      npc_set_formation(@unitId,$$+1);
     };
     wait(1000);
-    objaddskill(@userId,22);
-    objaddskill(@userId,23);
-    publishgfxevent("loading_complete", "ui")touser(@userId);
-    camerafollow(@userUnitId)touser(@userId);
+    obj_add_skill(@userId,22);
+    obj_add_skill(@userId,23);
+    publish_gfx_event("loading_complete", "ui")touser(@userId);
+    camera_follow(@userUnitId)touser(@userId);
     loop(4){
       @unitId = @userId*100+$$;
     };
-		//sendserverstorymessage("msg_from_room")touser(@userId);
-    showdlg(2)touser(@userId);
+		//send_server_story_message("msg_from_room")touser(@userId);
+    show_dlg(2)touser(@userId);
   };
   onmessage("user_leave_scene")
   {
   };
   onmessage("server:msg_from_userserver")
   {
-		//log("msg_from_userserver:{0} {1}",$0,getentityinfo($0).CustomData.Guid);
-		//sendserverstorymessage("msg_from_room")touser($0);
+		//log("msg_from_userserver:{0} {1}",$0,get_entity_info($0).CustomData.Guid);
+		//send_server_story_message("msg_from_room")touser($0);
   };
   onmessage("dialog_over",2)
   {
-    sendgfxmessage("Main Camera", "LightScreen", 3000)touser(@userId);
+    send_gfx_message("Main Camera", "LightScreen", 3000)touser(@userId);
   };
   onmessage("refreshmonsters")
   {
@@ -55,27 +55,27 @@ story(story_main)
       @monsterRefresh=1;
       /*
       loop(26){
-      	@pt = vector3(75+rndint(0,10),0,75+rndint(0,10));//getcomponent("pt"+($$/7),"PositionMarker").Position;
-        createnpc(1006+$$,rndvector3(@pt,10),0,2,$$+6,2,stringlist(""));
+      	@pt = vector_3(75+rnd_int(0,10),0,75+rnd_int(0,10));//get_component("pt"+($$/7),"PositionMarker").Position;
+        create_npc(1006+$$,rnd_vector_3(@pt,10),0,2,$$+6,2,string_list(""));
       };
      	*/
       loop(64){
-	      @monsterInfo = getmonsterinfo(2,$$);
-	      if(!isnull(@monsterInfo)){
-	      	createnpc(1006+$$,vector3(@monsterInfo.x,0,@monsterInfo.y),@monsterInfo.dir*3.1415926/180,2,@monsterInfo.actorID,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
+	      @monsterInfo = get_monster_info(2,$$);
+	      if(!is_null(@monsterInfo)){
+	      	create_npc(1006+$$,vector_3(@monsterInfo.x,0,@monsterInfo.y),@monsterInfo.dir*3.1415926/180,2,@monsterInfo.actorID,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
 	      };
 	    };
     };
-    highlightprompt(0,"Tip_1");
+    highlight_prompt(0,"Tip_1");
   };
   onmessage("all_killed")
   {
-  	firemessage("show_dlg",998);
-  	clearmessage("show_dlg");
+  	fire_message("show_dlg",998);
+  	clear_message("show_dlg");
   };
   onmessage("dialog_over",998)
   {
     terminate();
-    changescene(1);
+    change_scene(1);
   };
 };

@@ -936,7 +936,7 @@ namespace GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
-                throw new Exception("Expected: vector3(x, y, z)");
+                throw new Exception("Expected: vector_3(x, y, z)");
 
             float x = operands[0].GetFloat();
             float y = operands[1].GetFloat();

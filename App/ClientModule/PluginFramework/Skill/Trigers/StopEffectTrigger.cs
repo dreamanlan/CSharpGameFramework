@@ -6,7 +6,7 @@ using SkillSystem;
 namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
-    /// stopeffect(starttime);
+    /// stop_effect(starttime);
     /// </summary>
     internal class StopEffectTrigger : AbstractStatelessSkillTriger
     {

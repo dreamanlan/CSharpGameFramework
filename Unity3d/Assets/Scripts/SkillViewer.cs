@@ -118,7 +118,7 @@ public class SkillViewer : MonoBehaviour
                 player.ManualSkillId = player.ConfigData.skill1;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3)) {
-                player.ManualSkillId = player.ConfigData.skill2;
+                player.ManualSkillId = player.ConfigData.skill_2;
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4)) {
                 player.ManualSkillId = player.ConfigData.skill3;
@@ -276,8 +276,8 @@ public class SkillViewer : MonoBehaviour
                                 args.Add(actorInfo.skill0);
                             if (actorInfo.skill1 > 0)
                                 args.Add(actorInfo.skill1);
-                            if (actorInfo.skill2 > 0)
-                                args.Add(actorInfo.skill2);
+                            if (actorInfo.skill_2 > 0)
+                                args.Add(actorInfo.skill_2);
                             if (actorInfo.skill3 > 0)
                                 args.Add(actorInfo.skill3);
                             if (actorInfo.skill4 > 0)
@@ -334,7 +334,7 @@ public class SkillViewer : MonoBehaviour
                     List<int> skillIds = new List<int>();
                     if (actorRecord.skill0 > 0) { ++skillCount; skillIds.Add(actorRecord.skill0); }
                     if (actorRecord.skill1 > 0) { ++skillCount; skillIds.Add(actorRecord.skill1); }
-                    if (actorRecord.skill2 > 0) { ++skillCount; skillIds.Add(actorRecord.skill2); }
+                    if (actorRecord.skill_2 > 0) { ++skillCount; skillIds.Add(actorRecord.skill_2); }
                     if (actorRecord.skill3 > 0) { ++skillCount; skillIds.Add(actorRecord.skill3); }
                     if (actorRecord.skill4 > 0) { ++skillCount; skillIds.Add(actorRecord.skill4); }
                     if (actorRecord.skill5 > 0) { ++skillCount; skillIds.Add(actorRecord.skill5); }
@@ -382,8 +382,8 @@ public class SkillViewer : MonoBehaviour
                     args.Add(actorRecord.skill0);
                 if (actorRecord.skill1 > 0)
                     args.Add(actorRecord.skill1);
-                if (actorRecord.skill2 > 0)
-                    args.Add(actorRecord.skill2);
+                if (actorRecord.skill_2 > 0)
+                    args.Add(actorRecord.skill_2);
                 if (actorRecord.skill3 > 0)
                     args.Add(actorRecord.skill3);
                 if (actorRecord.skill4 > 0)

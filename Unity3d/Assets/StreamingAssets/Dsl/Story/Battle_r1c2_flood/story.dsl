@@ -9,41 +9,38 @@ story(battle_main)
   };
   onmessage("start")
   {
-    createnpc(1000,vector3(60,38.4,70),0,3,1,"ai_player",stringlist("Ai/ailogic_player.dsl"));
-    setleaderid(unitid2objid(1000));
-    npcsetformation(1000,0);
+    create_npc(1000,vector_3(60,38.4,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
+    set_leader_id(unit_id_2_obj_id(1000));
+    npc_set_formation(1000,0);
     loop(4){
-      createnpc(1001+$$,vector3(60+rndint(0,10),38.4,70+rndint(0,10)),0,3,$$+2,"ai_member",stringlist("Ai/ailogic_member.dsl"),getleaderid());
-      npcsetformation(1001+$$,$$+1);
+      create_npc(1001+$$,vector_3(60+rnd_int(0,10),38.4,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
+      npc_set_formation(1001+$$,$$+1);
     };
-    camerafollow();
-    publishgfxevent("loading_complete", "ui");
-    firemessage("set_map_image", "Minimap/r1c2_minimap_flood");
-    startstory("auto_battle");
-    firemessage("push_tip_info", "【泥板沉层】洪水退去后，冰盖裂隙里还留着方舟的木痕。");
-    firemessage("push_tip_info", "时代层：洪水层。支线记载，或许能补上别处缺的那一页。");
-    firemessage("push_tip_info", "这一带留着线索，靠近后按 E 调查");
-    firemessage("wave_go");
+    camera_follow();
+    publish_gfx_event("loading_complete", "ui");
+    fire_message("set_map_image", "Minimap/r1c2_minimap_flood");
+    send_room_story_message("enter_parallel", "r1c2");
+    start_story("auto_battle");
+    fire_message("push_tip_info", "【泥板沉层】洪水退去后，冰盖裂隙里还留着方舟的木痕。");
+    fire_message("push_tip_info", "时代层：洪水层。支线记载，或许能补上别处缺的那一页。");
+    fire_message("push_tip_info", "这一带留着线索，靠近后按 E 调查");
+    fire_message("wave_go");
   };
   onmessage("wave_go")
   {
     inc(@wave);
     if(@wave>@total){
-      firemessage("push_tip_info", "碎片拼出一段被抹去的洪水记录。");
-      clearmessage("show_dlg");
-      firemessage("show_dlg",998);
+      fire_message("push_tip_info", "碎片拼出一段被抹去的洪水记录。");
+      clear_message("show_dlg");
+      fire_message("show_dlg",998);
     } else {
       if(@wave<2){
-        firemessage("push_tip_info", "泥板沉层：冰蚀裂口·C 大洪水");
-        objmove(getleaderid(), vector3(299,8.8,234), "wave_spawn_1");
-        wait(3000);
-        firemessage("wave_spawn_1");
+        fire_message("push_tip_info", "泥板沉层：冰蚀裂口·C 大洪水");
+        fire_message("wave_spawn_1");
       } else {
       if(@wave<3){
-        firemessage("push_tip_info", "泥板沉层：方舟残骸带·C 大洪水");
-        objmove(getleaderid(), vector3(388,8.8,132), "wave_spawn_2");
-        wait(3000);
-        firemessage("wave_spawn_2");
+        fire_message("push_tip_info", "泥板沉层：方舟残骸带·C 大洪水");
+        fire_message("wave_spawn_2");
       } else {
       };
       };
@@ -53,42 +50,46 @@ story(battle_main)
   {
     if(@spawned<@wave){
       @spawned=@wave;
-      loop(5){
-        createnpc(1026+$$,vector3(getpositionx(getleaderid())+rndint(0,18),getpositiony(getleaderid()),getpositionz(getleaderid())+rndint(0,18)),0,4,$$+6,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
-      };
+      create_npc(1026,vector_3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1027,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1028,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1029,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1030,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
   };
   onmessage("wave_spawn_2")
   {
     if(@spawned<@wave){
       @spawned=@wave;
-      loop(5){
-        createnpc(1046+$$,vector3(getpositionx(getleaderid())+rndint(0,18),getpositiony(getleaderid()),getpositionz(getleaderid())+rndint(0,18)),0,4,$$+6,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
-      };
+      create_npc(1046,vector_3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1047,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1048,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1049,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1050,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
   };
   onmessage("all_killed")
   {
-    firemessage("wave_go");
+    fire_message("wave_go");
   };
   onmessage("npc_killed:1000")
   {
-    clearmessage("show_dlg");
-    firemessage("show_dlg",999);
+    clear_message("show_dlg");
+    fire_message("show_dlg",999);
   };
   onmessage("all_died")
   {
-    clearmessage("show_dlg");
-    firemessage("show_dlg",999);
+    clear_message("show_dlg");
+    fire_message("show_dlg",999);
   };
   onmessage("dialog_over",998)
   {
     terminate();
-    closebattle(10011);
+    close_battle(10011);
   };
   onmessage("dialog_over",999)
   {
     terminate();
-    closebattle(10011);
+    close_battle(10011);
   };
 };

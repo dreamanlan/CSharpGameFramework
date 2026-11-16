@@ -43,7 +43,7 @@ namespace ScriptableFramework.Story.Commands
             TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(resId);
             if (null != cfg) {
                 ResourceSystem.Instance.PreloadObject(cfg.avatar);
-                int[] skillIds = new int[] { cfg.skill0, cfg.skill1, cfg.skill2, cfg.skill3, cfg.skill4, cfg.skill5, cfg.skill6, cfg.skill7, cfg.skill8, cfg.bornskill, cfg.deadskill };
+                int[] skillIds = new int[] { cfg.skill0, cfg.skill1, cfg.skill_2, cfg.skill3, cfg.skill4, cfg.skill5, cfg.skill6, cfg.skill7, cfg.skill8, cfg.bornskill, cfg.deadskill };
                 for (int ix = 0; ix < skillIds.Length; ++ix) {
                     int skillId = skillIds[ix];
                     if (skillId > 0) {
@@ -60,7 +60,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// startstory(storyId[,multiple]);
+    /// start_story(storyId[,multiple]);
     /// </summary>
     internal sealed class StartStoryCommand : SimpleExpressionBase
     {
@@ -80,7 +80,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// stopstory(storyId[,multiple]);
+    /// stop_story(storyId[,multiple]);
     /// </summary>
     internal sealed class StopStoryCommand : SimpleExpressionBase
     {
@@ -98,7 +98,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// waitstory(storyId1,storyId2,...)[set(var,val)timeoutset(timeout,var,val)][multiple(n)];
+    /// wait_story(storyId1,storyId2,...)[set(var,val)timeoutset(timeout,var,val)][multiple(n)];
     /// </summary>
     internal sealed class WaitStoryCommand : AbstractExpression
     {
@@ -260,7 +260,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// pausestory(storyId1,storyId2,...[,multiple]);
+    /// pause_story(storyId1,storyId2,...[,multiple]);
     /// </summary>
     internal sealed class PauseStoryCommand : SimpleExpressionBase
     {
@@ -282,7 +282,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// resumestory(storyId1,storyId2,...[,multiple]);
+    /// resume_story(storyId1,storyId2,...[,multiple]);
     /// </summary>
     internal sealed class ResumeStoryCommand : SimpleExpressionBase
     {
@@ -304,7 +304,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setparent(objpath,parentpath);
+    /// set_parent(objpath,parentpath);
     /// </summary>
     internal sealed class SetParentCommand : SimpleExpressionBase
     {
@@ -349,7 +349,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setactive(objpath,active);
+    /// set_active(objpath,active);
     /// </summary>
     internal sealed class SetActiveCommand : SimpleExpressionBase
     {
@@ -391,7 +391,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// firemessage(msgId,arg1,arg2,...);
+    /// fire_message(msgId,arg1,arg2,...);
     /// </summary>
     internal class FireMessageCommand : SimpleExpressionBase
     {
@@ -417,7 +417,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// fireconcurrentmessage(msgId,arg1,arg2,...);
+    /// fire_concurrent_message(msgId,arg1,arg2,...);
     /// </summary>
     internal class FireConcurrentMessageCommand : SimpleExpressionBase
     {
@@ -443,7 +443,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// wait_all_message(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
     internal class WaitAllMessageCommand : AbstractExpression
     {
@@ -557,7 +557,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// waitallmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// wait_all_message_handler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
     internal class WaitAllMessageHandlerCommand : AbstractExpression
     {
@@ -663,7 +663,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// suspendallmessagehandler(msgid1,msgid2,...);
+    /// suspend_all_message_handler(msgid1,msgid2,...);
     /// </summary>
     internal class SuspendAllMessageHandlerCommand : SimpleExpressionBase
     {
@@ -676,7 +676,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// resumeallmessagehandler(msgid1,msgid2,...);
+    /// resume_all_message_handler(msgid1,msgid2,...);
     /// </summary>
     internal class ResumeAllMessageHandlerCommand : SimpleExpressionBase
     {
@@ -689,7 +689,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// sendroomstorymessage(msg,arg1,arg2,...);
+    /// send_room_story_message(msg,arg1,arg2,...);
     /// </summary>
     internal class SendRoomStoryMessageCommand : SimpleExpressionBase
     {
@@ -729,7 +729,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// sendserverstorymessage(msg,arg1,arg2,...);
+    /// send_server_story_message(msg,arg1,arg2,...);
     /// </summary>
     internal class SendServerStoryMessageCommand : AbstractExpression
     {
@@ -787,7 +787,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// publishgfxevent(ev_name,group,arg1,arg2,...);
+    /// publish_gfx_event(ev_name,group,arg1,arg2,...);
     /// </summary>
     internal class PublishGfxEventCommand : AbstractExpression
     {
@@ -832,7 +832,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendgfxmessage(objpath,funcname,arg1,arg2,...);
+    /// send_gfx_message(objpath,funcname,arg1,arg2,...);
     /// </summary>
     internal class SendGfxMessageCommand : AbstractExpression
     {
@@ -877,7 +877,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendgfxmessagewithtag(tag,funcname,arg1,arg2,...);
+    /// send_gfx_message_with_tag(tag,funcname,arg1,arg2,...);
     /// </summary>
     internal class SendGfxMessageWithTagCommand : AbstractExpression
     {
@@ -922,7 +922,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_Args = new List<IExpression>();
     }
     /// <summary>
-    /// sendgfxmessagewithgameobject(obj,funcname,arg1,arg2,...);
+    /// send_gfx_message_with_game_object(obj,funcname,arg1,arg2,...);
     /// </summary>
     internal class SendGfxMessageWithGameObjectCommand : SimpleExpressionBase
     {
@@ -957,7 +957,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// sendskillmessage(objid,skillid,selector,arg1,arg2,...);
+    /// send_skill_message(objid,skillid,selector,arg1,arg2,...);
     /// </summary>
     internal class SendSkillMessageCommand : SimpleExpressionBase
     {
@@ -985,7 +985,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// creategameobject(name,prefab[,parent]){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));}(obj(varname));
+    /// create_game_object(name,prefab[,parent]){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));}(obj(varname));
     /// </summary>
     internal class CreateGameObjectCommand : AbstractExpression
     {
@@ -1145,7 +1145,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveScale = false;
     }
     /// <summary>
-    /// settransform(name, local_or_world){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));};
+    /// set_transform(name, local_or_world){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));};
     /// </summary>
     internal class SetTransformCommand : AbstractExpression
     {
@@ -1260,7 +1260,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveScale = false;
     }
     /// <summary>
-    /// addtransform(name, local_or_world){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));};
+    /// add_transform(name, local_or_world){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));};
     /// </summary>
     internal class AddTransformCommand : AbstractExpression
     {
@@ -1377,7 +1377,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveScale = false;
     }
     /// <summary>
-    /// destroygameobject(objpath);
+    /// destroy_game_object(objpath);
     /// </summary>
     internal class DestroyGameObjectCommand : SimpleExpressionBase
     {
@@ -1409,7 +1409,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setvisible(objpath,visible);
+    /// set_visible(objpath,visible);
     /// </summary>
     internal class SetVisibleCommand : SimpleExpressionBase
     {
@@ -1440,7 +1440,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// putonground(objpath);
+    /// put_on_ground(objpath);
     /// </summary>
     internal class PutOnGroundCommand : SimpleExpressionBase
     {
@@ -1472,7 +1472,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setnavmeshagentenable(objpath,enable);
+    /// set_nav_mesh_agent_enable(objpath,enable);
     /// </summary>
     internal class SetNavMeshAgentEnabledCommand : SimpleExpressionBase
     {
@@ -1506,7 +1506,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// addcomponent(objpath,componenttype)[obj(varname)];
+    /// add_component(objpath,componenttype)[obj(varname)];
     /// </summary>
     internal class AddComponentCommand : AbstractExpression
     {
@@ -1574,7 +1574,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjVarName;
     }
     /// <summary>
-    /// removecomponent(objpath,componenttype);
+    /// remove_component(objpath,componenttype);
     /// </summary>
     internal class RemoveComponentCommand : SimpleExpressionBase
     {
@@ -1611,7 +1611,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// installplugin(objpath,pluginname,dslfile,storyid);
+    /// install_plugin(objpath,pluginname,dslfile,story_id);
     /// </summary>
     internal class InstallPluginCommand : SimpleExpressionBase
     {
@@ -1637,7 +1637,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// removeplugin(objpath,pluginname,dslfile,storyid);
+    /// remove_plugin(objpath,pluginname,dslfile,story_id);
     /// </summary>
     internal class RemovePluginCommand : SimpleExpressionBase
     {
@@ -1663,7 +1663,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// openurl(url);
+    /// open_url(url);
     /// </summary>
     internal class OpenUrlCommand : SimpleExpressionBase
     {
@@ -1677,7 +1677,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// changescene(sceneId);
+    /// change_scene(sceneId);
     /// </summary>
     internal class ChangeSceneCommand : SimpleExpressionBase
     {
@@ -1691,7 +1691,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// openbattle(sceneId);
+    /// open_battle(sceneId);
     /// </summary>
     internal class OpenBattleCommand : SimpleExpressionBase
     {
@@ -1705,7 +1705,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// closebattle();
+    /// close_battle();
     /// </summary>
     internal class CloseBattleCommand : SimpleExpressionBase
     {
@@ -1719,7 +1719,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// createscenelogic(scenelogicid,dslfile,storyid);
+    /// create_scene_logic(scenelogicid,dslfile,story_id);
     /// </summary>
     internal class CreateSceneLogicCommand : SimpleExpressionBase
     {
@@ -1742,7 +1742,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// destroyscenelogic(scenelogicid);
+    /// destroy_scene_logic(scenelogicid);
     /// </summary>
     internal class DestroySceneLogicCommand : SimpleExpressionBase
     {
@@ -1756,7 +1756,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// pausescenelogic(scenelogicid,pause);
+    /// pause_scene_logic(scenelogicid,pause);
     /// </summary>
     internal class PauseSceneLogicCommand : SimpleExpressionBase
     {
@@ -1770,13 +1770,13 @@ namespace ScriptableFramework.Story.Commands
             if (null != info) {
                 info.IsLogicPaused = (0 == string.Compare(enabled, "true"));
             } else {
-                LogSystem.Error("pausescenelogic can't find scenelogic {0}", cfgId);
+                LogSystem.Error("pause_scene_logic can't find scenelogic {0}", cfgId);
             }
             return BoxedValue.NullObject;
         }
     }
     /// <summary>
-    /// restarttimeout(scenelogicid[,storyid,dslfile]);
+    /// restart_timeout(scenelogicid[,story_id,dslfile]);
     /// </summary>
     internal class RestartTimeoutCommand : SimpleExpressionBase
     {
@@ -1795,16 +1795,16 @@ namespace ScriptableFramework.Story.Commands
                         data.m_Timeout = operands[1].GetLong();
                     }
                 } else {
-                    LogSystem.Warn("restarttimeout scenelogic {0} dosen't start, add wait command !", cfgId);
+                    LogSystem.Warn("restart_timeout scenelogic {0} dosen't start, add wait command !", cfgId);
                 }
             } else {
-                LogSystem.Error("restarttimeout can't find scenelogic {0}", cfgId);
+                LogSystem.Error("restart_timeout can't find scenelogic {0}", cfgId);
             }
             return BoxedValue.NullObject;
         }
     }
     /// <summary>
-    /// highlightpromptwithdict(key,arg1,arg2,...);
+    /// highlight_prompt_with_dict(key,arg1,arg2,...);
     /// </summary>
     internal class HighlightPromptWithDictCommand : SimpleExpressionBase
     {
@@ -1822,7 +1822,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// highlightprompt(prompt);
+    /// highlight_prompt(prompt);
     /// </summary>
     internal class HighlightPromptCommand : SimpleExpressionBase
     {
@@ -1836,7 +1836,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setactorscale(objpath,scale);
+    /// set_actor_scale(objpath,scale);
     /// </summary>
     internal class SetActorScaleCommand : SimpleExpressionBase
     {
@@ -1873,7 +1873,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// gameobjectanimation(objpath,animName[,crossFadeTime]);
+    /// game_object_animation(objpath,animName[,crossFadeTime]);
     /// </summary>
     internal class GameObjectAnimationCommand : SimpleExpressionBase
     {
@@ -1917,7 +1917,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// gameobjectanimationparam(objpath,type(key,val),type(key,val),...);
+    /// game_object_animation_param(objpath,type(key,val),type(key,val),...);
     /// </summary>
     internal class GameObjectAnimationParamCommand : AbstractExpression
     {
@@ -2042,7 +2042,7 @@ namespace ScriptableFramework.Story.Commands
         private List<ParamInfo> m_Params = new List<ParamInfo>();
     }
     /// <summary>
-    /// gameobjectcastskill(objpath,skillid,...);
+    /// game_object_cast_skill(objpath,skillid,...);
     /// </summary>
     internal class GameObjectCastSkillCommand : SimpleExpressionBase
     {
@@ -2080,7 +2080,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// gameobjectstopskill(objpath);
+    /// game_object_stop_skill(objpath);
     /// </summary>
     internal class GameObjectStopSkillCommand : SimpleExpressionBase
     {

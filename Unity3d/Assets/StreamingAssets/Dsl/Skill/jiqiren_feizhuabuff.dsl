@@ -2,27 +2,27 @@ skill(116)
 {  
   section(2000)
   {
-    enablemoveagent(false);
+    enable_move_agent(false);
     animation("Stand");
-    selfeffect(selfEffect,1000,"eyes",0)
+    self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector3(0,1,0));
+      transform(vector_3(0,1,0));
     };
-    facetotarget(0,100);
-    charge(200,10,1,vector3(-1,0,-1),0);
+    face_to_target(0,100);
+    charge(200,10,1,vector_3(-1,0,-1),0);
     damage(0);
-    addimpacttoself(0,10002);
+    add_impact_to_self(0,10002);
   };
   section(100)
   {
-    stopimpact(0,10002);
+    stop_impact(0,10002);
     animation("Stand");
-    enablemoveagent(true);
+    enable_move_agent(true);
   };
   onstop
   {
-    stopimpact(0,10002);
+    stop_impact(0,10002);
     animation("Stand");
-    enablemoveagent(true);
+    enable_move_agent(true);
   };
 };

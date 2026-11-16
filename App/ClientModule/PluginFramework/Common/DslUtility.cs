@@ -9,7 +9,7 @@ namespace ScriptableFramework
   {
     public static Vector2 CalcVector2(Dsl.FunctionData callData)
     {
-      if (null == callData || callData.GetId() != "vector2")
+      if (null == callData || callData.GetId() != "vector_2")
         return Vector2.zero;
       int num = callData.GetParamNum();
       if (2 == num) {
@@ -22,7 +22,7 @@ namespace ScriptableFramework
     }
     public static Vector3 CalcVector3(Dsl.FunctionData callData)
     {
-      if (null == callData || callData.GetId() != "vector3")
+      if (null == callData || callData.GetId() != "vector_3")
         return Vector3.zero;
       int num = callData.GetParamNum();
       if (3 == num) {
@@ -36,7 +36,7 @@ namespace ScriptableFramework
     }
     public static Vector4 CalcVector4(Dsl.FunctionData callData)
     {
-      if (null == callData || callData.GetId() != "vector4")
+      if (null == callData || callData.GetId() != "vector_4")
         return Vector4.zero;
       int num = callData.GetParamNum();
       if (4 == num) {

@@ -497,7 +497,7 @@ namespace ScriptableFramework.Story.Functions
         }
         private void LoadCall(Dsl.FunctionData callData)
         {
-            if (callData.GetId() == "getgameobject") {
+            if (callData.GetId() == "get_game_object") {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath = CodeStructure.Load(callData.GetParam(0));

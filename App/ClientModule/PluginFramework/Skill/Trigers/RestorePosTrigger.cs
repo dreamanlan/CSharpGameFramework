@@ -6,7 +6,7 @@ using SkillSystem;
 namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
-    /// storepos([start_time]);
+    /// store_pos([start_time]);
     /// </summary>
     internal class StorePosTrigger : AbstractStatelessSkillTriger
     {
@@ -45,7 +45,7 @@ namespace ScriptableFramework.Skill.Trigers
         }
     }
     /// <summary>
-    /// restorepos([start_time]);
+    /// restore_pos([start_time]);
     /// </summary>
     internal class RestorePosTrigger : AbstractStatelessSkillTriger
     {

@@ -3,14 +3,14 @@ skill(103)
   section(1000)
   {
     animation("Attack");
-    adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"eyes",0)
+    adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector3(0,1,0));
+      transform(vector_3(0,1,0));
     };
   };
   section(100)
   {
-    sendstorymessage(0,"summon_bear","32","4");
+    send_story_message(0,"summon_bear","32","4");
   };
 };

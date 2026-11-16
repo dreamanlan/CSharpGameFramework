@@ -1,0 +1,616 @@
+encoding:Unicode (UTF-8) Unicode (UTF-8)
+commandline:D:\GitHub\CSharpGameFramework\BatchCommand.dll ./Tools/Batch/buildclient.dsl Debug False
+commandline args:D:\GitHub\CSharpGameFramework\BatchCommand.dll,./Tools/Batch/buildclient.dsl,Debug,False
+args:./Tools/Batch/buildclient.dsl,Debug,False
+current directory:D:\GitHub\CSharpGameFramework
+script directory:D:\GitHub\CSharpGameFramework\.\Tools\Batch
+
+we'd better use vs2022 msbuild, vs2019 or vs2017 may fail to compile.
+
+windir=C:\WINDOWS
+PSExecutionPolicyPreference=Bypass
+USERNAME=dreamanlan
+RUBY_UNBUFFERED=1
+SystemRoot=C:\WINDOWS
+pause_arg=False
+ProgramFiles=C:\Program Files
+ProgramData=C:\ProgramData
+VSCODE_PID=60764
+client_pause=False
+PROCESSOR_ARCHITECTURE=AMD64
+CODEBUDDY_SAFE_DELETE_BULK_THRESHOLD=500
+APPDATA=C:\Users\dreamanlan\AppData\Roaming
+USERDOMAIN_ROAMINGPROFILE=DREAMANLAN-PC8
+VSCODE_CODE_CACHE_PATH=C:\Users\dreamanlan\AppData\Roaming\Code\CachedData\e646868227c3e3a9e3f24277c8c7220be42c0be7
+USERPROFILE=C:\Users\dreamanlan
+WT_SESSION=1df7a138-f6e6-41c3-bc47-2d644e98b7e2
+PYTHONUNBUFFERED=1
+NODE_OPTIONS=--require="c:/Users/dreamanlan/.vscode/extensions/tencent-cloud.coding-copilot-4.12.43685444/out/vendor/shim/node-language-shim.cjs"
+CLAUDE_SESSION_ID=e61f17d91dbd4bcbb5836cfcf373b26c
+SESSIONNAME=RDP-Tcp#0
+UGIT_HOME=C:\Users\dreamanlan\AppData\Local\UGit\app-6.7.0
+PROMPT=$P$G
+PROCESSOR_IDENTIFIER=AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD
+MANPAGER=cat
+rootdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../..
+STDBUF_O=L
+workdir=D:\GitHub\CSharpGameFramework\
+OS=Windows_NT
+tablecopy=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/TableReaderGenerator/bin/Debug/net9.0/TableReaderGenerator.exe
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL
+COMPUTERNAME=DREAMANLAN-PC8
+PSModulePath=C:\Users\dreamanlan\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+VSCODE_EXE=C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\Code.exe
+HOMEDRIVE=C:
+ProgramFiles(x86)=C:\Program Files (x86)
+ALLUSERSPROFILE=C:\ProgramData
+CODEBUDDY_SAFE_DELETE_REPORT_PATH=C:\Users\DREAMA~1\AppData\Local\Temp\codebuddy-safe-delete\report-66508-1794812028452-rnb1cjr5rj9.jsonl
+NUMBER_OF_PROCESSORS=32
+GENIE_TRASH_DIR=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\genie-trash
+CODEBUDDY_NODE_BIN=D:\nodejs\node.exe
+Configuration=Debug
+LOGONSERVER=\\DREAMANLAN-PC8
+TMP=C:\Users\DREAMA~1\AppData\Local\Temp
+libdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternLibrary
+CHROME_CRASHPAD_PIPE_NAME=\\.\pipe\crashpad_60764_STZEKVWPQUVFOSHD
+CODEBUDDY_SAFE_DELETE_BULK_GUARD=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-delete-bulk-guard.cjs
+TEMP=C:\Users\DREAMA~1\AppData\Local\Temp
+TERM=xterm-256color
+FPS_BROWSER_APP_PROFILE_STRING=Internet Explorer
+GIT_PAGER=cat
+USERDOMAIN=DREAMANLAN-PC8
+PAGER=cat
+CMAKE_POLICY_VERSION_MINIMUM=3.5
+msbuild2017=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe
+CODEBUDDY_SAFE_DELETE_HOST_HEARTBEAT=C:\Users\DREAMA~1\AppData\Local\Temp\codebuddy-sd-state\host-66508-678f597f84b77305\host-heartbeat.json
+VSCODE_NODE_COMPILE_CACHE_KIND=extension-host
+VSCODE_ESM_ENTRYPOINT=vs/workbench/api/node/extensionHostProcess
+pdb2mdb=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe
+CLIENTNAME=DREAMANLAN-MC3
+plugindir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins
+QTWEBENGINE_CHROMIUM_FLAGS=--disable-gpu
+tabledir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/Tables
+SystemDrive=C:
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+VK_SDK_PATH=C:\VulkanSDK\1.4.363.0
+CODEBUDDY_SAFE_DELETE_SHIM_DIR=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim
+VSCODE_IPC_HOOK=\\.\pipe\f2903c27-1.143.1-main-sock
+FPS_BROWSER_USER_PROFILE_STRING=Default
+PATH=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-bin;C:\VulkanSDK\1.4.363.0\Bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Tencent\itfs\bin;d:\Git\cmd;C:\Program Files\dotnet\;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Program Files\TortoiseGit\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;D:\nodejs\;C:\Users\dreamanlan\AppData\Local\Microsoft\WindowsApps;C:\Users\dreamanlan\.dotnet\tools;C:\Users\dreamanlan\AppData\Local\Programs\Ollama;C:\Users\dreamanlan\AppData\Local\GitHubDesktop\bin;C:\Users\dreamanlan\AppData\Local\Python\bin;C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\bin\copilot-shim;C:\Users\dreamanlan\AppData\Local\Programs\MagicLomix\bin;C:\Users\dreamanlan\AppData\Roaming\npm;C:\Users\dreamanlan\AppData\Local\UGit\app-6.7.0\resources\app\git\cmd;C:\Users\dreamanlan\AppData\Local\UGit\bin
+mono=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe
+CDP_PORT=9224
+paused=False
+logdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../BuildLog
+VSCODE_HANDLES_UNCAUGHT_ERRORS=true
+VSCODE_NODE_COMPILE_CACHE_ROOT=C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\e646868227\resources\app\node-compile-cache
+PUBLIC=C:\Users\Public
+CODEBUDDY_SAFE_DELETE_ENABLED=1
+VSCODE_NLS_CONFIG={"userLocale":"en-us","osLocale":"zh-cn","resolvedLanguage":"en","defaultMessagesFile":"C:\\Users\\dreamanlan\\AppData\\Local\\Programs\\Microsoft VS Code\\e646868227\\resources\\app\\out\\nls.messages.json","locale":"en-us","availableLanguages":{}}
+CommonProgramFiles=C:\Program Files\Common Files
+CODEBUDDY_SAFE_DELETE_BIN_DIR=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-bin
+WSLENV=WT_SESSION:WT_PROFILE_ID:
+ProgramW6432=C:\Program Files
+WSL_UTF8=1
+cfg=Debug
+PROCESSOR_LEVEL=26
+WT_PROFILE_ID={61c54bbd-c2c6-5271-96e7-009a87ff44bf}
+dsldir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/DslFile
+VSCODE_L10N_BUNDLE_LOCATION=
+msbuild2019=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe
+CODEBUDDY_COPILOT_INTERNET_ENVIRONMENT=iOA
+msbuild2022=C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe
+HOMEPATH=\Users\dreamanlan
+xbuild=C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe
+client_cfg=Debug
+clidsl=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/StreamingAssets/Dsl
+SYSTEMD_PAGER=
+dslcopy=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/DslCopy/bin/Release/net9.0/DslCopy.exe
+scriptdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch
+CODEBUDDY_SESSION_ID=e61f17d91dbd4bcbb5836cfcf373b26c
+PYTHONPATH=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim
+ComSpec=C:\WINDOWS\system32\cmd.exe
+VULKAN_SDK=C:\VulkanSDK\1.4.363.0
+PROCESSOR_REVISION=4400
+EDITOR=cat
+BASH_ENV=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-bin\safe-delete-bash-env.sh
+CODEBUDDY_TOOL_CALL_ID=chatcmpl-tool-8ecbb557b6b27379
+clitable=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/StreamingAssets
+CommonProgramW6432=C:\Program Files\Common Files
+CODEBUDDY_SAFE_DELETE_BULK_STATE_DIR=C:\Users\DREAMA~1\AppData\Local\Temp\codebuddy-safe-delete-bulk
+VSCODE_CRASH_REPORTER_PROCESS_TYPE=extensionHost
+VSCODE_CWD=D:\AiClaw\tools
+Platform=Any CPU
+LOCALAPPDATA=C:\Users\dreamanlan\AppData\Local
+DriverData=C:\Windows\System32\Drivers\DriverData
+
+适用�?.NET Framework MSBuild 版本 17.14.60+43b635718
+17.14.60.43110
+new process:C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe /version, exit code:0
+building Client.sln ...
+new process:C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe /m /nologo /noconsolelogger /p:Configuration=Debug /flp:LogFile=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../BuildLog/Client.sln.log;Encoding=UTF-8 /t:clean;rebuild D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Client.sln /p:Platform="Any CPU", exit code:0
+result:0
+curdir:D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\ClientPlugins.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/ClientPlugins.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ClientPlugins.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ClientPlugins.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\ClientProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/ClientProtoBuf.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ClientProtoBuf.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ClientProtoBuf.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\Common.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/Common.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Common.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Common.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\Cs2DslUtility.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/Cs2DslUtility.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Cs2DslUtility.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Cs2DslUtility.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\DotnetSkillScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/DotnetSkillScript.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetSkillScript.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetSkillScript.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\DotnetStoryScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/DotnetStoryScript.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetStoryScript.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetStoryScript.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\Dsl.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/Dsl.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Dsl.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Dsl.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\GameObjects.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/GameObjects.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe GameObjects.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe GameObjects.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\ImpactSystem.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/ImpactSystem.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ImpactSystem.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ImpactSystem.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\Lidgren.Network.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/Lidgren.Network.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Lidgren.Network.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Lidgren.Network.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\LitJson.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/LitJson.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe LitJson.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe LitJson.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\MyWebSocket.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/MyWebSocket.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe MyWebSocket.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe MyWebSocket.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\PluginFramework.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/PluginFramework.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe PluginFramework.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe PluginFramework.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\protobuf-net.Core.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/protobuf-net.Core.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.Core.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.Core.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\protobuf-net.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/protobuf-net.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\SceneLogic.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/SceneLogic.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe SceneLogic.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe SceneLogic.dll, exit code:2
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\ScriptFrameworkLibrary.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/ScriptFrameworkLibrary.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ScriptFrameworkLibrary.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ScriptFrameworkLibrary.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\UnityEditor.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/UnityEditor.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UnityEditor.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UnityEditor.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\UnityEngine.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/UnityEngine.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UnityEngine.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UnityEngine.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ClientModule/ClientPlugins/bin/Debug/netstandard2.1\UnityEngine.UI.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/UnityEngine.UI.dll
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UnityEngine.UI.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UnityEngine.UI.dll, exit code:1
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternalLibrary/protobuf-net\protobuf-net.Core.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins\protobuf-net.Core.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternalLibrary/protobuf-net\protobuf-net.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins\protobuf-net.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternalLibrary/protobuf-net\System.Collections.Immutable.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins\System.Collections.Immutable.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternalLibrary/protobuf-net\protobuf-net.Core.xml => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins\protobuf-net.Core.xml
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternalLibrary/protobuf-net\protobuf-net.xml => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins\protobuf-net.xml
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternalLibrary/protobuf-net\System.Collections.Immutable.xml => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins\System.Collections.Immutable.xml
+delete file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/UnityEngine.dll
+delete file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/UnityEngine.UI.dll
+delete file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/Plugins/UnityEditor.dll
+defaultCodePage:65001
+dsl files copy finished
+dsl encode finished
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/DslCopy/bin/Release/net9.0/DslCopy.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/DslFile D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/StreamingAssets/Dsl, exit code:0
+table files copy finished
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/TableReaderGenerator/bin/Debug/net9.0/TableReaderGenerator.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/Tables D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Unity3d/Assets/StreamingAssets, exit code:0
+encoding:Chinese Simplified (GB2312) Chinese Simplified (GB2312)
+commandline:D:\GitHub\CSharpGameFramework\BatchCommand.dll ./Tools/Batch/buildserver.dsl Debug False
+commandline args:D:\GitHub\CSharpGameFramework\BatchCommand.dll,./Tools/Batch/buildserver.dsl,Debug,False
+args:./Tools/Batch/buildserver.dsl,Debug,False
+current directory:D:\GitHub\CSharpGameFramework
+script directory:D:\GitHub\CSharpGameFramework\.\Tools\Batch
+
+we'd better use vs2022 msbuild, vs2019 or vs2017 may fail to compile.
+
+CDP_PORT=9224
+msbuild2019=C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe
+CODEBUDDY_SAFE_DELETE_BULK_GUARD=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-delete-bulk-guard.cjs
+EDITOR=cat
+server_cfg=Debug
+VSCODE_ESM_ENTRYPOINT=vs/workbench/api/node/extensionHostProcess
+CODEBUDDY_NODE_BIN=D:\nodejs\node.exe
+VSCODE_IPC_HOOK=\\.\pipe\f2903c27-1.143.1-main-sock
+QTWEBENGINE_CHROMIUM_FLAGS=--disable-gpu
+MANPAGER=cat
+CHROME_CRASHPAD_PIPE_NAME=\\.\pipe\crashpad_60764_STZEKVWPQUVFOSHD
+mono=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe
+WT_SESSION=1df7a138-f6e6-41c3-bc47-2d644e98b7e2
+VSCODE_NODE_COMPILE_CACHE_ROOT=C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\e646868227\resources\app\node-compile-cache
+VSCODE_NODE_COMPILE_CACHE_KIND=extension-host
+COMPUTERNAME=DREAMANLAN-PC8
+GIT_PAGER=cat
+logdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../BuildLog
+CODEBUDDY_TOOL_CALL_ID=chatcmpl-tool-8ecbb557b6b27379
+PROCESSOR_LEVEL=26
+CODEBUDDY_COPILOT_INTERNET_ENVIRONMENT=iOA
+SystemRoot=C:\WINDOWS
+svrdsl=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin/Dsl
+RUBY_UNBUFFERED=1
+Platform=Any CPU
+ProgramData=C:\ProgramData
+CLAUDE_SESSION_ID=e61f17d91dbd4bcbb5836cfcf373b26c
+workdir=D:\GitHub\CSharpGameFramework\
+PYTHONUNBUFFERED=1
+server_pause=False
+ComSpec=C:\WINDOWS\system32\cmd.exe
+rootdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../..
+USERDOMAIN=DREAMANLAN-PC8
+msbuild2017=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe
+libdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../ExternLibrary
+VSCODE_NLS_CONFIG={"userLocale":"en-us","osLocale":"zh-cn","resolvedLanguage":"en","defaultMessagesFile":"C:\\Users\\dreamanlan\\AppData\\Local\\Programs\\Microsoft VS Code\\e646868227\\resources\\app\\out\\nls.messages.json","locale":"en-us","availableLanguages":{}}
+CLIENTNAME=DREAMANLAN-MC3
+CODEBUDDY_SAFE_DELETE_REPORT_PATH=C:\Users\DREAMA~1\AppData\Local\Temp\codebuddy-safe-delete\report-66508-1794812028452-rnb1cjr5rj9.jsonl
+msbuild2022=C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe
+LOCALAPPDATA=C:\Users\dreamanlan\AppData\Local
+client_cfg=Debug
+CMAKE_POLICY_VERSION_MINIMUM=3.5
+APPDATA=C:\Users\dreamanlan\AppData\Roaming
+CODEBUDDY_SAFE_DELETE_BULK_STATE_DIR=C:\Users\DREAMA~1\AppData\Local\Temp\codebuddy-safe-delete-bulk
+GENIE_TRASH_DIR=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\genie-trash
+dslcopy=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/DslCopy/bin/Release/net9.0/DslCopy.exe
+PYTHONPATH=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim
+PROMPT=$P$G
+CODEBUDDY_SAFE_DELETE_BULK_THRESHOLD=500
+ALLUSERSPROFILE=C:\ProgramData
+NUMBER_OF_PROCESSORS=32
+pause_arg=False
+CODEBUDDY_SAFE_DELETE_HOST_HEARTBEAT=C:\Users\DREAMA~1\AppData\Local\Temp\codebuddy-sd-state\host-66508-678f597f84b77305\host-heartbeat.json
+Configuration=Debug
+VSCODE_HANDLES_UNCAUGHT_ERRORS=true
+PUBLIC=C:\Users\Public
+UGIT_HOME=C:\Users\dreamanlan\AppData\Local\UGit\app-6.7.0
+WT_PROFILE_ID={61c54bbd-c2c6-5271-96e7-009a87ff44bf}
+SESSIONNAME=RDP-Tcp#0
+SYSTEMD_PAGER=
+TMP=C:\Users\DREAMA~1\AppData\Local\Temp
+BASH_ENV=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-bin\safe-delete-bash-env.sh
+PSModulePath=C:\Users\dreamanlan\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+NODE_OPTIONS=--require="c:/Users/dreamanlan/.vscode/extensions/tencent-cloud.coding-copilot-4.12.43685444/out/vendor/shim/node-language-shim.cjs"
+CommonProgramW6432=C:\Program Files\Common Files
+HOMEPATH=\Users\dreamanlan
+scriptdir=D:\GitHub\CSharpGameFramework\.\Tools\Batch
+PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.CPL
+dsldir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/DslFile
+svrtable=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin/Tables
+PATH=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-bin;C:\VulkanSDK\1.4.363.0\Bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\NVIDIA App\NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files (x86)\Tencent\itfs\bin;d:\Git\cmd;C:\Program Files\dotnet\;C:\Strawberry\c\bin;C:\Strawberry\perl\site\bin;C:\Strawberry\perl\bin;C:\Program Files\TortoiseGit\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\CMake\bin;C:\Program Files (x86)\Windows Kits\10\Windows Performance Toolkit\;D:\nodejs\;C:\Users\dreamanlan\AppData\Local\Microsoft\WindowsApps;C:\Users\dreamanlan\.dotnet\tools;C:\Users\dreamanlan\AppData\Local\Programs\Ollama;C:\Users\dreamanlan\AppData\Local\GitHubDesktop\bin;C:\Users\dreamanlan\AppData\Local\Python\bin;C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\bin\copilot-shim;C:\Users\dreamanlan\AppData\Local\Programs\MagicLomix\bin;C:\Users\dreamanlan\AppData\Roaming\npm;C:\Users\dreamanlan\AppData\Local\UGit\app-6.7.0\resources\app\git\cmd;C:\Users\dreamanlan\AppData\Local\UGit\bin
+OS=Windows_NT
+USERDOMAIN_ROAMINGPROFILE=DREAMANLAN-PC8
+ProgramW6432=C:\Program Files
+VSCODE_CRASH_REPORTER_PROCESS_TYPE=extensionHost
+VSCODE_PID=60764
+TEMP=C:\Users\DREAMA~1\AppData\Local\Temp
+ProgramFiles(x86)=C:\Program Files (x86)
+CommonProgramFiles=C:\Program Files\Common Files
+VSCODE_L10N_BUNDLE_LOCATION=
+HOMEDRIVE=C:
+cfg=Debug
+DriverData=C:\Windows\System32\Drivers\DriverData
+client_pause=False
+STDBUF_O=L
+CODEBUDDY_SAFE_DELETE_SHIM_DIR=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim
+VSCODE_EXE=C:\Users\dreamanlan\AppData\Local\Programs\Microsoft VS Code\Code.exe
+FPS_BROWSER_APP_PROFILE_STRING=Internet Explorer
+WSLENV=WT_SESSION:WT_PROFILE_ID:
+USERPROFILE=C:\Users\dreamanlan
+FPS_BROWSER_USER_PROFILE_STRING=Default
+CODEBUDDY_SAFE_DELETE_ENABLED=1
+windir=C:\WINDOWS
+PROCESSOR_REVISION=4400
+pdb2mdb=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe
+CODEBUDDY_SAFE_DELETE_BIN_DIR=c:\Users\dreamanlan\.vscode\extensions\tencent-cloud.coding-copilot-4.12.43685444\out\vendor\shim\safe-bin
+VSCODE_CWD=D:\AiClaw\tools
+PSExecutionPolicyPreference=Bypass
+svrbin=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin
+VSCODE_CODE_CACHE_PATH=C:\Users\dreamanlan\AppData\Roaming\Code\CachedData\e646868227c3e3a9e3f24277c8c7220be42c0be7
+SystemDrive=C:
+ProgramFiles=C:\Program Files
+paused=False
+WSL_UTF8=1
+USERNAME=dreamanlan
+PAGER=cat
+CommonProgramFiles(x86)=C:\Program Files (x86)\Common Files
+LOGONSERVER=\\DREAMANLAN-PC8
+TERM=xterm-256color
+PROCESSOR_IDENTIFIER=AMD64 Family 26 Model 68 Stepping 0, AuthenticAMD
+tabledir=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/Tables
+tablecopy=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/TableReaderGenerator/bin/Debug/net9.0/TableReaderGenerator.exe
+VK_SDK_PATH=C:\VulkanSDK\1.4.363.0
+VULKAN_SDK=C:\VulkanSDK\1.4.363.0
+PROCESSOR_ARCHITECTURE=AMD64
+xbuild=C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe
+CODEBUDDY_SESSION_ID=e61f17d91dbd4bcbb5836cfcf373b26c
+
+适用�?.NET Framework MSBuild 版本 17.14.60+43b635718
+17.14.60.43110
+new process:C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe /version, exit code:0
+building Server.sln ...
+new process:C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Current\Bin\msbuild.exe /m /nologo /noconsolelogger /p:Configuration=Debug /flp:LogFile=D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../BuildLog/Server.sln.log;Encoding=UTF-8 /t:clean;rebuild D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Server.sln /p:Platform="Any CPU", exit code:0
+result:0
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Lobby.exe => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Lobby.exe
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\ClientProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ClientProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Common.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\CSharpCenterClient.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\CSharpCenterClient.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\DataProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\DotnetSkillScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetSkillScript.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\DotnetStoryScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetStoryScript.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Dsl.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Dsl.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\GameObjects.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\GameObjects.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\LitJson.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LitJson.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Lobby.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Lobby.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\LogSys.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Messenger.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\protobuf-net.Core.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.Core.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\protobuf-net.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\ScriptFrameworkLibrary.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ScriptFrameworkLibrary.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\ServerCommon.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\ServerProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\ClientProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ClientProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Common.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\DataProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\DotnetSkillScript.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetSkillScript.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\DotnetStoryScript.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetStoryScript.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Dsl.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Dsl.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\GameObjects.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\GameObjects.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Lobby.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Lobby.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\LogSys.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\Messenger.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\ServerCommon.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/Lobby/bin/Debug/net9.0\ServerProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\UserServer.exe => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\UserServer.exe
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\ClientProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ClientProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\Common.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\CSharpCenterClient.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\CSharpCenterClient.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\DataProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\DotnetSkillScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetSkillScript.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\DotnetStoryScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetStoryScript.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\Dsl.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Dsl.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\GameObjects.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\GameObjects.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\LitJson.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LitJson.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\LogSys.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\Messenger.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\protobuf-net.Core.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.Core.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\protobuf-net.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\ScriptFrameworkLibrary.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ScriptFrameworkLibrary.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\ServerCommon.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\ServerProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\UserServer.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\UserServer.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\ClientProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ClientProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\Common.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\DataProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\DotnetSkillScript.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetSkillScript.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\DotnetStoryScript.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetStoryScript.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\Dsl.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Dsl.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\GameObjects.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\GameObjects.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\LogSys.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\Messenger.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\ServerCommon.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\ServerProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/UserServer/bin/Debug/net9.0\UserServer.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\UserServer.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\RoomServer.exe => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\RoomServer.exe
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\ClientProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ClientProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\Common.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\CSharpCenterClient.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\CSharpCenterClient.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\DotnetSkillScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetSkillScript.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\DotnetStoryScript.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetStoryScript.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\Dsl.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Dsl.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\GameObjects.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\GameObjects.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\Lidgren.Network.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Lidgren.Network.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\LitJson.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LitJson.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\LogSys.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\Messenger.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\protobuf-net.Core.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.Core.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\protobuf-net.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\RoomServer.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\RoomServer.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\SceneLogic.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\SceneLogic.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\ScriptFrameworkLibrary.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ScriptFrameworkLibrary.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\ServerCommon.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\ServerProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\ClientProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ClientProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\Common.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\DotnetSkillScript.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetSkillScript.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\DotnetStoryScript.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DotnetStoryScript.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\Dsl.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Dsl.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\GameObjects.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\GameObjects.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\LogSys.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\Messenger.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\RoomServer.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\RoomServer.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\SceneLogic.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\SceneLogic.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\ServerCommon.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/RoomServer/bin/Debug/net9.0\ServerProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\DataCache.exe => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataCache.exe
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\Common.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\CSharpCenterClient.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\CSharpCenterClient.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\DataCache.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataCache.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\DataProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\LogSys.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\Messenger.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\MySql.Data.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\MySql.Data.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\protobuf-net.Core.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.Core.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\protobuf-net.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\protobuf-net.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\ScriptFrameworkLibrary.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ScriptFrameworkLibrary.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\ServerCommon.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\ServerProtoBuf.dll => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.dll
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\Common.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Common.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\DataCache.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataCache.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\DataProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\DataProtoBuf.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\LogSys.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\LogSys.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\Messenger.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\Messenger.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\ServerCommon.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerCommon.pdb
+copy file D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/DataCache/bin/Debug/net9.0\ServerProtoBuf.pdb => D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin\ServerProtoBuf.pdb
+curdir:D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe CenterClientLibrary.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe CenterClientLibrary.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe CenterHubLibrary.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe CenterHubLibrary.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ClientProtoBuf.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ClientProtoBuf.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Common.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Common.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe CSharpCenterClient.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe CSharpCenterClient.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DataCache.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DataCache.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DataProtoBuf.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DataProtoBuf.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DataProtobufSerializer.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DataProtobufSerializer.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetSkillScript.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetSkillScript.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetStoryScript.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe DotnetStoryScript.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Dsl.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Dsl.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe GameObjects.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe GameObjects.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Lidgren.Network.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Lidgren.Network.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe LitJson.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe LitJson.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Lobby.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Lobby.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe LogSys.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe LogSys.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Messenger.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe Messenger.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe MySql.Data.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe MySql.Data.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe PluginFramework.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe PluginFramework.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.Core.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.Core.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe protobuf-net.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ProtobufSerializer.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ProtobufSerializer.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe RoomCs2LuaScript.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe RoomCs2LuaScript.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe RoomPluginFramework.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe RoomPluginFramework.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe RoomServer.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe RoomServer.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe SceneLogic.dll
+Error: A portable PDB can't be converted to mdb.
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe SceneLogic.dll, exit code:2
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ScriptFrameworkLibrary.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ScriptFrameworkLibrary.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ServerCommon.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ServerCommon.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ServerProtoBuf.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ServerProtoBuf.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ServerProtobufSerializer.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe ServerProtobufSerializer.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe SkillSystem.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe SkillSystem.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe StorySystem.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe StorySystem.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe System.Collections.Immutable.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe System.Collections.Immutable.dll, exit code:1
+D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UserServer.dll
+Mono pdb to mdb debug symbol store converter
+Usage: pdb2mdb assembly
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/mono/mono.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/lib/mono/4.5/pdb2mdb.exe UserServer.dll, exit code:1
+defaultCodePage:65001
+dsl files copy finished
+dsl encode finished
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/DslCopy/bin/Release/net9.0/DslCopy.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/DslFile D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin/Dsl, exit code:0
+table files copy finished
+new process:D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Tools/TableReaderGenerator/bin/Debug/net9.0/TableReaderGenerator.exe D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../Resource/Tables D:\GitHub\CSharpGameFramework\.\Tools\Batch/../../App/ServerModule/ServerEnv/bin/Tables isserver, exit code:0

@@ -38,7 +38,7 @@ namespace ScriptableFramework
                 Vector3 pos = SceneLogicParamHelper.Position(e);
                 if (SceneLogicParamHelper.InPolygon(vals2, count, pos.X, pos.Z)) args.Add(e.GetId());
             }
-            AbstractSceneLogic.OnSceneLogicSendStoryMessage(info, "areadetect:" + info.ConfigId, args);
+            AbstractSceneLogic.OnSceneLogicSendStoryMessage(info, "area_detect:" + info.ConfigId, args);
         }
     }
 }

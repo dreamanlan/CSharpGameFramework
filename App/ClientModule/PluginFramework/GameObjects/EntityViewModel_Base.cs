@@ -119,7 +119,7 @@ namespace ScriptableFramework
                 int ct = m_Materials.Count;
                 if (m_Shaders.Count != ct || m_Colors.Count != ct)
                 {
-                    ScriptableFramework.LogSystem.Error("replaceshaderandfadecolor materials num is not equal shaders num !");
+                    ScriptableFramework.LogSystem.Error("replace_shader_and_fade_color materials num is not equal shaders num !");
                     return;
                 }
                 for (int i = 0; i < ct; ++i)

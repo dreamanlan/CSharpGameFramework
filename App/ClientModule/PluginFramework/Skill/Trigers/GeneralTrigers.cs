@@ -8,7 +8,7 @@ using ScriptableFramework.Story;
 namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
-    /// timescale(start_time, scale[, duration]);
+    /// time_scale(start_time, scale[, duration]);
     /// </summary>
     internal class TimeScaleTriger : AbstractSkillTriger
     {
@@ -109,7 +109,7 @@ namespace ScriptableFramework.Skill.Trigers
         private float m_UnityRealTimeToEnd = 0;
     }
     /// <summary>
-    /// bornfinish(start_time);
+    /// born_finish(start_time);
     /// </summary>
     internal class BornFinishTriger : AbstractStatelessSkillTriger
     {
@@ -150,7 +150,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// deadfinish(start_time);
+    /// dead_finish(start_time);
     /// </summary>
     internal class DeadFinishTriger : AbstractStatelessSkillTriger
     {
@@ -191,7 +191,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// sendstorymessage(start_time,msg,arg1,arg2,arg3,...);
+    /// send_story_message(start_time,msg,arg1,arg2,arg3,...);
     /// </summary>
     internal class SendStoryMessageTrigger : AbstractSkillTriger
     {
@@ -263,7 +263,7 @@ namespace ScriptableFramework.Skill.Trigers
         }
     }
     /// <summary>
-    /// sendgfxmessage(start_time,objname,msg,arg1,arg2,arg3,...);
+    /// send_gfx_message(start_time,objname,msg,arg1,arg2,arg3,...);
     /// </summary>
     internal class SendGfxMessageTrigger : AbstractSkillTriger
     {
@@ -323,7 +323,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// sendgfxmessagewithtag(start_time,tag,msg,arg1,arg2,arg3,...);
+    /// send_gfx_message_with_tag(start_time,tag,msg,arg1,arg2,arg3,...);
     /// </summary>
     internal class SendGfxMessageWithTagTrigger : AbstractSkillTriger
     {
@@ -383,7 +383,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// sendgfxmessagewithgameobject(start_time,type,msg,arg1,arg2,arg3,...);
+    /// send_gfx_message_with_game_object(start_time,type,msg,arg1,arg2,arg3,...);
     /// </summary>
     internal class SendGfxMessageWithGameObjectTrigger : AbstractSkillTriger
     {
@@ -454,7 +454,7 @@ namespace ScriptableFramework.Skill.Trigers
 
     }
     /// <summary>
-    /// publishgfxevent(start_time,event,group,arg1,arg2,arg3,...);
+    /// publish_gfx_event(start_time,event,group,arg1,arg2,arg3,...);
     /// </summary>
     internal class PublishGfxEventTrigger : AbstractSkillTriger
     {
@@ -587,7 +587,7 @@ namespace ScriptableFramework.Skill.Trigers
         private Dictionary<string, object> m_Params = null;
     }
     /// <summary>
-    /// keeptarget([starttime[,remaintime]]){
+    /// keep_target([starttime[,remaintime]]){
     ///     aoecenter(x,y,z,relativeToTarget);
     /// };
     /// </summary>
@@ -679,7 +679,7 @@ namespace ScriptableFramework.Skill.Trigers
         private bool m_RelativeToTarget = false;
     }
     /// <summary>
-    /// useimpact(impactid,[starttime[,is_external_impact]])[if(type)];
+    /// use_impact(impactid,[starttime[,is_external_impact]])[if(type)];
     /// </summary>
     internal class UseImpactTrigger : AbstractSkillTriger
     {

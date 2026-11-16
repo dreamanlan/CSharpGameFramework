@@ -47,13 +47,13 @@ namespace ScriptableFramework.Skill.Trigers
         private List<GameObject> m_EffectObject = new List<GameObject>();
     }
     /// <summary>
-    /// selfeffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
+    /// self_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
     /// 
     /// or
     /// 
-    /// selfeffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
+    /// self_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
     /// {
-    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
     /// };
     /// </summary>
     internal class SelfEffectTriger : AbstractSkillTriger
@@ -90,26 +90,36 @@ namespace ScriptableFramework.Skill.Trigers
                         m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     }
                     if (m_RealDeleteTime <= 0) {
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] selfeffect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] self_effect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
                         return false;
                     }
                     string effectPath = m_EffectPath.Get(instance, senderObj.ConfigData.resources);
                     string attachPath = m_AttachPath.Get(instance);
                     GameObject effectObj = null;
                     if (string.IsNullOrEmpty(effectPath)) {
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] selfeffect effect is empty.", senderObj.SkillId, instance.DslSkillId);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] self_effect effect is empty.", senderObj.SkillId, instance.DslSkillId);
                     } else {
                         effectObj = ResourceSystem.Instance.NewObject(effectPath, m_RealDeleteTime / 1000.0f) as GameObject;
                         if (null == effectObj) {
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] selfeffect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] self_effect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
                         }
                     }
                     if (null != effectObj) {
                         TriggerUtil.SetObjVisible(effectObj, true);
                         Transform bone = Utility.FindChildRecursive(obj.transform, attachPath);
                         if (null == bone) {
-                            bone = obj.transform;
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] selfeffect bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, attachPath);
+                            // Skill DSLs refer to legacy bone names ("eyes"/"hit")
+                            // that these avatars do not expose. Falling back to
+                            // the root put every VFX at the character's feet,
+                            // which is why casts looked directionless. Prefer a
+                            // humanoid head/upper-body bone when available.
+                            Animator animator = obj.GetComponent<Animator>();
+                            if (null != animator && animator.isHuman) {
+                                bone = animator.GetBoneTransform(HumanBodyBones.Head);
+                                if (null == bone) bone = animator.GetBoneTransform(HumanBodyBones.UpperChest);
+                            }
+                            if (null == bone) bone = obj.transform;
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] self_effect bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, attachPath);
                         }
                         effectObj.SetActive(false);
                         if (null != bone) {
@@ -214,13 +224,13 @@ namespace ScriptableFramework.Skill.Trigers
         private long m_RealDeleteTime = 0;
     }
     /// <summary>
-    /// targeteffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
+    /// target_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
     /// 
     /// or
     /// 
-    /// targeteffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
+    /// target_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
     /// {
-    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
     /// };
     /// </summary>
     internal class TargetEffectTriger : AbstractSkillTriger
@@ -259,26 +269,34 @@ namespace ScriptableFramework.Skill.Trigers
                         m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     }
                     if (m_RealDeleteTime <= 0) {
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] targeteffect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] target_effect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
                         return false;
                     }
                     string effectPath = m_EffectPath.Get(instance, senderObj.ConfigData.resources);
                     string attachPath = m_AttachPath.Get(instance);
                     GameObject effectObj = null;
                     if (string.IsNullOrEmpty(effectPath)) {
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] targeteffect effect is empty.", senderObj.SkillId, instance.DslSkillId);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] target_effect effect is empty.", senderObj.SkillId, instance.DslSkillId);
                     } else {
                         effectObj = ResourceSystem.Instance.NewObject(effectPath, m_RealDeleteTime / 1000.0f) as GameObject;
                         if (null == effectObj) {
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] targeteffect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] target_effect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
                         }
                     }
                     if (null != effectObj) {
                         TriggerUtil.SetObjVisible(effectObj, true);
                         Transform bone = Utility.FindChildRecursive(target_obj.transform, attachPath);
                         if (null == bone) {
-                            bone = obj.transform;
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] targeteffect bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, attachPath);
+                            // The VFX belongs on the *target*. Falling back to
+                            // the caster's root made impact effects spawn at the
+                            // attacker's feet, which looked like random casts.
+                            Animator animator = target_obj.GetComponent<Animator>();
+                            if (null != animator && animator.isHuman) {
+                                bone = animator.GetBoneTransform(HumanBodyBones.UpperChest);
+                                if (null == bone) bone = animator.GetBoneTransform(HumanBodyBones.Head);
+                            }
+                            if (null == bone) bone = target_obj.transform;
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] target_effect bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, attachPath);
                         }
                         effectObj.SetActive(false);
                         if (null != bone) {
@@ -377,7 +395,7 @@ namespace ScriptableFramework.Skill.Trigers
         private long m_RealDeleteTime = 0;
     }
     /// <summary>
-    /// sceneeffect(effect_path,delete_time[,vector3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector3(sx,sy,sz)[,isRotateRelativeUser]]]]]);
+    /// scene_effect(effect_path,delete_time[,vector_3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector_3(sx,sy,sz)[,isRotateRelativeUser]]]]]);
     /// </summary>
     internal class SceneEffectTriger : AbstractSkillTriger
     {
@@ -409,17 +427,17 @@ namespace ScriptableFramework.Skill.Trigers
                 if (curSectionTime >= StartTime) {
                     m_RealDeleteTime = m_DeleteTime.Get(instance);
                     if (m_RealDeleteTime <= 0) {
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] sceneeffect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] scene_effect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
                         return false;
                     }
                     string effectPath = m_EffectPath.Get(instance, senderObj.ConfigData.resources);
                     GameObject effectObj = null;
                     if (string.IsNullOrEmpty(effectPath)) {
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] sceneeffect effect is empty.", senderObj.SkillId, instance.DslSkillId);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] scene_effect effect is empty.", senderObj.SkillId, instance.DslSkillId);
                     } else {
                         effectObj = ResourceSystem.Instance.NewObject(effectPath, m_RealDeleteTime / 1000.0f) as GameObject;
                         if (null == effectObj) {
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] sceneeffect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] scene_effect effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
                         }
                     }
                     if (null != effectObj) {
@@ -493,13 +511,13 @@ namespace ScriptableFramework.Skill.Trigers
         private long m_RealDeleteTime = 0;
     }
     /// <summary>
-    /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time[,is_external_impact]]);
+    /// emit_effect(effect_path,emit_bone,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     /// 
     /// or
     /// 
-    /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time[,is_external_impact]])
+    /// emit_effect(effect_path,emit_bone,emit_impact,emit_speed[,start_time[,is_external_impact]])
     /// {
-    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
     /// };
     /// </summary>
     internal class EmitEffectTriger : AbstractSkillTriger
@@ -638,13 +656,13 @@ namespace ScriptableFramework.Skill.Trigers
         private Vector3 m_Scale = Vector3.one;        
     }
     /// <summary>
-    /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]]);
+    /// aoe_emit_effect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     /// 
     /// or
     /// 
-    /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
+    /// aoe_emit_effect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
     /// {
-    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
     /// };
     /// </summary>
     internal class AoeEmitEffectTriger : AbstractSkillTriger
@@ -799,7 +817,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// lockframe(startime, lock_speed, locktime[,
+    /// lock_frame(startime, lock_speed, locktime[,
     ///          after_lock_anim_speed, restore_time[, is_effect_skill_time,
     ///          after_lock_effect_speed, after_lock_move_speed,
     ///          after_lock_skill_speed]])
@@ -968,7 +986,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// hiteffect(hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime[, startTime]);
+    /// hit_effect(hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime[, startTime]);
     /// </summary>
     internal class HitEffectTriger : AbstractSkillTriger
     {

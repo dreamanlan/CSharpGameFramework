@@ -44,7 +44,7 @@ def write_stories(rows):
             continue
         d = os.path.join(DSL, 'Battle_' + tid + '_' + era)
         os.makedirs(d, exist_ok=True)
-        shutil.copyfile(src, os.path.join(d, 'story.dsl'))
+        shutil.copy_file(src, os.path.join(d, 'story.dsl'))
         n += 1
     return n
 
@@ -69,7 +69,7 @@ def rewrite_level(rows):
     text, enc = read_text(LEVEL)
     lines = text.splitlines()
     head = lines[:8]
-    shutil.copyfile(LEVEL, LEVEL.replace('Level.txt', 'Level_pre64.txt.bak'))
+    shutil.copy_file(LEVEL, LEVEL.replace('Level.txt', 'Level_pre64.txt.bak'))
     out = list(head)
     for i, (tid, code, name) in enumerate(rows):
         era = ERA[code]

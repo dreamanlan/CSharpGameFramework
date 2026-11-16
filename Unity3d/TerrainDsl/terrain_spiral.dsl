@@ -8,17 +8,17 @@ height
 {
   $x=arg(0);
   $y=arg(1);
-  height = clamp(0,0.01,rndfloat(0,1))+samplered("img", $x, $y)/750.0;
-  if(height>0.1 && rndint(0,100)<5){
-    addtree(0,$x/128,height,$y/128,0,1,1,0x00ff00,0xff0000);
+  height = clamp(0,0.01,rnd_float(0,1))+sample_red("img", $x, $y)/750.0;
+  if(height>0.1 && rnd_int(0,100)<5){
+    add_tree(0,$x/128,height,$y/128,0,1,1,0x00ff00,0xff0000);
   };
 }
 alphamap
 {
   $x=arg(0);
   $y=arg(1);
-  setalpha(0, sin($x/180.0));
-  setalpha(1, cos($y/180.0));
+  set_alpha(0, sin($x/180.0));
+  set_alpha(1, cos($y/180.0));
 }
 detail
 {

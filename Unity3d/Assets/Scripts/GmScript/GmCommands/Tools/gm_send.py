@@ -22,7 +22,7 @@ Usage:
     #    python3 gm_send.py --setup "sys"          # set up port forwarding first
 
     # 3. send one GM DSL snippet and get the return value
-    #    python3 gm_send.py --mode exec "screenwidth()+'x'+screenheight()"
+    #    python3 gm_send.py --mode exec "screen_width()+'x'+screen_height()"
 
     # 4. run editor DSL on port 39528 (resource / editor APIs)
     #    python3 gm_send.py --editor --mode edit "check_pipeline_assets()"

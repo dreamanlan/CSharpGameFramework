@@ -3,8 +3,8 @@ skilltemplate("普通攻击")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"hit",0);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"hit",0);
     impact(0,0,0,0,false);
   };  
   hitskill
@@ -12,9 +12,9 @@ skilltemplate("普通攻击")
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    damage(0);   
-	    lockframe(0,0,166);
+	    lock_frame(0,0,166);
 	  };
   };  
 :};
@@ -23,8 +23,8 @@ skilltemplate("普通攻击加buff")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"hit",0);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"hit",0);
     impact(0,0,0,0,false);
   };  
   hitskill
@@ -32,9 +32,9 @@ skilltemplate("普通攻击加buff")
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
     	impact(0,0,0,0,false);
-	    lockframe(0,0,166);
+	    lock_frame(0,0,166);
 	  };
   };
 :};
@@ -43,8 +43,8 @@ skilltemplate("普通攻击产生伤害并加buff")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"hit",0);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"hit",0);
     impact(0,0,0,0,false);
   };  
   hitskill
@@ -52,10 +52,10 @@ skilltemplate("普通攻击产生伤害并加buff")
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
     	impact(0,0,0,0,false);
     	damage(0);
-	    lockframe(0,0,166);
+	    lock_frame(0,0,166);
 	  };
   };
 :};
@@ -64,16 +64,16 @@ skilltemplate("范围攻击")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"hit",0);
-    aoeimpact(0,0,0,0,false);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"hit",0);
+    aoe_impact(0,0,0,0,false);
   };   
   hitskill
   { 
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    damage(0);
 	  };
   }; 
@@ -83,16 +83,16 @@ skilltemplate("范围攻击加buff")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"hit",0);
-    aoeimpact(0,0,0,0,false);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"hit",0);
+    aoe_impact(0,0,0,0,false);
   };   
   hitskill
   { 
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    impact(0,0,0,0,false);
 	  };
   }; 
@@ -102,16 +102,16 @@ skilltemplate("范围攻击产生伤害并加buff")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"hit",0);
-    aoeimpact(0,0,0,0,false);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"hit",0);
+    aoe_impact(0,0,0,0,false);
   };   
   hitskill
   { 
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    impact(0,0,0,0,false);
 	    damage(0);
 	  };
@@ -122,9 +122,9 @@ skilltemplate("子弹技")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,hit,0);
-    emiteffect(emitEffect,hit,0,15);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,hit,0);
+    emit_effect(emitEffect,hit,0,15);
   };
   emitskill
   {
@@ -138,9 +138,9 @@ skilltemplate("子弹技")
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    damage(0);   
-	    lockframe(0,0,166);
+	    lock_frame(0,0,166);
 	  };
   };  
 :};
@@ -149,9 +149,9 @@ skilltemplate("子弹技加buff")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,hit,0);
-    emiteffect(emitEffect,hit,0,15);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,hit,0);
+    emit_effect(emitEffect,hit,0,15);
   };
   emitskill
   {
@@ -165,7 +165,7 @@ skilltemplate("子弹技加buff")
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    impact(0,0,0,0,false);
 	  };
   };  
@@ -175,9 +175,9 @@ skilltemplate("子弹技产生伤害并加buff")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,hit,0);
-    emiteffect(emitEffect,hit,0,15);
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,hit,0);
+    emit_effect(emitEffect,hit,0,15);
   };
   emitskill
   {
@@ -191,7 +191,7 @@ skilltemplate("子弹技产生伤害并加buff")
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    impact(0,0,0,0,false);
 	    damage(0);
 	  };
@@ -202,22 +202,22 @@ skilltemplate("5球子弹技")
   section(1000)
   {
     animation(Attack);
-    //adjustsectionduration("anim",100);
-    selfeffect(selfEffect,1000,"hit",0);
-    emiteffect(emitEffect,"hit",0,15,0){
-      transform(vector3(-2,2,0),eular(0,-60,0),vector3(0.3,0.3,0.3));
+    //adjust_section_duration("anim",100);
+    self_effect(selfEffect,1000,"hit",0);
+    emit_effect(emitEffect,"hit",0,15,0){
+      transform(vector_3(-2,2,0),eular(0,-60,0),vector_3(0.3,0.3,0.3));
     };
-    emiteffect(emitEffect,"hit",0,15,150){
-      transform(vector3(-1,2,0),eular(0,-30,0),vector3(0.3,0.3,0.3));
+    emit_effect(emitEffect,"hit",0,15,150){
+      transform(vector_3(-1,2,0),eular(0,-30,0),vector_3(0.3,0.3,0.3));
     };
-    emiteffect(emitEffect,"hit",0,15,200){
-      transform(vector3(0,2,0));
+    emit_effect(emitEffect,"hit",0,15,200){
+      transform(vector_3(0,2,0));
     };
-    emiteffect(emitEffect,"hit",0,15,150){
-      transform(vector3(1,2,0),eular(0,30,0),vector3(0.3,0.3,0.3));
+    emit_effect(emitEffect,"hit",0,15,150){
+      transform(vector_3(1,2,0),eular(0,30,0),vector_3(0.3,0.3,0.3));
     };
-    emiteffect(emitEffect,"hit",0,15,0){
-      transform(vector3(2,2,0),eular(0,60,0),vector3(0.3,0.3,0.3));
+    emit_effect(emitEffect,"hit",0,15,0){
+      transform(vector_3(2,2,0),eular(0,60,0),vector_3(0.3,0.3,0.3));
     };
   };   
   emitskill
@@ -232,7 +232,7 @@ skilltemplate("5球子弹技")
   	section(1000)
   	{
 	    animation(Hit);
-	    selfeffect(hitEffect, 1000, hit, 0);
+	    self_effect(hitEffect, 1000, hit, 0);
 	    damage(0);
 	  };
   }; 
@@ -249,7 +249,7 @@ skilltemplate("自定义独立受击效果")
   section(1000)
   {
     animation(Hit);
-    selfeffect(hitEffect,1000,hit,0);
+    self_effect(hitEffect,1000,hit,0);
     damage(0);
   };
 :};
@@ -257,19 +257,19 @@ skilltemplate("控制buff")
 {:
   section(10)
   {
-    enablemoveagent(false);
-    addimpacttoself(0,10002);
-    storepos();
+    enable_move_agent(false);
+    add_impact_to_self(0,10002);
+    store_pos();
   };
   section(300)
   {
     animation(Fukong);
-    adjustsectionduration('anim',200);
+    adjust_section_duration('anim',200);
   };
   onstop
   {
-    restorepos();
-    enablemoveagent(true);
-    stopimpact(0,10002);
+    restore_pos();
+    enable_move_agent(true);
+    stop_impact(0,10002);
   };
 :};

@@ -193,23 +193,23 @@ namespace ScriptableFramework.GmCommands
                 s_IsInited = true;
                 //register GM commands
                 var registry = DslCalculatorHost.GetSharedApiRegistry();
-                registry.Register("setposition", "setposition(objid, x, z) - set position",
+                registry.Register("set_position", "set_position(objid, x, z) - set position",
                     new ExpressionFactoryHelper<SetPositionCommand>());
-                registry.Register("levelto", "levelto(level) - level up to",
+                registry.Register("level_to", "level_to(level) - level up to",
                     new ExpressionFactoryHelper<LevelToCommand>());
                 registry.Register("full", "full() - full hp and energy",
                     new ExpressionFactoryHelper<FullCommand>());
-                registry.Register("clearequipments", "clearequipments() - clear equipments",
+                registry.Register("clear_equipments", "clear_equipments() - clear equipments",
                     new ExpressionFactoryHelper<ClearEquipmentsCommand>());
-                registry.Register("addequipment", "addequipment(item_id) - add equipment",
+                registry.Register("add_equipment", "add_equipment(item_id) - add equipment",
                     new ExpressionFactoryHelper<AddEquipmentCommand>());
-                registry.Register("clearskills", "clearskills() - clear skills",
+                registry.Register("clear_skills", "clear_skills() - clear skills",
                     new ExpressionFactoryHelper<ClearSkillsCommand>());
-                registry.Register("addskill", "addskill(skill_id) - add skill",
+                registry.Register("add_skill", "add_skill(skill_id) - add skill",
                     new ExpressionFactoryHelper<AddSkillCommand>());
-                registry.Register("clearbuffs", "clearbuffs() - clear buffs",
+                registry.Register("clear_buffs", "clear_buffs() - clear buffs",
                     new ExpressionFactoryHelper<ClearBuffsCommand>());
-                registry.Register("addbuff", "addbuff(impact_id) - add buff",
+                registry.Register("add_buff", "add_buff(impact_id) - add buff",
                     new ExpressionFactoryHelper<AddBuffCommand>());
             }
         }

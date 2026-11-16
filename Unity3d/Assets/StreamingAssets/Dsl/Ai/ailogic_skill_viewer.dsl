@@ -8,12 +8,12 @@ story(skill_viewer)
   onmessage(start)
   {
   	while(1){
-  		@npcData = getentityinfo(@objid);
-  		if(!isnull(@npcData)){
+  		@npcData = get_entity_info(@objid);
+  		if(!is_null(@npcData)){
   			@skillId = @npcData.ManualSkillId;
-  			if(@skillId>0 && cancastskill(@objid,@skillId)){
-  				objsetaitarget(@objid,unitid2objid(1));
-  				objcastskill(@objid,@skillId);
+  			if(@skillId>0 && can_cast_skill(@objid,@skillId)){
+  				obj_set_ai_target(@objid,unit_id_2_obj_id(1));
+  				obj_cast_skill(@objid,@skillId);
 				@npcData.ManualSkillId = 0;
   			};
   		};

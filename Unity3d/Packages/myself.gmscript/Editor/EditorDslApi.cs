@@ -403,7 +403,7 @@ namespace StoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2 || operands.Count > 3) {
-                throw new Exception("Expected: getstringinlength(str, len[, get_the_end_def_false])");
+                throw new Exception("Expected: get_string_in_length(str, len[, get_the_end_def_false])");
             }
             string str = operands[0].AsString;
             int len = operands[1].GetInt();
@@ -1571,9 +1571,9 @@ namespace StoryScript.DslExpression
         }
     }
     /// <summary>
-    /// callstory("msgId", arg1, arg2, ...);
+    /// call_story("msgId", arg1, arg2, ...);
     /// or
-    /// callstory(apiOrMsgId(arg1, arg2, ...));
+    /// call_story(apiOrMsgId(arg1, arg2, ...));
     /// </summary>
     internal sealed class CallStoryExp : AbstractExpression
     {
@@ -2375,7 +2375,7 @@ namespace StoryScript.DslExpression
     // ===========================================================================
     // Editor-channel component add/remove.
     //
-    // The runtime GM registry already has addcomponent/removecomponent
+    // The runtime GM registry already has add_component/remove_component
     // (ClientGmStorySystem.cs / GeneralCommands.cs), but those call GameObject.AddComponent
     // and Object.Destroy directly: no Undo, no dry run, and they are unavailable on the
     // editor channel (which has its own Calculator). Editing scene objects needs reversible
@@ -2496,7 +2496,7 @@ namespace StoryScript.DslExpression
             if (!typeof(UnityEngine.Component).IsAssignableFrom(t))
                 return "ERROR: '" + t.FullName + "' is not a UnityEngine.Component";
             var sb = new StringBuilder();
-            sb.AppendLine(string.Format("addcomponent: '{0}' type='{1}' dryRun={2}", path, t.FullName, dryRun));
+            sb.AppendLine(string.Format("add_component: '{0}' type='{1}' dryRun={2}", path, t.FullName, dryRun));
             var existing = go.GetComponents(t);
             sb.AppendLine("  existing instances of this type: " + existing.Length);
             if (dryRun)
@@ -2520,7 +2520,7 @@ namespace StoryScript.DslExpression
             if (t == null) return "ERROR: type not found: " + typeLabel;
             var comps = go.GetComponents(t);
             var sb = new StringBuilder();
-            sb.AppendLine(string.Format("removecomponent: '{0}' type='{1}' matches={2} all={3} dryRun={4}",
+            sb.AppendLine(string.Format("remove_component: '{0}' type='{1}' matches={2} all={3} dryRun={4}",
                 path, t.FullName, comps.Length, all, dryRun));
             if (comps.Length == 0) return sb.ToString() + "  nothing to remove";
             // Transform is not removable; guard against destroying the object's core.
@@ -2549,7 +2549,7 @@ namespace StoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            if (operands.Count < 1) return BoxedValue.FromString("ERROR: listcomponents(obj_or_path)");
+            if (operands.Count < 1) return BoxedValue.FromString("ERROR: list_components(obj_or_path)");
             string path;
             var go = EditorComponentUtil.ResolveGameObject(operands[0], out path);
             if (go == null) return BoxedValue.FromString("ERROR: GameObject not found");
@@ -2562,7 +2562,7 @@ namespace StoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                return BoxedValue.FromString("ERROR: addcomponent(obj_or_path,type_or_str[,dryRun])");
+                return BoxedValue.FromString("ERROR: add_component(obj_or_path,type_or_str[,dryRun])");
             bool dry = operands.Count < 3 || operands[2].GetBool();
             return BoxedValue.FromString(EditorComponentUtil.Add(operands[0], operands[1], dry));
         }
@@ -2573,7 +2573,7 @@ namespace StoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                return BoxedValue.FromString("ERROR: removecomponent(obj_or_path,type_or_str[,dryRun,all])");
+                return BoxedValue.FromString("ERROR: remove_component(obj_or_path,type_or_str[,dryRun,all])");
             bool dry = operands.Count < 3 || operands[2].GetBool();
             bool all = operands.Count > 3 && operands[3].GetBool();
             return BoxedValue.FromString(EditorComponentUtil.Remove(operands[0], operands[1], dry, all));
@@ -2585,54 +2585,54 @@ namespace StoryScript.DslExpression
     {
         public static void Register(DslCalculator calculator)
         {
-            calculator.Register("getobjectbyid", "getobjectbyid(instance_id) api", new ExpressionFactoryHelper<GetObjectByIdExp>());
-            calculator.Register("getobjectid", "getobjectid(obj) api", new ExpressionFactoryHelper<GetObjectIdExp>());
-            calculator.Register("assetpath2guid", "assetpath2guid(asset_path) api", new ExpressionFactoryHelper<AssetPath2GUIDExp>());
-            calculator.Register("guid2assetpath", "guid2assetpath(guid) api", new ExpressionFactoryHelper<GUID2AssetPathExp>());
-            calculator.Register("getassetpath", "getassetpath(obj) api", new ExpressionFactoryHelper<GetAssetPathExp>());
-            calculator.Register("getguidandfileid", "getguidandfileid(obj) api, return KeyValuaPair<string,long>", new ExpressionFactoryHelper<GetGuidAndLocalFileIdentifierExp>());
-            calculator.Register("getdependencies", "getdependencies(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDependenciesExp>());
-            calculator.Register("getdirectdependencies", "getdirectdependencies(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDirectDependenciesExp>());
-            calculator.Register("getdependenciesgraph", "getdependenciesgraph(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDependenciesGraphExp>());
-            calculator.Register("getassetimporter", "getassetimporter(path) api", new ExpressionFactoryHelper<GetAssetImporterExp>());
-            calculator.Register("loadasset", "loadasset(asset_path) api", new ExpressionFactoryHelper<LoadAssetExp>());
-            calculator.Register("loadassets", "loadassets(asset_path) api", new ExpressionFactoryHelper<LoadAssetsExp>());
-            calculator.Register("unloadasset", "unloadasset(obj) api", new ExpressionFactoryHelper<UnloadAssetExp>());
-            calculator.Register("addobjecttoasset", "addobjecttoasset(obj) api", new ExpressionFactoryHelper<AddObjectToAssetExp>());
-            calculator.Register("removeobjectfromasset", "removeobjectfromasset(obj) api", new ExpressionFactoryHelper<RemoveObjectFromAssetExp>());
-            calculator.Register("fromjsonoverwrite", "fromjsonoverwrite(json,obj) api", new ExpressionFactoryHelper<FromJsonOverwriteExp>());
-            calculator.Register("tojson", "tojson(obj[,pretty]) api", new ExpressionFactoryHelper<ToJsonExp>());
-            calculator.Register("getstringinlength", "getstringinlength(str,len[,get_the_end]) api", new ExpressionFactoryHelper<GetStringInLengthExp>());
-            calculator.Register("getprefabtype", "getprefabtype(obj) api", new ExpressionFactoryHelper<GetPrefabTypeExp>());
-            calculator.Register("getprefabstatus", "getprefabstatus(obj) api", new ExpressionFactoryHelper<GetPrefabStatusExp>());
-            calculator.Register("getprefabobject", "getprefabobject(obj) api", new ExpressionFactoryHelper<GetPrefabObjectExp>());
-            calculator.Register("getprefabparent", "getprefabparent(obj) api", new ExpressionFactoryHelper<GetPrefabParentExp>());
-            calculator.Register("getprefabparentatpath", "getprefabparentatpath(obj) api", new ExpressionFactoryHelper<GetPrefabParentAtPathExp>());
-            calculator.Register("getprefabparentfromorigin", "getprefabparentfromorigin(obj) api", new ExpressionFactoryHelper<GetPrefabParentFromOriginExp>());
-            calculator.Register("getnearstprefabroot", "getnearstprefabroot(obj) api", new ExpressionFactoryHelper<GetNearstPrefabRootExp>());
-            calculator.Register("getnearstprefabrootasset", "getnearstprefabrootasset(obj) api", new ExpressionFactoryHelper<GetNearstPrefabRootAssetExp>());
-            calculator.Register("getoutermostprefabroot", "getoutermostprefabroot(obj) api", new ExpressionFactoryHelper<GetOutermostPrefabRootExp>());
-            calculator.Register("getoriginalprefabroot", "getoriginalprefabroot(obj) api", new ExpressionFactoryHelper<GetOriginalPrefabRootWhereAddedExp>());
-            calculator.Register("getprefaboverrides", "getprefaboverrides(obj,include_def_overrides) api", new ExpressionFactoryHelper<GetPrefabOverridesExp>());
-            calculator.Register("findprefabinstances", "findprefabinstances(obj) api", new ExpressionFactoryHelper<FindPrefabInstancesExp>());
-            calculator.Register("findprefabinstancesinscene", "findprefabinstancesinscene(obj,scene) api", new ExpressionFactoryHelper<FindPrefabInstancesInSceneExp>());
-            calculator.Register("scanprefab", "scanprefab(obj) api", new ExpressionFactoryHelper<ScanPrefabExp>());
-            calculator.Register("scandependency", "scandependency(prefab_a,prefab_b) api", new ExpressionFactoryHelper<ScanDependencyExp>());
-            calculator.Register("checkinternaldependency", "checkinternaldependency(prefab_a,prefab_b[include_root_comp,include_child_gobj]) api", new ExpressionFactoryHelper<CheckInternalDependencyExp>());
-            calculator.Register("convertdumpbin", "convertdumpbin(bin_file,txt_file) api", new ExpressionFactoryHelper<ConvertDumpBinExp>());
-            calculator.Register("displayprogressbar", "displayprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayProgressBarExp>());
-            calculator.Register("displaycancelableprogressbar", "displaycancelableprogressbar(title,text,progress) api", new ExpressionFactoryHelper<DisplayCancelableProgressBarExp>());
-            calculator.Register("clearprogressbar", "clearprogressbar() api", new ExpressionFactoryHelper<ClearProgressBarExp>());
-            calculator.Register("openwithdefaultapp", "openwithdefaultapp(file) api", new ExpressionFactoryHelper<OpenWithDefaultAppExp>());
-            calculator.Register("openfilepanel", "openfilepanel(title,dir,ext) api", new ExpressionFactoryHelper<OpenFilePanelExp>());
-            calculator.Register("openfilepanelwithfilters", "openfilepanelwithfilters(title,dir,filter1,filter2,...) api", new ExpressionFactoryHelper<OpenFilePanelWithFiltersExp>());
-            calculator.Register("openfolderpanel", "openfolderpanel(title,dir,def) api", new ExpressionFactoryHelper<OpenFolderPanelExp>());
-            calculator.Register("savefilepanel", "savefilepanel(title,dir,def,ext) api", new ExpressionFactoryHelper<SaveFilePanelExp>());
-            calculator.Register("savefilepanelinproject", "savefilepanelinproject(title,def,ext,msg[,path]) api", new ExpressionFactoryHelper<SaveFilePanelInProjectExp>());
-            calculator.Register("savefolderpanel", "savefolderpanel(title,dir,def) api", new ExpressionFactoryHelper<SaveFolderPanelExp>());
-            calculator.Register("displaydialog", "displaydialog(title,msg,ok[,cancel[,alt]]) api", new ExpressionFactoryHelper<DisplayDialogExp>());
-            calculator.Register("hascmdarg", "hascmdarg(name) api, return (bool,string)", new ExpressionFactoryHelper<HasCmdArgExp>());
-            calculator.Register("strlen", "strlen(str) api", new ExpressionFactoryHelper<StrLenExp>());
+            calculator.Register("get_object_by_id", "get_object_by_id(instance_id) api", new ExpressionFactoryHelper<GetObjectByIdExp>());
+            calculator.Register("get_object_id", "get_object_id(obj) api", new ExpressionFactoryHelper<GetObjectIdExp>());
+            calculator.Register("asset_path_2_guid", "asset_path_2_guid(asset_path) api", new ExpressionFactoryHelper<AssetPath2GUIDExp>());
+            calculator.Register("guid_2_asset_path", "guid_2_asset_path(guid) api", new ExpressionFactoryHelper<GUID2AssetPathExp>());
+            calculator.Register("get_asset_path", "get_asset_path(obj) api", new ExpressionFactoryHelper<GetAssetPathExp>());
+            calculator.Register("get_guid_and_file_id", "get_guid_and_file_id(obj) api, return KeyValuaPair<string,long>", new ExpressionFactoryHelper<GetGuidAndLocalFileIdentifierExp>());
+            calculator.Register("get_dependencies", "get_dependencies(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDependenciesExp>());
+            calculator.Register("get_direct_dependencies", "get_direct_dependencies(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDirectDependenciesExp>());
+            calculator.Register("get_dependencies_graph", "get_dependencies_graph(list_or_str1,list_or_str2,...) api, return string[]", new ExpressionFactoryHelper<GetDependenciesGraphExp>());
+            calculator.Register("get_asset_importer", "get_asset_importer(path) api", new ExpressionFactoryHelper<GetAssetImporterExp>());
+            calculator.Register("load_asset", "load_asset(asset_path) api", new ExpressionFactoryHelper<LoadAssetExp>());
+            calculator.Register("load_assets", "load_assets(asset_path) api", new ExpressionFactoryHelper<LoadAssetsExp>());
+            calculator.Register("unload_asset", "unload_asset(obj) api", new ExpressionFactoryHelper<UnloadAssetExp>());
+            calculator.Register("add_object_to_asset", "add_object_to_asset(obj) api", new ExpressionFactoryHelper<AddObjectToAssetExp>());
+            calculator.Register("remove_object_from_asset", "remove_object_from_asset(obj) api", new ExpressionFactoryHelper<RemoveObjectFromAssetExp>());
+            calculator.Register("from_json_overwrite", "from_json_overwrite(json,obj) api", new ExpressionFactoryHelper<FromJsonOverwriteExp>());
+            calculator.Register("to_json", "to_json(obj[,pretty]) api", new ExpressionFactoryHelper<ToJsonExp>());
+            calculator.Register("get_string_in_length", "get_string_in_length(str,len[,get_the_end]) api", new ExpressionFactoryHelper<GetStringInLengthExp>());
+            calculator.Register("get_prefab_type", "get_prefab_type(obj) api", new ExpressionFactoryHelper<GetPrefabTypeExp>());
+            calculator.Register("get_prefab_status", "get_prefab_status(obj) api", new ExpressionFactoryHelper<GetPrefabStatusExp>());
+            calculator.Register("get_prefab_object", "get_prefab_object(obj) api", new ExpressionFactoryHelper<GetPrefabObjectExp>());
+            calculator.Register("get_prefab_parent", "get_prefab_parent(obj) api", new ExpressionFactoryHelper<GetPrefabParentExp>());
+            calculator.Register("get_prefab_parent_at_path", "get_prefab_parent_at_path(obj) api", new ExpressionFactoryHelper<GetPrefabParentAtPathExp>());
+            calculator.Register("get_prefab_parent_from_origin", "get_prefab_parent_from_origin(obj) api", new ExpressionFactoryHelper<GetPrefabParentFromOriginExp>());
+            calculator.Register("get_nearst_prefab_root", "get_nearst_prefab_root(obj) api", new ExpressionFactoryHelper<GetNearstPrefabRootExp>());
+            calculator.Register("get_nearst_prefab_root_asset", "get_nearst_prefab_root_asset(obj) api", new ExpressionFactoryHelper<GetNearstPrefabRootAssetExp>());
+            calculator.Register("get_outermost_prefab_root", "get_outermost_prefab_root(obj) api", new ExpressionFactoryHelper<GetOutermostPrefabRootExp>());
+            calculator.Register("get_original_prefab_root", "get_original_prefab_root(obj) api", new ExpressionFactoryHelper<GetOriginalPrefabRootWhereAddedExp>());
+            calculator.Register("get_prefab_overrides", "get_prefab_overrides(obj,include_def_overrides) api", new ExpressionFactoryHelper<GetPrefabOverridesExp>());
+            calculator.Register("find_prefab_instances", "find_prefab_instances(obj) api", new ExpressionFactoryHelper<FindPrefabInstancesExp>());
+            calculator.Register("find_prefab_instances_in_scene", "find_prefab_instances_in_scene(obj,scene) api", new ExpressionFactoryHelper<FindPrefabInstancesInSceneExp>());
+            calculator.Register("scan_prefab", "scan_prefab(obj) api", new ExpressionFactoryHelper<ScanPrefabExp>());
+            calculator.Register("scan_dependency", "scan_dependency(prefab_a,prefab_b) api", new ExpressionFactoryHelper<ScanDependencyExp>());
+            calculator.Register("check_internal_dependency", "check_internal_dependency(prefab_a,prefab_b[include_root_comp,include_child_gobj]) api", new ExpressionFactoryHelper<CheckInternalDependencyExp>());
+            calculator.Register("convert_dump_bin", "convert_dump_bin(bin_file,txt_file) api", new ExpressionFactoryHelper<ConvertDumpBinExp>());
+            calculator.Register("display_progress_bar", "display_progress_bar(title,text,progress) api", new ExpressionFactoryHelper<DisplayProgressBarExp>());
+            calculator.Register("display_cancelable_progress_bar", "display_cancelable_progress_bar(title,text,progress) api", new ExpressionFactoryHelper<DisplayCancelableProgressBarExp>());
+            calculator.Register("clear_progress_bar", "clear_progress_bar() api", new ExpressionFactoryHelper<ClearProgressBarExp>());
+            calculator.Register("open_with_default_app", "open_with_default_app(file) api", new ExpressionFactoryHelper<OpenWithDefaultAppExp>());
+            calculator.Register("open_file_panel", "open_file_panel(title,dir,ext) api", new ExpressionFactoryHelper<OpenFilePanelExp>());
+            calculator.Register("open_file_panel_with_filters", "open_file_panel_with_filters(title,dir,filter1,filter2,...) api", new ExpressionFactoryHelper<OpenFilePanelWithFiltersExp>());
+            calculator.Register("open_folder_panel", "open_folder_panel(title,dir,def) api", new ExpressionFactoryHelper<OpenFolderPanelExp>());
+            calculator.Register("save_file_panel", "save_file_panel(title,dir,def,ext) api", new ExpressionFactoryHelper<SaveFilePanelExp>());
+            calculator.Register("save_file_panel_in_project", "save_file_panel_in_project(title,def,ext,msg[,path]) api", new ExpressionFactoryHelper<SaveFilePanelInProjectExp>());
+            calculator.Register("save_folder_panel", "save_folder_panel(title,dir,def) api", new ExpressionFactoryHelper<SaveFolderPanelExp>());
+            calculator.Register("display_dialog", "display_dialog(title,msg,ok[,cancel[,alt]]) api", new ExpressionFactoryHelper<DisplayDialogExp>());
+            calculator.Register("has_cmd_arg", "has_cmd_arg(name) api, return (bool,string)", new ExpressionFactoryHelper<HasCmdArgExp>());
+            calculator.Register("str_len", "str_len(str) api", new ExpressionFactoryHelper<StrLenExp>());
 #if UNITY_EDITOR
             calculator.Register("editor_play", "editor_play(play) - enter/exit Play mode on the next editor update; returns the state before the change", new ExpressionFactoryHelper<EditorPlayExp>());
             calculator.Register("editor_isplaying", "editor_isplaying() - current Play mode state", new ExpressionFactoryHelper<EditorIsPlayingExp>());
@@ -2654,13 +2654,13 @@ namespace StoryScript.DslExpression
             calculator.Register("cam_focus_info", "cam_focus_info(object_name) - report a scene object's path and renderer bounds (read-only)", new ExpressionFactoryHelper<CamFocusInfoExp>());
             calculator.Register("cam_focus_object", "cam_focus_object(object_name[,padding,sceneOnly]) - frame an object in SceneView and align the game camera to the same view", new ExpressionFactoryHelper<CamFocusObjectExp>());
             calculator.Register("api_list", "api_list([regex,...]) - regex search over all APIs/docs registered on the current editor interpreter (like helpall)", new ExpressionFactoryHelper<ApiListExp>());
-            calculator.Register("listcomponents", "listcomponents(obj_or_path) - list components on a scene GameObject, including inactive objects (read-only)", new ExpressionFactoryHelper<EditorListComponentsExp>());
-            calculator.Register("addcomponent", "addcomponent(obj_or_path,type_or_str[,dryRun]) - add a component in edit mode; defaults to DRY RUN, uses Undo.AddComponent, never saves the scene", new ExpressionFactoryHelper<EditorAddComponentExp>());
-            calculator.Register("removecomponent", "removecomponent(obj_or_path,type_or_str[,dryRun,all]) - remove component(s) in edit mode; defaults to DRY RUN, uses Undo.DestroyObjectImmediate, never saves the scene", new ExpressionFactoryHelper<EditorRemoveComponentExp>());
+            calculator.Register("list_components", "list_components(obj_or_path) - list components on a scene GameObject, including inactive objects (read-only)", new ExpressionFactoryHelper<EditorListComponentsExp>());
+            calculator.Register("add_component", "add_component(obj_or_path,type_or_str[,dryRun]) - add a component in edit mode; defaults to DRY RUN, uses Undo.AddComponent, never saves the scene", new ExpressionFactoryHelper<EditorAddComponentExp>());
+            calculator.Register("remove_component", "remove_component(obj_or_path,type_or_str[,dryRun,all]) - remove component(s) in edit mode; defaults to DRY RUN, uses Undo.DestroyObjectImmediate, never saves the scene", new ExpressionFactoryHelper<EditorRemoveComponentExp>());
 #endif
 #if USE_GM_STORY
-            calculator.Register("storyvar", "storyvar(name,val) or storyvar(name) api", new ExpressionFactoryHelper<StoryVarExp>());
-            calculator.Register("callstory", "callstory(msgId...) or callstory(apiOrMsgId(...)) api", new ExpressionFactoryHelper<CallStoryExp>());
+            calculator.Register("story_var", "story_var(name,val) or story_var(name) api", new ExpressionFactoryHelper<StoryVarExp>());
+            calculator.Register("call_story", "call_story(msgId...) or call_story(apiOrMsgId(...)) api", new ExpressionFactoryHelper<CallStoryExp>());
 #endif
         }
     }

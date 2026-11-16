@@ -56,12 +56,20 @@ namespace ScriptableFramework.Skill.Trigers
                                 animator.speed = m_Speed;
                                 if (m_IsEffectSkillTime) {
                                     instance.TimeScale = m_Speed;
-                                }                             
+                                }
+                                // Hold locomotion off so the AI's next MoveTo
+                                // does not immediately restart the Run clip.
+                                var view = ScriptableFramework.EntityViewModelManager.Instance
+                                    .GetEntityViewById(senderObj.ObjId);
+                                if (null != view) view.LockAnimation(0.6f);
                             } catch (Exception ex) {
                                 LogSystem.Error("[skill:{0} dsl skill id:{1}] play animation {2} throw exception:{3}.", senderObj.SkillId, instance.DslSkillId, anim, ex.Message);
                             }
-                        } else {                                
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] animation is null.", senderObj.SkillId, instance.DslSkillId);
+                        } else {
+                            // Predefined impact/buff skills intentionally have
+                            // no animation name. There is nothing to play and
+                            // nothing is broken: skip silently instead of
+                            // flooding the log on every cast.
                         }
                     }
                     return false;
@@ -136,7 +144,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// animationspeed(start_time, speed [, is_effect_skill_time]);
+    /// animation_speed(start_time, speed [, is_effect_skill_time]);
     /// </summary>
     internal class AnimationSpeedTriger : AbstractSkillTriger
     {
@@ -208,7 +216,7 @@ namespace ScriptableFramework.Skill.Trigers
         private bool m_IsEffectSkillTime = false;        
     }
     /// <summary>
-    /// animationparameter([start_time])
+    /// animation_parameter([start_time])
     /// {
     ///     float(name,val);
     ///     int(name,val);
@@ -314,11 +322,11 @@ namespace ScriptableFramework.Skill.Trigers
         private Dictionary<string, object> m_Params = null;
     }
     /// <summary>
-    /// animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+    /// animation_event(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
     /// 
     /// or
     /// 
-    /// animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+    /// animation_event(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
     /// {
     ///     int(name,value);
     ///     long(name,value);

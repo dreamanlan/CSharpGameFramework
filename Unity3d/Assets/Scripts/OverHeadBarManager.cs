@@ -40,19 +40,45 @@ public sealed class OverHeadBarManager
     private void AddActor(int actorID, bool isGreen, TableConfig.Actor cfg)
     {
         GameObject obj = PluginFramework.Instance.GetGameObject(actorID);
-        GameObject headObj = Utility.FindChildObject(obj, "bloodbar");
-        if (obj != null && headObj != null) {
+        if (obj == null) return;
 
+        // Avatar prefabs come from AssetBundles and do not carry the legacy
+        // "bloodbar" anchor. Previously a missing anchor silently skipped the
+        // whole HP bar, so nobody (players or mobs) had any health display.
+        // Derive a head-top anchor from the renderers instead.
+        GameObject headObj = Utility.FindChildObject(obj, "bloodbar");
+        Vector3 anchor;
+        if (headObj != null) {
+            anchor = headObj.transform.position;
+        } else {
+            Renderer[] rs = obj.GetComponentsInChildren<Renderer>(true);
+            Bounds bounds = default(Bounds);
+            bool hasBounds = false;
+            foreach (Renderer r in rs) {
+                if (r == null) continue;
+                if (!hasBounds) { bounds = r.bounds; hasBounds = true; }
+                else bounds.Encapsulate(r.bounds);
+            }
+            if (hasBounds) {
+                Vector3 p = obj.transform.position;
+                anchor = new Vector3(p.x, bounds.max.y + 0.4f, p.z);
+            } else {
+                anchor = obj.transform.position + Vector3.up * 2f;
+            }
+        }
+
+        {
             GameObject overheadBar = Utility.FindChildObject(obj, "OverHeadBar(Clone)");
             if (overheadBar == null) {
                 overheadBar = (GameObject)ResourceSystem.Instance.NewObject("UI/OverHeadBar");
             }
+            if (overheadBar == null) return;
 
             overheadBar.SetActive(true);
             overheadBar.transform.SetParent(obj.transform);
-            //overheadBar.transform.localPosition = headObj.transform.position - obj.transform.position;
-            overheadBar.transform.position = headObj.transform.position;
+            overheadBar.transform.position = anchor;
             OverHeadBar view = overheadBar.GetComponent<OverHeadBar>();
+            if (view == null) return;
             view.Reset();
 
             Color green = new Color(35f / 255f, 192f / 255f, 25f / 255f);

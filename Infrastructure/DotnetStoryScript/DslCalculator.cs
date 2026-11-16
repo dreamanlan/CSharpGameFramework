@@ -2740,14 +2740,14 @@ namespace DotnetStoryScript.DslExpression
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            //the handling of the simple syntax 'looplist(exp) func(args);'
+            //the handling of the simple syntax 'loop_list(exp) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
                 var secondV = statementData.Second.AsValue;
                 var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = statementData.Second.GetId();
-                if (firstId == "looplist" && !first.HaveStatement() && !first.HaveExternScript() &&
+                if (firstId == "loop_list" && !first.HaveStatement() && !first.HaveExternScript() &&
                         !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     if (first.GetParamNum() > 0) {
                         Dsl.ISyntaxComponent exp = first.GetParam(0);
@@ -3042,14 +3042,14 @@ namespace DotnetStoryScript.DslExpression
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            //the handling of the simple syntax 'foreachvalue(exp1,exp2,...) func(args);'
+            //the handling of the simple syntax 'for_each_value(exp1,exp_2,...) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
                 var secondV = statementData.Second.AsValue;
                 var secondF = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = statementData.Second.GetId();
-                if (firstId == "foreachvalue" && !first.HaveStatement() && !first.HaveExternScript() &&
+                if (firstId == "for_each_value" && !first.HaveStatement() && !first.HaveExternScript() &&
                         !string.IsNullOrEmpty(secondId) && (null != secondV || !secondF.HaveStatement() && !secondF.HaveExternScript())) {
                     int num = first.GetParamNum();
                     if (num > 0) {
@@ -4278,7 +4278,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: dotnetload(dll_path) api");
+                throw new Exception("Expected: dotnet_load(dll_path) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 string path = operands[0].AsString;
@@ -4294,7 +4294,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                throw new Exception("Expected: dotnetnew(assembly,type_name,arg1,arg2,...) api");
+                throw new Exception("Expected: dotnet_new(assembly,type_name,arg1,arg2,...) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
                 var assem = operands[0].As<Assembly>();
@@ -4315,7 +4315,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 0)
-                throw new Exception("Expected: callstack() api");
+                throw new Exception("Expected: call_stack() api");
             var r = System.Environment.StackTrace;
             return BoxedValue.FromObject(r);
         }
@@ -4406,7 +4406,7 @@ namespace DotnetStoryScript.DslExpression
         protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: awaitwhile(\"func_name\", arg1, arg2, ...) api, loop call sync function while result is true");
+                throw new Exception("Expected: await_while(\"func_name\", arg1, arg2, ...) api, loop call sync function while result is true");
             var funcName = operands[0].AsString;
             var args = calculator.NewCalculatorValueList();
             try {
@@ -4431,7 +4431,7 @@ namespace DotnetStoryScript.DslExpression
         protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: awaituntil(\"func_name\", arg1, arg2, ...) api, loop call sync function until result is true");
+                throw new Exception("Expected: await_until(\"func_name\", arg1, arg2, ...) api, loop call sync function until result is true");
             var funcName = operands[0].AsString;
             var args = calculator.NewCalculatorValueList();
             try {
@@ -4456,7 +4456,7 @@ namespace DotnetStoryScript.DslExpression
         protected override IEnumerator OnCalc(DslCalculator calculator, IList<BoxedValue> operands, AsyncCalcResult result)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: awaittime(milliseconds) api, async wait specified time");
+                throw new Exception("Expected: await_time(milliseconds) api, async wait specified time");
             int ms = operands[0].GetInt();
             var sw = System.Diagnostics.Stopwatch.StartNew();
             while (sw.ElapsedMilliseconds < ms) {

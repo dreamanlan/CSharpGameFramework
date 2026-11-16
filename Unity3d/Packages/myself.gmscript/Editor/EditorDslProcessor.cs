@@ -2653,8 +2653,8 @@ internal sealed class EditorDslProcessor
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(string), Value = v, StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);
         }
-        else if (id == "intlist") {
-            //intlist(name, val);
+        else if (id == "int_list") {
+            //int_list(name, val);
             var v = val.Split(s_NumberListSeps, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<int>();
             foreach (var str in v) {
@@ -2701,8 +2701,8 @@ internal sealed class EditorDslProcessor
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(List<ulong>), Value = BoxedValue.FromObject(list), StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);
         }
-        else if (id == "floatlist") {
-            //floatlist(name, val);
+        else if (id == "float_list") {
+            //float_list(name, val);
             var v = val.Split(s_NumberListSeps, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<float>();
             foreach (var str in v) {
@@ -2725,8 +2725,8 @@ internal sealed class EditorDslProcessor
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(List<double>), Value = BoxedValue.FromObject(list), StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);
         }
-        else if (id == "stringlist") {
-            //stringlist(name, val);
+        else if (id == "string_list") {
+            //string_list(name, val);
             var v = val.Split(s_StringListSeps, StringSplitOptions.RemoveEmptyEntries);
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = BoxedValue.FromObject(v), StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);

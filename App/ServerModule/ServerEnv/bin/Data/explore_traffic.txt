@@ -1,3 +1,4 @@
 ﻿EXPLORE_TRAFFIC (server received)
-enter_parallel=8
-battle_pos=1000
+enter_parallel=1
+battle_pos=60
+session 119 grid=r0c0

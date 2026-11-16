@@ -1,26 +1,26 @@
 script(main)
 {
-    fileecho(true);
+    file_echo(true);
 
     cfg=arg(1);
     Configuration=arg(1);
     
     paused=true;
-    if(argnum()>=3){
-    	paused=changetype(arg(2), "bool");
+    if(arg_num()>=3){
+    	paused=change_type(arg(2), "bool");
     };
 
     call("setcolor");
-    $encoding = getinputencoding();
-    setencoding(936);
+    $encoding = get_input_encoding();
+    set_encoding(936);
     echo("encoding:{0} {1}", $encoding.EncodingName, $encoding.EncodingName);
-    echo("commandline:{0}", cmdline());
-    echo("commandline args:{0}", stringjoin(",",cmdlineargs()));
-    echo("args:{0}", stringjoin(",",args()));
+    echo("command_line:{0}", cmd_line());
+    echo("command_line args:{0}", string_join(",",cmd_line_args()));
+    echo("args:{0}", string_join(",",args()));
     echo("current directory:{0}", pwd());
-    echo("script directory:{0}", getscriptdir());
+    echo("script directory:{0}", get_script_directory());
 
-    rootdir=getscriptdir()+"/../..";
+    rootdir=get_script_directory()+"/../..";
     plugindir=rootdir+"/Unity3d/Assets/Plugins";
     logdir=rootdir+"/BuildLog";
     libdir=rootdir+"/ExternLibrary";
@@ -40,13 +40,13 @@ script(main)
     msbuild2019="C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe";
     msbuild2017="C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\MSBuild\\15.0\\Bin\\MSBuild.exe";
 
-    if(fileexist(msbuild2022)){
+    if(file_exist(msbuild2022)){
         xbuild=msbuild2022;
     }
-    elseif(fileexist(msbuild2019)){
+    elseif(file_exist(msbuild2019)){
         xbuild=msbuild2019;
     }
-    elseif(fileexist(msbuild2017)){
+    elseif(file_exist(msbuild2017)){
         xbuild=msbuild2017;
     }
     else{
@@ -60,7 +60,7 @@ script(main)
     tablecopy=expand("%rootdir%/Tools/TableReaderGenerator/bin/Debug/net9.0/TableReaderGenerator.exe");
     
     echo();
-    looplist(listhashtable(envs())){
+    loop_list(list_hashtable(envs())){
         echo("{0}={1}",$$.Key,$$.Value);
     };
     echo();
@@ -81,7 +81,7 @@ script(main)
         :};
     };
     
-    createdir(logdir);
+    create_dir(logdir);
 
     echo("building Client.sln ...");
     $var0 = command{
@@ -97,18 +97,18 @@ script(main)
     
     echo("result:{0}", $var0);
     if($var0){
-        setfgcolor("Red");
+        set_fg_color("Red");
         echo("compile Client.sln failed, see BuildLog/Client.sln.log");
         call("setcolor");
     };
 
     cd(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1");
     echo("curdir:{0}",pwd());
-    looplist(listfiles(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1","*.dll")){
-        $filename = getfilename($$);
+    loop_list(list_files(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1","*.dll")){
+        $filename = get_file_name($$);
         $targetPath = plugindir+"/"+$filename;
-        copyfile($$, $targetPath);
-        if(osplatform()=="Unix"){
+        copy_file($$, $targetPath);
+        if(os_platform()=="Unix"){
 			process(mono, pdb2mdb + " " + $filename);
         }else{
             echo("{0} {1}", pdb2mdb, $filename);
@@ -116,14 +116,14 @@ script(main)
         };
         //echo("copy {0} to {1}", $$, $targetPath);
     };
-    copydir(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1", plugindir, "*.mdb");
-    copydir(rootdir+"/ExternalLibrary/protobuf-net", plugindir, "*.dll");
-    copydir(rootdir+"/ExternalLibrary/protobuf-net", plugindir, "*.xml");
+    copy_dir(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1", plugindir, "*.mdb");
+    copy_dir(rootdir+"/ExternalLibrary/protobuf-net", plugindir, "*.dll");
+    copy_dir(rootdir+"/ExternalLibrary/protobuf-net", plugindir, "*.xml");
 
-    deletefile(plugindir+"/UnityEngine.dll");
-    deletefile(plugindir+"/UnityEngine.UI.dll");
-    deletefile(plugindir+"/UnityEngine.Timeline.dll");
-    deletefile(plugindir+"/UnityEditor.dll");
+    delete_file(plugindir+"/UnityEngine.dll");
+    delete_file(plugindir+"/UnityEngine.UI.dll");
+    delete_file(plugindir+"/UnityEngine.Timeline.dll");
+    delete_file(plugindir+"/UnityEditor.dll");
     cd(rootdir);
 
     $var1 = command{
@@ -149,12 +149,12 @@ script(main)
     };
 
     if($var0 || $var1 || $var2){
-        setfgcolor("Red");
+        set_fg_color("Red");
         echo("compile failed !");
         call("setcolor");
     };
 
-    resetcolor();
+    reset_color();
     if(paused){
 	    echo("press any key ...");
 	    pause();
@@ -164,9 +164,9 @@ script(main)
 
 script(setcolor)
 {
-    if(osplatform()=="Unix"){
-        setfgcolor("Blue");
+    if(os_platform()=="Unix"){
+        set_fg_color("Blue");
     }else{
-        setfgcolor("Yellow");
+        set_fg_color("Yellow");
     };
 };

@@ -43,4 +43,5 @@ public class FilePathDefine_Server
 	public const string C_SkillEvent = C_RootPath + "Public/SkillEvent.dat";
 	public const string C_SkillResources = C_RootPath + "Public/SkillResources.dat";
 	public const string C_UserScript = C_RootPath + "Server/UserScript.dat";
+	public const string C_WorldEvent = C_RootPath + "Server/WorldEvent.dat";
 }

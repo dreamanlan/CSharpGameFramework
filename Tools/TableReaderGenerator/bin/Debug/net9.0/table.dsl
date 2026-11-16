@@ -38,7 +38,7 @@ tabledef(Actor, dictionary, public)
 	fielddef(avatar, avatar, string);
 	fielddef(skill0, skill0, int32);
 	fielddef(skill1, skill1, int32);
-	fielddef(skill2, skill2, int32);
+	fielddef(skill_2, skill_2, int32);
 	fielddef(skill3, skill3, int32);
 	fielddef(skill4, skill4, int32);
 	fielddef(skill5, skill5, int32);
@@ -95,7 +95,7 @@ tabledef(BuffData, dictionary, public)
 	fielddef(desc, desc, string);
 	fielddef(attr1, attr1, int32);
 	fielddef(value1, value1, int32);
-	fielddef(attr2, attr2, int32);
+	fielddef(attr_2, attr_2, int32);
 	fielddef(value2, value2, int32);
 	fielddef(attr3, attr3, int32);
 	fielddef(value3, value3, int32);
@@ -170,7 +170,7 @@ tabledef(ImpactData, dictionary, public)
 	fielddef(vampire, vampire, int32_list);
 	fielddef(attr1, attr1, int32);
 	fielddef(value1, value1, int32);
-	fielddef(attr2, attr2, int32);
+	fielddef(attr_2, attr_2, int32);
 	fielddef(value2, value2, int32);
 	fielddef(attr3, attr3, int32);
 	fielddef(value3, value3, int32);
@@ -292,7 +292,7 @@ tabledef(SkillData, dictionary, public)
 	fielddef(beadduc, beadduc, int32);
 	fielddef(attr1, attr1, int32);
 	fielddef(value1, value1, int32);
-	fielddef(attr2, attr2, int32);
+	fielddef(attr_2, attr_2, int32);
 	fielddef(value2, value2, int32);
 	fielddef(attr3, attr3, int32);
 	fielddef(value3, value3, int32);
@@ -351,4 +351,18 @@ tabledef(UserScript, dictionary, server)
 	fielddef(StoryId, StoryId, string);
 	fielddef(Namespace, Namespace, string);
 	fielddef(DslFile, DslFile, string);
+};
+tabledef(WorldEvent, dictionary, server)
+{
+	recordmodifier(partial);
+	providermodifier(partial);
+	fielddef(id, id, string);
+	fielddef(grid_id, grid_id, string);
+	fielddef(era, era, string);
+	fielddef(x, x, float);
+	fielddef(z, z, float);
+	fielddef(radius, radius, float);
+	fielddef(reward, reward, int32);
+	fielddef(token, token, string);
+	fielddef(title, title, string);
 };

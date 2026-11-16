@@ -8,14 +8,14 @@ using StoryScript.DslExpression;
 namespace GmCommands
 {
     /// <summary>
-    /// sendmessage(objname,msg,arg1,arg2,...);
+    /// send_message(objname,msg,arg1,arg2,...);
     /// </summary>
     internal class SendMessageCommand : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2) {
-                throw new Exception("Expected: sendmessage(objname,msg,...)");
+                throw new Exception("Expected: send_message(objname,msg,...)");
             }
             string objname = operands[0].AsString;
             string msg = operands[1].AsString;
@@ -34,7 +34,7 @@ namespace GmCommands
         }
     }
     /// <summary>
-    /// sendmessagewithtag(tagname,msg,arg1,arg2,...);
+    /// send_message_with_tag(tagname,msg,arg1,arg2,...);
     /// </summary>
     internal class SendMessageWithTagCommand : SimpleExpressionBase
     {
@@ -60,7 +60,7 @@ namespace GmCommands
     }
 
     /// <summary>
-    /// sendmessagewithgameobject(gameobject,msg,arg1,arg2,...);
+    /// send_message_with_game_object(gameobject,msg,arg1,arg2,...);
     /// </summary>
     internal class SendMessageWithGameObjectCommand : SimpleExpressionBase
     {
@@ -98,10 +98,10 @@ namespace GmCommands
     }
 
     /// <summary>
-    /// creategameobject(name, prefab[, parent])[obj("varname")]{
-    ///     position(vector3(x,y,z));
-    ///     rotation(vector3(x,y,z));
-    ///     scale(vector3(x,y,z));
+    /// create_game_object(name, prefab[, parent])[obj("varname")]{
+    ///     position(vector_3(x,y,z));
+    ///     rotation(vector_3(x,y,z));
+    ///     scale(vector_3(x,y,z));
     ///     loadtimeout(1000);
     ///     disable("typename", "typename", ...);
     ///     remove("typename", "typename", ...);
@@ -296,10 +296,10 @@ namespace GmCommands
     }
 
     /// <summary>
-    /// settransform(name, world_or_local){
-    ///     position(vector3(x,y,z));
-    ///     rotation(vector3(x,y,z));
-    ///     scale(vector3(x,y,z));
+    /// set_transform(name, world_or_local){
+    ///     position(vector_3(x,y,z));
+    ///     rotation(vector_3(x,y,z));
+    ///     scale(vector_3(x,y,z));
     /// };
     /// </summary>
     internal sealed class SetTransformCommand : AbstractExpression
@@ -379,10 +379,10 @@ namespace GmCommands
         private IExpression m_Scale;
     }
     /// <summary>
-    /// addtransform(name, world_or_local){
-    ///     position(vector3(x,y,z));
-    ///     rotation(vector3(x,y,z));
-    ///     scale(vector3(x,y,z));
+    /// add_transform(name, world_or_local){
+    ///     position(vector_3(x,y,z));
+    ///     rotation(vector_3(x,y,z));
+    ///     scale(vector_3(x,y,z));
     /// };
     /// </summary>
     internal sealed class AddTransformCommand : AbstractExpression
@@ -462,7 +462,7 @@ namespace GmCommands
         private IExpression m_Scale;
     }
     /// <summary>
-    /// destroygameobject(path);
+    /// destroy_game_object(path);
     /// </summary>
     internal class DestroyGameObjectCommand : SimpleExpressionBase
     {
@@ -487,7 +487,7 @@ namespace GmCommands
         }
     }
     /// <summary>
-    /// setparent(objpath,parent,stay_world_pos);
+    /// set_parent(objpath,parent,stay_world_pos);
     /// </summary>
     internal sealed class SetParentCommand : SimpleExpressionBase
     {
@@ -519,7 +519,7 @@ namespace GmCommands
         }
     }
     /// <summary>
-    /// setactive(objpath,1_or_0);
+    /// set_active(objpath,1_or_0);
     /// </summary>
     internal sealed class SetActiveCommand : SimpleExpressionBase
     {
@@ -543,7 +543,7 @@ namespace GmCommands
         }
     }
     /// <summary>
-    /// setvisible(objpath,1_or_0);
+    /// set_visible(objpath,1_or_0);
     /// </summary>
     internal sealed class SetVisibleCommand : SimpleExpressionBase
     {
@@ -572,7 +572,7 @@ namespace GmCommands
         }
     }
     /// <summary>
-    /// addcomponent(objpath,type)[obj("varname")];
+    /// add_component(objpath,type)[obj("varname")];
     /// </summary>
     internal sealed class AddComponentCommand : AbstractExpression
     {
@@ -652,7 +652,7 @@ namespace GmCommands
         private IExpression m_ObjVarName;
     }
     /// <summary>
-    /// removecomponent(objpath,type);
+    /// remove_component(objpath,type);
     /// </summary>
     internal class RemoveComponentCommand : SimpleExpressionBase
     {
@@ -698,7 +698,7 @@ namespace GmCommands
     }
 
     /// <summary>
-    /// openurl(url);
+    /// open_url(url);
     /// </summary>
     internal class OpenUrlCommand : SimpleExpressionBase
     {
@@ -724,7 +724,7 @@ namespace GmCommands
         }
     }
     /// <summary>
-    /// gameobjectanimation(obj, anim[, normalized_time]);
+    /// game_object_animation(obj, anim[, normalized_time]);
     /// </summary>
     internal class GameObjectAnimationCommand : SimpleExpressionBase
     {
@@ -763,7 +763,7 @@ namespace GmCommands
     }
 
     /// <summary>
-    /// gameobjectanimationparam(obj)
+    /// game_object_animation_param(obj)
     /// {
     ///     float(name,val);
     ///     int(name,val);

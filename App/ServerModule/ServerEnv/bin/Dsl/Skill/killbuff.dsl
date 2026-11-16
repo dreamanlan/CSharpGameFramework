@@ -2,14 +2,14 @@ skill(106)
 {
   section(30000)
   {
-    adjustsectionduration("impact",100);
+    adjust_section_duration("impact",100);
   };
   section(100)
   {
-    sendstorymessage(0,"kill_summon_npc");
+    send_story_message(0,"kill_summon_npc");
   };
   onstop
   {
-    sendstorymessage(0,"kill_summon_npc");
+    send_story_message(0,"kill_summon_npc");
   };
 };

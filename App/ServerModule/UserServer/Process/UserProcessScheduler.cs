@@ -262,7 +262,7 @@ namespace ScriptableFramework
                     accountInfo.UserGuid = UserServer.Instance.GlobalProcessThread.GenerateUserGuid();
                     accountInfo.CurrentState = AccountState.Online;
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
-                    LogSys.Log(ServerLogType.INFO, "Account login success. Account:{0}", accountId);
+                    LogSys.Log(ServerLogType.INFO, "Account log_in success. Account:{0}", accountId);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
                     ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
@@ -274,7 +274,7 @@ namespace ScriptableFramework
             } else {
                 //The current accountId is online
                 if (accountInfo.CurrentState == AccountState.Dropped || clientInfo == accountInfo.ClientInfo) {
-                    //The account is offline or the same device is logged in repeatedly, and the login is successful.
+                    //The account is offline or the same device is logged in repeatedly, and the log_in is successful.
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_5a: Account is dropped. Login SUCCESS. AccountId:{0}", accountId);
                     accountInfo.AccountId = accountId;
                     accountInfo.Password = password;
@@ -292,7 +292,7 @@ namespace ScriptableFramework
                     replyMsg.m_ProtoData = protoMsg;
                     NodeMessageDispatcher.SendNodeMessage(nodeName, replyMsg);
                 } else {
-                    //The account was logged in on another device, but the login failed.
+                    //The account was logged in on another device, but the log_in failed.
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_5b: Account is online. Login FAILED. AccountId:{0}", accountId);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
                     ScriptableFrameworkMessage.AccountLoginResult protoMsg = new ScriptableFrameworkMessage.AccountLoginResult();
@@ -336,7 +336,7 @@ namespace ScriptableFramework
                         accountInfo.CurrentState = AccountState.Online;
                         accountInfo.LastLoginTime = TimeUtility.CurTimestamp;
                         m_AccountSystem.AddAccountById(accountId, accountInfo);
-                        LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_4a: Account login SUCCESS . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
+                        LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_4a: Account log_in SUCCESS . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                         protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Success;
                         protoMsg.m_UserGuid = accountInfo.UserGuid;                        
                     }
@@ -993,7 +993,7 @@ namespace ScriptableFramework
         private bool m_LastSaveFinished = false;    //Player data final storage completion status
 
         //The global data system is implemented in UserProcessScheduler because it is closely related to
-        //the registration and login process.
+        //the registration and log_in process.
         private NicknameSystem m_NicknameSystem = new NicknameSystem();
     }
 }

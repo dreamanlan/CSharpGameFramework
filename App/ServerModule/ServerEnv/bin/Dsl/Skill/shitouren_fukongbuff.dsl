@@ -3,26 +3,26 @@ skill(108)
   section(60000)
   {
     animation("Damage");
-    selfeffect(selfEffect,1000,"eyes",0)
+    self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector3(0,1,0));
+      transform(vector_3(0,1,0));
     };
-    enablemoveagent(false);
-    addimpacttoself(0,10002);
-    adjustsectionduration("impact",100);
-    jump(1500,10,0,1,vector3(0,0,0),0);
+    enable_move_agent(false);
+    add_impact_to_self(0,10002);
+    adjust_section_duration("impact",100);
+    jump(1500,10,0,1,vector_3(0,0,0),0);
     damage(0);
   };
   section(100)
   {
-    stopimpact(0,10002);
+    stop_impact(0,10002);
     animation("Stand");
-    enablemoveagent(true);
+    enable_move_agent(true);
   };
   onstop
   {
-    stopimpact(0,10002);
+    stop_impact(0,10002);
     animation("Stand");
-    enablemoveagent(true);
+    enable_move_agent(true);
   };
 };

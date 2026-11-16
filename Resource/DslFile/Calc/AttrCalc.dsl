@@ -11,33 +11,33 @@ proc(attr)
 //命中率
 proc(hitrate)
 {
-    clamp(value(2),value(3),value(1)/(max(0,(attr2(1026)-attr(1024))*1000)+value(1)*1000)+attr(1025)-attr(1027))/1000;
+    clamp(value(2),value(3),value(1)/(max(0,(attr_2(1026)-attr(1024))*1000)+value(1)*1000)+attr(1025)-attr(1027))/1000;
 };
 //暴击率
 proc(critrate)
 {
-    clamp(value(5),value(6),1000-value(4)*1000/(max(0,(attr(1021)-attr2(1022)))+value(4))+attr(1023))/1000;
+    clamp(value(5),value(6),1000-value(4)*1000/(max(0,(attr(1021)-attr_2(1022)))+value(4))+attr(1023))/1000;
 };
 //格档率
 proc(blockrate)
 {
-    clamp(value(8),value(9),1000-value(7)*1000/(max(0,(attr2(1030)-attr(1028)))+value(7))+attr2(1031)-attr(1029))/1000;
+    clamp(value(8),value(9),1000-value(7)*1000/(max(0,(attr_2(1030)-attr(1028)))+value(7))+attr_2(1031)-attr(1029))/1000;
 };
 //物理伤害
 proc(phydamage)
 {
     var(0)=((((attr(1005)*arg(0)+arg(1)*1000)-
-        attr2(1015)*1000+attr(1039)*1000)*(1000+attr(1033)*arg(2))-
-        attr2(1032)*arg(3)*1000*1000)*(1000+attr(1035)-attr2(1037))+
-        attr(1036)*1000*1000-attr2(1038)*1000*1000)*value(10)/1000/1000000000;
+        attr_2(1015)*1000+attr(1039)*1000)*(1000+attr(1033)*arg(2))-
+        attr_2(1032)*arg(3)*1000*1000)*(1000+attr(1035)-attr_2(1037))+
+        attr(1036)*1000*1000-attr_2(1038)*1000*1000)*value(10)/1000/1000000000;
     clamp(1,262144,var(0));
 };
 //法术伤害
 proc(magdamage)
 {
     var(0)=((((attr(1010)*arg(0)+arg(1)*1000)-
-        attr2(1020)*1000+attr(1040)*1000)*(1000+attr(1033)*arg(2))-
-        attr2(1032)*arg(3)*1000*1000)*(1000+attr(1035)-attr2(1037))+
-        attr(1036)*1000*1000-attr2(1038)*1000*1000)*value(10)/1000/1000000000;
+        attr_2(1020)*1000+attr(1040)*1000)*(1000+attr(1033)*arg(2))-
+        attr_2(1032)*arg(3)*1000*1000)*(1000+attr(1035)-attr_2(1037))+
+        attr(1036)*1000*1000-attr_2(1038)*1000*1000)*value(10)/1000/1000000000;
     clamp(1,262144,var(0));
 };

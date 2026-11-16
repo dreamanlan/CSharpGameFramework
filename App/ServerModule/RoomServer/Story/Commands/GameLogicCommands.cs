@@ -10,7 +10,7 @@ using ScriptableFrameworkMessage;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// blackboardclear();
+    /// blackboard_clear();
     /// </summary>
     public class BlackboardClearCommand : SimpleExpressionBase
     {
@@ -25,7 +25,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// blackboardset(name,value);
+    /// blackboard_set(name,value);
     /// </summary>
     public class BlackboardSetCommand : SimpleExpressionBase
     {
@@ -44,7 +44,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// camerafollow(npc_unit_id1,npc_unit_id2,...)[touser(userid)];
+    /// camera_follow(npc_unit_id1,npc_unit_id2,...)[touser(userid)];
     /// </summary>
     public class CameraFollowCommand : AbstractExpression
     {
@@ -120,7 +120,7 @@ namespace ScriptableFramework.Story.Commands
         private List<IExpression> m_UnitIds = new List<IExpression>();
     }
     /// <summary>
-    /// camerafollowrange(npc_unit_id_begin,npc_unit_id_end)[touser(userid)];
+    /// camera_follow_range(npc_unit_id_begin,npc_unit_id_end)[touser(userid)];
     /// </summary>
     public class CameraFollowRangeCommand : AbstractExpression
     {
@@ -201,7 +201,7 @@ namespace ScriptableFramework.Story.Commands
     /// <summary>
     /// cameralookat(npc_unit_id)[touser(userid)];
     /// or
-    /// cameralookat(vector3(x,y,z))[touser(userid)];
+    /// cameralookat(vector_3(x,y,z))[touser(userid)];
     /// </summary>
     public class CameraLookCommand : AbstractExpression
     {
@@ -313,7 +313,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Arg;
     }
     /// <summary>
-    /// camerafollowpath()[touser(userid)];
+    /// camera_follow_path()[touser(userid)];
     /// </summary>
     public class CameraFollowPathCommand : AbstractExpression
     {
@@ -373,7 +373,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_UserId;
     }
     /// <summary>
-    /// lockframe(scale)[touser(userid)];
+    /// lock_frame(scale)[touser(userid)];
     /// </summary>
     public class LockFrameCommand : AbstractExpression
     {
@@ -437,7 +437,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_Scale;
     }
     /// <summary>
-    /// setleaderid([objid,]leaderid);
+    /// set_leader_id([objid,]leaderid);
     /// </summary>
     public class SetLeaderIdCommand : SimpleExpressionBase
     {
@@ -461,7 +461,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// showdlg(storyDlgId)[touser(userid)];
+    /// show_dlg(storyDlgId)[touser(userid)];
     /// </summary>
     public class ShowDlgCommand : AbstractExpression
     {
@@ -523,7 +523,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_StoryDlgId;
     }
     /// <summary>
-    /// areadetect(pos,radius,type,callback)[set(var,val)];
+    /// area_detect(pos,radius,type,callback)[set(var,val)];
     /// </summary>
     public class AreaDetectCommand : AbstractExpression
     {

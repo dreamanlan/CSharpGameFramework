@@ -73,8 +73,8 @@ namespace ScriptableFramework
 
                         if (skillData.attr1 > 0 && skillData.value1 > 0)
                             skill.attrValues[skillData.attr1] = skillData.value1;
-                        if (skillData.attr2 > 0 && skillData.value2 > 0)
-                            skill.attrValues[skillData.attr2] = skillData.value2;
+                        if (skillData.attr_2 > 0 && skillData.value2 > 0)
+                            skill.attrValues[skillData.attr_2] = skillData.value2;
                         if (skillData.attr3 > 0 && skillData.value3 > 0)
                             skill.attrValues[skillData.attr3] = skillData.value3;
                         if (skillData.attr4 > 0 && skillData.value4 > 0)
@@ -100,8 +100,8 @@ namespace ScriptableFramework
 
                         if (impactData.attr1 > 0 && impactData.value1 > 0)
                             skill.attrValues[impactData.attr1] = impactData.value1;
-                        if (impactData.attr2 > 0 && impactData.value2 > 0)
-                            skill.attrValues[impactData.attr2] = impactData.value2;
+                        if (impactData.attr_2 > 0 && impactData.value2 > 0)
+                            skill.attrValues[impactData.attr_2] = impactData.value2;
                         if (impactData.attr3 > 0 && impactData.value3 > 0)
                             skill.attrValues[impactData.attr3] = impactData.value3;
                         if (impactData.attr4 > 0 && impactData.value4 > 0)

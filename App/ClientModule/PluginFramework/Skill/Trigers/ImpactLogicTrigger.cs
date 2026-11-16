@@ -35,7 +35,7 @@ namespace ScriptableFramework.Skill.Trigers
         protected override void Load(Dsl.FunctionData callData, SkillInstance instance) { LoadParams(callData); }
     }
 
-    /// <summary>addimpacttoself(start_time, impact_id[, duration]);</summary>
+    /// <summary>add_impact_to_self(start_time, impact_id[, duration]);</summary>
     internal sealed class AddImpactToSelfTrigger : ImpactLogicTriggerBase
     {
         protected override ISkillTriger OnClone() { var copy = new AddImpactToSelfTrigger(); CopyTo(copy); return copy; }
@@ -49,7 +49,7 @@ namespace ScriptableFramework.Skill.Trigers
         }
     }
 
-    /// <summary>addimpacttotarget(start_time, impact_id[, duration]);</summary>
+    /// <summary>add_impact_to_target(start_time, impact_id[, duration]);</summary>
     internal sealed class AddImpactToTargetTrigger : ImpactLogicTriggerBase
     {
         protected override ISkillTriger OnClone() { var copy = new AddImpactToTargetTrigger(); CopyTo(copy); return copy; }
@@ -63,7 +63,7 @@ namespace ScriptableFramework.Skill.Trigers
         }
     }
 
-    /// <summary>stateimpact(start_time, impact_id[, duration]); hit-side impact trigger.</summary>
+    /// <summary>state_impact(start_time, impact_id[, duration]); hit-side impact trigger.</summary>
     internal sealed class StateImpactTrigger : ImpactLogicTriggerBase
     {
         protected override ISkillTriger OnClone() { var copy = new StateImpactTrigger(); CopyTo(copy); return copy; }
@@ -77,7 +77,7 @@ namespace ScriptableFramework.Skill.Trigers
         }
     }
 
-    /// <summary>stopimpact(start_time, impact_id);</summary>
+    /// <summary>stop_impact(start_time, impact_id);</summary>
     internal sealed class StopImpactTrigger : ImpactLogicTriggerBase
     {
         protected override ISkillTriger OnClone() { var copy = new StopImpactTrigger(); CopyTo(copy); return copy; }
@@ -91,7 +91,7 @@ namespace ScriptableFramework.Skill.Trigers
         }
     }
 
-    /// <summary>removeimpact(start_time); clear all active impacts on the target.</summary>
+    /// <summary>remove_impact(start_time); clear all active impacts on the target.</summary>
     internal sealed class RemoveImpactTrigger : ImpactLogicTriggerBase
     {
         protected override ISkillTriger OnClone() { var copy = new RemoveImpactTrigger(); CopyTo(copy); return copy; }

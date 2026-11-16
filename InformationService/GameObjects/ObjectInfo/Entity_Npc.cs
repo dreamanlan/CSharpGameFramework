@@ -215,14 +215,14 @@ namespace ScriptableFramework
 
                 m_AutoSkillIds.Add(cfg.skill1);
             }
-            if (cfg.skill2 > 0) {
-                SkillInfo info = new SkillInfo(cfg.skill2);
+            if (cfg.skill_2 > 0) {
+                SkillInfo info = new SkillInfo(cfg.skill_2);
                 GetSkillStateInfo().AddSkill(info);
 
                 if (maxAttackRange < info.ConfigData.skillData.distance)
                     maxAttackRange = info.ConfigData.skillData.distance;
 
-                m_AutoSkillIds.Add(cfg.skill2);
+                m_AutoSkillIds.Add(cfg.skill_2);
             }
             if (cfg.skill3 > 0) {
                 SkillInfo info = new SkillInfo(cfg.skill3);

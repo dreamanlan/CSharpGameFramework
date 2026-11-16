@@ -8,10 +8,15 @@
 
 输入：tiles/{tid}_layout_{era}.png 的 R=220 连通分量（设计图里的事件点）
 输出：
-  Resource/Tables/Server/WorldEvent.txt      服务端专用表（Tables/Server 只同步到服务端）
+  Resource/Tables/Server/WorldEvent.txt      标准项目表（行1=类型、行2=字段名、GBK）
+                                             → TableReaderGenerator 生成 .dat 与
+                                               TableConfig.WorldEventProvider
   Assets/Resources/MapData/{tid}_areas.txt   净化版：移除所有 220 行
   Assets/Resources/MapData/{tid}_hints.txt   客户端模糊视觉提示
   events_check.txt                           隔离自检报告
+
+事件表走项目读表器，不再由脚本直接写运行时副本；`Server/` 目录在客户端同步时
+被 TableReaderGenerator 跳过，因此隔离由读表器本身保证。
 
 坐标：布局图 256x256，1px = 2 世界单位。Unity GetPixels32 自下而上，
       C# ReadPng 反转回自上而下的 design 缓冲，故 design_y == pil_y，
@@ -26,6 +31,9 @@ ROOT = r'D:\GitHub\CSharpGameFramework'
 DESIGN = os.path.join(ROOT, 'Resource', 'MapDesign')
 TILES = os.path.join(DESIGN, 'tiles')
 CLIENT = os.path.join(ROOT, 'Unity3d', 'Assets', 'Resources', 'MapData')
+# A normal project table: TableReaderGenerator converts it to WorldEvent.dat
+# and generates TableConfig.WorldEventProvider from table.dsl. The Server/
+# folder is skipped by the client sync, so isolation is enforced by the reader.
 SERVER_TABLE = os.path.join(ROOT, 'Resource', 'Tables', 'Server', 'WorldEvent.txt')
 
 ERA = {
@@ -119,10 +127,13 @@ def write_hints(tid, centers, rnd):
 def main():
     rows = tiles()
     rnd = random.Random(3417)
+    # Standard project table header: row 1 = types, row 2 = field names.
+    # GenDsl derives tabledef(WorldEvent, dictionary, server) from these rows.
     out = [
-        '# SERVER ONLY - never copied to the client build.',
-        '# id | grid_id | era | x | z | radius | reward | token | title',
-        '# exact positions/radii/rewards are server-side only; client gets coarse hints.',
+        '\t'.join(['string', 'string', 'string', 'float', 'float',
+                   'float', 'int32', 'string', 'string']),
+        '\t'.join(['id', 'grid_id', 'era', 'x', 'z',
+                   'radius', 'reward', 'token', 'title']),
     ]
     total = 0
     for rank, t in enumerate(rows, 1):
@@ -140,9 +151,11 @@ def main():
                 '%s：%s' % (t['name'], t['src']),
             ]))
             total += 1
+    text = '\n'.join(out) + '\n'
     os.makedirs(os.path.dirname(SERVER_TABLE), exist_ok=True)
-    with open(SERVER_TABLE, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(out) + '\n')
+    # TableReaderGenerator / Txt2Binary read project tables as GBK (codepage 936).
+    with open(SERVER_TABLE, 'w', encoding='gbk', newline='') as f:
+        f.write(text)
 
     # Isolation self-check
     client_tables = os.path.join(ROOT, 'Unity3d', 'Assets', 'StreamingAssets', 'Tables')

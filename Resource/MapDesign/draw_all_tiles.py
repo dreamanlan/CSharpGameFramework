@@ -293,9 +293,9 @@ def main():
                    (tid, code, row['route'], s1, s2, 'PASS' if ok else 'FAIL'))
     # 保持第 13 节文档列出的样板格 preview 文件名与新图一致
     import shutil
-    shutil.copyfile(os.path.join(TILES, 'r2c4_minimap.png'),
+    shutil.copy_file(os.path.join(TILES, 'r2c4_minimap.png'),
                     os.path.join(TILES, 'r2c4_preview_modern.png'))
-    shutil.copyfile(os.path.join(TILES, 'r2c4_minimap_sumer.png'),
+    shutil.copy_file(os.path.join(TILES, 'r2c4_minimap_sumer.png'),
                     os.path.join(TILES, 'r2c4_preview_sumer.png'))
     log.append('TOTAL=%d PASS=%d FAIL=%d' % (len(rows), passed, len(rows) - passed))
     with open(os.path.join(ROOT, 'tiles_check.txt'), 'w', encoding='utf-8') as f:

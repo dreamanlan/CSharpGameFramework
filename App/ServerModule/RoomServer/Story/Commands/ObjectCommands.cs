@@ -10,7 +10,7 @@ using ScriptableFrameworkMessage;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// objface(obj_id, dir);
+    /// obj_face(obj_id, dir);
     /// </summary>
     public class ObjFaceCommand : SimpleExpressionBase
     {
@@ -33,7 +33,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objmove(obj_id, vector3(x,y,z));
+    /// obj_move(obj_id, vector_3(x,y,z));
     /// </summary>
     public class ObjMoveCommand : SimpleExpressionBase
     {
@@ -69,7 +69,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objmovewithwaypoints(obj_id, vector3list("1 2 3 4 5 6"));
+    /// obj_move_with_waypoints(obj_id, vector_3_list("1 2 3 4 5 6"));
     /// </summary>
     public class ObjMoveWithWaypointsCommand : SimpleExpressionBase
     {
@@ -108,7 +108,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objstop(obj_id);
+    /// obj_stop(obj_id);
     /// </summary>
     public class ObjStopCommand : SimpleExpressionBase
     {
@@ -136,7 +136,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objattack(npc_obj_id[,target_obj_id]);
+    /// obj_attack(npc_obj_id[,target_obj_id]);
     /// </summary>
     public class ObjAttackCommand : SimpleExpressionBase
     {
@@ -162,7 +162,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetformation(obj_id, index);
+    /// obj_set_formation(obj_id, index);
     /// </summary>
     public class ObjSetFormationCommand : SimpleExpressionBase
     {
@@ -183,7 +183,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objenableai(obj_id, 1_or_0);
+    /// obj_enable_ai(obj_id, 1_or_0);
     /// </summary>
     public class ObjEnableAiCommand : SimpleExpressionBase
     {
@@ -204,7 +204,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetai(objid,ai_logic_id,stringlist("param1 param2 param3 ..."));
+    /// obj_set_ai(objid,ai_logic_id,string_list("param1 param2 param3 ..."));
     /// </summary>
     public class ObjSetAiCommand : SimpleExpressionBase
     {
@@ -236,7 +236,7 @@ namespace ScriptableFramework.Story.Commands
             return BoxedValue.NullObject;
         }
     }    /// <summary>
-    /// objsetaitarget(objid,targetid);
+    /// obj_set_ai_target(objid,targetid);
     /// </summary>
     public class ObjSetAiTargetCommand : SimpleExpressionBase
     {
@@ -259,7 +259,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objanimation(obj_id, anim);
+    /// obj_animation(obj_id, anim);
     /// </summary>
     public class ObjAnimationCommand : SimpleExpressionBase
     {
@@ -284,7 +284,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objaddimpact(obj_id, impactid, arg1, arg2, ...)[seq("@seq")];
+    /// obj_add_impact(obj_id, impactid, arg1, arg2, ...)[seq("@seq")];
     /// </summary>
     public class ObjAddImpactCommand : AbstractExpression
     {
@@ -372,7 +372,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_SeqVarName;
     }
     /// <summary>
-    /// objremoveimpact(obj_id, seq);
+    /// obj_remove_impact(obj_id, seq);
     /// </summary>
     public class ObjRemoveImpactCommand : SimpleExpressionBase
     {
@@ -401,7 +401,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objcastskill(obj_id, skillid, arg1, arg2, ...);
+    /// obj_cast_skill(obj_id, skillid, arg1, arg2, ...);
     /// </summary>
     public class ObjCastSkillCommand : SimpleExpressionBase
     {
@@ -441,7 +441,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objstopskill(obj_id);
+    /// obj_stop_skill(obj_id);
     /// </summary>
     public class ObjStopSkillCommand : SimpleExpressionBase
     {
@@ -461,7 +461,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objaddskill(obj_id, skillid);
+    /// obj_add_skill(obj_id, skillid);
     /// </summary>
     public class ObjAddSkillCommand : SimpleExpressionBase
     {
@@ -489,7 +489,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objremoveskill(obj_id, skillid);
+    /// obj_remove_skill(obj_id, skillid);
     /// </summary>
     public class ObjRemoveSkillCommand : SimpleExpressionBase
     {
@@ -515,7 +515,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objlisten(unit_id, message_type, true_or_false);
+    /// obj_listen(unit_id, message_type, true_or_false);
     /// </summary>
     public class ObjListenCommand : SimpleExpressionBase
     {
@@ -543,7 +543,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// sethp(objid,value);
+    /// set_hp(objid,value);
     /// </summary>
     public class SetHpCommand : SimpleExpressionBase
     {
@@ -565,7 +565,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setenergy(objid,value);
+    /// set_energy(objid,value);
     /// </summary>
     public class SetEnergyCommand : SimpleExpressionBase
     {
@@ -587,7 +587,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objset(uniqueid,localname,value);
+    /// obj_set(uniqueid,localname,value);
     /// </summary>
     public class ObjSetCommand : SimpleExpressionBase
     {
@@ -607,7 +607,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setlevel(objid,value);
+    /// set_level(objid,value);
     /// </summary>
     public class SetLevelCommand : SimpleExpressionBase
     {
@@ -629,7 +629,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setattr(objid,attrname,value);
+    /// set_attr(objid,attrname,value);
     /// </summary>
     public class SetAttrCommand : SimpleExpressionBase
     {
@@ -648,7 +648,7 @@ namespace ScriptableFramework.Story.Commands
                     try {
                         charObj.LevelChanged = true;
                     } catch (Exception ex) {
-                        LogSystem.Warn("setattr throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                        LogSystem.Warn("set_attr throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
                 }
             }
@@ -656,7 +656,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// markcontrolbystory(objid,true_or_false);
+    /// mark_control_by_story(objid,true_or_false);
     /// </summary>
     public class MarkControlByStoryCommand : SimpleExpressionBase
     {
@@ -678,7 +678,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// setunitid(obj_id, unit_id);
+    /// set_unit_id(obj_id, unit_id);
     /// </summary>
     public class SetUnitIdCommand : SimpleExpressionBase
     {
@@ -700,7 +700,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetcamp(objid,camp_id);
+    /// obj_set_camp(objid,camp_id);
     /// </summary>
     public class ObjSetCampCommand : SimpleExpressionBase
     {
@@ -721,7 +721,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetsummonerid(objid, summonerid);
+    /// obj_set_summoner_id(objid, summonerid);
     /// </summary>
     public class ObjSetSummonerIdCommand : SimpleExpressionBase
     {
@@ -743,7 +743,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// objsetsummonskillid(objid, summonskillid);
+    /// obj_set_summon_skill_id(objid, summonskillid);
     /// </summary>
     public class ObjSetSummonSkillIdCommand : SimpleExpressionBase
     {
@@ -765,7 +765,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// Dummy command that does nothing (used for server-side no-op commands like setvisible).
+    /// Dummy command that does nothing (used for server-side no-op commands like set_visible).
     /// Accepts any dsl syntax so it can be used as a placeholder for unimplemented apis.
     /// </summary>
     public class DummyCommand : AbstractExpression

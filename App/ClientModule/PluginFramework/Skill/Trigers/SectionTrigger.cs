@@ -6,7 +6,7 @@ using SkillSystem;
 namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
-    /// adjustsectionduration(type[, start_time[, delta_time]]);
+    /// adjust_section_duration(type[, start_time[, delta_time]]);
     /// </summary>
     internal class AdjustSectionDurationTrigger : AbstractSkillTriger
     {
@@ -38,7 +38,7 @@ namespace ScriptableFramework.Skill.Trigers
                     int layerCount = animator.layerCount;
                     for (int i = 0; i < layerCount; ++i) {
                         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(i);
-                        //LogSystem.Info("adjustsectionduration anim, skill id:{0} dsl skill id:{1}, length:{2} normalized time:{3} loop:{4} layer:{5} layer count:{6}", senderObj.SkillId, instance.DslSkillId, stateInfo.length, stateInfo.normalizedTime, stateInfo.loop, i, layerCount);
+                        //LogSystem.Info("adjust_section_duration anim, skill id:{0} dsl skill id:{1}, length:{2} normalized time:{3} loop:{4} layer:{5} layer count:{6}", senderObj.SkillId, instance.DslSkillId, stateInfo.length, stateInfo.normalizedTime, stateInfo.loop, i, layerCount);
                         
                         if (length < stateInfo.length && !float.IsInfinity(stateInfo.length))
                             length = stateInfo.length;
@@ -48,7 +48,7 @@ namespace ScriptableFramework.Skill.Trigers
                         if (instance.CurSectionDuration < newDuration)
                             instance.SetCurSectionDuration(newDuration);
                     } else {
-                        //LogSystem.Warn("adjustsectionduration anim length is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                        //LogSystem.Warn("adjust_section_duration anim length is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
                         return true;
                     }
                 }
@@ -59,7 +59,7 @@ namespace ScriptableFramework.Skill.Trigers
                     if (instance.CurSectionDuration < newDuration)
                         instance.SetCurSectionDuration(newDuration);
                 } else {
-                    LogSystem.Warn("adjustsectionduration impact duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                    LogSystem.Warn("adjust_section_duration impact duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
                 }
             } else {
                 bool handled = false;
@@ -79,7 +79,7 @@ namespace ScriptableFramework.Skill.Trigers
                         if (instance.CurSectionDuration < newDuration)
                             instance.SetCurSectionDuration(newDuration);
                     } else {
-                        LogSystem.Warn("adjustsectionduration variable time is 0, skill id:{0} dsl skill id:{1} type:{2}", senderObj.SkillId, instance.DslSkillId, m_Type);
+                        LogSystem.Warn("adjust_section_duration variable time is 0, skill id:{0} dsl skill id:{1} type:{2}", senderObj.SkillId, instance.DslSkillId, m_Type);
                     }
                 }
                 if (!handled) {
@@ -89,7 +89,7 @@ namespace ScriptableFramework.Skill.Trigers
                         if (instance.CurSectionDuration < newDuration)
                             instance.SetCurSectionDuration(newDuration);
                     } else {
-                        LogSystem.Warn("adjustsectionduration variable time is 0, skill id:{0} dsl skill id:{1} type:{2}", senderObj.SkillId, instance.DslSkillId, m_Type);
+                        LogSystem.Warn("adjust_section_duration variable time is 0, skill id:{0} dsl skill id:{1} type:{2}", senderObj.SkillId, instance.DslSkillId, m_Type);
                     }
                 }
             }
@@ -117,8 +117,8 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// stopsection([start_time])[if(type)];
-    /// stopsection([start_time])[ifnot(type)];
+    /// stop_section([start_time])[if(type)];
+    /// stop_section([start_time])[ifnot(type)];
     /// </summary>
     internal class StopSectionTrigger : AbstractSkillTriger
     {
@@ -182,7 +182,7 @@ namespace ScriptableFramework.Skill.Trigers
         private bool m_HaveIsContinue = true;
     }
     /// <summary>
-    /// gotosection(starttime,sectionnum);
+    /// goto_section(starttime,sectionnum);
     /// </summary>
     internal class GotoSectionTrigger : AbstractSkillTriger
     {

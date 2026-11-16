@@ -2,17 +2,17 @@ skill(118)
 {
 	section(10)
 	{
-    hiteffect(hitEffect, "eyes", 0, 1000, "Stand", 100);
+    hit_effect(hitEffect, "eyes", 0, 1000, "Stand", 100);
 	};
   section(10000)
   {
-  	enablemoveagent(false);
-    charge(10000,50,0,vector3(0,0,0),0);
-    colliderimpact(0, 0, 0, 0, 10000, false, false);
+  	enable_move_agent(false);
+    charge(10000,50,0,vector_3(0,0,0),0);
+    collider_impact(0, 0, 0, 0, 10000, false, false);
   };
   section(100)
   {
-  	enablemoveagent(true);
-    sendstorymessage(0,"ez_r_arrow_kill");
+  	enable_move_agent(true);
+    send_story_message(0,"ez_r_arrow_kill");
   };
 };

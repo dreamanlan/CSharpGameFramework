@@ -5,7 +5,7 @@ story(main)
   };
   onmessage("start")
   {
-    bindui(@window){
+    bind_ui(@window){
       var("@btn1","Panel/Button1/Text");
       var("@btn2","Panel/Button2/Text");
       var("@btn3","Panel/Button3/Text");
@@ -15,17 +15,17 @@ story(main)
       onevent("button","btn3","Panel/Button3");
       onevent("button","btn4","Panel/Button4");
     };
-    @window.SetActive(changetype(1,"bool"));
-    installplugin("MainUI/Panel/TextBkg/ScrollView/Viewport/Content", "UiScrollInfo", 1, 0);
-    installplugin("MainUI/Panel/Image/RawImage", "MiniMap", 1, 0);
+    @window.SetActive(change_type(1,"bool"));
+    install_plugin("MainUI/Panel/TextBkg/ScrollView/Viewport/Content", "UiScrollInfo", 1, 0);
+    install_plugin("MainUI/Panel/Image/RawImage", "MiniMap", 1, 0);
   };
   onmessage("set_map_image")
   {
-    sendgfxmessage("MainUI/Panel/Image/RawImage", "CallScript", "SetImage", arg(0));
+    send_gfx_message("MainUI/Panel/Image/RawImage", "CallScript", "SetImage", arg(0));
   };
   onmessage("push_tip_info")
   {
-    sendgfxmessage("MainUI/Panel/TextBkg/ScrollView/Viewport/Content", "CallScript", "PushInfo", arg(0));
+    send_gfx_message("MainUI/Panel/TextBkg/ScrollView/Viewport/Content", "CallScript", "PushInfo", arg(0));
   };
   onmessage("set_button_text")
   {
@@ -37,6 +37,6 @@ story(main)
   onnamespacedmessage("on_click")
   {
   	log("MainUI on click {0}",arg(0));
-	  firemessage("on_main_ui_button", arg(0));
+	  fire_message("on_main_ui_button", arg(0));
   };
 };

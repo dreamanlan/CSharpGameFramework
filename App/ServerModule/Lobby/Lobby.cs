@@ -76,7 +76,7 @@ namespace Lobby
         {
             //0--null 1--int 2--float 3--string      
             ScriptableFrameworkMessage.Msg_CLC_StoryMessage protoData = new ScriptableFrameworkMessage.Msg_CLC_StoryMessage();
-            protoData.m_MsgId = string.Format("highlightprompt{0}", args.Length);
+            protoData.m_MsgId = string.Format("highlight_prompt{0}", args.Length);
             ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg item0 = new ScriptableFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
             item0.val_type = LobbyArgType.INT;
             item0.str_val = dictId.ToString();

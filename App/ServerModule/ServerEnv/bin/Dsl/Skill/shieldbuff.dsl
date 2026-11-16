@@ -2,16 +2,16 @@ skill(115)
 {
   section(10000)
   {
-    selfeffect(selfEffect,1000,"eyes",0)
+    self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector3(0,1,0));
+      transform(vector_3(0,1,0));
     };
-    adjustsectionduration("impact",100);
+    adjust_section_duration("impact",100);
     damage(0);
   };
   section(100)
   {
-    stopeffect(0);
-    stopimpact(0,10004);
+    stop_effect(0);
+    stop_impact(0,10004);
   };
 };

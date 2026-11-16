@@ -471,7 +471,7 @@ namespace ScriptableFramework.Story.Functions
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 3)
-                throw new Exception("Expected: vector3(x, y, z)");
+                throw new Exception("Expected: vector_3(x, y, z)");
 
             float x = operands[0].GetFloat();
             float y = operands[1].GetFloat();
@@ -748,7 +748,7 @@ namespace ScriptableFramework.Story.Functions
                     if (null != oldSkillInfo) {
                         oldSkillId = oldSkillInfo.SkillId;
                     }
-                    LogSystem.Warn("obj {0} objcancastskill {1} return false because isdead {2} or isundercontrol {3} or isskillactivated {4} (old skill:{5})", obj.GetId(), skillId, obj.IsDead(), obj.IsUnderControl(), obj.GetSkillStateInfo().IsSkillActivated(), oldSkillId);
+                    LogSystem.Warn("obj {0} objcancastskill {1} return false because isdead {2} or is_under_control {3} or isskillactivated {4} (old skill:{5})", obj.GetId(), skillId, obj.IsDead(), obj.IsUnderControl(), obj.GetSkillStateInfo().IsSkillActivated(), oldSkillId);
                 }
             }
             return false;

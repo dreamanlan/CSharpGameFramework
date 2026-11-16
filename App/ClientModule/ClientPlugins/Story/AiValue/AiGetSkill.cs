@@ -33,7 +33,7 @@ public class AiGetSkill : ISimpleStoryApiPlugin
                     skillId = npc.ConfigData.skill1;
                     break;
                 case 2:
-                    skillId = npc.ConfigData.skill2;
+                    skillId = npc.ConfigData.skill_2;
                     break;
                 case 3:
                     skillId = npc.ConfigData.skill3;

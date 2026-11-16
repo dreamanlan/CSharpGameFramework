@@ -6,31 +6,31 @@ story(main)
   };
   onmessage("start")
   {
-    bindui(@window){
+    bind_ui(@window){
       var("@nickname","Panel/NicknameInput");
       inputs("Panel/NicknameInput");
       onevent("button","roll","Panel/Roll");
       onevent("button","ok","Panel/Button");
     };
   	log("NicknameDlg start");
-    @window.SetActive(changetype(0,"bool"));
+    @window.SetActive(change_type(0,"bool"));
   };
   onmessage("show_nickname")
   {
-    @window.SetActive(changetype(1,"bool"));
+    @window.SetActive(change_type(1,"bool"));
     @nicknameList=arg(0);
-    $rndname=rndfromlist(@nicknameList);
+    $rndname=rnd_from_list(@nicknameList);
     @nickname_Input.text=$rndname;
   };
   onnamespacedmessage("on_click")
   {
   	log("NicknameDlg on click {0} {1}",arg(0),arg(1));
   	if(arg(0)=="roll"){
-	    $rndname=rndfromlist(@nicknameList);
+	    $rndname=rnd_from_list(@nicknameList);
 	    @nickname_Input.text=$rndname;
   	}else{
-	  	firemessage("do_nickname",listget(arg(1),0,"unknown"));
-    	@window.SetActive(changetype(0,"bool"));
+	  	fire_message("do_nickname",list_get(arg(1),0,"unknown"));
+    	@window.SetActive(change_type(0,"bool"));
 	  };
   };
 };

@@ -7,57 +7,57 @@ story(battle_main)
   onmessage("start")
   {   
     wait(1000);
-    publishgfxevent("loading_complete", "ui");
+    publish_gfx_event("loading_complete", "ui");
     wait(1000);    
-    createnpc(1000,vector3(65,0,70),0,3,1,"ai_player",stringlist("Ai/ailogic_player.dsl"));
-    setleaderid(unitid2objid(1000));
-    npcsetformation(1000,0);
+    create_npc(1000,vector_3(65,0,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
+    set_leader_id(unit_id_2_obj_id(1000));
+    npc_set_formation(1000,0);
     loop(4){
-      createnpc(1001+$$,vector3(55+rndint(0,10),0,65+rndint(0,10)),0,3,$$+2,"ai_member",stringlist("Ai/ailogic_member.dsl"),getleaderid());
-      npcsetformation(1001+$$,$$+1);
+      create_npc(1001+$$,vector_3(55+rnd_int(0,10),0,65+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
+      npc_set_formation(1001+$$,$$+1);
     };
-    camerafollow(1000);
-    sendgfxmessage("Main Camera", "LightScreen", 3000);
+    camera_follow(1000);
+    send_gfx_message("Main Camera", "LightScreen", 3000);
     log("scene2");
     loop(12){
-      createnpc(1006+$$,vector3(40+rndint(0,50),0,40+rndint(0,50)),0,4,$$+6,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
+      create_npc(1006+$$,vector_3(40+rnd_int(0,50),0,40+rnd_int(0,50)),0,4,$$+6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
-    createnpc(1200,vector3(65,0,88),0,4,26,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
+    create_npc(1200,vector_3(65,0,88),0,4,26,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     wait(1000);
-    publishgfxevent("ui_show_paopao","ui",getleaderid(),"鼠标点击地面短暂改变主角的移动目的地。");
-    //firemessage("push_tip_info", "史前，或许还没有人类或者不能称之为人类的时候，最早降临地球的那些智慧生物，被称为神");
+    publish_gfx_event("ui_show_paopao","ui",get_leader_id(),"鼠标点击地面短暂改变主角的移动目的地。");
+    //fire_message("push_tip_info", "史前，或许还没有人类或者不能称之为人类的时候，最早降临地球的那些智慧生物，被称为神");
     wait(500);
-    publishgfxevent("ui_show_paopao","ui",getleaderid(),"todo:技能与战斗数值实验");
+    publish_gfx_event("ui_show_paopao","ui",get_leader_id(),"todo:技能与战斗数值实验");
 
-    startstory("auto_battle");
+    start_story("auto_battle");
   };
   onmessage("move_to")params($x,$y,$z)
   {
-  	npcmove(1000,vector3($x,$y,$z));
+  	npc_move(1000,vector_3($x,$y,$z));
   };
   onmessage("all_killed")
   {
-  	clearmessage("show_dlg");
-  	firemessage("show_dlg",998);
+  	clear_message("show_dlg");
+  	fire_message("show_dlg",998);
   };
   onmessage("npc_killed:1000")
   {
-    clearmessage("show_dlg");
-    firemessage("show_dlg",999);
+    clear_message("show_dlg");
+    fire_message("show_dlg",999);
   };
   onmessage("all_died")
   {
-    clearmessage("show_dlg");
-    firemessage("show_dlg",999);
+    clear_message("show_dlg");
+    fire_message("show_dlg",999);
   };
   onmessage("dialog_over",998)
   {
     terminate();
-    closebattle(10008);
+    close_battle(10008);
   };
   onmessage("dialog_over",999)
   {
     terminate();
-    closebattle(10008);
+    close_battle(10008);
   };
 };

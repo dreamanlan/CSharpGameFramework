@@ -100,7 +100,13 @@ public class AiDoNormal : ISimpleStoryApiPlugin
         npc, npc.ViewRange, relation);
         if (attackTarget != null) //Find an attackable target within your field of vision
             {
-            AiCommand.AiPursue(npc, attackTarget.GetMovementStateInfo().GetPosition3D()); // chase the target
+            ScriptRuntime.Vector3 tp = attackTarget.GetMovementStateInfo().GetPosition3D();
+            // Every mob used to path to the exact same point, stacking the
+            // whole wave into one blob. Spread pursuers around the target.
+            float a = (npc.GetId() % 8) * (Mathf.PI * 2f / 8f);
+            tp.X += Mathf.Cos(a) * 4.0f;
+            tp.Z += Mathf.Sin(a) * 4.0f;
+            AiCommand.AiPursue(npc, tp);
             return true;
         }
 

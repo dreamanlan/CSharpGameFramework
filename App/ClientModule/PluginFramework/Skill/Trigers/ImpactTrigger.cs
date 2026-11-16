@@ -76,7 +76,7 @@ namespace ScriptableFramework.Skill.Trigers
         private bool m_RelativeToTarget = false;        
     }
     /// <summary>
-    /// aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
+    /// aoe_impact(start_time, center_x, center_y, center_z, relativeToTarget);
     /// </summary>
     internal class AoeImpactTriger : AbstractSkillTriger
     {
@@ -151,7 +151,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// chainaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
+    /// chain_aoe_impact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
     /// </summary>
     internal class ChainAoeImpactTriger : AbstractSkillTriger
     {
@@ -266,7 +266,7 @@ namespace ScriptableFramework.Skill.Trigers
         private const int c_MaxObjectId = 1000;
     }
     /// <summary>
-    /// periodicallyimpact(starttime, center_x, center_y, center_z, relativeToTarget, duration, interval);
+    /// periodically_impact(starttime, center_x, center_y, center_z, relativeToTarget, duration, interval);
     /// </summary>
     internal class PeriodicallyImpactTrigger : AbstractSkillTriger
     {
@@ -354,7 +354,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// periodicallyaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
+    /// periodically_aoe_impact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
     /// </summary>
     internal class PeriodicallyAoeImpactTriger : AbstractSkillTriger
     {
@@ -488,8 +488,18 @@ namespace ScriptableFramework.Skill.Trigers
                         if (null != m_BoneTransform) {
                             dest = m_BoneTransform.position;
                         } else {
-                            dest = obj.transform.position;
-                            dest.y += 1.5f;
+                            // Legacy bone names ("hit"/"eyes") are absent on
+                            // these avatars; aim tracked projectiles at a
+                            // humanoid upper body instead of a point near feet.
+                            Animator animator = obj.GetComponent<Animator>();
+                            if (null != animator && animator.isHuman)
+                                m_BoneTransform = animator.GetBoneTransform(HumanBodyBones.Head);
+                            if (null != m_BoneTransform) {
+                                dest = m_BoneTransform.position;
+                            } else {
+                                dest = obj.transform.position;
+                                dest.y += 1.5f;
+                            }
                             LogSystem.Warn("[skill:{0} dsl skill id:{1}] track bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                         }
                         m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
@@ -641,7 +651,7 @@ namespace ScriptableFramework.Skill.Trigers
         private bool m_IsHit = false;
     }
     /// <summary>
-    /// colliderimpact(start_time, center_x, center_y, center_z, duration[, finishOnCollide, singleHit]);
+    /// collider_impact(start_time, center_x, center_y, center_z, duration[, finishOnCollide, singleHit]);
     /// </summary>
     internal class ColliderImpactTriger : AbstractSkillTriger
     {

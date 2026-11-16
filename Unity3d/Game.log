@@ -1,79 +1,1091 @@
-03-04-17-707:======GameLog Start (2026年11月16日, 3:04:17)======
-03-04-17-725:[Debug]:Time:03-04-17-724:table config root = D:/GitHub/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
-03-04-17-730:[Info]:Time:03-04-17-729:binary load 1382 parse 1118, file Tables/Public/Level.dat
-03-04-17-731:[Info]:Time:03-04-17-731:binary load 190 parse 334, file Tables/Public/LevelMonster.dat
-03-04-17-732:[Info]:Time:03-04-17-732:binary load 155 parse 139, file Tables/Public/Const.dat
-03-04-17-733:[Info]:Time:03-04-17-733:binary load 239 parse 174, file Tables/Public/AttrDefine.dat
-03-04-17-734:[Info]:Time:03-04-17-734:binary load 129 parse 338, file Tables/Public/Actor.dat
-03-04-17-735:[Info]:Time:03-04-17-735:binary load 140 parse 317, file Tables/Public/Skill.dat
-03-04-17-735:[Info]:Time:03-04-17-735:binary load 85 parse 245, file Tables/Public/SkillResources.dat
-03-04-17-737:[Info]:Time:03-04-17-737:binary load 130 parse 277, file Tables/Public/SkillData.dat
-03-04-17-738:[Info]:Time:03-04-17-738:binary load 105 parse 331, file Tables/Public/ImpactData.dat
-03-04-17-738:[Info]:Time:03-04-17-738:binary load 98 parse 258, file Tables/Public/SkillEvent.dat
-03-04-17-742:[Info]:Time:03-04-17-742:binary load 159 parse 173, file Tables/Client/StoryDlg.dat
-03-04-17-744:[Info]:Time:03-04-17-744:binary load 108 parse 497, file Tables/Client/StrDictionary.dat
-03-04-17-745:[Info]:Time:03-04-17-745:binary load 130 parse 166, file Tables/Client/UI.dat
-03-04-17-746:[Info]:Time:03-04-17-746:binary load 286 parse 410, file Tables/Public/Formation.dat
-03-04-18-030:[Info]:Time:03-04-18-030:SendMessage GameRoot LoadScene TableConfig.Level False
-03-04-18-136:[Debug]:Time:03-04-18-136:StoryInstance.Init message handler num:6 True
-03-04-18-136:[Info]:Time:03-04-18-136:ParseStory story_main 0
-03-04-18-139:[Debug]:Time:03-04-18-139:StoryInstance.Init message handler num:6 True
-03-04-18-139:[Info]:Time:03-04-18-139:ParseStory local_main 0
-03-04-18-142:[Debug]:Time:03-04-18-142:StoryInstance.Init message handler num:5 True
-03-04-18-142:[Info]:Time:03-04-18-142:ParseStory skill_main 0
-03-04-18-142:[Debug]:Time:03-04-18-142:StoryInstance.Init message handler num:1 True
-03-04-18-142:[Info]:Time:03-04-18-142:ParseStory auto_story 0
-03-04-18-142:[Debug]:Time:03-04-18-142:StoryInstance.Init message handler num:6 True
-03-04-18-142:[Debug]:Time:03-04-18-142:StoryInstance.Init message handler num:6 True
-03-04-18-142:[Debug]:Time:03-04-18-142:StoryInstance.Init message handler num:5 True
-03-04-18-142:[Debug]:Time:03-04-18-142:StoryInstance.Init message handler num:1 True
-03-04-18-144:[Warn]:Time:03-04-18-143:StoryInstance queue message start
-03-04-18-144:[Info]:Time:03-04-18-144:StartStory local_main
-03-04-18-144:[Warn]:Time:03-04-18-144:StoryInstance queue message start
-03-04-18-144:[Info]:Time:03-04-18-144:StartStory story_main
-03-04-18-145:[Debug]:Time:03-04-18-145:StoryInstance.Init message handler num:3 True
-03-04-18-145:[Info]:Time:03-04-18-145:ParseStory LoginDlg:main 0
-03-04-18-145:[Debug]:Time:03-04-18-145:StoryInstance.Init message handler num:3 True
-03-04-18-145:[Debug]:Time:03-04-18-145:StoryInstance.Init message handler num:3 True
-03-04-18-145:[Info]:Time:03-04-18-145:ParseStory NicknameDlg:main 0
-03-04-18-145:[Debug]:Time:03-04-18-145:StoryInstance.Init message handler num:3 True
-03-04-18-147:[Debug]:Time:03-04-18-147:StoryInstance.Init message handler num:4 True
-03-04-18-147:[Info]:Time:03-04-18-147:ParseStory StoryDlg:main 0
-03-04-18-147:[Debug]:Time:03-04-18-147:StoryInstance.Init message handler num:4 True
-03-04-18-150:[Debug]:Time:03-04-18-150:SkillInstance.Init section num:0 True skill 2110000000
-03-04-18-152:[Debug]:Time:03-04-18-152:ParseSkill 2110000000
-03-04-18-152:[Debug]:Time:03-04-18-152:SkillInstance.Init section num:0 True skill 2120000000
-03-04-18-152:[Debug]:Time:03-04-18-152:ParseSkill 2120000000
-03-04-18-158:[Warn]:Time:03-04-18-158:StoryInstance queue message start
-03-04-18-158:[Info]:Time:03-04-18-158:StartStory LoginDlg:main
-03-04-18-160:[Warn]:Time:03-04-18-160:StoryInstance queue message start
-03-04-18-160:[Info]:Time:03-04-18-160:StartStory NicknameDlg:main
-03-04-18-162:[Warn]:Time:03-04-18-162:StoryInstance queue message start
-03-04-18-162:[Info]:Time:03-04-18-162:StartStory StoryDlg:main
-03-04-18-162:[Info]:Time:03-04-18-162:SendMessage GameRoot OnLoadMainUiComplete 1 False
-03-04-18-180:[Warn]:Time:03-04-18-180:StoryInstance queue message show_login
-03-04-18-196:[Info]:Time:03-04-18-196:StartStory skill_main
-03-04-18-196:[Warn]:Time:03-04-18-196:StoryInstance queue message start
-03-04-18-196:[Info]:Time:03-04-18-196:StartStory auto_story
-03-04-28-079:[Debug]:Time:03-04-28-079:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
-03-04-38-078:[Debug]:Time:03-04-38-078:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
-03-04-38-847:[Warn]:Time:03-04-38-847:StoryInstance queue message LoginDlg:on_click
-03-04-38-850:[Warn]:Time:03-04-38-848:StoryInstance queue message do_login
-03-04-38-850:[Info]:Time:03-04-38-850:ConnectIfNotOpen at time:20772 ServerAddress:ws://127.0.0.1:9001
-03-04-38-858:[Debug]:Time:03-04-38-858:QueueActionWithDelegation, Void OnLog(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
-03-04-38-863:[Debug]:Time:03-04-38-863:QueueActionWithDelegation, Void OnOpened() ScriptableFramework.Network.UserNetworkSystem, action count 2
-03-04-38-866:[Info]:Time:03-04-38-866:LobbyNetworkSystem.OnLog:VerifyHandshake handshake:HTTP/1.1 101 Switching Protocols
+02-26-06-739:======GameLog Start (2026年11月17日, 2:26:06)======
+02-26-06-756:[Debug]:Time:02-26-06-755:table config root = D:/GitHub/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
+02-26-06-759:[Info]:Time:02-26-06-759:binary load 1149 parse 855, file Tables/Public/Level.dat
+02-26-06-761:[Info]:Time:02-26-06-761:binary load 128 parse 310, file Tables/Public/LevelMonster.dat
+02-26-06-762:[Info]:Time:02-26-06-762:binary load 114 parse 122, file Tables/Public/Const.dat
+02-26-06-763:[Info]:Time:02-26-06-763:binary load 146 parse 140, file Tables/Public/AttrDefine.dat
+02-26-06-764:[Info]:Time:02-26-06-764:binary load 124 parse 303, file Tables/Public/Actor.dat
+02-26-06-764:[Info]:Time:02-26-06-764:binary load 97 parse 217, file Tables/Public/Skill.dat
+02-26-06-765:[Info]:Time:02-26-06-765:binary load 78 parse 237, file Tables/Public/SkillResources.dat
+02-26-06-766:[Info]:Time:02-26-06-766:binary load 104 parse 248, file Tables/Public/SkillData.dat
+02-26-06-767:[Info]:Time:02-26-06-767:binary load 104 parse 351, file Tables/Public/ImpactData.dat
+02-26-06-768:[Info]:Time:02-26-06-768:binary load 65 parse 238, file Tables/Public/SkillEvent.dat
+02-26-06-771:[Info]:Time:02-26-06-771:binary load 106 parse 141, file Tables/Client/StoryDlg.dat
+02-26-06-772:[Info]:Time:02-26-06-772:binary load 108 parse 462, file Tables/Client/StrDictionary.dat
+02-26-06-773:[Info]:Time:02-26-06-773:binary load 91 parse 135, file Tables/Client/UI.dat
+02-26-06-774:[Info]:Time:02-26-06-774:binary load 164 parse 382, file Tables/Public/Formation.dat
+02-26-07-024:[Info]:Time:02-26-07-024:SendMessage GameRoot LoadScene TableConfig.Level False
+02-26-07-121:[Debug]:Time:02-26-07-121:StoryInstance.Init message handler num:6 True
+02-26-07-121:[Info]:Time:02-26-07-121:ParseStory story_main 0
+02-26-07-123:[Debug]:Time:02-26-07-123:StoryInstance.Init message handler num:6 True
+02-26-07-123:[Info]:Time:02-26-07-123:ParseStory local_main 0
+02-26-07-127:[Debug]:Time:02-26-07-127:StoryInstance.Init message handler num:5 True
+02-26-07-127:[Info]:Time:02-26-07-127:ParseStory skill_main 0
+02-26-07-127:[Debug]:Time:02-26-07-127:StoryInstance.Init message handler num:1 True
+02-26-07-127:[Info]:Time:02-26-07-127:ParseStory auto_story 0
+02-26-07-127:[Debug]:Time:02-26-07-127:StoryInstance.Init message handler num:6 True
+02-26-07-127:[Debug]:Time:02-26-07-127:StoryInstance.Init message handler num:6 True
+02-26-07-127:[Debug]:Time:02-26-07-127:StoryInstance.Init message handler num:5 True
+02-26-07-127:[Debug]:Time:02-26-07-127:StoryInstance.Init message handler num:1 True
+02-26-07-128:[Warn]:Time:02-26-07-128:StoryInstance queue message start
+02-26-07-128:[Info]:Time:02-26-07-128:StartStory local_main
+02-26-07-128:[Warn]:Time:02-26-07-128:StoryInstance queue message start
+02-26-07-128:[Info]:Time:02-26-07-128:StartStory story_main
+02-26-07-130:[Debug]:Time:02-26-07-130:StoryInstance.Init message handler num:3 True
+02-26-07-130:[Info]:Time:02-26-07-130:ParseStory LoginDlg:main 0
+02-26-07-130:[Debug]:Time:02-26-07-130:StoryInstance.Init message handler num:3 True
+02-26-07-131:[Debug]:Time:02-26-07-131:StoryInstance.Init message handler num:3 True
+02-26-07-131:[Info]:Time:02-26-07-131:ParseStory NicknameDlg:main 0
+02-26-07-131:[Debug]:Time:02-26-07-131:StoryInstance.Init message handler num:3 True
+02-26-07-132:[Debug]:Time:02-26-07-132:StoryInstance.Init message handler num:4 True
+02-26-07-132:[Info]:Time:02-26-07-132:ParseStory StoryDlg:main 0
+02-26-07-132:[Debug]:Time:02-26-07-132:StoryInstance.Init message handler num:4 True
+02-26-07-136:[Debug]:Time:02-26-07-136:SkillInstance.Init section num:0 True skill 2110000000
+02-26-07-136:[Debug]:Time:02-26-07-136:ParseSkill 2110000000
+02-26-07-136:[Debug]:Time:02-26-07-136:SkillInstance.Init section num:0 True skill 2120000000
+02-26-07-136:[Debug]:Time:02-26-07-136:ParseSkill 2120000000
+02-26-07-142:[Warn]:Time:02-26-07-142:StoryInstance queue message start
+02-26-07-142:[Info]:Time:02-26-07-142:StartStory LoginDlg:main
+02-26-07-144:[Warn]:Time:02-26-07-144:StoryInstance queue message start
+02-26-07-144:[Info]:Time:02-26-07-144:StartStory NicknameDlg:main
+02-26-07-145:[Warn]:Time:02-26-07-145:StoryInstance queue message start
+02-26-07-145:[Info]:Time:02-26-07-145:StartStory StoryDlg:main
+02-26-07-145:[Info]:Time:02-26-07-145:SendMessage GameRoot OnLoadMainUiComplete 1 False
+02-26-07-162:[Warn]:Time:02-26-07-162:StoryInstance queue message show_login
+02-26-07-175:[Info]:Time:02-26-07-175:StartStory skill_main
+02-26-07-175:[Warn]:Time:02-26-07-175:StoryInstance queue message start
+02-26-07-175:[Info]:Time:02-26-07-175:StartStory auto_story
+02-26-12-696:[Warn]:Time:02-26-12-695:StoryInstance queue message LoginDlg:on_click
+02-26-12-697:[Warn]:Time:02-26-12-697:StoryInstance queue message do_login
+02-26-12-698:[Info]:Time:02-26-12-698:ConnectIfNotOpen at time:5637 ServerAddress:ws://127.0.0.1:9001
+02-26-12-710:[Debug]:Time:02-26-12-710:QueueActionWithDelegation, Void OnLog(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-12-710:[Debug]:Time:02-26-12-710:QueueActionWithDelegation, Void OnOpened() ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-12-710:[Info]:Time:02-26-12-710:LobbyNetworkSystem.OnLog:VerifyHandshake handshake:HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
-Sec-WebSocket-Accept: dxevfnO52wE8UiwNzzCLdKw3M/c=, items count:1
-03-04-38-898:[Info]:Time:03-04-38-898:SendToLobby:3 AwAFAAiBgoQI
-03-04-38-901:[Debug]:Time:03-04-38-901:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
-03-04-38-903:[Info]:Time:03-04-38-903:DecodeNodeMessage:4 BAAAAAgBEAEYACIA
-03-04-38-909:[Info]:Time:03-04-38-909:SendToLobby:19 EwAKAAoIZ21hdXRvMTgKCGdtYXV0bzE4EgYxMjM0NTYaAA==
-03-04-39-242:[Debug]:Time:03-04-39-242:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
-03-04-39-242:[Info]:Time:03-04-39-242:DecodeNodeMessage:20 FAAKAAoIZ21hdXRvMTgKCGdtYXV0bzE4EAEYkaEP
-03-04-39-246:[Info]:Time:03-04-39-246:SendToLobby:12 DAAKAAoIZ21hdXRvMTg=
-03-04-39-456:[Debug]:Time:03-04-39-456:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
-03-04-39-456:[Info]:Time:03-04-39-456:DecodeNodeMessage:22 FgAKAAoIZ21hdXRvMTgKEuS4jeWKoOezlueahOahkeiRmgoV5aSn55y8552b55qE546L6ICB5LqUCg/miYvmrovnmoTnn7PmprQKD+aui+mFt+eahOapmOWtkAoP5Ya36YW355qE55S756yUCg/mrovphbfnmoTpsrjpsbwKD+enr+aegeeahOWHpOaiqAoP6auY6LS155qE6Jyh56yUChLlkYbokIznmoTlsI/ogIHpvKAKEuenr+aegeeahOW3p+WFi+WKmwoS5rKh5aS05Y+R55qE5qSw5aW2ChLniLHmlpflmLTnmoTnlLfnpZ4KD+eLgueDreeahOWkqem5hQoS5aSn55y8552b55qE5qmY5a2QChLlj6/msJTnmoTonrrkuJ3pkokKEuWkp+ecvOedm+eahOiKseeUnwoV54ix5Yi35bGP55qE5b2p6Jm557OWCg/lj6TmgKrnmoTmp5/mppQKEueIseeUu+eUu+eahOWkp+ixoQoS5aiB5q2m55qE5Zyf5pif5Lq6
-03-04-39-465:[Warn]:Time:03-04-39-464:StoryInstance queue message show_nickname
-03-04-48-078:[Debug]:Time:03-04-48-078:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+Sec-WebSocket-Accept: NfnyWEVWsDwD/HbCLkteTwD8e9U=, items count:1
+02-26-12-741:[Info]:Time:02-26-12-741:SendToLobby:3 AwAFAAiBgoQI
+02-26-12-746:[Debug]:Time:02-26-12-746:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-12-748:[Info]:Time:02-26-12-748:DecodeNodeMessage:4 BAAAAAgBEAEYACIA
+02-26-12-754:[Info]:Time:02-26-12-754:SendToLobby:19 EwAFAAoDdnZ2CgN2dnYSA3Z2dhoA
+02-26-13-149:[Debug]:Time:02-26-13-149:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-13-150:[Info]:Time:02-26-13-150:DecodeNodeMessage:20 FAAFAAoDdnZ2CgN2dnYQARiRTg==
+02-26-13-153:[Info]:Time:02-26-13-153:SendToLobby:12 DAAFAAoDdnZ2
+02-26-13-256:[Debug]:Time:02-26-13-256:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-13-256:[Info]:Time:02-26-13-256:DecodeNodeMessage:22 FgAFAAoDdnZ2ChXniLHliLflsY/nmoTkuozplIXlpLQKD+WCu+iQjOeahOWkp+ixoQoS6auY6LS155qE5q+b5q+b6JmrChLkuI3lkJDnmq7nmoTlsJHlpbMKEuS8pOW/g+eahOWwj+eBsOeBsAoP54ix56yR55qE6IOh5qGDChLnlJzonJznmoTlsI/nk7blrZAKFeWOmuiEuOearueahOWkp+WtpueUnwoV5LiN5Yqg57OW55qE5bCP5riF5pawChLnvp7mtqnnmoTlpbPogIHmnb8KD+ayoeeJmeeahOays+mprAoP5oKy5oSk55qE6bi16bifChLmuKnmn5TnmoTmr43ogIHomY4KEumXqueejuecvOeahOidtOidtgoP5bCK6LS155qE5aSn6LGhChLmrovmmrTnmoTopb/nuqLmn78KEuS4jeWKoOezlueahOays+mprAoP5YK76JCM55qE576a576KCg/ljovmipHnmoTmpLDlpbYKD+WogeatpueahOWkp+mbgQ==
+02-26-13-264:[Warn]:Time:02-26-13-263:StoryInstance queue message show_nickname
+02-26-14-317:[Warn]:Time:02-26-14-317:StoryInstance queue message NicknameDlg:on_click
+02-26-14-317:[Warn]:Time:02-26-14-317:StoryInstance queue message do_nickname
+02-26-14-320:[Info]:Time:02-26-14-320:SendToLobby:25 GQAFAAoDdnZ2ChXljprohLjnmq7nmoTlpKflrabnlJ8=
+02-26-14-650:[Debug]:Time:02-26-14-650:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-14-650:[Info]:Time:02-26-14-650:DecodeNodeMessage:29 HQAIAAoDdnZ2EJFOCAASFeWOmuiEuOearueahOWkp+WtpueUnxgBIAAoADABOABAAQ==
+02-26-14-661:[Warn]:Time:02-26-14-661:StoryInstance queue message start_game
+02-26-14-662:[Warn]:Time:02-26-14-662:StoryInstance queue message show_dlg
+02-26-14-662:[Info]:Time:02-26-14-662:show_dlg 1
+02-26-14-663:[Info]:Time:02-26-14-663:SendToLobby:9 CQADAAiRTg==
+02-26-14-664:[Warn]:Time:02-26-14-664:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-14-675:[Info]:Time:02-26-14-675:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-14-860:[Debug]:Time:02-26-14-860:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-14-861:[Info]:Time:02-26-14-861:DecodeNodeMessage:9 CQADAAiRTg==
+02-26-16-446:[Warn]:Time:02-26-16-445:StoryInstance queue message StoryDlg:on_click
+02-26-16-446:[Warn]:Time:02-26-16-446:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-16-448:[Info]:Time:02-26-16-448:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-16-926:[Warn]:Time:02-26-16-925:StoryInstance queue message StoryDlg:on_click
+02-26-16-926:[Warn]:Time:02-26-16-926:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-16-927:[Info]:Time:02-26-16-927:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-17-058:[Debug]:Time:02-26-17-058:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+02-26-17-150:[Warn]:Time:02-26-17-150:StoryInstance queue message StoryDlg:on_click
+02-26-17-150:[Warn]:Time:02-26-17-150:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-17-151:[Info]:Time:02-26-17-151:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-17-367:[Warn]:Time:02-26-17-366:StoryInstance queue message StoryDlg:on_click
+02-26-17-367:[Warn]:Time:02-26-17-367:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-17-368:[Info]:Time:02-26-17-368:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-17-551:[Warn]:Time:02-26-17-551:StoryInstance queue message StoryDlg:on_click
+02-26-17-551:[Warn]:Time:02-26-17-551:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-17-553:[Info]:Time:02-26-17-553:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-17-742:[Warn]:Time:02-26-17-742:StoryInstance queue message StoryDlg:on_click
+02-26-17-743:[Warn]:Time:02-26-17-742:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-17-744:[Info]:Time:02-26-17-744:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-17-943:[Warn]:Time:02-26-17-942:StoryInstance queue message StoryDlg:on_click
+02-26-17-943:[Warn]:Time:02-26-17-943:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-17-944:[Info]:Time:02-26-17-944:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-18-121:[Warn]:Time:02-26-18-121:StoryInstance queue message StoryDlg:on_click
+02-26-18-122:[Warn]:Time:02-26-18-121:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-18-123:[Info]:Time:02-26-18-123:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-18-302:[Warn]:Time:02-26-18-302:StoryInstance queue message StoryDlg:on_click
+02-26-18-302:[Warn]:Time:02-26-18-302:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-18-304:[Warn]:Time:02-26-18-304:StoryInstance queue message dialog_over:1
+02-26-18-306:[Info]:Time:02-26-18-306:SendToLobby:30 HgADAAiRTghlEAA=
+02-26-18-714:[Debug]:Time:02-26-18-714:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-18-715:[Info]:Time:02-26-18-715:DecodeNodeMessage:32 IAADAAiRTggAEgkxMjcuMC4wLjEYuEogid+JJigDMGU4Dw==
+02-26-18-717:[Debug]:Time:02-26-18-717:QueueActionWithDelegation, Void TryEnterScene(UInt32, System.String, Int32, Int32, Int32) ScriptableFramework.PluginFramework, action count 1
+02-26-18-771:[Info]:Time:02-26-18-771:NetworkSystem.Start key 79851401 ip 127.0.0.1 port 9528 camp 3 scene 101
+02-26-18-795:[Info]:Time:02-26-18-795:Connect ip:127.0.0.1 port:9528 key:79851401
+NetPeer Statistic:0 connections
+Sent 0 bytes in 0 messages in 0 packets
+Received 0 bytes in 0 messages in 0 packets
+Storage allocated 0 bytes
+Recycled pool 0 bytes
+
+02-26-18-815:[Info]:Time:02-26-18-815:Network Status Changed:Connected Reason:Connected to 64EDD3CA615E2E43
+Statistic:Sent 16 bytes in 2 messages in 2 packets
+Received 6 bytes in 1 messages in 1 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+02-26-18-816:[Info]:Time:02-26-18-816:[Message Count]:
+[Send]:
+[Receive]:
+
+02-26-18-820:[Info]:Time:02-26-18-820:Warning Message: resend delay 0.02716803 127.0.0.1:9528
+02-26-18-820:[Info]:Time:02-26-18-820:Warning Message: Timeout deadline pushed to  16.09308 127.0.0.1:9528
+02-26-18-820:[Info]:Time:02-26-18-820:Warning Message: receive LogMessageReceive from 127.0.0.1:9528
+02-26-18-820:[Info]:Time:02-26-18-820:Warning Message: send LogMessageReceive to 127.0.0.1:9528
+02-26-18-820:[Info]:Time:02-26-18-820:Warning Message: resend delay 0.02716803 127.0.0.1:9528
+02-26-18-820:Time:02-26-18-820:Wait NetConnectionStatus.Connected ...
+02-26-18-821:[Info]:Time:02-26-18-821:Warning Message: m_sendBufferWritePtr(11) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-18-853:[Info]:Time:02-26-18-852:Warning Message: Received message #0 right on time 127.0.0.1:9528
+02-26-18-855:[Info]:Time:02-26-18-855:Warning Message: Sending ack for UserReliableOrdered1 #0 127.0.0.1:9528
+02-26-18-855:[Info]:Time:02-26-18-855:Warning Message: Received right-on-time ack for #0 127.0.0.1:9528
+02-26-18-855:[Info]:Time:02-26-18-855:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-18-855:Time:02-26-18-855:auth ok !!!
+02-26-18-855:[Debug]:Time:02-26-18-855:QueueActionWithDelegation, Void ChangeScene(Int32) ScriptableFramework.PluginFramework, action count 1
+02-26-18-857:[Info]:Time:02-26-18-857:SendMessage GameRoot LoadScene TableConfig.Level False
+02-26-18-870:[Info]:Time:02-26-18-870:Warning Message: m_sendBufferWritePtr(9) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-18-870:[Info]:Time:02-26-18-870:Warning Message: Received right-on-time ack for #1 127.0.0.1:9528
+02-26-18-900:[Info]:Time:02-26-18-900:Warning Message: Received message #1 right on time 127.0.0.1:9528
+02-26-18-905:[Info]:Time:02-26-18-905:Warning Message: Sending ack for UserReliableOrdered1 #1 127.0.0.1:9528
+02-26-18-905:[Info]:Time:02-26-18-905:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-18-949:[Debug]:Time:02-26-18-949:StoryInstance.Init message handler num:5 True
+02-26-18-949:[Info]:Time:02-26-18-949:ParseStory story_main 0
+02-26-18-949:[Debug]:Time:02-26-18-949:StoryInstance.Init message handler num:6 True
+02-26-18-949:[Info]:Time:02-26-18-949:ParseStory local_main 0
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:5 True
+02-26-18-950:[Info]:Time:02-26-18-950:ParseStory skill_main 0
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:3 True
+02-26-18-950:[Info]:Time:02-26-18-950:ParseStory auto_story 0
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:5 True
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:6 True
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:5 True
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:3 True
+02-26-18-950:[Warn]:Time:02-26-18-950:StoryInstance queue message start
+02-26-18-950:[Info]:Time:02-26-18-950:StartStory local_main
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:5 True
+02-26-18-950:[Info]:Time:02-26-18-950:ParseStory MainUI:main 0
+02-26-18-950:[Debug]:Time:02-26-18-950:StoryInstance.Init message handler num:5 True
+02-26-18-952:[Debug]:Time:02-26-18-952:StoryInstance.Init message handler num:4 True
+02-26-18-952:[Info]:Time:02-26-18-952:ParseStory StoryDlg:main 0
+02-26-18-952:[Debug]:Time:02-26-18-952:StoryInstance.Init message handler num:4 True
+02-26-18-955:[Warn]:Time:02-26-18-954:StoryInstance queue message start
+02-26-18-955:[Info]:Time:02-26-18-955:StartStory MainUI:main
+02-26-18-955:[Warn]:Time:02-26-18-955:StoryInstance queue message start
+02-26-18-955:[Info]:Time:02-26-18-955:StartStory StoryDlg:main
+02-26-18-955:[Info]:Time:02-26-18-955:SendMessage GameRoot OnLoadSceneComplete 101 False
+02-26-18-956:Time:02-26-18-956:send Msg_CR_Enter to roomserver
+02-26-18-957:[Info]:Time:02-26-18-957:Warning Message: m_sendBufferWritePtr(6) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-18-975:[Info]:Time:02-26-18-975:StartStory skill_main
+02-26-18-975:[Warn]:Time:02-26-18-975:StoryInstance queue message start
+02-26-18-975:[Info]:Time:02-26-18-975:StartStory auto_story
+02-26-18-990:[Info]:Time:02-26-18-990:Warning Message: Received right-on-time ack for #2 127.0.0.1:9528
+02-26-19-584:[Info]:Time:02-26-19-584:Warning Message: Received message #2 right on time 127.0.0.1:9528
+02-26-19-585:[Info]:Time:02-26-19-585:Warning Message: Sending ack for UserReliableOrdered1 #2 127.0.0.1:9528
+02-26-19-585:[Info]:Time:02-26-19-585:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-19-599:[Info]:Time:02-26-19-599:Warning Message: Received message #3 right on time 127.0.0.1:9528
+02-26-19-603:[Info]:Time:02-26-19-603:Warning Message: Received message #4 right on time 127.0.0.1:9528
+02-26-19-605:Time:02-26-19-605:NpcCreate:100 unit:10000 ownerid=0
+02-26-19-629:[Info]:Time:02-26-19-629:Warning Message: Received message #5 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #6 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #7 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #8 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #9 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #10 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #11 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #12 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #13 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #14 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #15 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #16 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #17 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #18 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #19 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #20 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #21 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #22 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #23 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #24 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #25 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #26 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #27 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #28 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #29 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #30 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #31 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #32 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #33 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #34 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #35 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #36 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #37 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #38 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #39 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #40 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #41 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Received message #42 right on time 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #3 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #4 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #5 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #6 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #7 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #8 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #9 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #10 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #11 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #12 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #13 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #14 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #15 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #16 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #17 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #18 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #19 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #20 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #21 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #22 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #23 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #24 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #25 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #26 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #27 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #28 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #29 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #30 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #31 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #32 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #33 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #34 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #35 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #36 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #37 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #38 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #39 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #40 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #41 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: Sending ack for UserReliableOrdered1 #42 127.0.0.1:9528
+02-26-19-630:[Info]:Time:02-26-19-630:Warning Message: m_sendBufferWritePtr(125) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-19-633:[Debug]:Time:02-26-19-633:CreateTriger, type:animation triger:AnimationTriger
+02-26-19-633:[Debug]:Time:02-26-19-633:CreateTriger, type:born_finish triger:BornFinishTriger
+02-26-19-634:[Debug]:Time:02-26-19-634:SkillInstance.Init section num:1 True skill 1
+02-26-19-634:[Debug]:Time:02-26-19-634:ParseSkill 1
+02-26-19-639:[Info]:Time:02-26-19-639:---set 100 hp to 30100/30100
+02-26-19-639:Time:02-26-19-639:NpcCreate:101 unit:10001 ownerid=0
+02-26-19-640:[Info]:Time:02-26-19-640:---set 101 hp to 30100/30100
+02-26-19-640:Time:02-26-19-640:NpcCreate:102 unit:10002 ownerid=0
+02-26-19-641:[Info]:Time:02-26-19-641:---set 102 hp to 30100/30100
+02-26-19-641:Time:02-26-19-641:NpcCreate:103 unit:10003 ownerid=0
+02-26-19-642:[Info]:Time:02-26-19-642:---set 103 hp to 30100/30100
+02-26-19-642:Time:02-26-19-642:NpcCreate:104 unit:10004 ownerid=0
+02-26-19-643:[Info]:Time:02-26-19-643:---set 104 hp to 30100/30100
+02-26-19-643:Time:02-26-19-643:NpcCreate:105 unit:10005 ownerid=0
+02-26-19-643:[Info]:Time:02-26-19-643:---set 105 hp to 30100/30100
+02-26-19-643:Time:02-26-19-643:NpcCreate:106 unit:10006 ownerid=0
+02-26-19-644:[Info]:Time:02-26-19-644:---set 106 hp to 30100/30100
+02-26-19-644:Time:02-26-19-644:NpcCreate:107 unit:10007 ownerid=0
+02-26-19-645:[Info]:Time:02-26-19-645:---set 107 hp to 30100/30100
+02-26-19-645:Time:02-26-19-645:NpcCreate:108 unit:10008 ownerid=0
+02-26-19-645:[Info]:Time:02-26-19-645:---set 108 hp to 30100/30100
+02-26-19-645:Time:02-26-19-645:NpcCreate:109 unit:10009 ownerid=0
+02-26-19-646:[Info]:Time:02-26-19-646:---set 109 hp to 30100/30100
+02-26-19-646:Time:02-26-19-646:NpcCreate:110 unit:10010 ownerid=0
+02-26-19-650:[Info]:Time:02-26-19-650:---set 110 hp to 30100/30100
+02-26-19-650:Time:02-26-19-650:NpcCreate:111 unit:10011 ownerid=0
+02-26-19-651:[Info]:Time:02-26-19-651:---set 111 hp to 30100/30100
+02-26-19-651:Time:02-26-19-651:NpcCreate:112 unit:10012 ownerid=0
+02-26-19-651:[Info]:Time:02-26-19-651:---set 112 hp to 30100/30100
+02-26-19-651:Time:02-26-19-651:NpcCreate:113 unit:10013 ownerid=0
+02-26-19-651:[Info]:Time:02-26-19-651:---set 113 hp to 30100/30100
+02-26-19-651:Time:02-26-19-651:NpcCreate:114 unit:10014 ownerid=0
+02-26-19-653:[Info]:Time:02-26-19-653:---set 114 hp to 30100/30100
+02-26-19-653:Time:02-26-19-653:NpcCreate:115 unit:10015 ownerid=0
+02-26-19-653:[Info]:Time:02-26-19-653:---set 115 hp to 30100/30100
+02-26-19-653:Time:02-26-19-653:NpcCreate:116 unit:10016 ownerid=0
+02-26-19-657:[Info]:Time:02-26-19-657:---set 116 hp to 5100/5100
+02-26-19-657:Time:02-26-19-657:NpcCreate:117 unit:10017 ownerid=0
+02-26-19-660:[Info]:Time:02-26-19-660:---set 117 hp to 5100/5100
+02-26-19-660:Time:02-26-19-660:NpcCreate:118 unit:10018 ownerid=0
+02-26-19-662:[Info]:Time:02-26-19-662:---set 118 hp to 5100/5100
+02-26-19-662:Time:02-26-19-662:NpcCreate:119 unit:100000119 ownerid=0
+02-26-19-672:[Info]:Time:02-26-19-672:---set 119 hp to 100100/100100
+02-26-19-673:[Debug]:Time:02-26-19-673:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-682:[Debug]:Time:02-26-19-682:ChangeToSection:0 duration:100
+02-26-19-697:[Info]:Time:02-26-19-697:SendToLobby:9 CQADAAiRTg==
+02-26-19-888:[Debug]:Time:02-26-19-888:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-19-888:[Info]:Time:02-26-19-888:DecodeNodeMessage:9 CQADAAiRTg==
+02-26-20-652:[Info]:Time:02-26-20-652:Warning Message: Received message #43 right on time 127.0.0.1:9528
+02-26-20-655:[Info]:Time:02-26-20-655:Warning Message: Received message #44 right on time 127.0.0.1:9528
+02-26-20-658:[Info]:Time:02-26-20-658:Warning Message: Received message #45 right on time 127.0.0.1:9528
+02-26-20-658:[Info]:Time:02-26-20-658:Warning Message: Sending ack for UserReliableOrdered1 #43 127.0.0.1:9528
+02-26-20-658:[Info]:Time:02-26-20-658:Warning Message: Sending ack for UserReliableOrdered1 #44 127.0.0.1:9528
+02-26-20-658:[Info]:Time:02-26-20-658:Warning Message: Sending ack for UserReliableOrdered1 #45 127.0.0.1:9528
+02-26-20-658:[Info]:Time:02-26-20-658:Warning Message: m_sendBufferWritePtr(14) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-20-659:[Info]:Time:02-26-20-659:SendMessage GameRoot CameraFollow 119 False
+02-26-20-659:[Info]:Time:02-26-20-659:SendMessage Main Camera LightScreen 3000 False
+02-26-21-816:[Info]:Time:02-26-21-816:Warning Message: resend delay 0.02662592 127.0.0.1:9528
+02-26-21-816:[Info]:Time:02-26-21-816:Warning Message: Timeout deadline pushed to  19.09777 127.0.0.1:9528
+02-26-21-960:[Warn]:Time:02-26-21-960:StoryInstance queue message findnpc
+02-26-21-969:[Info]:Time:02-26-21-969:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-21-982:[Info]:Time:02-26-21-982:Warning Message: Received right-on-time ack for #3 127.0.0.1:9528
+02-26-22-465:[Info]:Time:02-26-22-465:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-22-473:[Info]:Time:02-26-22-473:Warning Message: Received right-on-time ack for #4 127.0.0.1:9528
+02-26-22-967:[Info]:Time:02-26-22-967:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-22-972:[Info]:Time:02-26-22-972:Warning Message: Received right-on-time ack for #5 127.0.0.1:9528
+02-26-23-466:[Info]:Time:02-26-23-466:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-23-494:[Info]:Time:02-26-23-494:Warning Message: Received right-on-time ack for #6 127.0.0.1:9528
+02-26-23-892:[Info]:Time:02-26-23-892:Warning Message: m_sendBufferWritePtr(10) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-23-896:[Info]:Time:02-26-23-896:Warning Message: Received right-on-time ack for #7 127.0.0.1:9528
+02-26-23-902:[Info]:Time:02-26-23-902:Warning Message: Received message #46 right on time 127.0.0.1:9528
+02-26-23-905:[Info]:Time:02-26-23-905:Warning Message: Sending ack for UserReliableOrdered1 #46 127.0.0.1:9528
+02-26-23-905:[Info]:Time:02-26-23-905:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-23-968:[Info]:Time:02-26-23-968:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-23-996:[Info]:Time:02-26-23-996:Warning Message: Received right-on-time ack for #8 127.0.0.1:9528
+02-26-24-470:[Info]:Time:02-26-24-470:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-24-483:[Info]:Time:02-26-24-483:Warning Message: Received right-on-time ack for #9 127.0.0.1:9528
+02-26-24-700:[Info]:Time:02-26-24-700:SendToLobby:9 CQADAAiRTg==
+02-26-24-825:[Info]:Time:02-26-24-825:Warning Message: resend delay 0.02624689 127.0.0.1:9528
+02-26-24-825:[Info]:Time:02-26-24-825:Warning Message: Timeout deadline pushed to  22.10666 127.0.0.1:9528
+02-26-24-911:[Debug]:Time:02-26-24-911:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-24-911:[Info]:Time:02-26-24-911:DecodeNodeMessage:9 CQADAAiRTg==
+02-26-24-969:[Info]:Time:02-26-24-969:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-24-970:[Info]:Time:02-26-24-970:Warning Message: Received right-on-time ack for #10 127.0.0.1:9528
+02-26-25-470:[Info]:Time:02-26-25-470:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-25-494:[Info]:Time:02-26-25-494:Warning Message: Received right-on-time ack for #11 127.0.0.1:9528
+02-26-25-971:[Info]:Time:02-26-25-971:Warning Message: m_sendBufferWritePtr(18) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-25-985:[Info]:Time:02-26-25-985:Warning Message: Received right-on-time ack for #12 127.0.0.1:9528
+02-26-26-224:[Warn]:Time:02-26-26-223:StoryInstance queue message touchnpc
+02-26-26-231:[Info]:Time:02-26-26-231:Warning Message: m_sendBufferWritePtr(16) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-26-247:[Info]:Time:02-26-26-247:Warning Message: Received right-on-time ack for #13 127.0.0.1:9528
+02-26-26-338:[Info]:Time:02-26-26-338:Warning Message: Received message #47 right on time 127.0.0.1:9528
+02-26-26-339:[Info]:Time:02-26-26-339:Warning Message: Sending ack for UserReliableOrdered1 #47 127.0.0.1:9528
+02-26-26-339:[Info]:Time:02-26-26-339:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-26-339:[Warn]:Time:02-26-26-339:StoryInstance queue message open_battle
+02-26-26-340:[Info]:Time:02-26-26-340:SendMessage GameRoot LoadBattle TableConfig.Level False
+02-26-26-340:[Warn]:Time:02-26-26-340:StoryInstance queue message set_map_image
+02-26-26-343:[Info]:Time:02-26-26-343:SendMessage MainUI/Panel/Image/RawImage CallScript System.Object[] False
+02-26-26-372:[Debug]:Time:02-26-26-372:StoryInstance.Init message handler num:9 True
+02-26-26-372:[Info]:Time:02-26-26-372:ParseStory battle_main 0
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:5 True
+02-26-26-373:[Info]:Time:02-26-26-373:ParseStory auto_battle 0
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:5 True
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:6 True
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:5 True
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:3 True
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:5 True
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:4 True
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:9 True
+02-26-26-373:[Debug]:Time:02-26-26-373:StoryInstance.Init message handler num:5 True
+02-26-26-374:[Warn]:Time:02-26-26-373:StoryInstance queue message start
+02-26-26-374:[Info]:Time:02-26-26-374:StartStory battle_main
+02-26-26-376:[Info]:Time:02-26-26-376:SendMessage GameRoot OnLoadBattleComplete 10001 False
+02-26-26-380:[Debug]:Time:02-26-26-380:StoryInstance.Init message handler num:1 True
+02-26-26-380:[Info]:Time:02-26-26-380:ParseStory ai_player 0
+02-26-26-380:[Debug]:Time:02-26-26-380:StoryInstance.Init message handler num:1 True
+02-26-26-380:[Warn]:Time:02-26-26-380:StoryInstance queue message start
+02-26-26-382:[Debug]:Time:02-26-26-382:StoryInstance.Init message handler num:1 True
+02-26-26-382:[Info]:Time:02-26-26-382:ParseStory ai_member 0
+02-26-26-382:[Debug]:Time:02-26-26-382:StoryInstance.Init message handler num:1 True
+02-26-26-383:[Warn]:Time:02-26-26-382:StoryInstance queue message start
+02-26-26-389:[Debug]:Time:02-26-26-389:StoryInstance.Init message handler num:1 True
+02-26-26-389:[Info]:Time:02-26-26-389:ParseStory ai_member 0
+02-26-26-389:[Debug]:Time:02-26-26-389:StoryInstance.Init message handler num:1 True
+02-26-26-389:[Warn]:Time:02-26-26-389:StoryInstance queue message start
+02-26-26-408:[Debug]:Time:02-26-26-408:StoryInstance.Init message handler num:1 True
+02-26-26-408:[Info]:Time:02-26-26-408:ParseStory ai_member 0
+02-26-26-408:[Debug]:Time:02-26-26-408:StoryInstance.Init message handler num:1 True
+02-26-26-408:[Warn]:Time:02-26-26-408:StoryInstance queue message start
+02-26-26-414:[Debug]:Time:02-26-26-414:StoryInstance.Init message handler num:1 True
+02-26-26-414:[Info]:Time:02-26-26-414:ParseStory ai_member 0
+02-26-26-414:[Debug]:Time:02-26-26-414:StoryInstance.Init message handler num:1 True
+02-26-26-414:[Warn]:Time:02-26-26-414:StoryInstance queue message start
+02-26-26-415:[Info]:Time:02-26-26-415:SendMessage GameRoot CameraFollow 1100 False
+02-26-26-415:[Warn]:Time:02-26-26-415:StoryInstance queue message set_map_image
+02-26-26-416:[Info]:Time:02-26-26-416:Warning Message: m_sendBufferWritePtr(32) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-26-416:[Warn]:Time:02-26-26-415:StoryInstance queue message push_tip_info
+02-26-26-416:[Warn]:Time:02-26-26-416:StoryInstance queue message push_tip_info
+02-26-26-416:[Warn]:Time:02-26-26-416:StoryInstance queue message push_tip_info
+02-26-26-416:[Warn]:Time:02-26-26-416:StoryInstance queue message wave_go
+02-26-26-416:[Info]:Time:02-26-26-416:SendMessage MainUI/Panel/TextBkg/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-26-417:[Info]:Time:02-26-26-417:SendMessage MainUI/Panel/TextBkg/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-26-417:[Info]:Time:02-26-26-417:SendMessage MainUI/Panel/TextBkg/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-26-417:[Info]:Time:02-26-26-417:SendMessage MainUI/Panel/Image/RawImage CallScript System.Object[] False
+02-26-26-429:[Warn]:Time:02-26-26-429:StoryInstance queue message start
+02-26-26-429:[Info]:Time:02-26-26-429:StartStory auto_battle
+02-26-26-430:[Warn]:Time:02-26-26-430:StoryInstance queue message report_pos
+02-26-26-430:[Warn]:Time:02-26-26-430:StoryInstance queue message push_tip_info
+02-26-26-430:[Warn]:Time:02-26-26-430:StoryInstance queue message wave_spawn_1
+02-26-26-430:[Info]:Time:02-26-26-430:SendMessage MainUI/Panel/TextBkg/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-26-430:[Debug]:Time:02-26-26-430:ChangeToSection:0 duration:100
+02-26-26-430:[Debug]:Time:02-26-26-430:ChangeToSection:0 duration:100
+02-26-26-430:[Debug]:Time:02-26-26-430:ChangeToSection:0 duration:100
+02-26-26-430:[Debug]:Time:02-26-26-430:ChangeToSection:0 duration:100
+02-26-26-430:[Debug]:Time:02-26-26-430:ChangeToSection:0 duration:100
+02-26-26-437:[Info]:Time:02-26-26-437:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-26-441:[Info]:Time:02-26-26-441:Warning Message: Received right-on-time ack for #14 127.0.0.1:9528
+02-26-26-441:[Info]:Time:02-26-26-441:Warning Message: Received right-on-time ack for #15 127.0.0.1:9528
+02-26-26-442:[Debug]:Time:02-26-26-442:StoryInstance.Init message handler num:1 True
+02-26-26-442:[Info]:Time:02-26-26-442:ParseStory ai_normal 0
+02-26-26-442:[Debug]:Time:02-26-26-442:StoryInstance.Init message handler num:1 True
+02-26-26-442:[Warn]:Time:02-26-26-442:StoryInstance queue message start
+02-26-26-448:[Debug]:Time:02-26-26-448:StoryInstance.Init message handler num:1 True
+02-26-26-448:[Info]:Time:02-26-26-448:ParseStory ai_normal 0
+02-26-26-448:[Debug]:Time:02-26-26-448:StoryInstance.Init message handler num:1 True
+02-26-26-448:[Warn]:Time:02-26-26-448:StoryInstance queue message start
+02-26-26-450:[Debug]:Time:02-26-26-450:StoryInstance.Init message handler num:1 True
+02-26-26-450:[Info]:Time:02-26-26-450:ParseStory ai_normal 0
+02-26-26-450:[Debug]:Time:02-26-26-450:StoryInstance.Init message handler num:1 True
+02-26-26-450:[Warn]:Time:02-26-26-450:StoryInstance queue message start
+02-26-26-451:[Debug]:Time:02-26-26-451:StoryInstance.Init message handler num:1 True
+02-26-26-451:[Info]:Time:02-26-26-451:ParseStory ai_normal 0
+02-26-26-451:[Debug]:Time:02-26-26-451:StoryInstance.Init message handler num:1 True
+02-26-26-451:[Warn]:Time:02-26-26-451:StoryInstance queue message start
+02-26-26-452:[Debug]:Time:02-26-26-452:StoryInstance.Init message handler num:1 True
+02-26-26-452:[Info]:Time:02-26-26-452:ParseStory ai_normal 0
+02-26-26-452:[Debug]:Time:02-26-26-452:StoryInstance.Init message handler num:1 True
+02-26-26-452:[Warn]:Time:02-26-26-452:StoryInstance queue message start
+02-26-26-458:[Debug]:Time:02-26-26-458:ChangeToSection:0 duration:100
+02-26-26-458:[Debug]:Time:02-26-26-458:ChangeToSection:0 duration:100
+02-26-26-458:[Debug]:Time:02-26-26-458:ChangeToSection:0 duration:100
+02-26-26-458:[Debug]:Time:02-26-26-458:ChangeToSection:0 duration:100
+02-26-26-458:[Debug]:Time:02-26-26-458:ChangeToSection:0 duration:100
+02-26-26-461:[Info]:Time:02-26-26-461:Warning Message: Received message #48 right on time 127.0.0.1:9528
+02-26-26-462:[Warn]:Time:02-26-26-462:StoryInstance queue message parallel_state
+02-26-26-462:[Warn]:Time:02-26-26-462:StoryInstance queue message push_tip_info
+02-26-26-465:[Info]:Time:02-26-26-465:Warning Message: Sending ack for UserReliableOrdered1 #48 127.0.0.1:9528
+02-26-26-465:[Info]:Time:02-26-26-465:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-26-465:[Info]:Time:02-26-26-465:SendMessage MainUI/Panel/TextBkg/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-26-539:[Debug]:Time:02-26-26-539:CreateTriger, type:hit_effect triger:HitEffectTriger
+02-26-26-539:[Debug]:Time:02-26-26-539:CreateTriger, type:animation triger:AnimationTriger
+02-26-26-539:[Debug]:Time:02-26-26-539:CreateTriger, type:adjust_section_duration triger:AdjustSectionDurationTrigger
+02-26-26-540:[Debug]:Time:02-26-26-540:CreateTriger, type:self_effect triger:SelfEffectTriger
+02-26-26-541:[Debug]:Time:02-26-26-541:CreateTriger, type:emit_effect triger:EmitEffectTriger
+02-26-26-541:[Debug]:Time:02-26-26-541:CreateTriger, type:track triger:TrackTriger
+02-26-26-541:[Debug]:Time:02-26-26-541:SkillInstance.Init section num:1 True skill 0
+02-26-26-541:[Debug]:Time:02-26-26-541:CreateTriger, type:animation triger:AnimationTriger
+02-26-26-541:[Debug]:Time:02-26-26-541:CreateTriger, type:self_effect triger:SelfEffectTriger
+02-26-26-541:[Debug]:Time:02-26-26-541:CreateTriger, type:damage triger:DamageTriger
+02-26-26-541:[Debug]:Time:02-26-26-541:SkillInstance.Init section num:1 True skill 0
+02-26-26-542:[Debug]:Time:02-26-26-542:SkillInstance.Init section num:2 True skill 5
+02-26-26-542:[Debug]:Time:02-26-26-542:ParseSkill 5
+02-26-26-545:[Debug]:Time:02-26-26-545:ChangeToSection:0 duration:10
+02-26-26-545:[Debug]:Time:02-26-26-545:ChangeToSection:0 duration:10
+02-26-26-545:[Debug]:Time:02-26-26-545:ChangeToSection:0 duration:10
+02-26-26-545:[Debug]:Time:02-26-26-545:ChangeToSection:0 duration:10
+02-26-26-557:[Debug]:Time:02-26-26-557:ChangeToSection:1 duration:1000
+02-26-26-563:[Warn]:Time:02-26-26-562:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-26-563:[Debug]:Time:02-26-26-563:ChangeToSection:1 duration:1000
+02-26-26-563:[Warn]:Time:02-26-26-563:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-26-563:[Debug]:Time:02-26-26-563:ChangeToSection:1 duration:1000
+02-26-26-564:[Warn]:Time:02-26-26-563:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-26-564:[Debug]:Time:02-26-26-564:ChangeToSection:1 duration:1000
+02-26-26-564:[Warn]:Time:02-26-26-564:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-26-566:[Debug]:Time:02-26-26-566:ChangeToSection:0 duration:10000
+02-26-26-568:[Debug]:Time:02-26-26-568:ChangeToSection:0 duration:10000
+02-26-26-568:[Debug]:Time:02-26-26-568:ChangeToSection:0 duration:10000
+02-26-26-568:[Debug]:Time:02-26-26-568:ChangeToSection:0 duration:10000
+02-26-26-737:[Warn]:Time:02-26-26-736:StoryInstance queue message report_pos
+02-26-26-741:[Info]:Time:02-26-26-741:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-26-767:[Info]:Time:02-26-26-767:Warning Message: Received right-on-time ack for #16 127.0.0.1:9528
+02-26-26-770:[Warn]:Time:02-26-26-769:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-26-770:[Warn]:Time:02-26-26-770:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-26-771:[Warn]:Time:02-26-26-770:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-26-771:[Warn]:Time:02-26-26-771:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-26-857:[Debug]:Time:02-26-26-856:ChangeToSection:0 duration:10
+02-26-26-869:[Debug]:Time:02-26-26-869:ChangeToSection:1 duration:1000
+02-26-26-872:[Warn]:Time:02-26-26-872:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-26-877:[Debug]:Time:02-26-26-877:ChangeToSection:0 duration:10000
+02-26-27-042:[Warn]:Time:02-26-27-041:StoryInstance queue message report_pos
+02-26-27-046:[Info]:Time:02-26-27-046:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-27-076:[Info]:Time:02-26-27-076:Warning Message: Received right-on-time ack for #17 127.0.0.1:9528
+02-26-27-078:[Warn]:Time:02-26-27-077:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-27-095:[Debug]:Time:02-26-27-095:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+02-26-27-248:[Debug]:Time:02-26-27-248:ChangeToSection:0 duration:1000
+02-26-27-262:[Warn]:Time:02-26-27-262:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-27-263:[Debug]:Time:02-26-27-263:CreateTriger, type:animation triger:AnimationTriger
+02-26-27-263:[Debug]:Time:02-26-27-263:CreateTriger, type:adjust_section_duration triger:AdjustSectionDurationTrigger
+02-26-27-264:[Debug]:Time:02-26-27-264:CreateTriger, type:replace_shader_and_fade_color triger:ReplaceShaderAndFadeColorTrigger
+02-26-27-264:[Debug]:Time:02-26-27-264:CreateTriger, type:dead_finish triger:DeadFinishTriger
+02-26-27-264:[Debug]:Time:02-26-27-264:SkillInstance.Init section num:2 True skill 2
+02-26-27-264:[Debug]:Time:02-26-27-264:ParseSkill 2
+02-26-27-271:[Debug]:Time:02-26-27-271:ChangeToSection:0 duration:1000
+02-26-27-347:[Warn]:Time:02-26-27-346:StoryInstance queue message report_pos
+02-26-27-351:[Info]:Time:02-26-27-351:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-27-380:[Info]:Time:02-26-27-380:Warning Message: Received right-on-time ack for #18 127.0.0.1:9528
+02-26-27-563:[Debug]:Time:02-26-27-563:ChangeToSection:0 duration:10
+02-26-27-563:[Debug]:Time:02-26-27-563:ChangeToSection:0 duration:10
+02-26-27-575:[Debug]:Time:02-26-27-575:ChangeToSection:1 duration:1000
+02-26-27-576:[Warn]:Time:02-26-27-575:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-27-576:[Debug]:Time:02-26-27-576:ChangeToSection:1 duration:1000
+02-26-27-576:[Warn]:Time:02-26-27-576:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-27-578:[Debug]:Time:02-26-27-578:ChangeToSection:0 duration:10000
+02-26-27-578:[Debug]:Time:02-26-27-578:ChangeToSection:0 duration:10000
+02-26-27-651:[Warn]:Time:02-26-27-651:StoryInstance queue message report_pos
+02-26-27-656:[Info]:Time:02-26-27-656:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-27-686:[Info]:Time:02-26-27-686:Warning Message: Received right-on-time ack for #19 127.0.0.1:9528
+02-26-27-780:[Warn]:Time:02-26-27-780:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-27-780:[Warn]:Time:02-26-27-780:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-27-835:[Info]:Time:02-26-27-835:Warning Message: resend delay 0.02601281 127.0.0.1:9528
+02-26-27-835:[Info]:Time:02-26-27-835:Warning Message: Timeout deadline pushed to  25.11708 127.0.0.1:9528
+02-26-27-895:[Debug]:Time:02-26-27-895:ChangeToSection:0 duration:10
+02-26-27-909:[Debug]:Time:02-26-27-909:ChangeToSection:1 duration:1333
+02-26-27-909:[Warn]:Time:02-26-27-909:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-27-915:[Debug]:Time:02-26-27-915:ChangeToSection:0 duration:10000
+02-26-27-955:[Warn]:Time:02-26-27-954:StoryInstance queue message report_pos
+02-26-27-959:[Info]:Time:02-26-27-959:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-27-973:[Info]:Time:02-26-27-973:Warning Message: Received right-on-time ack for #20 127.0.0.1:9528
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:hit_effect triger:HitEffectTriger
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:animation triger:AnimationTriger
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:adjust_section_duration triger:AdjustSectionDurationTrigger
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:self_effect triger:SelfEffectTriger
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:impact triger:ImpactTrigger
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:animation triger:AnimationTriger
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:self_effect triger:SelfEffectTriger
+02-26-27-975:[Debug]:Time:02-26-27-975:CreateTriger, type:damage triger:DamageTriger
+02-26-27-975:[Debug]:Time:02-26-27-975:SkillInstance.Init section num:1 True skill 0
+02-26-27-975:[Debug]:Time:02-26-27-975:SkillInstance.Init section num:2 True skill 3
+02-26-27-975:[Debug]:Time:02-26-27-975:ParseSkill 3
+02-26-27-977:[Debug]:Time:02-26-27-977:ChangeToSection:0 duration:10
+02-26-27-991:[Debug]:Time:02-26-27-991:ChangeToSection:1 duration:1000
+02-26-27-992:[Warn]:Time:02-26-27-992:[skill:3 dsl skill id:3] self_effect bone eyes can't find.
+02-26-28-095:[Debug]:Time:02-26-28-095:ChangeToSection:0 duration:1000
+02-26-28-096:[Warn]:Time:02-26-28-096:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-28-099:[Debug]:Time:02-26-28-099:ChangeToSection:0 duration:1000
+02-26-28-116:[Warn]:Time:02-26-28-116:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-28-233:[Debug]:Time:02-26-28-233:ChangeToSection:0 duration:10
+02-26-28-246:[Debug]:Time:02-26-28-246:ChangeToSection:1 duration:1000
+02-26-28-247:[Warn]:Time:02-26-28-246:[skill:3 dsl skill id:3] self_effect bone eyes can't find.
+02-26-28-260:[Warn]:Time:02-26-28-260:StoryInstance queue message report_pos
+02-26-28-263:[Info]:Time:02-26-28-263:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-28-278:[Info]:Time:02-26-28-278:Warning Message: Received right-on-time ack for #21 127.0.0.1:9528
+02-26-28-351:[Debug]:Time:02-26-28-351:ChangeToSection:0 duration:1000
+02-26-28-352:[Warn]:Time:02-26-28-352:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-28-395:[Debug]:Time:02-26-28-395:ChangeToSection:0 duration:1000
+02-26-28-396:[Warn]:Time:02-26-28-396:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-28-400:[Debug]:Time:02-26-28-400:ChangeToSection:0 duration:1000
+02-26-28-564:[Warn]:Time:02-26-28-564:StoryInstance queue message report_pos
+02-26-28-569:[Info]:Time:02-26-28-569:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-28-580:[Debug]:Time:02-26-28-580:ChangeToSection:0 duration:10
+02-26-28-580:[Debug]:Time:02-26-28-580:ChangeToSection:0 duration:10
+02-26-28-584:[Info]:Time:02-26-28-584:Warning Message: Received right-on-time ack for #22 127.0.0.1:9528
+02-26-28-593:[Debug]:Time:02-26-28-593:ChangeToSection:1 duration:1000
+02-26-28-594:[Warn]:Time:02-26-28-594:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-28-594:[Debug]:Time:02-26-28-594:ChangeToSection:1 duration:1000
+02-26-28-594:[Warn]:Time:02-26-28-594:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-28-597:[Debug]:Time:02-26-28-597:ChangeToSection:0 duration:10000
+02-26-28-597:[Debug]:Time:02-26-28-597:ChangeToSection:0 duration:10000
+02-26-28-733:[Debug]:Time:02-26-28-733:ChangeToSection:0 duration:1000
+02-26-28-734:[Warn]:Time:02-26-28-734:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-28-737:[Debug]:Time:02-26-28-737:ChangeToSection:0 duration:1000
+02-26-28-798:[Warn]:Time:02-26-28-798:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-28-798:[Warn]:Time:02-26-28-798:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-28-868:[Warn]:Time:02-26-28-868:StoryInstance queue message report_pos
+02-26-28-872:[Info]:Time:02-26-28-872:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-28-891:[Info]:Time:02-26-28-891:Warning Message: Received right-on-time ack for #23 127.0.0.1:9528
+02-26-28-895:[Info]:Time:02-26-28-895:Warning Message: m_sendBufferWritePtr(10) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-28-917:[Info]:Time:02-26-28-917:Warning Message: Received message #49 right on time 127.0.0.1:9528
+02-26-28-918:[Info]:Time:02-26-28-918:Warning Message: Sending ack for UserReliableOrdered1 #49 127.0.0.1:9528
+02-26-28-918:[Info]:Time:02-26-28-918:Warning Message: Received right-on-time ack for #24 127.0.0.1:9528
+02-26-28-918:[Info]:Time:02-26-28-918:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-29-096:[Debug]:Time:02-26-29-096:ChangeToSection:0 duration:10
+02-26-29-109:[Debug]:Time:02-26-29-109:ChangeToSection:1 duration:1000
+02-26-29-109:[Warn]:Time:02-26-29-109:[skill:3 dsl skill id:3] self_effect bone eyes can't find.
+02-26-29-173:[Warn]:Time:02-26-29-173:StoryInstance queue message report_pos
+02-26-29-176:[Info]:Time:02-26-29-176:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-29-215:[Debug]:Time:02-26-29-215:ChangeToSection:0 duration:1000
+02-26-29-216:[Warn]:Time:02-26-29-216:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-29-219:[Debug]:Time:02-26-29-219:ChangeToSection:0 duration:1000
+02-26-29-222:[Info]:Time:02-26-29-222:Warning Message: Received right-on-time ack for #25 127.0.0.1:9528
+02-26-29-273:[Debug]:Time:02-26-29-273:ChangeToSection:1 duration:1000
+02-26-29-475:[Warn]:Time:02-26-29-475:StoryInstance queue message report_pos
+02-26-29-478:[Info]:Time:02-26-29-478:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-29-496:[Info]:Time:02-26-29-496:Warning Message: Received right-on-time ack for #26 127.0.0.1:9528
+02-26-29-703:[Info]:Time:02-26-29-703:SendToLobby:9 CQADAAiRTg==
+02-26-29-778:[Warn]:Time:02-26-29-778:StoryInstance queue message report_pos
+02-26-29-782:[Info]:Time:02-26-29-782:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-29-798:[Info]:Time:02-26-29-798:Warning Message: Received right-on-time ack for #27 127.0.0.1:9528
+02-26-29-826:[Debug]:Time:02-26-29-826:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-29-827:[Info]:Time:02-26-29-827:DecodeNodeMessage:9 CQADAAiRTg==
+02-26-30-082:[Warn]:Time:02-26-30-081:StoryInstance queue message report_pos
+02-26-30-085:[Info]:Time:02-26-30-085:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-30-103:[Debug]:Time:02-26-30-103:ChangeToSection:1 duration:1000
+02-26-30-107:[Info]:Time:02-26-30-107:Warning Message: Received right-on-time ack for #28 127.0.0.1:9528
+02-26-30-387:[Warn]:Time:02-26-30-386:StoryInstance queue message report_pos
+02-26-30-390:[Info]:Time:02-26-30-390:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-30-409:[Info]:Time:02-26-30-409:Warning Message: Received right-on-time ack for #29 127.0.0.1:9528
+02-26-30-468:[Debug]:Time:02-26-30-468:ChangeToSection:1 duration:1000
+02-26-30-689:[Warn]:Time:02-26-30-689:StoryInstance queue message report_pos
+02-26-30-692:[Info]:Time:02-26-30-692:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-30-716:[Info]:Time:02-26-30-716:Warning Message: Received right-on-time ack for #30 127.0.0.1:9528
+02-26-30-806:[Debug]:Time:02-26-30-806:ChangeToSection:1 duration:1000
+02-26-30-839:[Info]:Time:02-26-30-839:Warning Message: resend delay 0.02583574 127.0.0.1:9528
+02-26-30-839:[Info]:Time:02-26-30-839:Warning Message: Timeout deadline pushed to  28.12052 127.0.0.1:9528
+02-26-30-993:[Warn]:Time:02-26-30-992:StoryInstance queue message report_pos
+02-26-30-997:[Info]:Time:02-26-30-997:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-31-006:[Info]:Time:02-26-31-006:Warning Message: Received right-on-time ack for #31 127.0.0.1:9528
+02-26-31-288:[Debug]:Time:02-26-31-288:ChangeToSection:1 duration:1000
+02-26-31-296:[Warn]:Time:02-26-31-296:StoryInstance queue message report_pos
+02-26-31-300:[Info]:Time:02-26-31-300:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-31-312:[Info]:Time:02-26-31-312:Warning Message: Received right-on-time ack for #32 127.0.0.1:9528
+02-26-31-600:[Warn]:Time:02-26-31-600:StoryInstance queue message report_pos
+02-26-31-604:[Info]:Time:02-26-31-604:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-31-618:[Info]:Time:02-26-31-618:Warning Message: Received right-on-time ack for #33 127.0.0.1:9528
+02-26-31-904:[Warn]:Time:02-26-31-904:StoryInstance queue message report_pos
+02-26-31-908:[Info]:Time:02-26-31-908:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-31-923:[Info]:Time:02-26-31-923:Warning Message: Received right-on-time ack for #34 127.0.0.1:9528
+02-26-32-190:[Warn]:Time:02-26-32-190:StoryInstance queue message all_killed
+02-26-32-193:[Warn]:Time:02-26-32-192:StoryInstance queue message wave_go
+02-26-32-195:[Warn]:Time:02-26-32-195:StoryInstance queue message push_tip_info
+02-26-32-195:[Warn]:Time:02-26-32-195:StoryInstance queue message wave_spawn_2
+02-26-32-196:[Info]:Time:02-26-32-196:SendMessage MainUI/Panel/TextBkg/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-32-199:[Warn]:Time:02-26-32-199:StoryInstance queue message start
+02-26-32-200:[Warn]:Time:02-26-32-200:StoryInstance queue message start
+02-26-32-201:[Warn]:Time:02-26-32-201:StoryInstance queue message start
+02-26-32-201:[Warn]:Time:02-26-32-201:StoryInstance queue message start
+02-26-32-201:[Warn]:Time:02-26-32-201:StoryInstance queue message start
+02-26-32-207:[Debug]:Time:02-26-32-207:ChangeToSection:0 duration:100
+02-26-32-207:[Debug]:Time:02-26-32-207:ChangeToSection:0 duration:100
+02-26-32-207:[Debug]:Time:02-26-32-207:ChangeToSection:0 duration:100
+02-26-32-207:[Debug]:Time:02-26-32-207:ChangeToSection:0 duration:100
+02-26-32-207:[Debug]:Time:02-26-32-207:ChangeToSection:0 duration:100
+02-26-32-210:[Warn]:Time:02-26-32-210:StoryInstance queue message report_pos
+02-26-32-213:[Info]:Time:02-26-32-213:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-32-231:[Info]:Time:02-26-32-231:Warning Message: Received right-on-time ack for #35 127.0.0.1:9528
+02-26-32-515:[Warn]:Time:02-26-32-515:StoryInstance queue message report_pos
+02-26-32-519:[Info]:Time:02-26-32-519:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-32-532:[Info]:Time:02-26-32-532:Warning Message: Received right-on-time ack for #36 127.0.0.1:9528
+02-26-32-655:[Debug]:Time:02-26-32-655:ChangeToSection:0 duration:10
+02-26-32-667:[Debug]:Time:02-26-32-667:ChangeToSection:1 duration:1000
+02-26-32-667:[Warn]:Time:02-26-32-667:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-32-670:[Debug]:Time:02-26-32-670:ChangeToSection:0 duration:10000
+02-26-32-819:[Warn]:Time:02-26-32-818:StoryInstance queue message report_pos
+02-26-32-822:[Info]:Time:02-26-32-822:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-32-841:[Info]:Time:02-26-32-841:Warning Message: Received right-on-time ack for #37 127.0.0.1:9528
+02-26-32-871:[Warn]:Time:02-26-32-871:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-33-121:[Warn]:Time:02-26-33-121:StoryInstance queue message report_pos
+02-26-33-125:[Info]:Time:02-26-33-125:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-33-145:[Info]:Time:02-26-33-145:Warning Message: Received right-on-time ack for #38 127.0.0.1:9528
+02-26-33-425:[Warn]:Time:02-26-33-425:StoryInstance queue message report_pos
+02-26-33-429:[Info]:Time:02-26-33-429:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-33-452:[Info]:Time:02-26-33-452:Warning Message: Received right-on-time ack for #39 127.0.0.1:9528
+02-26-33-728:[Warn]:Time:02-26-33-728:StoryInstance queue message report_pos
+02-26-33-735:[Info]:Time:02-26-33-735:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-33-757:[Info]:Time:02-26-33-757:Warning Message: Received right-on-time ack for #40 127.0.0.1:9528
+02-26-33-773:[Debug]:Time:02-26-33-773:ChangeToSection:0 duration:10
+02-26-33-786:[Debug]:Time:02-26-33-786:ChangeToSection:0 duration:1000
+02-26-33-787:[Warn]:Time:02-26-33-787:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-33-787:[Debug]:Time:02-26-33-787:ChangeToSection:1 duration:1000
+02-26-33-787:[Warn]:Time:02-26-33-787:[skill:3 dsl skill id:3] self_effect bone eyes can't find.
+02-26-33-791:[Debug]:Time:02-26-33-791:ChangeToSection:0 duration:2000
+02-26-33-848:[Info]:Time:02-26-33-848:Warning Message: resend delay 0.02595692 127.0.0.1:9528
+02-26-33-848:[Info]:Time:02-26-33-848:Warning Message: Timeout deadline pushed to  31.12946 127.0.0.1:9528
+02-26-33-896:[Info]:Time:02-26-33-896:Warning Message: m_sendBufferWritePtr(10) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-33-908:[Info]:Time:02-26-33-908:Warning Message: Received message #50 right on time 127.0.0.1:9528
+02-26-33-909:[Info]:Time:02-26-33-909:Warning Message: Sending ack for UserReliableOrdered1 #50 127.0.0.1:9528
+02-26-33-909:[Info]:Time:02-26-33-909:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-33-914:[Info]:Time:02-26-33-914:Warning Message: Received right-on-time ack for #41 127.0.0.1:9528
+02-26-34-035:[Warn]:Time:02-26-34-034:StoryInstance queue message report_pos
+02-26-34-038:[Info]:Time:02-26-34-038:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-34-039:[Info]:Time:02-26-34-039:Warning Message: Received right-on-time ack for #42 127.0.0.1:9528
+02-26-34-340:[Warn]:Time:02-26-34-340:StoryInstance queue message report_pos
+02-26-34-344:[Info]:Time:02-26-34-344:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-34-346:[Info]:Time:02-26-34-346:Warning Message: Received right-on-time ack for #43 127.0.0.1:9528
+02-26-34-646:[Warn]:Time:02-26-34-645:StoryInstance queue message report_pos
+02-26-34-649:[Info]:Time:02-26-34-649:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-34-652:[Info]:Time:02-26-34-652:Warning Message: Received right-on-time ack for #44 127.0.0.1:9528
+02-26-34-704:[Info]:Time:02-26-34-704:SendToLobby:9 CQADAAiRTg==
+02-26-34-854:[Debug]:Time:02-26-34-854:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-34-856:[Info]:Time:02-26-34-856:DecodeNodeMessage:9 CQADAAiRTg==
+02-26-34-893:[Debug]:Time:02-26-34-893:ChangeToSection:0 duration:10
+02-26-34-904:[Debug]:Time:02-26-34-904:ChangeToSection:1 duration:1000
+02-26-34-905:[Warn]:Time:02-26-34-904:[skill:3 dsl skill id:3] self_effect bone eyes can't find.
+02-26-34-950:[Warn]:Time:02-26-34-950:StoryInstance queue message report_pos
+02-26-34-954:[Info]:Time:02-26-34-954:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-34-959:[Info]:Time:02-26-34-959:Warning Message: Received right-on-time ack for #45 127.0.0.1:9528
+02-26-35-009:[Debug]:Time:02-26-35-009:ChangeToSection:0 duration:1000
+02-26-35-010:[Warn]:Time:02-26-35-010:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-35-013:[Debug]:Time:02-26-35-013:ChangeToSection:0 duration:2000
+02-26-35-253:[Warn]:Time:02-26-35-253:StoryInstance queue message report_pos
+02-26-35-257:[Info]:Time:02-26-35-257:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-35-262:[Info]:Time:02-26-35-262:Warning Message: Received right-on-time ack for #46 127.0.0.1:9528
+02-26-35-557:[Warn]:Time:02-26-35-557:StoryInstance queue message report_pos
+02-26-35-562:[Info]:Time:02-26-35-562:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-35-564:[Info]:Time:02-26-35-564:Warning Message: Received right-on-time ack for #47 127.0.0.1:9528
+02-26-35-793:[Debug]:Time:02-26-35-793:ChangeToSection:1 duration:1000
+02-26-35-862:[Warn]:Time:02-26-35-862:StoryInstance queue message report_pos
+02-26-35-868:[Info]:Time:02-26-35-868:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-35-869:[Info]:Time:02-26-35-869:Warning Message: Received right-on-time ack for #48 127.0.0.1:9528
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:hit_effect triger:HitEffectTriger
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:animation triger:AnimationTriger
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:adjust_section_duration triger:AdjustSectionDurationTrigger
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:self_effect triger:SelfEffectTriger
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:aoe_impact triger:AoeImpactTriger
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:animation triger:AnimationTriger
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:self_effect triger:SelfEffectTriger
+02-26-36-008:[Debug]:Time:02-26-36-008:CreateTriger, type:damage triger:DamageTriger
+02-26-36-008:[Debug]:Time:02-26-36-008:SkillInstance.Init section num:1 True skill 0
+02-26-36-008:[Debug]:Time:02-26-36-008:SkillInstance.Init section num:2 True skill 4
+02-26-36-008:[Debug]:Time:02-26-36-008:ParseSkill 4
+02-26-36-008:[Warn]:Time:02-26-36-008:ManualSkill 4 interrupt 3.
+02-26-36-008:[Warn]:Time:02-26-36-008:ManualSkill 4 activate.
+02-26-36-009:[Warn]:Time:02-26-36-008:1100 can't cast skill 3 0, cancel.
+02-26-36-011:[Debug]:Time:02-26-36-011:ChangeToSection:0 duration:10
+02-26-36-024:[Debug]:Time:02-26-36-024:ChangeToSection:1 duration:1000
+02-26-36-025:[Warn]:Time:02-26-36-025:[skill:4 dsl skill id:4] self_effect bone eyes can't find.
+02-26-36-132:[Debug]:Time:02-26-36-132:ChangeToSection:0 duration:1000
+02-26-36-134:[Warn]:Time:02-26-36-134:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-36-137:[Debug]:Time:02-26-36-137:ChangeToSection:0 duration:2066
+02-26-36-168:[Warn]:Time:02-26-36-167:StoryInstance queue message report_pos
+02-26-36-171:[Info]:Time:02-26-36-171:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-36-174:[Info]:Time:02-26-36-174:Warning Message: Received right-on-time ack for #49 127.0.0.1:9528
+02-26-36-471:[Warn]:Time:02-26-36-471:StoryInstance queue message report_pos
+02-26-36-475:[Info]:Time:02-26-36-475:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-36-490:[Info]:Time:02-26-36-490:Warning Message: Received right-on-time ack for #50 127.0.0.1:9528
+02-26-36-773:[Warn]:Time:02-26-36-773:StoryInstance queue message report_pos
+02-26-36-778:[Info]:Time:02-26-36-778:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-36-797:[Info]:Time:02-26-36-797:Warning Message: Received right-on-time ack for #51 127.0.0.1:9528
+02-26-36-848:[Info]:Time:02-26-36-848:Warning Message: resend delay 0.02575757 127.0.0.1:9528
+02-26-36-848:[Info]:Time:02-26-36-848:Warning Message: Timeout deadline pushed to  34.12977 127.0.0.1:9528
+02-26-37-025:[Warn]:Time:02-26-37-025:ManualSkill 4 deactivate.
+02-26-37-080:[Warn]:Time:02-26-37-079:StoryInstance queue message report_pos
+02-26-37-082:[Debug]:Time:02-26-37-082:ChangeToSection:1 duration:1000
+02-26-37-083:[Info]:Time:02-26-37-083:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-37-088:[Info]:Time:02-26-37-088:Warning Message: Received right-on-time ack for #52 127.0.0.1:9528
+02-26-37-098:[Debug]:Time:02-26-37-098:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+02-26-37-181:[Debug]:Time:02-26-37-181:ChangeToSection:0 duration:10
+02-26-37-194:[Debug]:Time:02-26-37-194:ChangeToSection:1 duration:1000
+02-26-37-194:[Warn]:Time:02-26-37-194:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-37-197:[Debug]:Time:02-26-37-197:ChangeToSection:0 duration:10000
+02-26-37-384:[Warn]:Time:02-26-37-384:StoryInstance queue message report_pos
+02-26-37-388:[Info]:Time:02-26-37-388:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-37-394:[Info]:Time:02-26-37-394:Warning Message: Received right-on-time ack for #53 127.0.0.1:9528
+02-26-37-398:[Warn]:Time:02-26-37-398:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-37-687:[Warn]:Time:02-26-37-687:StoryInstance queue message report_pos
+02-26-37-691:[Info]:Time:02-26-37-691:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-37-696:[Info]:Time:02-26-37-696:Warning Message: Received right-on-time ack for #54 127.0.0.1:9528
+02-26-37-991:[Warn]:Time:02-26-37-991:StoryInstance queue message report_pos
+02-26-37-996:[Info]:Time:02-26-37-996:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-38-003:[Info]:Time:02-26-38-003:Warning Message: Received right-on-time ack for #55 127.0.0.1:9528
+02-26-38-206:[Debug]:Time:02-26-38-206:ChangeToSection:1 duration:1000
+02-26-38-296:[Warn]:Time:02-26-38-296:StoryInstance queue message report_pos
+02-26-38-300:[Debug]:Time:02-26-38-300:ChangeToSection:0 duration:10
+02-26-38-301:[Info]:Time:02-26-38-301:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-38-310:[Info]:Time:02-26-38-310:Warning Message: Received right-on-time ack for #56 127.0.0.1:9528
+02-26-38-315:[Debug]:Time:02-26-38-314:ChangeToSection:1 duration:1000
+02-26-38-315:[Warn]:Time:02-26-38-315:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-38-318:[Debug]:Time:02-26-38-318:ChangeToSection:0 duration:10000
+02-26-38-520:[Warn]:Time:02-26-38-520:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-38-591:[Debug]:Time:02-26-38-591:ChangeToSection:0 duration:1000
+02-26-38-591:[Warn]:Time:02-26-38-591:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-38-594:[Debug]:Time:02-26-38-594:ChangeToSection:0 duration:2000
+02-26-38-603:[Warn]:Time:02-26-38-602:StoryInstance queue message report_pos
+02-26-38-606:[Info]:Time:02-26-38-606:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-38-619:[Info]:Time:02-26-38-619:Warning Message: Received right-on-time ack for #57 127.0.0.1:9528
+02-26-38-897:[Info]:Time:02-26-38-897:Warning Message: m_sendBufferWritePtr(10) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-38-906:[Info]:Time:02-26-38-906:Warning Message: Received message #51 right on time 127.0.0.1:9528
+02-26-38-906:[Info]:Time:02-26-38-906:Warning Message: Sending ack for UserReliableOrdered1 #51 127.0.0.1:9528
+02-26-38-906:[Info]:Time:02-26-38-906:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-38-906:[Warn]:Time:02-26-38-906:StoryInstance queue message report_pos
+02-26-38-910:[Info]:Time:02-26-38-910:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-38-914:[Info]:Time:02-26-38-914:Warning Message: Received right-on-time ack for #58 127.0.0.1:9528
+02-26-38-914:[Info]:Time:02-26-38-914:Warning Message: Received right-on-time ack for #59 127.0.0.1:9528
+02-26-39-212:[Warn]:Time:02-26-39-212:StoryInstance queue message report_pos
+02-26-39-216:[Info]:Time:02-26-39-216:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-39-218:[Info]:Time:02-26-39-218:Warning Message: Received right-on-time ack for #60 127.0.0.1:9528
+02-26-39-515:[Warn]:Time:02-26-39-515:StoryInstance queue message report_pos
+02-26-39-519:[Info]:Time:02-26-39-519:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-39-523:[Info]:Time:02-26-39-523:Warning Message: Received right-on-time ack for #61 127.0.0.1:9528
+02-26-39-524:[Debug]:Time:02-26-39-524:ChangeToSection:0 duration:10
+02-26-39-534:[Debug]:Time:02-26-39-534:ChangeToSection:1 duration:1000
+02-26-39-534:[Warn]:Time:02-26-39-534:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-39-538:[Debug]:Time:02-26-39-537:ChangeToSection:0 duration:10000
+02-26-39-707:[Info]:Time:02-26-39-707:SendToLobby:9 CQADAAiRTg==
+02-26-39-738:[Warn]:Time:02-26-39-738:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-39-820:[Warn]:Time:02-26-39-819:StoryInstance queue message report_pos
+02-26-39-823:[Info]:Time:02-26-39-823:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-39-825:[Info]:Time:02-26-39-825:Warning Message: Received right-on-time ack for #62 127.0.0.1:9528
+02-26-39-858:[Info]:Time:02-26-39-858:Warning Message: resend delay 0.02562643 127.0.0.1:9528
+02-26-39-858:[Info]:Time:02-26-39-858:Warning Message: Timeout deadline pushed to  37.1401 127.0.0.1:9528
+02-26-39-884:[Debug]:Time:02-26-39-884:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-39-887:[Info]:Time:02-26-39-887:DecodeNodeMessage:9 CQADAAiRTg==
+02-26-40-123:[Warn]:Time:02-26-40-123:StoryInstance queue message report_pos
+02-26-40-127:[Info]:Time:02-26-40-127:Warning Message: m_sendBufferWritePtr(44) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-40-131:[Info]:Time:02-26-40-131:Warning Message: Received right-on-time ack for #63 127.0.0.1:9528
+02-26-40-426:[Warn]:Time:02-26-40-426:StoryInstance queue message report_pos
+02-26-40-429:[Info]:Time:02-26-40-429:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-40-436:[Info]:Time:02-26-40-436:Warning Message: Received right-on-time ack for #64 127.0.0.1:9528
+02-26-40-641:[Debug]:Time:02-26-40-641:ChangeToSection:0 duration:10
+02-26-40-655:[Debug]:Time:02-26-40-655:ChangeToSection:1 duration:1000
+02-26-40-655:[Warn]:Time:02-26-40-655:[skill:5 dsl skill id:5] self_effect bone eyes can't find.
+02-26-40-658:[Debug]:Time:02-26-40-658:ChangeToSection:0 duration:10000
+02-26-40-662:[Debug]:Time:02-26-40-662:ChangeToSection:1 duration:1000
+02-26-40-729:[Warn]:Time:02-26-40-727:StoryInstance queue message report_pos
+02-26-40-732:[Info]:Time:02-26-40-732:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-40-737:[Info]:Time:02-26-40-737:Warning Message: Received right-on-time ack for #65 127.0.0.1:9528
+02-26-40-827:[Debug]:Time:02-26-40-827:ChangeToSection:0 duration:1000
+02-26-40-828:[Warn]:Time:02-26-40-828:[skill:2120000000 dsl skill id:2120000000] self_effect bone hit can't find.
+02-26-40-831:[Debug]:Time:02-26-40-831:ChangeToSection:0 duration:2066
+02-26-40-860:[Warn]:Time:02-26-40-860:[skill:2110000000 dsl skill id:2110000000] track bone hit can't find.
+02-26-41-032:[Warn]:Time:02-26-41-032:StoryInstance queue message report_pos
+02-26-41-036:[Info]:Time:02-26-41-036:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-41-043:[Info]:Time:02-26-41-043:Warning Message: Received right-on-time ack for #66 127.0.0.1:9528
+02-26-41-337:[Warn]:Time:02-26-41-337:StoryInstance queue message report_pos
+02-26-41-340:[Info]:Time:02-26-41-340:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-41-349:[Info]:Time:02-26-41-349:Warning Message: Received right-on-time ack for #67 127.0.0.1:9528
+02-26-41-641:[Warn]:Time:02-26-41-640:StoryInstance queue message report_pos
+02-26-41-646:[Info]:Time:02-26-41-646:Warning Message: m_sendBufferWritePtr(44) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-41-655:[Info]:Time:02-26-41-655:Warning Message: Received right-on-time ack for #68 127.0.0.1:9528
+02-26-41-944:[Warn]:Time:02-26-41-944:StoryInstance queue message report_pos
+02-26-41-948:[Info]:Time:02-26-41-948:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-41-961:[Info]:Time:02-26-41-961:Warning Message: Received right-on-time ack for #69 127.0.0.1:9528
+02-26-42-249:[Warn]:Time:02-26-42-249:StoryInstance queue message report_pos
+02-26-42-253:[Info]:Time:02-26-42-253:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-42-264:[Info]:Time:02-26-42-264:Warning Message: Received right-on-time ack for #70 127.0.0.1:9528
+02-26-42-552:[Warn]:Time:02-26-42-552:StoryInstance queue message report_pos
+02-26-42-556:[Info]:Time:02-26-42-556:Warning Message: m_sendBufferWritePtr(45) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-42-573:[Info]:Time:02-26-42-573:Warning Message: Received right-on-time ack for #71 127.0.0.1:9528
+02-26-42-854:[Warn]:Time:02-26-42-854:StoryInstance queue message report_pos
+02-26-42-858:[Info]:Time:02-26-42-858:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-42-862:[Info]:Time:02-26-42-862:Warning Message: resend delay 0.02555145 127.0.0.1:9528
+02-26-42-862:[Info]:Time:02-26-42-862:Warning Message: Timeout deadline pushed to  40.14473 127.0.0.1:9528
+02-26-42-879:[Info]:Time:02-26-42-879:Warning Message: Received right-on-time ack for #72 127.0.0.1:9528
+02-26-42-899:[Debug]:Time:02-26-42-899:ChangeToSection:1 duration:1000
+02-26-43-158:[Warn]:Time:02-26-43-158:StoryInstance queue message report_pos
+02-26-43-161:[Info]:Time:02-26-43-161:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-43-185:[Info]:Time:02-26-43-185:Warning Message: Received right-on-time ack for #73 127.0.0.1:9528
+02-26-43-462:[Warn]:Time:02-26-43-462:StoryInstance queue message report_pos
+02-26-43-465:[Info]:Time:02-26-43-465:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-43-486:[Info]:Time:02-26-43-486:Warning Message: Received right-on-time ack for #74 127.0.0.1:9528
+02-26-43-764:[Warn]:Time:02-26-43-764:StoryInstance queue message report_pos
+02-26-43-768:[Info]:Time:02-26-43-768:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-43-794:[Info]:Time:02-26-43-794:Warning Message: Received right-on-time ack for #75 127.0.0.1:9528
+02-26-43-802:[Warn]:Time:02-26-43-801:StoryInstance queue message all_killed
+02-26-43-804:[Warn]:Time:02-26-43-804:StoryInstance queue message wave_go
+02-26-43-806:[Warn]:Time:02-26-43-806:StoryInstance queue message push_tip_info
+02-26-43-806:[Warn]:Time:02-26-43-806:StoryInstance queue message show_dlg
+02-26-43-807:[Warn]:Time:02-26-43-806:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-43-807:[Info]:Time:02-26-43-807:SendMessage MainUI/Panel/TextBkg/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-43-812:[Info]:Time:02-26-43-812:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+02-26-43-899:[Info]:Time:02-26-43-899:Warning Message: m_sendBufferWritePtr(10) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-43-913:[Info]:Time:02-26-43-913:Warning Message: Received message #52 right on time 127.0.0.1:9528
+02-26-43-916:[Info]:Time:02-26-43-916:Warning Message: Sending ack for UserReliableOrdered1 #52 127.0.0.1:9528
+02-26-43-916:[Info]:Time:02-26-43-916:Warning Message: Received right-on-time ack for #76 127.0.0.1:9528
+02-26-43-916:[Info]:Time:02-26-43-916:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-44-067:[Warn]:Time:02-26-44-067:StoryInstance queue message report_pos
+02-26-44-073:[Info]:Time:02-26-44-073:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-44-077:[Info]:Time:02-26-44-077:Warning Message: Received right-on-time ack for #77 127.0.0.1:9528
+02-26-44-373:[Warn]:Time:02-26-44-372:StoryInstance queue message report_pos
+02-26-44-376:[Info]:Time:02-26-44-376:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-44-381:[Info]:Time:02-26-44-381:Warning Message: Received right-on-time ack for #78 127.0.0.1:9528
+02-26-44-678:[Warn]:Time:02-26-44-677:StoryInstance queue message report_pos
+02-26-44-681:[Info]:Time:02-26-44-681:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-44-685:[Info]:Time:02-26-44-685:Warning Message: Received right-on-time ack for #79 127.0.0.1:9528
+02-26-44-708:[Info]:Time:02-26-44-708:SendToLobby:9 CQADAAiRTg==
+02-26-44-908:[Debug]:Time:02-26-44-908:QueueActionWithDelegation, Void OnMessageReceived(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-44-909:[Info]:Time:02-26-44-909:DecodeNodeMessage:9 CQADAAiRTg==
+02-26-44-982:[Warn]:Time:02-26-44-981:StoryInstance queue message report_pos
+02-26-44-985:[Info]:Time:02-26-44-985:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-44-990:[Info]:Time:02-26-44-990:Warning Message: Received right-on-time ack for #80 127.0.0.1:9528
+02-26-45-284:[Warn]:Time:02-26-45-284:StoryInstance queue message report_pos
+02-26-45-287:[Info]:Time:02-26-45-287:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-45-296:[Info]:Time:02-26-45-296:Warning Message: Received right-on-time ack for #81 127.0.0.1:9528
+02-26-45-587:[Warn]:Time:02-26-45-587:StoryInstance queue message report_pos
+02-26-45-591:[Info]:Time:02-26-45-591:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-45-604:[Info]:Time:02-26-45-604:Warning Message: Received right-on-time ack for #82 127.0.0.1:9528
+02-26-45-866:[Info]:Time:02-26-45-866:Warning Message: resend delay 0.02547374 127.0.0.1:9528
+02-26-45-866:[Info]:Time:02-26-45-866:Warning Message: Timeout deadline pushed to  43.14807 127.0.0.1:9528
+02-26-45-891:[Warn]:Time:02-26-45-890:StoryInstance queue message report_pos
+02-26-45-894:[Info]:Time:02-26-45-894:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-45-896:[Info]:Time:02-26-45-896:Warning Message: Received right-on-time ack for #83 127.0.0.1:9528
+02-26-46-196:[Warn]:Time:02-26-46-196:StoryInstance queue message report_pos
+02-26-46-199:[Info]:Time:02-26-46-199:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-46-200:[Info]:Time:02-26-46-200:Warning Message: Received right-on-time ack for #84 127.0.0.1:9528
+02-26-46-500:[Warn]:Time:02-26-46-499:StoryInstance queue message report_pos
+02-26-46-503:[Info]:Time:02-26-46-503:Warning Message: m_sendBufferWritePtr(46) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-46-504:[Info]:Time:02-26-46-504:Warning Message: Received right-on-time ack for #85 127.0.0.1:9528
+02-26-46-773:[Warn]:Time:02-26-46-773:StoryInstance queue message StoryDlg:on_click
+02-26-46-774:[Warn]:Time:02-26-46-774:StoryInstance queue message StoryDlg:show_dlg_item
+02-26-46-777:[Warn]:Time:02-26-46-777:StoryInstance queue message dialog_over:998
+02-26-46-782:[Info]:Time:02-26-46-782:SendMessage GameRoot UnloadBattle TableConfig.Level False
+02-26-46-787:[Debug]:Time:02-26-46-787:ChangeToSection:0 duration:2066
+02-26-46-787:[Debug]:Time:02-26-46-787:ChangeToSection:0 duration:2066
+02-26-46-787:[Debug]:Time:02-26-46-787:ChangeToSection:0 duration:2066
+02-26-46-787:[Debug]:Time:02-26-46-787:ChangeToSection:0 duration:2066
+02-26-46-787:[Debug]:Time:02-26-46-787:ChangeToSection:0 duration:2066
+02-26-46-802:[Warn]:Time:02-26-46-802:StoryInstance queue message on_battle_closed
+02-26-46-803:[Info]:Time:02-26-46-803:SendMessage GameRoot CameraFollow 119 False
+02-26-46-804:[Warn]:Time:02-26-46-803:StoryInstance queue message set_map_image
+02-26-46-807:[Warn]:Time:02-26-46-807:StoryInstance queue message report_pos
+02-26-46-808:[Info]:Time:02-26-46-808:SendMessage MainUI/Panel/Image/RawImage CallScript System.Object[] False
+02-26-46-812:[Info]:Time:02-26-46-812:Warning Message: m_sendBufferWritePtr(41) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-46-815:[Info]:Time:02-26-46-815:Warning Message: Received right-on-time ack for #86 127.0.0.1:9528
+02-26-47-099:[Debug]:Time:02-26-47-099:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+02-26-47-111:[Warn]:Time:02-26-47-111:StoryInstance queue message report_pos
+02-26-47-115:[Info]:Time:02-26-47-115:Warning Message: m_sendBufferWritePtr(41) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-47-117:[Info]:Time:02-26-47-117:Warning Message: Received right-on-time ack for #87 127.0.0.1:9528
+02-26-47-414:[Warn]:Time:02-26-47-414:StoryInstance queue message report_pos
+02-26-47-417:[Info]:Time:02-26-47-417:Warning Message: m_sendBufferWritePtr(41) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-47-418:[Info]:Time:02-26-47-418:Warning Message: Received right-on-time ack for #88 127.0.0.1:9528
+02-26-47-720:[Warn]:Time:02-26-47-719:StoryInstance queue message report_pos
+02-26-47-723:[Info]:Time:02-26-47-723:Warning Message: m_sendBufferWritePtr(41) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-47-725:[Info]:Time:02-26-47-725:Warning Message: Received right-on-time ack for #89 127.0.0.1:9528
+02-26-48-021:[Warn]:Time:02-26-48-021:StoryInstance queue message report_pos
+02-26-48-025:[Info]:Time:02-26-48-025:Warning Message: m_sendBufferWritePtr(41) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-48-029:[Info]:Time:02-26-48-029:Warning Message: Received right-on-time ack for #90 127.0.0.1:9528
+02-26-48-325:[Warn]:Time:02-26-48-325:StoryInstance queue message report_pos
+02-26-48-329:[Info]:Time:02-26-48-329:Warning Message: m_sendBufferWritePtr(41) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-48-349:[Info]:Time:02-26-48-349:Warning Message: Received right-on-time ack for #91 127.0.0.1:9528
+02-26-48-630:[Warn]:Time:02-26-48-630:StoryInstance queue message report_pos
+02-26-48-634:[Info]:Time:02-26-48-634:Warning Message: m_sendBufferWritePtr(41) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-48-668:[Info]:Time:02-26-48-668:Warning Message: Received right-on-time ack for #92 127.0.0.1:9528
+02-26-48-857:[Debug]:Time:02-26-48-857:ChangeToSection:1 duration:1000
+02-26-48-857:[Debug]:Time:02-26-48-857:ChangeToSection:1 duration:1000
+02-26-48-857:[Debug]:Time:02-26-48-857:ChangeToSection:1 duration:1000
+02-26-48-867:[Info]:Time:02-26-48-867:Warning Message: resend delay 0.02542174 127.0.0.1:9528
+02-26-48-867:[Info]:Time:02-26-48-867:Warning Message: Timeout deadline pushed to  46.14914 127.0.0.1:9528
+02-26-48-873:[Info]:Time:02-26-48-873:SendToLobby:7 BwADAAiRTg==
+02-26-48-873:[Info]:Time:02-26-48-873:SendToLobby:6 BgAFAAoDdnZ2
+02-26-48-873:[Info]:Time:02-26-48-873:Disconnect(False). CurTime 41768 LastConnectTime 5637
+02-26-48-873:[Debug]:Time:02-26-48-873:QueueActionWithDelegation, Void OnLog(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1
+02-26-48-873:[Info]:Time:02-26-48-873:Network Status Changed:Disconnecting Reason:bye for quit passive
+Statistic:Sent 4027 bytes in 126 messages in 126 packets
+Received 2309 bytes in 166 messages in 123 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+02-26-48-873:[Info]:Time:02-26-48-873:[Message Count]:
+[Send]:
+=>4:1 6 ScriptableFrameworkMessage.Msg_CR_ShakeHands
+=>1:6 29 ScriptableFrameworkMessage.Msg_Ping
+=>7:1 1 ScriptableFrameworkMessage.Msg_CR_Enter
+=>9:9 117 ScriptableFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:76 3024 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 ScriptableFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:6 53 ScriptableFrameworkMessage.Msg_Pong
+=>30:1 5 ScriptableFrameworkMessage.Msg_RC_CampChanged
+=>14:20 587 ScriptableFrameworkMessage.Msg_RC_CreateNpc
+=>26:20 294 ScriptableFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 ScriptableFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 ScriptableFrameworkMessage.Msg_RC_SendGfxMessage
+=>32:2 93 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+
+02-26-48-875:[Info]:Time:02-26-48-875:Network Status Changed:Disconnected Reason:bye for quit passive
+Statistic:Sent 4027 bytes in 126 messages in 126 packets
+Received 2309 bytes in 166 messages in 123 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+02-26-48-875:[Info]:Time:02-26-48-875:[Message Count]:
+[Send]:
+=>4:1 6 ScriptableFrameworkMessage.Msg_CR_ShakeHands
+=>1:6 29 ScriptableFrameworkMessage.Msg_Ping
+=>7:1 1 ScriptableFrameworkMessage.Msg_CR_Enter
+=>9:9 117 ScriptableFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:76 3024 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 ScriptableFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:6 53 ScriptableFrameworkMessage.Msg_Pong
+=>30:1 5 ScriptableFrameworkMessage.Msg_RC_CampChanged
+=>14:20 587 ScriptableFrameworkMessage.Msg_RC_CreateNpc
+=>26:20 294 ScriptableFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 ScriptableFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 ScriptableFrameworkMessage.Msg_RC_SendGfxMessage
+=>32:2 93 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+
+02-26-48-875:[Info]:Time:02-26-48-875:Warning Message: send LogMessageReceive to 127.0.0.1:9528
+02-26-48-875:[Info]:Time:02-26-48-875:Connect ip:127.0.0.1 port:9528 key:79851401
+NetPeer Statistic:0 connections
+Sent 4100 bytes in 131 messages in 131 packets
+Received 2337 bytes in 167 messages in 124 packets
+Storage allocated 5428 bytes
+Recycled pool 5282 bytes
+
+02-26-48-875:Time:02-26-48-875:Wait NetConnectionStatus.Connected ...
+02-26-48-877:[Info]:Time:02-26-48-877:Network Status Changed:Connected Reason:Connected to 64EDD3CA615E2E43
+Statistic:Sent 6 bytes in 1 messages in 1 packets
+Received 0 bytes in 0 messages in 0 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+02-26-48-877:[Info]:Time:02-26-48-877:[Message Count]:
+[Send]:
+=>4:1 6 ScriptableFrameworkMessage.Msg_CR_ShakeHands
+=>1:6 29 ScriptableFrameworkMessage.Msg_Ping
+=>7:1 1 ScriptableFrameworkMessage.Msg_CR_Enter
+=>9:9 117 ScriptableFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:76 3024 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 ScriptableFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:6 53 ScriptableFrameworkMessage.Msg_Pong
+=>30:1 5 ScriptableFrameworkMessage.Msg_RC_CampChanged
+=>14:20 587 ScriptableFrameworkMessage.Msg_RC_CreateNpc
+=>26:20 294 ScriptableFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 ScriptableFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 ScriptableFrameworkMessage.Msg_RC_SendGfxMessage
+=>32:2 93 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+
+02-26-48-877:[Info]:Time:02-26-48-877:Warning Message: resend delay 0.02515621 127.0.0.1:9528
+02-26-48-877:[Info]:Time:02-26-48-877:Warning Message: Timeout deadline pushed to  46.15982 127.0.0.1:9528
+02-26-48-877:[Info]:Time:02-26-48-877:Warning Message: resend delay 0.02515621 127.0.0.1:9528
+02-26-48-877:Time:02-26-48-877:Wait NetConnectionStatus.Connected ...
+02-26-48-879:[Info]:Time:02-26-48-879:Warning Message: m_sendBufferWritePtr(11) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-48-879:[Info]:Time:02-26-48-879:Warning Message: send LogMessageReceive to 127.0.0.1:9528
+02-26-48-879:[Info]:Time:02-26-48-879:Warning Message: receive LogMessageReceive from 127.0.0.1:9528
+02-26-48-898:[Info]:Time:02-26-48-898:Warning Message: Received right-on-time ack for #0 127.0.0.1:9528
+02-26-48-909:[Info]:Time:02-26-48-909:Warning Message: Received message #0 right on time 127.0.0.1:9528
+02-26-48-911:[Info]:Time:02-26-48-911:Warning Message: Sending ack for UserReliableOrdered1 #0 127.0.0.1:9528
+02-26-48-911:[Info]:Time:02-26-48-911:Warning Message: m_sendBufferWritePtr(8) > 0 m_sendBufferNumMessages 1 127.0.0.1:9528
+02-26-49-876:[Info]:Time:02-26-49-876:Network Status Changed:Disconnected Reason:bye
+Statistic:Sent 35 bytes in 4 messages in 4 packets
+Received 37 bytes in 5 messages in 5 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+02-26-49-876:[Info]:Time:02-26-49-876:[Message Count]:
+[Send]:
+=>4:2 12 ScriptableFrameworkMessage.Msg_CR_ShakeHands
+=>1:6 29 ScriptableFrameworkMessage.Msg_Ping
+=>7:1 1 ScriptableFrameworkMessage.Msg_CR_Enter
+=>9:9 117 ScriptableFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:76 3024 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 ScriptableFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:6 53 ScriptableFrameworkMessage.Msg_Pong
+=>30:1 5 ScriptableFrameworkMessage.Msg_RC_CampChanged
+=>14:20 587 ScriptableFrameworkMessage.Msg_RC_CreateNpc
+=>26:20 294 ScriptableFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 ScriptableFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 ScriptableFrameworkMessage.Msg_RC_SendGfxMessage
+=>32:2 93 ScriptableFrameworkMessage.Msg_CRC_StoryMessage
+
+02-26-49-879:[Debug]:Time:02-26-49-879:QueueActionWithDelegation, Void OnClosed() ScriptableFramework.Network.UserNetworkSystem, action count 2

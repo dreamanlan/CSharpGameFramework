@@ -10,10 +10,10 @@ namespace DotnetStoryScript.DslExpression
     {
         public void RegisterSlicePart2()
         {
-            Register("groupby", new OpGroupByOperator());
+            Register("group_by", new OpGroupByOperator());
             Register("concat", new OpConcatOperator());
             Register("orderby", new OpOrderByOperator(false));
-            Register("orderbydesc", new OpOrderByOperator(true));
+            Register("order_by_desc", new OpOrderByOperator(true));
         }
     }
 

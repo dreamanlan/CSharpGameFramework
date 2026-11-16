@@ -1,1 +1,2 @@
 ﻿# roleId | total | claimed event ids (server side only)
+119|160|ev_r0c1_0

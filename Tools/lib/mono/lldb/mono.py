@@ -72,7 +72,7 @@ def member(val, member_name):
 def string_member(val, member_name):
     return val.GetChildMemberWithName (member_name).GetSummary ()[1:-1]
 
-def isnull(val):
+def is_null(val):
     return val.deref.addr.GetOffset () == 0
 
 def stringify_class_name(ns, name):
@@ -112,32 +112,32 @@ def stringify_ginst (ginst):
 
 def print_type(valobj, internal_dict):
     type = valobj
-    if isnull (type):
+    if is_null (type):
         return ""
     return stringify_type (type)
 
 def print_class (valobj, internal_dict):
     klass = valobj
-    if isnull (klass):
+    if is_null (klass):
         return ""
     aname = member (member (member (klass, "image"), "assembly"), "aname")
     basename = "[{0}]{1}".format (string_member (aname, "name"), (stringify_class_name (string_member (klass, "name_space"), string_member (klass, "name"))))
     gclass = member (klass, "generic_class")
-    if not isnull (gclass):
+    if not is_null (gclass):
         ginst = member (member (gclass, "context"), "class_inst")
         return "{0}<{1}>".format (basename, stringify_ginst (ginst))
     return basename
 
 def print_method (valobj, internal_dict):
     method = valobj
-    if isnull (method):
+    if is_null (method):
         return ""
     klass = member (method, "klass")
     return "{0}:{1}()".format (print_class (klass, None), string_member (valobj, "name"))
 
 def print_domain(valobj, internal_dict):
     domain = valobj
-    if isnull (domain):
+    if is_null (domain):
         return ""
     target = domain.target
     root = target.FindFirstGlobalVariable("mono_root_domain")
@@ -149,7 +149,7 @@ def print_domain(valobj, internal_dict):
 
 def print_object(valobj, internal_dict):
     obj = valobj
-    if isnull (obj):
+    if is_null (obj):
         return ""
     domain = member (member (obj, "vtable"), "domain")
     klass = member (member (obj, "vtable"), "klass")

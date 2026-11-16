@@ -15,7 +15,7 @@ public class ActorRecord : MonoBehaviour
     public string avatar = string.Empty;
     public int skill0 = 0;
     public int skill1 = 0;
-    public int skill2 = 0;
+    public int skill_2 = 0;
     public int skill3 = 0;
     public int skill4 = 0;
     public int skill5 = 0;
@@ -42,7 +42,7 @@ public class ActorRecord : MonoBehaviour
         avatar = string.Empty;
         skill0 = 0;
         skill1 = 0;
-        skill2 = 0;
+        skill_2 = 0;
         skill3 = 0;
         skill4 = 0;
         skill5 = 0;
@@ -68,7 +68,7 @@ public class ActorRecord : MonoBehaviour
         avatar = actor.avatar;
         skill0 = actor.skill0;
         skill1 = actor.skill1;
-        skill2 = actor.skill2;
+        skill_2 = actor.skill_2;
         skill3 = actor.skill3;
         skill4 = actor.skill4;
         skill5 = actor.skill5;
@@ -93,7 +93,7 @@ public class ActorRecord : MonoBehaviour
         actor.avatar = avatar;
         actor.skill0 = skill0;
         actor.skill1 = skill1;
-        actor.skill2 = skill2;
+        actor.skill_2 = skill_2;
         actor.skill3 = skill3;
         actor.skill4 = skill4;
         actor.skill5 = skill5;
@@ -110,6 +110,6 @@ public class ActorRecord : MonoBehaviour
     }
     public string GetClipboardText()
     {
-        return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}", id, name, icon, bigIcon, type, avatar, skill0, skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8, bornskill, deadskill, size, logicsize, speed, viewrange, gohomerange);
+        return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}", id, name, icon, bigIcon, type, avatar, skill0, skill1, skill_2, skill3, skill4, skill5, skill6, skill7, skill8, bornskill, deadskill, size, logicsize, speed, viewrange, gohomerange);
     }
 }

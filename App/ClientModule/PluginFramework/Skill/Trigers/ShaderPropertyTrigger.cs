@@ -6,7 +6,7 @@ using SkillSystem;
 namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
-    /// replaceshaderandfadecolor(starttime,remaintime,"shadername",startcolor,changecolor[,changetime]);
+    /// replace_shader_and_fade_color(starttime,remaintime,"shadername",startcolor,changecolor[,changetime]);
     /// </summary>
     class ReplaceShaderAndFadeColorTrigger : AbstractSkillTriger
     {
@@ -116,7 +116,7 @@ namespace ScriptableFramework.Skill.Trigers
         {
             int ct = m_Materials.Count;
             if (m_Shaders.Count != ct || m_Colors.Count != ct) {
-                ScriptableFramework.LogSystem.Error("replaceshaderandfadecolor materials num is not equal shaders num !");
+                ScriptableFramework.LogSystem.Error("replace_shader_and_fade_color materials num is not equal shaders num !");
                 return;
             }
             for (int i = 0; i < ct; ++i) {
@@ -141,7 +141,7 @@ namespace ScriptableFramework.Skill.Trigers
         private List<Color> m_Colors = new List<Color>();
     }
     /// <summary>
-    /// fadecolor(starttime,remaintime,"path","shadername",startcolor,changecolor[,changetime]);
+    /// fade_color(starttime,remaintime,"path","shadername",startcolor,changecolor[,changetime]);
     /// </summary>
     class FadeColorTrigger : AbstractSkillTriger
     {

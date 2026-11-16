@@ -8,7 +8,7 @@ story(main)
   };
   onmessage("start")
   {
-    bindui(@window){
+    bind_ui(@window){
       var("@actorId","Panel/Actor");
       var("@targetId","Panel/Actor2");
       inputs("Panel/Actor","Panel/Actor2");
@@ -19,28 +19,28 @@ story(main)
       onevent("button","review","Panel/Review");
       onevent("button","clipboard","Panel/CopyToClipboard");
     };
-    @window.SetActive(changetype(1,"bool"));
-    @playerPrefs = getunitytype("PlayerPrefs");
+    @window.SetActive(change_type(1,"bool"));
+    @playerPrefs = get_unity_type("PlayerPrefs");
     @actorId_Input.text = ""+@playerPrefs.GetInt("ActorId",1);
     @targetId_Input.text = ""+@playerPrefs.GetInt("TargetId",2);
   };
   onnamespacedmessage("on_toggle")
   {
     if(arg(0)=="step"){
-      sendgfxmessage("GameRoot","OnStepChanged",arg(1));
+      send_gfx_message("GameRoot","OnStepChanged",arg(1));
     };
   };
   onnamespacedmessage("on_click")
   {
     log("SkillViewer:on_click:{0} {1} {2}",arg(0),arg(1),arg(2));
     if(arg(0)=="reload"){
-      sendgfxmessage("GameRoot","LoadViewedSkills", str2int(listget(arg(1),0,"1")), str2int(listget(arg(1),1,"2")));
+      send_gfx_message("GameRoot","LoadViewedSkills", str_2_int(list_get(arg(1),0,"1")), str_2_int(list_get(arg(1),1,"2")));
     }elseif(arg(0)=="new"){
-      sendgfxmessage("GameRoot","NewEditedSkills");
+      send_gfx_message("GameRoot","NewEditedSkills");
     }elseif(arg(0)=="review"){
-      sendgfxmessage("GameRoot","LoadEditedSkills", str2int(listget(arg(1),1,"1")));
+      send_gfx_message("GameRoot","LoadEditedSkills", str_2_int(list_get(arg(1),1,"1")));
     }elseif(arg(0)=="clipboard"){
-      sendgfxmessage("GameRoot","CopyEditedSkillsToClipboard");
+      send_gfx_message("GameRoot","CopyEditedSkillsToClipboard");
     };
   };
 };

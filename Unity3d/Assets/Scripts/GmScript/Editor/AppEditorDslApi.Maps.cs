@@ -220,25 +220,25 @@ public static class MapBuild
         sb.AppendLine("{");
         sb.AppendLine("  onmessage(\"start\")");
         sb.AppendLine("  {");
-        sb.AppendLine(string.Format("    createnpc(1000,vector3({0:F0},0,{1:F0}),0,3,1,\"ai_player\",stringlist(\"Ai/ailogic_player.dsl\"));",
+        sb.AppendLine(string.Format("    create_npc(1000,vector_3({0:F0},0,{1:F0}),0,3,1,\"ai_player\",string_list(\"Ai/ailogic_player.dsl\"));",
             portal.X, portal.Z));
-        sb.AppendLine("    setleaderid(unitid2objid(1000));");
+        sb.AppendLine("    set_leader_id(unit_id_2_obj_id(1000));");
         int uid = 1006;
         foreach (Area a in battles)
         {
-            sb.AppendLine(string.Format("    loop(6){{ createnpc({0}+$$,vector3({1:F0}+rndint(0,8),0,{2:F0}+rndint(0,8)),0,4,$$+6,\"ai_normal\",stringlist(\"Ai/ailogic_normal.dsl\")); }};",
+            sb.AppendLine(string.Format("    loop(6){{ create_npc({0}+$$,vector_3({1:F0}+rnd_int(0,8),0,{2:F0}+rnd_int(0,8)),0,4,$$+6,\"ai_normal\",string_list(\"Ai/ailogic_normal.dsl\")); }};",
                 uid, a.X, a.Z));
             uid += 10;
         }
-        sb.AppendLine("    camerafollow(1000);");
-        sb.AppendLine("    publishgfxevent(\"loading_complete\", \"ui\");");
-        sb.AppendLine("    startstory(\"auto_battle\");");
+        sb.AppendLine("    camera_follow(1000);");
+        sb.AppendLine("    publish_gfx_event(\"loading_complete\", \"ui\");");
+        sb.AppendLine("    start_story(\"auto_battle\");");
         sb.AppendLine("  };");
-        sb.AppendLine("  onmessage(\"all_killed\"){ clearmessage(\"show_dlg\"); firemessage(\"show_dlg\",998); };");
-        sb.AppendLine("  onmessage(\"npc_killed:1000\"){ clearmessage(\"show_dlg\"); firemessage(\"show_dlg\",999); };");
-        sb.AppendLine("  onmessage(\"all_died\"){ clearmessage(\"show_dlg\"); firemessage(\"show_dlg\",999); };");
-        sb.AppendLine(string.Format("  onmessage(\"dialog_over\",998){{ terminate(); closebattle({0}); }};", 10000 + rank));
-        sb.AppendLine(string.Format("  onmessage(\"dialog_over\",999){{ terminate(); closebattle({0}); }};", 10000 + rank));
+        sb.AppendLine("  onmessage(\"all_killed\"){ clear_message(\"show_dlg\"); fire_message(\"show_dlg\",998); };");
+        sb.AppendLine("  onmessage(\"npc_killed:1000\"){ clear_message(\"show_dlg\"); fire_message(\"show_dlg\",999); };");
+        sb.AppendLine("  onmessage(\"all_died\"){ clear_message(\"show_dlg\"); fire_message(\"show_dlg\",999); };");
+        sb.AppendLine(string.Format("  onmessage(\"dialog_over\",998){{ terminate(); close_battle({0}); }};", 10000 + rank));
+        sb.AppendLine(string.Format("  onmessage(\"dialog_over\",999){{ terminate(); close_battle({0}); }};", 10000 + rank));
         sb.AppendLine("};");
         File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
     }
@@ -273,7 +273,7 @@ public static class MapBuild
 
     // CameraController only rewrites camera.position while followTargetId>0.
     // The saved scene pose therefore has to be a usable close gameplay view,
-    // otherwise a missed camerafollow leaves the camera at a 300m preview pose.
+    // otherwise a missed camera_follow leaves the camera at a 300m preview pose.
     private static void ApplyBattleCamera(Camera cam, TerrainData td)
     {
         Quaternion rot = Quaternion.Euler(BattleCamPitch, 0f, 0f);
@@ -727,6 +727,66 @@ public sealed class CameraProbeExp : SimpleExpressionBase
     }
 }
 
+// Runtime diagnostic: dump AI state / home / target / view ranges for every
+// live entity, so "mobs wander like zombies" can be diagnosed from data.
+public static class CombatProbe
+{
+    public static string Run()
+    {
+        var sb = new StringBuilder();
+        // Entity ids are global and monotonically increasing, so scanning a
+        // fixed id window misses later battles. Walk from the live HP bars back
+        // to their owning actors instead: this also proves which actors got one.
+        var bars = UnityEngine.Object.FindObjectsOfType<OverHeadBar>();
+        int n = 0;
+        foreach (var bar in bars)
+        {
+            if (bar == null || bar.transform.parent == null) continue;
+            GameObject owner = bar.transform.parent.gameObject;
+            int id = ScriptableFramework.PluginFramework.Instance.GetGameObjectId(owner);
+            var e = ScriptableFramework.PluginFramework.Instance.GetEntityById(id);
+            if (e == null)
+            {
+                sb.AppendLine("E id=" + id + " obj=" + owner.name + " (no entity)");
+                continue;
+            }
+            var ai = e.GetAiStateInfo();
+            var ms = e.GetMovementStateInfo();
+            sb.Append("E id=" + id +
+                      " pos=" + ms.GetPosition3D() +
+                      " state=" + ai.CurState +
+                      " target=" + ai.Target +
+                      " home=" + ai.HomePos +
+                      " gohome=" + e.GohomeRange +
+                      " view=" + e.ViewRange +
+                      " moving=" + ms.IsMoving +
+                      " tgtPos=" + ms.TargetPosition);
+            var view = ScriptableFramework.EntityViewModelManager.Instance.GetEntityViewById(id);
+            if (view != null && view.Animator != null) {
+                var st = view.Animator.GetCurrentAnimatorStateInfo(0);
+                string anim = st.IsName("Run") ? "Run" : st.IsName("Idle") ? "Idle"
+                            : st.IsName("Attack") ? "Attack" : st.IsName("Hit") ? "Hit"
+                            : "#" + st.shortNameHash;
+                sb.Append(" anim=" + anim + " moving=" + ms.IsMoving);
+            }
+            sb.AppendLine();
+            n++;
+        }
+        var sel = ScriptableFramework.PluginFramework.Instance.SelectedTarget;
+        sb.Insert(0, "COMBAT_PROBE entities=" + n + " overheadBars=" + bars.Length +
+                  " lockedTarget=" + (sel == null ? 0 : sel.TargetId) + "\n");
+        return sb.ToString();
+    }
+}
+
+public sealed class CombatProbeExp : SimpleExpressionBase
+{
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+        return BoxedValue.FromString(CombatProbe.Run());
+    }
+}
+
 // The selection ring is pure VFX. Its Plane carries a non-convex MeshCollider
 // alongside a non-kinematic Rigidbody, which Unity 5+ rejects at runtime.
 public static class SelectPrefabFix
@@ -784,10 +844,54 @@ public static class ExploreProbe
     }
 }
 
+// Editor-only: read the server's current session grid from the traffic file,
+// then read one event position from the server-only table. Both files live
+// outside the client build, so this never leaks event data into the player.
+public static class ExploreAutoProbe
+{
+    public static string Run()
+    {
+        string root = Path.GetFullPath(Path.Combine(Application.dataPath, "..", ".."));
+        string bin = Path.Combine(root, "App", "ServerModule", "ServerEnv", "bin");
+        string traffic = Path.Combine(bin, "Data", "explore_traffic.txt");
+        // Read the source project table (GBK). The runtime copy is now the
+        // generated WorldEvent.dat consumed by TableConfig.WorldEventProvider.
+        string table = Path.Combine(root, "Resource", "Tables", "Server", "WorldEvent.txt");
+        if (!File.Exists(traffic) || !File.Exists(table))
+            return "AUTO_FAIL missing server files";
+        // Several sessions can coexist after a battle rotates. Role ids grow,
+        // so the last active grid line is the live client's session.
+        string grid = "";
+        foreach (string line in File.ReadAllLines(traffic, Encoding.UTF8))
+        {
+            int i = line.IndexOf("grid=");
+            if (i < 0) continue;
+            string g = line.Substring(i + 5).Trim();
+            if (g.Length > 0) grid = g;
+        }
+        if (grid.Length == 0) return "AUTO_FAIL no active grid in traffic";
+        foreach (string line in File.ReadAllLines(table, Encoding.GetEncoding(936)))
+        {
+            string[] f = line.Split('\t');
+            if (f.Length < 5 || f[1] != grid) continue;   // skips the 2 header rows
+            float x = float.Parse(f[3], System.Globalization.CultureInfo.InvariantCulture);
+            float z = float.Parse(f[4], System.Globalization.CultureInfo.InvariantCulture);
+            var sys = ScriptableFramework.Story.GfxStorySystem.Instance;
+            sys.SendMessage("cast_explore_at",
+                            ScriptableFramework.BoxedValue.From(x),
+                            ScriptableFramework.BoxedValue.From(z));
+            return string.Format("AUTO_HIT grid={0} ({1:F1},{2:F1}) dispatched", grid, x, z);
+        }
+        return "AUTO_FAIL no event for grid " + grid;
+    }
+}
+
 public sealed class ExploreProbeExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
+        if (operands.Count == 1 && operands[0].GetString() == "auto")
+            return BoxedValue.FromString(ExploreAutoProbe.Run());
         bool useCoord = operands.Count >= 2;
         float x = useCoord ? operands[0].GetFloat() : 0f;
         float z = useCoord ? operands[1].GetFloat() : 0f;

@@ -1,6 +1,6 @@
-stateTable=createTxtTable("./config/StateList.txt");
-cfgTable=createConfigTable("./config/ServerConfigList.txt");
-logFile=("./log/config_"+serverType+"_"+getLogFileId()+".log");
+stateTable=create_txt_table("./config/StateList.txt");
+cfgTable=create_config_table("./config/ServerConfigList.txt");
+logFile=("./log/config_"+server_type+"_"+get_log_file_id()+".log");
 stateName="";
 
 firstNodeJsId = 4;
@@ -10,7 +10,7 @@ gmPortalId = 11;
 function(log)
 {
 	print(""+arg(0));
-	writeString(logFile,""+arg(0));
+	write_string(logFile,""+arg(0));
 };
 
 function(setState)
@@ -22,17 +22,17 @@ function(setState)
 function(handleIni)
 {
 	$iniFile = arg(0);
-	$stateIni=createIniReader($iniFile);
-	$num=$stateIni.getInfoCount();
+	$stateIni=create_ini_reader($iniFile);
+	$num=$stateIni.get_info_count();
 	for($ix=0;$ix<$num;++$ix)
 	{
-		$section=$stateIni.getSection($ix);
-		$key=$stateIni.getKey($ix);
-		$value=$stateIni.getValue($ix);
+		$section=$stateIni.get_section($ix);
+		$key=$stateIni.get_key($ix);
+		$value=$stateIni.get_value($ix);
 		if($section!=""){
-			stringMap.insert($section+"$$"+$key,$value);
+			string_map.insert($section+"$$"+$key,$value);
 		}else{
-			stringMap.insert($key,$value);
+			string_map.insert($key,$value);
 		};
 	};
 };
@@ -41,13 +41,13 @@ function(handleState)
 {
 	if(stateName!="")
 	{
-		$rIndex=stateTable.findRow(2,0,stateName);
+		$rIndex=stateTable.find_row(2,0,stateName);
 		if($rIndex>=2)
 		{
-			$colNum=stateTable.getColumnCount();
+			$colNum=stateTable.get_column_count();
 			for($i=1;$i<$colNum;++$i)
 			{
-				$stateFile=stateTable.getCell($rIndex,$i);
+				$stateFile=stateTable.get_cell($rIndex,$i);
 				if($stateFile!="")
 				{
 					log("处理状态文件："+$stateFile);
@@ -60,15 +60,15 @@ function(handleState)
 
 function(main)
 {
-	stringMap.initMap(1000);
-	$ip0=readString("./etc/ip.txt",0);
+	string_map.init_map(1000);
+	$ip0=read_string("./etc/ip.txt",0);
 	if($ip0=="")
 	{
 		log("找不到当前机器IP！");
 	};
 	log("当前机器外网IP："+$ip0);
 
-	$rIndex=cfgTable.findByIP0(0,$ip0);
+	$rIndex=cfgTable.find_by_ip0(0,$ip0);
 	if($rIndex>=0)
 	{
 		log("当前机器配置行:"+$rIndex);
@@ -78,16 +78,16 @@ function(main)
 		log("找不到当前机器配置！");
 		return 0;
 	};
-	$sname=cfgTable.getServerName($rIndex);
+	$sname=cfgTable.get_server_name($rIndex);
 	log("当前SERVER名："+$sname);
-	$sid=cfgTable.getServerID($rIndex);
-	$zid=cfgTable.getZoneID($rIndex);
-	$bid=cfgTable.getBigworldID($rIndex);
-	$wid=cfgTable.getWorldID($rIndex);
+	$sid=cfgTable.get_server_id($rIndex);
+	$zid=cfgTable.get_zone_id($rIndex);
+	$bid=cfgTable.get_bigworld_id($rIndex);
+	$wid=cfgTable.get_world_id($rIndex);
 	log("当前机器信息：[serverid,zoneid,bigworldid,worldid]:"+$sid+","+$zid+","+$bid+","+$wid);
-	stringMap.insert("worldid",""+$wid);
+	string_map.insert("worldid",""+$wid);
 	//公共配置项（center ip/center port）
-	$rIndex=cfgTable.findByID(0,$zid,$bid,$bid,0);
+	$rIndex=cfgTable.find_by_id(0,$zid,$bid,$bid,0);
 	if($rIndex>=0)
 	{
 		log("bigworld center机器配置行:"+$rIndex);
@@ -97,9 +97,9 @@ function(main)
 		log("找不到bigworld center机器配置！");
 		return 0;
 	};
-	$bigworldip1 = cfgTable.getIP1($rIndex);
-	$bigworldport = cfgTable.getValueByKey($rIndex,"端口");
-	$rIndex=cfgTable.findByID(0,$zid,$bid,$wid,0);
+	$bigworldip1 = cfgTable.get_ip1($rIndex);
+	$bigworldport = cfgTable.get_value_by_key($rIndex,"端口");
+	$rIndex=cfgTable.find_by_id(0,$zid,$bid,$wid,0);
 	if($rIndex>=0)
 	{
 		log("center机器配置行:"+$rIndex);
@@ -109,77 +109,77 @@ function(main)
 		log("找不到center机器配置！");
 		return 0;
 	};
-	$ip1 = cfgTable.getIP1($rIndex);
-	$port = cfgTable.getValueByKey($rIndex,"端口");
-	$rIndex=cfgTable.findByID(0,$zid,$bid,$bid,gmPortalId);
+	$ip1 = cfgTable.get_ip1($rIndex);
+	$port = cfgTable.get_value_by_key($rIndex,"端口");
+	$rIndex=cfgTable.find_by_id(0,$zid,$bid,$bid,gmPortalId);
 	if($rIndex>0){
-		$gmIp = cfgTable.getIP0($rIndex);
-		if(serverType=="nodejs"){
-			stringMap.insert("voiceip",$gmIp);
+		$gmIp = cfgTable.get_ip0($rIndex);
+		if(server_type=="nodejs"){
+			string_map.insert("voiceip",$gmIp);
 			log("voiceip:"+$gmIp);
 		};
 	};
-	if(serverType=="center"){
-		stringMap.insert("ip","0.0.0.0");
+	if(server_type=="center"){
+		string_map.insert("ip","0.0.0.0");
 		if(argv(0)=="bigworld"){
-			stringMap.insert("port",$bigworldport);
+			string_map.insert("port",$bigworldport);
 			log("i'm bigworld, center port:"+$bigworldport);
 		}else{
-			stringMap.insert("port",$port);
+			string_map.insert("port",$port);
 			log("center port:"+$port);
 		};
-	}elseif(serverType=="lobby" || serverType=="roomserver"){
-		stringMap.insert("ip",$bigworldip1);
-		stringMap.insert("port",$bigworldport);
+	}elseif(server_type=="lobby" || server_type=="roomserver"){
+		string_map.insert("ip",$bigworldip1);
+		string_map.insert("port",$bigworldport);
 		log("center ip/port:"+$bigworldip1+"/"+$bigworldport);
 	}else{
-		stringMap.insert("ip",$ip1);
-		stringMap.insert("port",$port);
+		string_map.insert("ip",$ip1);
+		string_map.insert("port",$port);
 		log("center ip/port:"+$ip1+"/"+$port);
 	};
 	//不同类型Server的配置（name/listen ip/listen port）
-	if(serverType=="center"){
-		stringMap.insert("name","Center");
-	}elseif(serverType=="lobby"){
-		stringMap.insert("name","Lobby");
-	}elseif(serverType=="userserver"){
-		stringMap.insert("name","UserSvr");
-	}elseif(serverType=="datacache"){
-		stringMap.insert("name","DataCache");
-	}elseif(serverType=="nodejs"){
-		$sid = toint(argv(1));
+	if(server_type=="center"){
+		string_map.insert("name","Center");
+	}elseif(server_type=="lobby"){
+		string_map.insert("name","Lobby");
+	}elseif(server_type=="userserver"){
+		string_map.insert("name","UserSvr");
+	}elseif(server_type=="datacache"){
+		string_map.insert("name","DataCache");
+	}elseif(server_type=="nodejs"){
+		$sid = to_int(argv(1));
 		if($sid>=firstNodeJsId && $sid<firstRoomServerId){
-			stringMap.insert("name","NodeJs"+($sid-firstNodeJsId+1));
-			stringMap.insert("nodejsport",""+($sid-firstNodeJsId+9001));
+			string_map.insert("name","NodeJs"+($sid-firstNodeJsId+1));
+			string_map.insert("nodejsport",""+($sid-firstNodeJsId+9001));
 		}else{
-			stringMap.insert("name","NodeJs1");
-			stringMap.insert("nodejsport","9001");
+			string_map.insert("name","NodeJs1");
+			string_map.insert("nodejsport","9001");
 		};
-	}elseif(serverType=="roomserver"){
-		$portSid = toint(argv(0));
+	}elseif(server_type=="roomserver"){
+		$portSid = to_int(argv(0));
 		if($sid<firstRoomServerId){
 			$sid = firstRoomServerId;
 		};
 		if($portSid>=firstRoomServerId){
-			stringMap.insert("name","RoomSvr"+($sid-firstRoomServerId+$portSid-firstRoomServerId+1));
-			stringMap.insert("ServerPort",""+($portSid-firstRoomServerId+9521));
+			string_map.insert("name","RoomSvr"+($sid-firstRoomServerId+$portSid-firstRoomServerId+1));
+			string_map.insert("ServerPort",""+($portSid-firstRoomServerId+9521));
 		}else{
-			stringMap.insert("name","RoomSvr1");
+			string_map.insert("name","RoomSvr1");
 			if($bid==$wid){
-				stringMap.insert("ServerPort","9529");
+				string_map.insert("ServerPort","9529");
 			}else{
-				stringMap.insert("ServerPort","9528");
+				string_map.insert("ServerPort","9528");
 			};
 		};
-		stringMap.insert("ServerIp",$ip0);
+		string_map.insert("ServerIp",$ip0);
 	};
-	log("serverType:"+serverType);
+	log("server_type:"+server_type);
 
 	//加载对应类型服务器的ini文件配置
-	handleIni("./config/DiffConf/"+serverType+".ini");
+	handleIni("./config/DiffConf/"+server_type+".ini");
 
 	//lobby特定的配置表配置信息
-	$rIndex=cfgTable.findByID(0,$zid,$bid,$bid,1);
+	$rIndex=cfgTable.find_by_id(0,$zid,$bid,$bid,1);
 	if($rIndex>=0)
 	{
 		log("lobby机器配置行:"+$rIndex);
@@ -189,16 +189,16 @@ function(main)
 		log("找不到lobby机器配置！");
 		return 0;
 	};
-	if(serverType=="lobby"){
-  		$startServerTime=cfgTable.getValueByKey($rIndex,"开服时间");
-		stringMap.insert("StartServerTime",$startServerTime);
-  		$logVer=cfgTable.getValueByKey($rIndex,"日志版本");
-		stringMap.insert("LogNormVersion",$logVer);
-  		$shopMask=cfgTable.getValueByKey($rIndex,"商店掩码");
-		stringMap.insert("shopmask",$shopMask);
+	if(server_type=="lobby"){
+  		$startServerTime=cfgTable.get_value_by_key($rIndex,"开服时间");
+		string_map.insert("StartServerTime",$startServerTime);
+  		$logVer=cfgTable.get_value_by_key($rIndex,"日志版本");
+		string_map.insert("LogNormVersion",$logVer);
+  		$shopMask=cfgTable.get_value_by_key($rIndex,"商店掩码");
+		string_map.insert("shopmask",$shopMask);
 	};
 	//userserver特定的配置表配置信息
-	$rIndex=cfgTable.findByID(0,$zid,$bid,$wid,2);
+	$rIndex=cfgTable.find_by_id(0,$zid,$bid,$wid,2);
 	if($rIndex>=0)
 	{
 		log("userserver机器配置行:"+$rIndex);
@@ -208,35 +208,35 @@ function(main)
 		log("找不到userserver机器配置！");
 		return 0;
 	};
-	log("serverType:"+serverType);
-	if(serverType=="userserver"){
-		$startServerTime=cfgTable.getValueByKey($rIndex,"开服时间");
-		stringMap.insert("StartServerTime",$startServerTime);
-		$logVer=cfgTable.getValueByKey($rIndex,"日志版本");
-		stringMap.insert("LogNormVersion",$logVer);
-		$shopMask=cfgTable.getValueByKey($rIndex,"商店掩码");
-		stringMap.insert("shopmask",$shopMask);
+	log("server_type:"+server_type);
+	if(server_type=="userserver"){
+		$startServerTime=cfgTable.get_value_by_key($rIndex,"开服时间");
+		string_map.insert("StartServerTime",$startServerTime);
+		$logVer=cfgTable.get_value_by_key($rIndex,"日志版本");
+		string_map.insert("LogNormVersion",$logVer);
+		$shopMask=cfgTable.get_value_by_key($rIndex,"商店掩码");
+		string_map.insert("shopmask",$shopMask);
 
-		stringMap.insert("centernum","2");
-		stringMap.insert("ip0",$ip1);
-		stringMap.insert("port0",$port);
-		stringMap.insert("worldid0",""+$wid);
-		stringMap.insert("name0","UserSvr");
-		stringMap.insert("ip1",$bigworldip1);
-		stringMap.insert("port1",$bigworldport);
-		stringMap.insert("worldid1",""+$bid);
-		stringMap.insert("name1","UserSvr"+$wid);
+		string_map.insert("centernum","2");
+		string_map.insert("ip0",$ip1);
+		string_map.insert("port0",$port);
+		string_map.insert("worldid0",""+$wid);
+		string_map.insert("name0","UserSvr");
+		string_map.insert("ip1",$bigworldip1);
+		string_map.insert("port1",$bigworldport);
+		string_map.insert("worldid1",""+$bid);
+		string_map.insert("name1","UserSvr"+$wid);
 	};
 	//node用到的userserver配置行上的信息
-	if(serverType=="nodejs"){
-		$clientLog=cfgTable.getValueByKey($rIndex,"客户端日志");
-		stringMap.insert("enableclientlog",$clientLog);
-		$shopMask=cfgTable.getValueByKey($rIndex,"商店掩码");
-		stringMap.insert("shopmask",$shopMask);
+	if(server_type=="nodejs"){
+		$clientLog=cfgTable.get_value_by_key($rIndex,"客户端日志");
+		string_map.insert("enableclientlog",$clientLog);
+		$shopMask=cfgTable.get_value_by_key($rIndex,"商店掩码");
+		string_map.insert("shopmask",$shopMask);
 	};
 	//datacache特定的配置表配置信息
-	if(serverType=="datacache"){
-		$rIndex=cfgTable.findByID(0,$zid,$bid,$wid,3);
+	if(server_type=="datacache"){
+		$rIndex=cfgTable.find_by_id(0,$zid,$bid,$wid,3);
 		if($rIndex>=0)
 		{
 			log("datacache机器配置行:"+$rIndex);
@@ -246,23 +246,23 @@ function(main)
 			log("找不到datacache机器配置！");
 			return 0;
 		};
-		$dbIp = cfgTable.getValueByKey($rIndex,"DB");
-		stringMap.insert("Server",$dbIp);
+		$dbIp = cfgTable.get_value_by_key($rIndex,"DB");
+		string_map.insert("Server",$dbIp);
 	};
 
-	stateName=cfgTable.getValueByKey($rIndex,"状态");
+	stateName=cfgTable.get_value_by_key($rIndex,"状态");
 
 	handleState();
 
 	/*
-	if(serverType=="datacache"){
-		$db = stringMap.find("Database");
-		stringMap.insert("Database",$db+"_"+$wid);
+	if(server_type=="datacache"){
+		$db = string_map.find("Database");
+		string_map.insert("Database",$db+"_"+$wid);
 	};
 	*/
 
 	log("配置项处理完成：");
-	stringMap.listMap(logFile);
+	string_map.list_map(logFile);
 	return 1;
 };
 

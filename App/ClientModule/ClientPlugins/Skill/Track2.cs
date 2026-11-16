@@ -58,7 +58,7 @@ public class Track2Trigger : ISkillTriggerPlugin
                     } else {
                         dest = obj.transform.position;
                         dest.y += 1.5f;
-                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
+                        LogSystem.Warn("[skill:{0} dsl skill id:{1}] track_bullet bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                     }
                     m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     object speedObj;
@@ -115,9 +115,9 @@ public class Track2Trigger : ISkillTriggerPlugin
                         em.SetParticleSpeed(instance.EffectScale);
                     } else {
                         if (string.IsNullOrEmpty(effectPath)) {
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet effect is empty.", senderObj.SkillId, instance.DslSkillId);
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] track_bullet effect is empty.", senderObj.SkillId, instance.DslSkillId);
                         } else {
-                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
+                            LogSystem.Warn("[skill:{0} dsl skill id:{1}] track_bullet effect {2} can't find.", senderObj.SkillId, instance.DslSkillId, effectPath);
                         }
                     }
                 } else if (null != m_Effect) {

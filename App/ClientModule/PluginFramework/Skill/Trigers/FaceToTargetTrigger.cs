@@ -26,7 +26,7 @@ namespace ScriptableFramework.Skill.Trigers
         private HashSet<int> m_Targets = new HashSet<int>();
     }
     /// <summary>
-    /// selecttarget(type[, start_time]);
+    /// select_target(type[, start_time]);
     /// </summary>
     internal class SelectTargetTrigger : AbstractSkillTriger
     {
@@ -85,7 +85,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// facetotarget(starttime,remaintime[,rotate,selecttype]);
+    /// face_to_target(starttime,remaintime[,rotate,selecttype]);
     /// </summary>
     internal class FaceToTargetTrigger : AbstractSkillTriger
     {
@@ -178,7 +178,7 @@ namespace ScriptableFramework.Skill.Trigers
         private GameObject m_Target = null;
     }
     /// <summary>
-    /// cleartargets(starttime);
+    /// clear_targets(starttime);
     /// </summary>
     internal class ClearTargetsTrigger : AbstractStatelessSkillTriger
     {

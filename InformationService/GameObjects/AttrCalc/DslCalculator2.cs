@@ -136,7 +136,7 @@ namespace ScriptableFramework.AttrCalc
                         } else if (op == "attr") {//read attr
                             int id = int.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.ATTR, id));
-                        } else if (op == "attr2") {//read attr
+                        } else if (op == "attr_2") {//read attr
                             int id = int.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.ATTR2, id));
                         } else if (op == "value") {//read constant table

@@ -401,7 +401,7 @@ namespace ScriptableFramework.Story.Functions
                         Type t = obj.GetType();
                         return BoxedValue.FromObject(t.InvokeMember(attrName, System.Reflection.BindingFlags.GetProperty, null, obj, null));
                     } catch (Exception ex) {
-                        LogSystem.Warn("setattr throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                        LogSystem.Warn("set_attr throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                         return BoxedValue.NullObject;
                     }
                 }
@@ -486,7 +486,7 @@ namespace ScriptableFramework.Story.Functions
                         if (null != oldSkillInfo) {
                             oldSkillId = oldSkillInfo.SkillId;
                         }
-                        LogSystem.Warn("obj {0} objcancastskill {1} return false because isdead {2} or isundercontrol {3} or isskillactivated {4} (old skill:{5})", obj.GetId(), skillId, obj.IsDead(), obj.IsUnderControl(), obj.GetSkillStateInfo().IsSkillActivated(), oldSkillId);
+                        LogSystem.Warn("obj {0} objcancastskill {1} return false because isdead {2} or is_under_control {3} or isskillactivated {4} (old skill:{5})", obj.GetId(), skillId, obj.IsDead(), obj.IsUnderControl(), obj.GetSkillStateInfo().IsSkillActivated(), oldSkillId);
                     }
                 }
             }

@@ -183,7 +183,7 @@ namespace ScriptableFramework.AttrCalc
             long v = target.GetLong(m_PropId);
             Calculator.Log(v);
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
-                LogSystem.Info("[calculator] attr2({0})={1}", m_PropId, v);
+                LogSystem.Info("[calculator] attr_2({0})={1}", m_PropId, v);
             }
             return v;
         }
@@ -428,7 +428,7 @@ namespace ScriptableFramework.AttrCalc
     {
         public override long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args)
         {
-            Calculator.Log("skill2(");
+            Calculator.Log("skill_2(");
             long v1 = m_Op1.Calc(context, source, target, args);
             Calculator.Log(")");
             long v = 0;
@@ -439,7 +439,7 @@ namespace ScriptableFramework.AttrCalc
                 }
             }
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
-                LogSystem.Warn("[calculator] skill2({0})={1}", v1, v);
+                LogSystem.Warn("[calculator] skill_2({0})={1}", v1, v);
             }
             return v;
         }
@@ -476,13 +476,13 @@ namespace ScriptableFramework.AttrCalc
         public override long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args)
         {
             long v = 0;
-            Calculator.Log("actor2(");
+            Calculator.Log("actor_2(");
             if (null != target && null != target.Owner) {
                 v = target.Owner.GetTableId();
             }
             Calculator.Log(")");
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
-                LogSystem.Warn("[calculator] actor2()={0}", v);
+                LogSystem.Warn("[calculator] actor_2()={0}", v);
             }
             return v;
         }
@@ -516,13 +516,13 @@ namespace ScriptableFramework.AttrCalc
         public override long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args)
         {
             long v = 0;
-            Calculator.Log("unit2(");
+            Calculator.Log("unit_2(");
             if (null != target && null != target.Owner) {
                 v = target.Owner.GetUnitId();
             }
             Calculator.Log(")");
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
-                LogSystem.Warn("[calculator] unit2()={0}", v);
+                LogSystem.Warn("[calculator] unit_2()={0}", v);
             }
             return v;
         }
@@ -536,13 +536,13 @@ namespace ScriptableFramework.AttrCalc
         public override long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args)
         {
             long v = 0;
-            Calculator.Log("teampos(");
+            Calculator.Log("team_pos(");
             if (null != source && null != source.Owner) {
                 v = source.Owner.GetMovementStateInfo().FormationIndex;
             }
             Calculator.Log("(");
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
-                LogSystem.Warn("[calculator] teampos()={0}", v);
+                LogSystem.Warn("[calculator] team_pos()={0}", v);
             }
             return v;
         }
@@ -556,13 +556,13 @@ namespace ScriptableFramework.AttrCalc
         public override long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args)
         {
             long v = 0;
-            Calculator.Log("teampos2(");
+            Calculator.Log("team_pos_2(");
             if (null != target && null != target.Owner) {
                 v = target.Owner.GetMovementStateInfo().FormationIndex;
             }
             Calculator.Log(")");
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
-                LogSystem.Warn("[calculator] teampos2()={0}", v);
+                LogSystem.Warn("[calculator] team_pos_2()={0}", v);
             }
             return v;
         }
@@ -1495,19 +1495,19 @@ namespace ScriptableFramework.AttrCalc
             s_Inited = true;
 
             Register("attr", new AttrExpressionFactoryHelper<AttrGet>());
-            Register("attr2", new AttrExpressionFactoryHelper<Attr2Get>());
+            Register("attr_2", new AttrExpressionFactoryHelper<Attr2Get>());
             Register("value", new AttrExpressionFactoryHelper<ValueGet>());
             Register("arg", new AttrExpressionFactoryHelper<ArgGet>());
             Register("var", new AttrExpressionFactoryHelper<VarGet>());
             Register("const", new AttrExpressionFactoryHelper<ConstGet>());
             Register("skill", new AttrExpressionFactoryHelper<SkillGet>());
-            Register("skill2", new AttrExpressionFactoryHelper<Skill2Get>());
+            Register("skill_2", new AttrExpressionFactoryHelper<Skill2Get>());
             Register("actor", new AttrExpressionFactoryHelper<ActorGet>());
-            Register("actor2", new AttrExpressionFactoryHelper<Actor2Get>());
+            Register("actor_2", new AttrExpressionFactoryHelper<Actor2Get>());
             Register("unit", new AttrExpressionFactoryHelper<UnitGet>());
-            Register("unit2", new AttrExpressionFactoryHelper<Unit2Get>());
-            Register("teampos", new AttrExpressionFactoryHelper<TeamPosGet>());
-            Register("teampos2", new AttrExpressionFactoryHelper<TeamPos2Get>());
+            Register("unit_2", new AttrExpressionFactoryHelper<Unit2Get>());
+            Register("team_pos", new AttrExpressionFactoryHelper<TeamPosGet>());
+            Register("team_pos_2", new AttrExpressionFactoryHelper<TeamPos2Get>());
             Register("actor", new AttrExpressionFactoryHelper<ActorGet>());
             Register("unit", new AttrExpressionFactoryHelper<UnitGet>());
             Register("camp", new AttrExpressionFactoryHelper<CampGet>());

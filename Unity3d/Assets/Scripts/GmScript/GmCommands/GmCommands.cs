@@ -27,11 +27,11 @@ namespace GmCommands
         {
             //register Gm command
             registry.Register("gm", "gm(str) command", new ExpressionFactoryHelper<GmCommand>());
-            registry.Register("reloadstartups", "reloadstartups() command", new ExpressionFactoryHelper<ReloadStartupsCommand>());
+            registry.Register("reload_startups", "reload_startups() command", new ExpressionFactoryHelper<ReloadStartupsCommand>());
 
-            registry.Register("loadui", "loadui(ui_name_dsl) command", new ExpressionFactoryHelper<LoadUiCommand>());
-            registry.Register("showui", "showui() command", new ExpressionFactoryHelper<ShowUiCommand>());
-            registry.Register("hideui", "hideui() command", new ExpressionFactoryHelper<HideUiCommand>());
+            registry.Register("load_ui", "load_ui(ui_name_dsl) command", new ExpressionFactoryHelper<LoadUiCommand>());
+            registry.Register("show_ui", "show_ui() command", new ExpressionFactoryHelper<ShowUiCommand>());
+            registry.Register("hide_ui", "hide_ui() command", new ExpressionFactoryHelper<HideUiCommand>());
 
             registry.Register("cam_info", "cam_info() - runtime camera pose, fov and SimpleCameraController state (read-only)", new ExpressionFactoryHelper<CamInfoCommand>());
             registry.Register("cam_set", "cam_set(x,y,z[,pitch,yaw,roll]) - absolute runtime camera pose", new ExpressionFactoryHelper<CamSetCommand>());
