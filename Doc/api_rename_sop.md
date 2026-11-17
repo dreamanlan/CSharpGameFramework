@@ -68,7 +68,7 @@ average           -> a_v_era_ge              （错，是单个单词）
 1. **工厂类名作权威词边界**：注册行 `new ExpressionFactoryHelper<GetPositionXFunction>()` → `GetPositionX` → `get_position_x`。本轮 826/924 条由此推导，准确率最高。
 2. 词表最长匹配，且**要求完全覆盖**；出现未知段**不猜**，整体保留并列入 `rename_review.tsv`。
 3. 所有 `needs_review` 项由人逐条写进 `OVERRIDES`，直到 `needs_review=0`。
-4. 数字一律独立 token：`track2 → track_2`、`unitid2objid → unit_id_2_obj_id`。注意类名切出的 `Id2` 要二次拆成 `id` + `2`。
+4. 数字一律独立 token：`track2 → track_2`、`unitid2objid → unit_id_2_obj_id`。注意类名切出的 `Id2` 要二次拆成 `id` + `2`。**例外**：数字属于引擎类型名本身时不拆，Unity 的 `Vector2/3/4`、`Color32` 是整体词，注册名用 `vector2`、`vector3`、`vector4`、`color32`；复合名只拆单词、不拆类型名（`vector2_int`、`vector3_list`、`vector2_to_3`、`rnd_vector3`），其中 `to_3` 的数字仍是独立词。这类名字须列入 `KEEP_AS_IS`，避免下次扫描又拆开。标准数学/技术名同理不拆：`atan2`、`exp2`、`log2`、`log10`、`clamp01`；`md5` 这类缩写也保持整体，只拆词干之间的边界（`calc_md5`，不写成 `calcmd5` 或数字被拆开的形式）。这些数字不是 `to` 的谐音，一律并入词干，也须列入 `KEEP_AS_IS`。
 5. 单词/缩写不拆：`byte`、`guid`、`quaternion`、`loadscp` 的 `scp` 保持独立词。
 6. 已是 snake_case 的不动；camelCase 的 `implClass` 字符串不是注册名，排除。
 

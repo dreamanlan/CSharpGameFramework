@@ -53,7 +53,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// 
     /// self_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
     /// {
-    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     /// };
     /// </summary>
     internal class SelfEffectTriger : AbstractSkillTriger
@@ -230,7 +230,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// 
     /// target_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
     /// {
-    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     /// };
     /// </summary>
     internal class TargetEffectTriger : AbstractSkillTriger
@@ -395,7 +395,7 @@ namespace ScriptableFramework.Skill.Trigers
         private long m_RealDeleteTime = 0;
     }
     /// <summary>
-    /// scene_effect(effect_path,delete_time[,vector_3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector_3(sx,sy,sz)[,isRotateRelativeUser]]]]]);
+    /// scene_effect(effect_path,delete_time[,vector3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector3(sx,sy,sz)[,isRotateRelativeUser]]]]]);
     /// </summary>
     internal class SceneEffectTriger : AbstractSkillTriger
     {
@@ -517,7 +517,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// 
     /// emit_effect(effect_path,emit_bone,emit_impact,emit_speed[,start_time[,is_external_impact]])
     /// {
-    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     /// };
     /// </summary>
     internal class EmitEffectTriger : AbstractSkillTriger
@@ -662,7 +662,7 @@ namespace ScriptableFramework.Skill.Trigers
     /// 
     /// aoe_emit_effect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
     /// {
-    ///   transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     /// };
     /// </summary>
     internal class AoeEmitEffectTriger : AbstractSkillTriger

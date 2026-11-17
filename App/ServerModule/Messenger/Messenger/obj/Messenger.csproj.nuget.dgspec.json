@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj": {}
+    "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj": {}
   },
   "projects": {
-    "d:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj": {
+    "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
         "projectName": "Messenger",
-        "projectPath": "d:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "d:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\obj\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

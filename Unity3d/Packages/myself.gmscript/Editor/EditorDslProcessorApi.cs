@@ -503,9 +503,9 @@ public static class EditorDslProcessorUtility
         calc.Register("set_none_alpha_texture", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.SetNoneAlphaTextureExp>());
         calc.Register("get_texture_compression", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetTextureCompressionExp>());
         calc.Register("set_texture_compression", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.SetTextureCompressionExp>());
-        calc.Register("get_texture_storage", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetTextureStorageMemorySizeExp>());
-        calc.Register("get_texture_memory", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetTextureRuntimeMemorySizeExp>());
-        calc.Register("get_run_time_memory", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetRuntimeMemorySizeExp>());
+        calc.Register("get_texture_storage_memory_size", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetTextureStorageMemorySizeExp>());
+        calc.Register("get_texture_runtime_memory_size", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetTextureRuntimeMemorySizeExp>());
+        calc.Register("get_runtime_memory_size", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetRuntimeMemorySizeExp>());
         calc.Register("set_max_bounding_box", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.SetMaxBoundingBoxExp>());
         calc.Register("reset_bounding_box", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.ResetBoundingBoxExp>());
         calc.Register("merge_bounding_box", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.MergeBoundingBoxExp>());
@@ -532,7 +532,7 @@ public static class EditorDslProcessorUtility
         calc.Register("set_audio_setting", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.SetAudioSettingExp>());
         calc.Register("calc_mesh_vertex_component_count", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.CalcMeshVertexComponentCountExp>());
         calc.Register("calc_mesh_tex_ratio", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.CalcMeshTexRatioExp>());
-        calc.Register("calc_asset_md_5", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.CalcAssetMd5Exp>());
+        calc.Register("calc_asset_md5", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.CalcAssetMd5Exp>());
         calc.Register("calc_asset_size", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.CalcAssetSizeExp>());
         calc.Register("delete_asset", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.DeleteAssetExp>());
         calc.Register("get_shader_util", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.GetShaderUtilExp>());
@@ -565,7 +565,7 @@ public static class EditorDslProcessorUtility
         calc.Register("calc_matched_smaps_diff", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.CalcMatchedSmapsDiffExp>());
         calc.Register("load_addrs", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.LoadAddrsExp>());
         calc.Register("escape_url", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.EscapeUrlExp>());
-        calc.Register("un_escape_url", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.UnEscapeUrlExp>());
+        calc.Register("unescape_url", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.UnEscapeUrlExp>());
         calc.Register("parse_url_args", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.ParseUrlArgsExp>());
         calc.Register("parse_bugly_info", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.ParseBuglyInfoExp>());
         calc.Register("int_hash_contains", string.Empty, new ExpressionFactoryHelper<EditorDslProcessorApi.IntHashContainsExp>());
@@ -588,8 +588,8 @@ public static class EditorDslProcessorUtility
             results.Clear();
             var ret = BoxedValue.NullObject;
             if (null != calc) {
-                calc.SetGlobalVariable("assetpath", item.AssetPath);
-                calc.SetGlobalVariable("scenepath", item.ScenePath);
+                calc.SetGlobalVariable("asset_path", item.AssetPath);
+                calc.SetGlobalVariable("scene_path", item.ScenePath);
                 calc.SetGlobalVariable("importer", BoxedValue.FromObject(item.Importer));
                 calc.SetGlobalVariable("object", BoxedValue.FromObject(item.Object));
                 calc.SetGlobalVariable("info", item.Info);
@@ -597,9 +597,9 @@ public static class EditorDslProcessorUtility
                 calc.SetGlobalVariable("value", item.Value);
                 calc.SetGlobalVariable("selected", item.Selected);
                 calc.SetGlobalVariable("results", BoxedValue.FromObject(results));
-                calc.SetGlobalVariable("scenedeps", BoxedValue.FromObject(sceneDeps));
-                calc.SetGlobalVariable("refdict", BoxedValue.FromObject(refDict));
-                calc.SetGlobalVariable("refbydict", BoxedValue.FromObject(refByDict));
+                calc.SetGlobalVariable("scene_deps", BoxedValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("ref_dict", BoxedValue.FromObject(refDict));
+                calc.SetGlobalVariable("ref_by_dict", BoxedValue.FromObject(refByDict));
                 if (null != addVars) {
                     foreach (var pair in addVars) {
                         calc.SetGlobalVariable(pair.Key, pair.Value);
@@ -611,19 +611,19 @@ public static class EditorDslProcessorUtility
                     calc.SetGlobalVariable(p.Name, BoxedValue.FromObject(p.Value));
                 }
                 calc.SetGlobalVariable("group", BoxedValue.NullObject);
-                calc.SetGlobalVariable("extralist", BoxedValue.NullObject);
+                calc.SetGlobalVariable("extra_list", BoxedValue.NullObject);
 
                 for (int i = 0; i < indexCount; ++i) {
                     ret = calc.Calc(i.ToString());
                 }
 
                 BoxedValue v;
-                if (calc.TryGetGlobalVariable("assetpath", out v)) {
+                if (calc.TryGetGlobalVariable("asset_path", out v)) {
                     var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.AssetPath = path;
                 }
-                if (calc.TryGetGlobalVariable("scenepath", out v)) {
+                if (calc.TryGetGlobalVariable("scene_path", out v)) {
                     var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.ScenePath = path;
@@ -665,7 +665,7 @@ public static class EditorDslProcessorUtility
                         item.Group = g;
                     }
                 }
-                if (calc.TryGetGlobalVariable("extralist", out v)) {
+                if (calc.TryGetGlobalVariable("extra_list", out v)) {
                     var list = v.As<IList>();
                     if (null != list) {
                         var pairList = new List<KeyValuePair<string, BoxedValue>>();
@@ -700,10 +700,10 @@ public static class EditorDslProcessorUtility
                         item.ExtraListClickScript = string.Empty;
                     }
                 }
-                if (calc.TryGetGlobalVariable("redirectdsl", out v)) {
+                if (calc.TryGetGlobalVariable("redirect_dsl", out v)) {
                     item.RedirectDsl = v.AsString;
                 }
-                if (calc.TryGetGlobalVariable("redirectargs", out v)) {
+                if (calc.TryGetGlobalVariable("redirect_args", out v)) {
                     var dict = v.As<IDictionary>();
                     if (null != dict) {
                         var strDict = new Dictionary<string, string>();
@@ -739,17 +739,17 @@ public static class EditorDslProcessorUtility
             item.PrepareShowInfo();
             var ret = BoxedValue.NullObject;
             if (null != calc) {
-                calc.SetGlobalVariable("assetpath", item.AssetPath);
-                calc.SetGlobalVariable("scenepath", item.ScenePath);
+                calc.SetGlobalVariable("asset_path", item.AssetPath);
+                calc.SetGlobalVariable("scene_path", item.ScenePath);
                 calc.SetGlobalVariable("importer", BoxedValue.FromObject(item.Importer));
                 calc.SetGlobalVariable("object", BoxedValue.FromObject(item.Object));
                 calc.SetGlobalVariable("info", item.Info);
                 calc.SetGlobalVariable("order", item.Order);
                 calc.SetGlobalVariable("value", item.Value);
                 calc.SetGlobalVariable("selected", item.Selected);
-                calc.SetGlobalVariable("scenedeps", BoxedValue.FromObject(sceneDeps));
-                calc.SetGlobalVariable("refdict", BoxedValue.FromObject(refDict));
-                calc.SetGlobalVariable("refbydict", BoxedValue.FromObject(refByDict));
+                calc.SetGlobalVariable("scene_deps", BoxedValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("ref_dict", BoxedValue.FromObject(refDict));
+                calc.SetGlobalVariable("ref_by_dict", BoxedValue.FromObject(refByDict));
                 calc.SetGlobalVariable("params", BoxedValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
@@ -780,33 +780,33 @@ public static class EditorDslProcessorUtility
                 calc.SetGlobalVariable("min", item.Min);
                 calc.SetGlobalVariable("count", item.Count);
                 calc.SetGlobalVariable("avg", item.Avg);
-                calc.SetGlobalVariable("assetpath", item.AssetPath);
-                calc.SetGlobalVariable("scenepath", item.ScenePath);
+                calc.SetGlobalVariable("asset_path", item.AssetPath);
+                calc.SetGlobalVariable("scene_path", item.ScenePath);
                 calc.SetGlobalVariable("info", item.Info);
                 calc.SetGlobalVariable("order", item.Order);
                 calc.SetGlobalVariable("value", item.Value);
                 calc.SetGlobalVariable("selected", item.Selected);
-                calc.SetGlobalVariable("scenedeps", BoxedValue.FromObject(sceneDeps));
-                calc.SetGlobalVariable("refdict", BoxedValue.FromObject(refDict));
-                calc.SetGlobalVariable("refbydict", BoxedValue.FromObject(refByDict));
+                calc.SetGlobalVariable("scene_deps", BoxedValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("ref_dict", BoxedValue.FromObject(refDict));
+                calc.SetGlobalVariable("ref_by_dict", BoxedValue.FromObject(refByDict));
                 calc.SetGlobalVariable("params", BoxedValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
                 }
-                calc.SetGlobalVariable("extralist", BoxedValue.NullObject);
+                calc.SetGlobalVariable("extra_list", BoxedValue.NullObject);
 
                 for (int i = 0; i < indexCount; ++i) {
                     ret = calc.Calc(i.ToString());
                 }
 
                 BoxedValue v;
-                if (calc.TryGetGlobalVariable("assetpath", out v)) {
+                if (calc.TryGetGlobalVariable("asset_path", out v)) {
                     var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.AssetPath = path;
                 }
-                if (calc.TryGetGlobalVariable("scenepath", out v)) {
+                if (calc.TryGetGlobalVariable("scene_path", out v)) {
                     var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.ScenePath = path;
@@ -832,7 +832,7 @@ public static class EditorDslProcessorUtility
                         item.Selected = v.GetBool();
                     }
                 }
-                if (calc.TryGetGlobalVariable("extralist", out v)) {
+                if (calc.TryGetGlobalVariable("extra_list", out v)) {
                     var list = v.As<IList>();
                     if (null != list) {
                         var pairList = new List<KeyValuePair<string, BoxedValue>>();
@@ -867,10 +867,10 @@ public static class EditorDslProcessorUtility
                         item.ExtraListClickScript = string.Empty;
                     }
                 }
-                if (calc.TryGetGlobalVariable("redirectdsl", out v)) {
+                if (calc.TryGetGlobalVariable("redirect_dsl", out v)) {
                     item.RedirectDsl = v.AsString;
                 }
-                if (calc.TryGetGlobalVariable("redirectargs", out v)) {
+                if (calc.TryGetGlobalVariable("redirect_args", out v)) {
                     var dict = v.As<IDictionary>();
                     if (null != dict) {
                         var strDict = new Dictionary<string, string>();
@@ -906,15 +906,15 @@ public static class EditorDslProcessorUtility
                 calc.SetGlobalVariable("min", item.Min);
                 calc.SetGlobalVariable("count", item.Count);
                 calc.SetGlobalVariable("avg", item.Avg);
-                calc.SetGlobalVariable("assetpath", item.AssetPath);
-                calc.SetGlobalVariable("scenepath", item.ScenePath);
+                calc.SetGlobalVariable("asset_path", item.AssetPath);
+                calc.SetGlobalVariable("scene_path", item.ScenePath);
                 calc.SetGlobalVariable("info", item.Info);
                 calc.SetGlobalVariable("order", item.Order);
                 calc.SetGlobalVariable("value", item.Value);
                 calc.SetGlobalVariable("selected", item.Selected);
-                calc.SetGlobalVariable("scenedeps", BoxedValue.FromObject(sceneDeps));
-                calc.SetGlobalVariable("refdict", BoxedValue.FromObject(refDict));
-                calc.SetGlobalVariable("refbydict", BoxedValue.FromObject(refByDict));
+                calc.SetGlobalVariable("scene_deps", BoxedValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("ref_dict", BoxedValue.FromObject(refDict));
+                calc.SetGlobalVariable("ref_by_dict", BoxedValue.FromObject(refByDict));
                 calc.SetGlobalVariable("params", BoxedValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
@@ -1620,8 +1620,8 @@ namespace EditorDslProcessorApi
                             args.Add(key, val);
                         }
                     }
-                    calculator.SetGlobalVariable("redirectdsl", BoxedValue.FromObject(dsl));
-                    calculator.SetGlobalVariable("redirectargs", BoxedValue.FromObject(args));
+                    calculator.SetGlobalVariable("redirect_dsl", BoxedValue.FromObject(dsl));
+                    calculator.SetGlobalVariable("redirect_args", BoxedValue.FromObject(args));
                 }
             }
             return r;
@@ -1793,7 +1793,7 @@ namespace EditorDslProcessorApi
         {
             var r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var dict = calculator.GetVariable("refdict").As<Dictionary<string, HashSet<string>>>();
+                var dict = calculator.GetVariable("ref_dict").As<Dictionary<string, HashSet<string>>>();
                 var path = operands[0].AsString;
                 if (null != dict && !string.IsNullOrEmpty(path)) {
                     HashSet<string> refbyset;
@@ -1814,7 +1814,7 @@ namespace EditorDslProcessorApi
         {
             var r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var dict = calculator.GetVariable("refbydict").As<Dictionary<string, HashSet<string>>>();
+                var dict = calculator.GetVariable("ref_by_dict").As<Dictionary<string, HashSet<string>>>();
                 var path = operands[0].AsString;
                 if (null != dict && !string.IsNullOrEmpty(path)) {
                     HashSet<string> refbyset;
@@ -1835,7 +1835,7 @@ namespace EditorDslProcessorApi
         {
             var r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var refDict = calculator.GetVariable("refdict").As<Dictionary<string, HashSet<string>>>();
+                var refDict = calculator.GetVariable("ref_dict").As<Dictionary<string, HashSet<string>>>();
                 var file = operands[0].AsString;
                 if (null != file) {
                     HashSet<string> hash;
@@ -1856,7 +1856,7 @@ namespace EditorDslProcessorApi
         {
             var r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
-                var refByDict = calculator.GetVariable("refbydict").As<Dictionary<string, HashSet<string>>>();
+                var refByDict = calculator.GetVariable("ref_by_dict").As<Dictionary<string, HashSet<string>>>();
                 var file = operands[0].AsString;
                 if (null != file) {
                     HashSet<string> hash;
@@ -1877,7 +1877,7 @@ namespace EditorDslProcessorApi
         {
             var r = BoxedValue.NullObject;
             if (operands.Count >= 2) {
-                var sceneDeps = calculator.GetVariable("scenedeps").As<EditorDslProcessorUtility.SceneDepInfo>();
+                var sceneDeps = calculator.GetVariable("scene_deps").As<EditorDslProcessorUtility.SceneDepInfo>();
                 var asset = operands[0].AsString;
                 var type = operands[1].AsString;
                 var assetPath = string.Empty;
@@ -3849,7 +3849,7 @@ namespace EditorDslProcessorApi
         {
             var r = BoxedValue.NullObject;
             if (operands.Count >= 0) {
-                string assetPath = calculator.GetVariable("assetpath").AsString;
+                string assetPath = calculator.GetVariable("asset_path").AsString;
                 if (!string.IsNullOrEmpty(assetPath)) {
                     var obj = AssetDatabase.LoadMainAssetAtPath(assetPath);
                     if (null != obj) {
@@ -4044,7 +4044,7 @@ namespace EditorDslProcessorApi
         {
             var r = BoxedValue.NullObject;
             if (operands.Count >= 0) {
-                var path = calculator.GetVariable("assetpath").AsString;
+                var path = calculator.GetVariable("asset_path").AsString;
                 if (null != path) {
                     GameObject obj = AssetDatabase.LoadMainAssetAtPath(path) as GameObject;
                     bool modified = false;

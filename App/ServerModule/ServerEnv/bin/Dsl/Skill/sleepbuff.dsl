@@ -4,11 +4,11 @@ skill(107)
   {
     self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     self_effect(hitEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     add_impact_to_self(0,10002);
     adjust_section_duration("impact",100);

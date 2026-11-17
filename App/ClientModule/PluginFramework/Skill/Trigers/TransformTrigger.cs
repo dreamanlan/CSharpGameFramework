@@ -6,7 +6,7 @@ using SkillSystem;
 namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
-    /// transform(startime, bone, vector_3(position) or objpath, eular(rotate) or objpath, relaitve_type, is_attach[, is_use_terrain_height=false][,randomrotate = Vector3.zero]);
+    /// transform(startime, bone, vector3(position) or objpath, eular(rotate) or objpath, relaitve_type, is_attach[, is_use_terrain_height=false][,randomrotate = Vector3.zero]);
     /// </summary>
     internal class TransformTrigger : AbstractSkillTriger
     {
@@ -40,7 +40,7 @@ namespace ScriptableFramework.Skill.Trigers
                 var param2 = callData.GetParam(2);
                 m_PosObjPath = param2.GetId();
                 var cd2 = param2 as Dsl.FunctionData;
-                if (null != cd2 && m_PosObjPath == "vector_3") {
+                if (null != cd2 && m_PosObjPath == "vector3") {
                     m_Postion = DslUtility.CalcVector3(cd2);
                 }
                 var param3 = callData.GetParam(3);
@@ -84,7 +84,7 @@ namespace ScriptableFramework.Skill.Trigers
                     SetTransformRelativeTarget(obj, target);
                     break;
                 case "RelativeWorld":
-                    if (m_PosObjPath == "vector_3") {
+                    if (m_PosObjPath == "vector3") {
                         obj.transform.position = m_Postion;
                     } else {
                         var tobj = GameObject.Find(m_PosObjPath);
@@ -165,7 +165,7 @@ namespace ScriptableFramework.Skill.Trigers
         
     }
     /// <summary>
-    /// teleport([starttime[, vector_3(offset_x, offset_y, offset_z) or objpath]]);
+    /// teleport([starttime[, vector3(offset_x, offset_y, offset_z) or objpath]]);
     /// </summary>
     internal class TeleportTrigger : AbstractSkillTriger
     {
@@ -195,7 +195,7 @@ namespace ScriptableFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            if (null != targetObj && m_ObjPath == "vector_3") {
+            if (null != targetObj && m_ObjPath == "vector3") {
                 Vector3 pos = targetObj.transform.TransformPoint(m_RelativeOffset);
                 Vector3 srcPos = obj.transform.position;
                 pos.y = srcPos.y;
@@ -218,7 +218,7 @@ namespace ScriptableFramework.Skill.Trigers
                 var param = callData.GetParam(1);
                 m_ObjPath = param.GetId();
                 var cd = param as Dsl.FunctionData;
-                if (null != cd && m_ObjPath == "vector_3") {
+                if (null != cd && m_ObjPath == "vector3") {
                     m_RelativeOffset = DslUtility.CalcVector3(cd);
                 }
             }
@@ -228,7 +228,7 @@ namespace ScriptableFramework.Skill.Trigers
         private string m_ObjPath = string.Empty;
     }
     /// <summary>
-    /// follow(start_time, vector_3(offset_x, offset_y, offset_z) or objpath, duration);
+    /// follow(start_time, vector3(offset_x, offset_y, offset_z) or objpath, duration);
     /// </summary>
     internal class FollowTrigger : AbstractSkillTriger
     {
@@ -264,7 +264,7 @@ namespace ScriptableFramework.Skill.Trigers
             if (StartTime + m_DurationTime < curSectionTime) {
                 return false;
             }
-            if (null != targetObj && m_ObjPath == "vector_3") {
+            if (null != targetObj && m_ObjPath == "vector3") {
                 Vector3 pos = targetObj.transform.TransformPoint(m_RelativeOffset);
                 TriggerUtil.MoveObjTo(obj, pos);
             } else {
@@ -283,7 +283,7 @@ namespace ScriptableFramework.Skill.Trigers
                 var param = callData.GetParam(1);
                 m_ObjPath = param.GetId();
                 var cd = param as Dsl.FunctionData;
-                if (null != cd && m_ObjPath == "vector_3") {
+                if (null != cd && m_ObjPath == "vector3") {
                     m_RelativeOffset = DslUtility.CalcVector3(cd);
                 }
                 m_DurationTime = long.Parse(callData.GetParamId(2));

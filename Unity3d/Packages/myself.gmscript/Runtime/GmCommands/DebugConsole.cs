@@ -326,7 +326,7 @@ public class DebugConsole : MonoBehaviour
         this.RegisterCommandCallback("sys", CMDSystemInfo);
         this.RegisterCommandCallback("quality", CMDQuality);
         this.RegisterCommandCallback("vsync", CMDVSync);
-        this.RegisterCommandCallback("reset_dsl", CMDResetDsl);
+        this.RegisterCommandCallback("resetdsl", CMDResetDsl);
         this.RegisterCommandCallback("script", CMDScript);
         this.RegisterCommandCallback("scp", CMDScript);
         this.RegisterCommandCallback("command", CMDCommand);
@@ -879,7 +879,7 @@ public class DebugConsole : MonoBehaviour
         if (null != obj) {
             obj.SendMessage("OnResetDsl", null);
         }
-        return "reset_dsl finish.";
+        return "resetdsl finish.";
     }
 
     private object CMDScript(params string[] args)

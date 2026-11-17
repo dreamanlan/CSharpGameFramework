@@ -220,13 +220,13 @@ public static class MapBuild
         sb.AppendLine("{");
         sb.AppendLine("  onmessage(\"start\")");
         sb.AppendLine("  {");
-        sb.AppendLine(string.Format("    create_npc(1000,vector_3({0:F0},0,{1:F0}),0,3,1,\"ai_player\",string_list(\"Ai/ailogic_player.dsl\"));",
+        sb.AppendLine(string.Format("    create_npc(1000,vector3({0:F0},0,{1:F0}),0,3,1,\"ai_player\",string_list(\"Ai/ailogic_player.dsl\"));",
             portal.X, portal.Z));
         sb.AppendLine("    set_leader_id(unit_id_2_obj_id(1000));");
         int uid = 1006;
         foreach (Area a in battles)
         {
-            sb.AppendLine(string.Format("    loop(6){{ create_npc({0}+$$,vector_3({1:F0}+rnd_int(0,8),0,{2:F0}+rnd_int(0,8)),0,4,$$+6,\"ai_normal\",string_list(\"Ai/ailogic_normal.dsl\")); }};",
+            sb.AppendLine(string.Format("    loop(6){{ create_npc({0}+$$,vector3({1:F0}+rnd_int(0,8),0,{2:F0}+rnd_int(0,8)),0,4,$$+6,\"ai_normal\",string_list(\"Ai/ailogic_normal.dsl\")); }};",
                 uid, a.X, a.Z));
             uid += 10;
         }

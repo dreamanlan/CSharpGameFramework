@@ -8,11 +8,11 @@ story(battle_main)
   {    
     show_dlg(2);
     wait(200);
-    create_npc(1000,vector_3(65,0,70),0,3,1);
+    create_npc(1000,vector3(65,0,70),0,3,1);
     set_leader_id(unit_id_2_obj_id(1000));
     npc_set_formation(1000,0);
     loop(4){
-      create_npc(1001+$$,vector_3(55+rnd_int(0,10),0,65+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
+      create_npc(1001+$$,vector3(55+rnd_int(0,10),0,65+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
       npc_set_formation(1001+$$,$$+1);
     };
     camera_follow(1000);
@@ -25,7 +25,7 @@ story(battle_main)
     send_gfx_message("Main Camera", "LightScreen", 3000);
     log("scene2");
     loop(12){
-      create_npc(1006+$$,vector_3(40+rnd_int(0,50),0,40+rnd_int(0,50)),0,4,$$+6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1006+$$,vector3(40+rnd_int(0,50),0,40+rnd_int(0,50)),0,4,$$+6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
     highlight_prompt(0,"Tip_1");
     wait(1000);
@@ -54,7 +54,7 @@ story(battle_main)
   };
   onmessage("move_to")params($x,$y,$z)
   {
-  	npc_move(1000,vector_3($x,$y,$z));
+  	npc_move(1000,vector3($x,$y,$z));
   };
   onmessage("all_killed")
   {

@@ -33,7 +33,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// obj_move(obj_id, vector_3(x,y,z));
+    /// obj_move(obj_id, vector3(x,y,z));
     /// </summary>
     public class ObjMoveCommand : SimpleExpressionBase
     {
@@ -69,7 +69,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// obj_move_with_waypoints(obj_id, vector_3_list("1 2 3 4 5 6"));
+    /// obj_move_with_waypoints(obj_id, vector3_list("1 2 3 4 5 6"));
     /// </summary>
     public class ObjMoveWithWaypointsCommand : SimpleExpressionBase
     {

@@ -553,7 +553,7 @@ namespace ScriptableFramework.Skill.Trigers
     }
 
     /// <summary>
-    /// parabola(duration, G, vector_3(x,y,z) or objpath[, moveType]);
+    /// parabola(duration, G, vector3(x,y,z) or objpath[, moveType]);
     /// </summary>
     internal class ParabolaTriger : AbstractSkillTriger
     {
@@ -605,7 +605,7 @@ namespace ScriptableFramework.Skill.Trigers
                 m_TargetChecked = true;
                 Vector3 srcPos = obj.transform.position;
                 Vector3 targetPos = Vector3.zero;
-                if (null != targetObj && m_ObjPath == "vector_3") {
+                if (null != targetObj && m_ObjPath == "vector3") {
                     targetPos = targetObj.transform.position;
                     float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
                     ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
@@ -670,7 +670,7 @@ namespace ScriptableFramework.Skill.Trigers
                 var param = callData.GetParam(2);
                 m_ObjPath = param.GetId();
                 var cd = param as Dsl.FunctionData;
-                if (null != cd && m_ObjPath == "vector_3") {
+                if (null != cd && m_ObjPath == "vector3") {
                     m_Offset = DslUtility.CalcVector3(cd);
                 }
             }

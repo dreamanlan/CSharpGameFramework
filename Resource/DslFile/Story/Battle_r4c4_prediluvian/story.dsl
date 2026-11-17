@@ -5,15 +5,16 @@ story(battle_main)
   {
     @wave(0);
     @spawned(0);
+    @advancing(0);
     @total(4);
   };
   onmessage("start")
   {
-    create_npc(1000,vector_3(60,31.6,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
+    create_npc(1000,vector3(60,31.6,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
     set_leader_id(unit_id_2_obj_id(1000));
     npc_set_formation(1000,0);
     loop(4){
-      create_npc(1001+$$,vector_3(60+rnd_int(0,10),31.6,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
+      create_npc(1001+$$,vector3(60+rnd_int(0,10),31.6,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
       npc_set_formation(1001+$$,$$+1);
     };
     camera_follow();
@@ -40,15 +41,15 @@ story(battle_main)
       } else {
       if(@wave<3){
         fire_message("push_tip_info", "阿布祖金矿：矿工营墟·A 降临 · B 造人");
-        fire_message("wave_spawn_2");
+        fire_message("wave_advance_2");
       } else {
       if(@wave<4){
         fire_message("push_tip_info", "阿布祖金矿：基因工房·A 降临 · B 造人");
-        fire_message("wave_spawn_3");
+        fire_message("wave_advance_3");
       } else {
       if(@wave<5){
         fire_message("push_tip_info", "阿布祖金矿：伊甸残圃·A 降临 · B 造人");
-        fire_message("wave_spawn_4");
+        fire_message("wave_advance_4");
       } else {
       };
       };
@@ -60,44 +61,99 @@ story(battle_main)
   {
     if(@spawned<@wave){
       @spawned=@wave;
-      create_npc(1026,vector_3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1027,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1028,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1029,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1030,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1026,vector3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1027,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1028,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1029,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1030,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
   };
   onmessage("wave_spawn_2")
   {
     if(@spawned<@wave){
       @spawned=@wave;
-      create_npc(1046,vector_3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1047,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1048,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1049,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1050,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1046,vector3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1047,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1048,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1049,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1050,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
   };
   onmessage("wave_spawn_3")
   {
     if(@spawned<@wave){
       @spawned=@wave;
-      create_npc(1066,vector_3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1067,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1068,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1069,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1070,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1066,vector3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1067,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1068,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1069,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1070,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
   };
   onmessage("wave_spawn_4")
   {
     if(@spawned<@wave){
       @spawned=@wave;
-      create_npc(1086,vector_3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1087,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1088,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1089,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1090,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1086,vector3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1087,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1088,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1089,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1090,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+    };
+  };
+  onmessage("wave_advance_2")
+  {
+    @advancing=1;
+    fire_message("push_tip_info", "向下一处遗迹推进 20 步（第 2 波）");
+    obj_move(get_leader_id(),vector3(get_position_x(get_leader_id())+15.4,get_position_y(get_leader_id()),get_position_z(get_leader_id())+12.7),"npcarrived:1000");
+    wait(4000);
+    if(@advancing>0){
+      @advancing=0;
+      fire_message("wave_spawn_2");
+    };
+  };
+  onmessage("wave_advance_3")
+  {
+    @advancing=1;
+    fire_message("push_tip_info", "向下一处遗迹推进 20 步（第 3 波）");
+    obj_move(get_leader_id(),vector3(get_position_x(get_leader_id())+12.8,get_position_y(get_leader_id()),get_position_z(get_leader_id())-15.3),"npcarrived:1000");
+    wait(4000);
+    if(@advancing>0){
+      @advancing=0;
+      fire_message("wave_spawn_3");
+    };
+  };
+  onmessage("wave_advance_4")
+  {
+    @advancing=1;
+    fire_message("push_tip_info", "向下一处遗迹推进 20 步（第 4 波）");
+    obj_move(get_leader_id(),vector3(get_position_x(get_leader_id())-19.1,get_position_y(get_leader_id()),get_position_z(get_leader_id())+6.1),"npcarrived:1000");
+    wait(4000);
+    if(@advancing>0){
+      @advancing=0;
+      fire_message("wave_spawn_4");
+    };
+  };
+  onmessage("npcarrived:1000")
+  {
+    if(@advancing>0){
+      @advancing=0;
+      if(@wave<2){
+        fire_message("wave_spawn_1");
+      } else {
+      if(@wave<3){
+        fire_message("wave_spawn_2");
+      } else {
+      if(@wave<4){
+        fire_message("wave_spawn_3");
+      } else {
+      if(@wave<5){
+        fire_message("wave_spawn_4");
+      } else {
+      };
+      };
+      };
+      };
     };
   };
   onmessage("all_killed")

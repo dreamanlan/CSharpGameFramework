@@ -6,14 +6,14 @@ skill(105)
 	};
   section(500)
   {
-  	rotate(0, 3000, vector_3(0, 1440, 0));
+  	rotate(0, 3000, vector3(0, 1440, 0));
     self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     face_to_target(0,100);
   	enable_move_agent(false);
-    charge(500,13,0,vector_3(0,0,0),0);
+    charge(500,13,0,vector3(0,0,0),0);
     aoe_impact(500,0,0,3,false);
   };
   section(100)

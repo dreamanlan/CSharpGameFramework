@@ -1082,3 +1082,68 @@ DLL 字符串抽查：PluginFramework.dll / RoomServer.dll 含 camera_follow、
 - 把 10 种地形形态写死在 C# 函数里，bitmap 沦为噪声
 - 另造一套地形生成工具却绕开原有 DSL 机制（工具形态本身不受限，**意图对齐才是约束**）
 - 用静态俯视相机出预览图，而游戏内 `camera_follow(1000)` 会接管相机
+
+---
+
+## 24. 带区域推进的分段移动（19.4 / 20.6 的下一步，2026-11-17）
+
+按 `session_handoff.md` 第 4 节第 2 项落地。目标：让 4 波战斗有沿设计区推进的空间感，同时**绝不把双方拉开几百单位**（19.1 的震荡根因）。
+
+### 24.1 方案与约束
+
+| 项 | 值 | 依据 |
+|---|---|---|
+| 每波推进步长 | **20 单位** | 设计上限 ≤25；怪 `view=35`，刷怪环半径 14，20+14=34 < 35 |
+| 波 1 | **不推进** | 保持已实机验证的登录/首波链路不变 |
+| 推进方向 | 相邻设计区中心连线方向（取单位向量） | 区域坐标来自 `Unity3d/Assets/Resources/MapData/{tid}_areas.txt`，相距数百单位，只取方向**不走到区中心** |
+| 刷怪时机 | 玩家**到达后** | 怪用 `get_position_x(get_leader_id())` 动态取当前位置，天然是"到达后的位置" |
+| leash | 沿用既有 | 怪 `HomePos`=出生点（`Scene_EventHandler.OnAiInitDslLogic`）+ `GohomeRange=80`（`Actor.txt`，19.2 已调），无需改表/C# |
+| 超时兜底 | `wait(4000)` | 主角 `speed=8`，20 单位理论 2.5s；留余量避免超时早于到达 |
+
+### 24.2 消息链（以 3 波为例）
+
+```
+start → wave_go → [波1] wave_spawn_1 → 清怪 all_killed
+      → wave_go → [波2] wave_advance_2 → obj_move(...,"npcarrived:1000")
+                    ├─ 到达 → npcarrived:1000 → wave_spawn_2
+                    └─ wait(4000) 超时兜底   → wave_spawn_2
+      → all_killed → [波3] wave_advance_3 → ... → wave_spawn_3 → 结算
+```
+
+- **双端一致**：`Level.txt` 的 `SceneDslFile` 对 type=4 战斗场景由**客户端**执行；客户端 `ObjMoveCommand` 第三参是到达事件名，服务端 `Scene_EventHandler` 到达时固定发 `npcarrived:<unitId>`（主角 unit id=1000），故两端同名 `npcarrived:1000` 都能触发。服务端 `RoomDslFile` 只有 localmain/skillstory，不执行 battle_main。
+- **幂等**：`@advancing` 保证到达信号与超时兜底只生效一次；`spawn_handler` 原有的 `@spawned<@wave` 守卫再兜一层，重复 `wave_spawn_N` 不会重复刷怪。
+- **不卡循环**：移动未生效/事件丢失时 4s 后仍刷怪，怪刷在玩家当前位置附近，战斗照常推进（延续 19.2 的容错口径）。
+- **wait 不阻塞**：`WaitExp` 是异步协程，`StoryInstance.Tick` 每帧 `ProcessMessageQueues` + `TickCoroutines` 并行，挂起期间 `npcarrived:1000` 正常触发。
+
+### 24.3 改动文件
+
+| 文件 | 内容 |
+|---|---|
+| `Resource/MapDesign/build_story.py` | 新增 `ADVANCE_STEP=20` / `ADVANCE_TIMEOUT_MS=4000`、`advance_vector` / `advance_handler` / `arrived_handler`；`wave_branch` 波 2..N 改发 `wave_advance_N`；`local` 新增 `@advancing(0)`；推进时加 `push_tip_info` 便于实机观测 |
+| `Resource/DslFile/Story/Battle_*/story.dsl` ×64 | 重新生成 |
+| `App/ServerModule/ServerEnv/bin/Dsl/Story/Battle_*/story.dsl` ×64、`Unity3d/Assets/StreamingAssets/Dsl/Story/Battle_*/story.dsl` ×64 | 三端同步（纯文本，无 `.bytes` 二进制产物） |
+
+`r5c7` / `r7c6` 两格只有 1 个战斗区（`@total=1`），无波 2 故不生成推进 handler，属正常。
+
+### 24.4 静态验证 + 实机验证（均已通过，2026-11-17 03:36）
+
+静态：
+
+- `python -m py_compile` 通过；64 个 story 括号配对/handler 数校验通过，83 个推进向量长度 19.95~20.06（全部 ≤25，+14 < 35）
+- `DslCopy` Debug 版 `LoadFromString` 解析代表样例无警告、成功编码（语法层通过）
+- 三端 64×3 文件 hash 全量比对 `mismatched=0`
+- 消息链闭环：`wave_advance_2/3`、`npcarrived:1000`、各 `wave_spawn_N` 均有且仅有 1 个 handler；`@advancing`/`@spawned` 守卫各 3 处
+
+实机（全套服务 + Unity Editor Play，`Battle_r0c3`）：
+
+- 登录链路：GM 模拟点击 `LoginDlg → NicknameDlg → StoryDlg×15`，`do_login → ws://127.0.0.1:9001` 握手 `101 Switching Protocols → show_nickname`，登录恢复正常
+- 战斗链路（`Game.log` 03:36 段）：`open_battle → LoadBattle → StartStory battle_main → wave_spawn_1`（波 1 原地）；`all_killed → wave_go → push_tip_info → wave_advance_2`（03:36:14.029）；**2.31s 后** `npcarrived:1000`（03:36:16.341）→ `wave_spawn_2` → `all_killed` → 结算剧情 → `UnloadBattle`
+- 到达耗时 2.31s 与 `speed=8` × 20 单位吻合，`npcarrived` 早于 4000ms 兜底触发 → 到达信号路径生效、超时未介入；`N-API`/story 无异常：`unknown func=0`、`CreateTriger failed=0`、`NullReference=0`、`error CS=0`、`gohome` 相关日志 0
+- 多轮战斗持续复现：累计 `wave_advance=4`、`npcarrived=4`、`wave_spawn=7`、`all_killed=7`、`LoadBattle=9`，全部成对闭环；`EXPLORE_SELFTEST RESULT=PASS`，`explore_traffic` 记录 `session 119 grid=r0c3`、`battle_pos=480`
+- 说明：`combat_probe()` 在非战斗间隙采样为 `entities=0`，波间坐标数值未落日志（服务端只记录上报次数）；位移由「到达事件只有 MoveCommand 走到目标点才发」+ 耗时与速度吻合间接证实，未做逐帧坐标快照
+
+### 24.5 操作提醒
+
+- 不要在 Play 中改 C# 或 `asset_refresh()`：先 `editor_stop_now()`
+- 服务端 DSL 为文本副本，改动走 `DslCopy` 两端同步（本次只改 story，无 C#/DLL 变更，不需 `buildall`；若服务在跑，重启才加载）
+- 本轮未改 `Actor.txt`、`AiDoNormal.cs` 等已调好的战斗参数，避免回退 19.2 的震荡修复

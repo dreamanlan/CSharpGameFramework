@@ -187,7 +187,7 @@ namespace ScriptableFramework
             if (scene != null) {
                 switch (cmdMsg.type) {
                     case 0:
-                        //reset_dsl
+                        //resetdsl
                         scene.GmStorySystem.Reset();
                         if (scene.GmStorySystem.ContextVariables.ContainsKey("EntityInfo")) {
                             scene.GmStorySystem.ContextVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);

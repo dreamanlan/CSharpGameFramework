@@ -16,12 +16,12 @@ story(story_main)
     publish_gfx_event("loading_complete", "ui");
     log("scene2");
 
-    @myNpcPos = vector_3(5,0,7);
+    @myNpcPos = vector3(5,0,7);
     @myNpcDir = 1.57;
   };
   onmessage("move_to")params($x,$y,$z)
   {
-  	npc_move(1000,vector_3($x,$y,$z));
+  	npc_move(1000,vector3($x,$y,$z));
   };
   onmessage("reload")params($leaderTableId,$targetTableId,$skillIds)
   {
@@ -34,7 +34,7 @@ story(story_main)
     destroy_npc(1);
     wait(1000);
 
-    create_npc(1,vector_3(0,0,0),0.785,4,@targetTableId);
+    create_npc(1,vector3(0,0,0),0.785,4,@targetTableId);
     set_hp(unit_id_2_obj_id(1),99999999);
     create_npc(1000,@myNpcPos,@myNpcDir,3,@leaderTableId,"skill_viewer",string_list("Ai/ailogic_skill_viewer.dsl"));
     @leaderObjId=unit_id_2_obj_id(1000);

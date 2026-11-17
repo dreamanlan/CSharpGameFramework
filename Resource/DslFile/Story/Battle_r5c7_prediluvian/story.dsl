@@ -5,15 +5,16 @@ story(battle_main)
   {
     @wave(0);
     @spawned(0);
+    @advancing(0);
     @total(1);
   };
   onmessage("start")
   {
-    create_npc(1000,vector_3(60,30.5,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
+    create_npc(1000,vector3(60,30.5,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
     set_leader_id(unit_id_2_obj_id(1000));
     npc_set_formation(1000,0);
     loop(4){
-      create_npc(1001+$$,vector_3(60+rnd_int(0,10),30.5,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
+      create_npc(1001+$$,vector3(60+rnd_int(0,10),30.5,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
       npc_set_formation(1001+$$,$$+1);
     };
     camera_follow();
@@ -45,11 +46,11 @@ story(battle_main)
   {
     if(@spawned<@wave){
       @spawned=@wave;
-      create_npc(1026,vector_3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1027,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1028,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1029,vector_3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
-      create_npc(1030,vector_3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1026,vector3(get_position_x(get_leader_id())+14.0,get_position_y(get_leader_id()),get_position_z(get_leader_id())+0.0),0,4,6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1027,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+13.3),0,4,7,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1028,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())+8.2),0,4,8,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1029,vector3(get_position_x(get_leader_id())-11.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-8.2),0,4,9,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1030,vector3(get_position_x(get_leader_id())+4.3,get_position_y(get_leader_id()),get_position_z(get_leader_id())-13.3),0,4,10,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
   };
   onmessage("all_killed")

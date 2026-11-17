@@ -4,18 +4,18 @@ story(battle_main)
   // MapData/{tid}_areas*.txt is a stage-2 feature (player movement + events).
   onmessage("start")
   {
-    create_npc(1000,vector_3(60,15.4,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
+    create_npc(1000,vector3(60,15.4,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
     set_leader_id(unit_id_2_obj_id(1000));
     npc_set_formation(1000,0);
     loop(4){
-      create_npc(1001+$$,vector_3(60+rnd_int(0,10),15.4,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
+      create_npc(1001+$$,vector3(60+rnd_int(0,10),15.4,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());
       npc_set_formation(1001+$$,$$+1);
     };
     camera_follow(1000);
     publish_gfx_event("loading_complete", "ui");
     start_story("auto_battle");
     loop(12){
-      create_npc(1006+$$,vector_3(45+rnd_int(0,30),15.4,55+rnd_int(0,30)),0,4,$$+6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+      create_npc(1006+$$,vector3(45+rnd_int(0,30),15.4,55+rnd_int(0,30)),0,4,$$+6,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
     };
   };
   onmessage("all_killed")

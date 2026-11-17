@@ -785,7 +785,7 @@ public class Game : MonoBehaviour
     {
         registry.Register("load_scp", "load_scp(dsl_script_file) or load_scp(\"name\", func(param1, param2, ...)) or load_scp(name => func(param1, param2, ...)) command", new ExpressionFactoryHelper<LoadScriptCommand>());
         registry.Register("call_scp", "call_scp(\"func\", arg1, arg2, ...) or call_scp(apiOrFunc(arg1, arg2, ...)) command", new ExpressionFactoryHelper<CallScriptCommand>());
-        registry.Register("eval_scp", "eval_scp(code_str) or eval_scp(exp1,exp_2,...) command", new ExpressionFactoryHelper<EvalScriptCommand>());
+        registry.Register("eval_scp", "eval_scp(code_str) or eval_scp(exp1,exp2,...) command", new ExpressionFactoryHelper<EvalScriptCommand>());
         registry.Register("show_memory", "show_memory() command", new ExpressionFactoryHelper<ShowMemoryExp>());
         registry.Register("get_pss", "get_pss() function", new ExpressionFactoryHelper<GetPssExp>());
         registry.Register("get_vss", "get_vss() function", new ExpressionFactoryHelper<GetVssExp>());

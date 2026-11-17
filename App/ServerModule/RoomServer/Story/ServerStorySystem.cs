@@ -601,12 +601,12 @@ namespace ScriptableFramework
                 registry.Register("show_dlg", "show_dlg(dlg_id, ...)", new ExpressionFactoryHelper<Story.Commands.ShowDlgCommand>());
                 registry.Register("area_detect", "area_detect(area_id, ...)", new ExpressionFactoryHelper<Story.Commands.AreaDetectCommand>());
 
-                registry.Register("create_npc", "create_npc(npc_unit_id, vector_3(x,y,z), dir, camp, tableId[, ai, string_list(\"...\"), leaderId])[objid(\"@objid\")]", new ExpressionFactoryHelper<Story.Commands.CreateNpcCommand>());
+                registry.Register("create_npc", "create_npc(npc_unit_id, vector3(x,y,z), dir, camp, tableId[, ai, string_list(\"...\"), leaderId])[objid(\"@objid\")]", new ExpressionFactoryHelper<Story.Commands.CreateNpcCommand>());
                 registry.Register("destroy_npc", "destroy_npc(npc_unit_id)", new ExpressionFactoryHelper<Story.Commands.DestroyNpcCommand>());
                 registry.Register("destroy_npc_with_obj_id", "destroy_npc_with_obj_id(npc_obj_id)", new ExpressionFactoryHelper<Story.Commands.DestroyNpcWithObjIdCommand>());
                 registry.Register("npc_face", "npc_face(npc_unit_id, dir)", new ExpressionFactoryHelper<Story.Commands.NpcFaceCommand>());
-                registry.Register("npc_move", "npc_move(npc_unit_id, vector_3(x,y,z))", new ExpressionFactoryHelper<Story.Commands.NpcMoveCommand>());
-                registry.Register("npc_move_with_waypoints", "npc_move_with_waypoints(npc_unit_id, vector_3_list(\"...\"))", new ExpressionFactoryHelper<Story.Commands.NpcMoveWithWaypointsCommand>());
+                registry.Register("npc_move", "npc_move(npc_unit_id, vector3(x,y,z))", new ExpressionFactoryHelper<Story.Commands.NpcMoveCommand>());
+                registry.Register("npc_move_with_waypoints", "npc_move_with_waypoints(npc_unit_id, vector3_list(\"...\"))", new ExpressionFactoryHelper<Story.Commands.NpcMoveWithWaypointsCommand>());
                 registry.Register("npc_stop", "npc_stop(npc_unit_id)", new ExpressionFactoryHelper<Story.Commands.NpcStopCommand>());
                 registry.Register("npc_attack", "npc_attack(npc_unit_id[, target_unit_id])", new ExpressionFactoryHelper<Story.Commands.NpcAttackCommand>());
                 registry.Register("npc_set_formation", "npc_set_formation(npc_unit_id, index)", new ExpressionFactoryHelper<Story.Commands.NpcSetFormationCommand>());
@@ -625,8 +625,8 @@ namespace ScriptableFramework
                 registry.Register("npc_set_summoner_id", "npc_set_summoner_id(unit_id, objid)", new ExpressionFactoryHelper<Story.Commands.NpcSetSummonerIdCommand>());
                 registry.Register("npc_set_summon_skill_id", "npc_set_summon_skill_id(unit_id, objid)", new ExpressionFactoryHelper<Story.Commands.NpcSetSummonSkillIdCommand>());
                 registry.Register("obj_face", "obj_face(obj_id, dir)", new ExpressionFactoryHelper<Story.Commands.ObjFaceCommand>());
-                registry.Register("obj_move", "obj_move(obj_id, vector_3(x,y,z))", new ExpressionFactoryHelper<Story.Commands.ObjMoveCommand>());
-                registry.Register("obj_move_with_waypoints", "obj_move_with_waypoints(obj_id, vector_3_list(\"...\"))", new ExpressionFactoryHelper<Story.Commands.ObjMoveWithWaypointsCommand>());
+                registry.Register("obj_move", "obj_move(obj_id, vector3(x,y,z))", new ExpressionFactoryHelper<Story.Commands.ObjMoveCommand>());
+                registry.Register("obj_move_with_waypoints", "obj_move_with_waypoints(obj_id, vector3_list(\"...\"))", new ExpressionFactoryHelper<Story.Commands.ObjMoveWithWaypointsCommand>());
                 registry.Register("obj_stop", "obj_stop(obj_id)", new ExpressionFactoryHelper<Story.Commands.ObjStopCommand>());
                 registry.Register("obj_attack", "obj_attack(obj_id[, target_id])", new ExpressionFactoryHelper<Story.Commands.ObjAttackCommand>());
                 registry.Register("obj_set_formation", "obj_set_formation(obj_id, index)", new ExpressionFactoryHelper<Story.Commands.ObjSetFormationCommand>());

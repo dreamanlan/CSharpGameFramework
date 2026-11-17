@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {}
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {}
   },
   "projects": {
-    "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
         "projectName": "Common",
-        "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\obj\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -70,14 +70,14 @@
         }
       }
     },
-    "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
         "projectName": "DotnetSkillScript",
-        "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\obj\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -99,8 +99,8 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {
-              "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-                "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               }
             }
           }

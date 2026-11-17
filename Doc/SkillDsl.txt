@@ -99,7 +99,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
 
 4. play_sound(starttime, name, audio_source, audio_remain_time, audio_clip, is_need_collide) {
       audiogroup(clip, [clip...]);
-      position(vector_3(pos), is_attach);
+      position(vector3(pos), is_attach);
       bone(bone_name, is_attach);
       volume(volume_value);
   };
@@ -136,14 +136,14 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
    或
    self_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
    {
-     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
    };
    或
    target_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
    或
    target_effect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
    {
-     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
    };
    功能：在人物挂点增加并播放特效
    参数：
@@ -154,26 +154,26 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
    Example：
      self_effect("Hero_FX/1_Swordman/1_Hero_JianShi_PuGong2_01",533,"Bone004",300, true);
 
-7. scene_effect(effect_path,delete_time[,vector_3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector_3(sx,sy,sz)[,is_rotate_relative_user]]]]]);
+7. scene_effect(effect_path,delete_time[,vector3(x,y,z)[,start_time[,eular(rx,ry,rz)[,vector3(sx,sy,sz)[,is_rotate_relative_user]]]]]);
    功能：在场景内增加并播放特效
    参数：
     - effect_path 物效名
     - delete_time 持续时间
-    - vector_3(x,y,z) 相对于玩家的位置
+    - vector3(x,y,z) 相对于玩家的位置
     - start_time 开始时间
     - eular(rx,ry,rz) 旋转角度
-    - vector_3(sx, sy, sz) 缩放
+    - vector3(sx, sy, sz) 缩放
     - is_rotate_relative_user 旋转角度是否相对于玩家, 默认false
    Example：
-      scene_effect("Hero_FX/1_Swordman/1_Hero_JianShi_PuGong1_01",300,vector_3(0,1,0));
+      scene_effect("Hero_FX/1_Swordman/1_Hero_JianShi_PuGong1_01",300,vector3(0,1,0));
 
-8.  rotate(startime, remain_time, vector_3(rotate_speed));
+8.  rotate(startime, remain_time, vector3(rotate_speed));
     功能：旋转物体
     参数：
      - remain_time 持续时间
      - rotate_speed 旋转角/s
      Example
-       rotate(0, 500, vector_3(720, 0, 0));
+       rotate(0, 500, vector3(720, 0, 0));
 
 9. stop_effect(starttime);
     功能：停止当前所有的特效
@@ -228,23 +228,23 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
 15. damage([start_time]);
     功能：产生技能伤害。
    
-16. charge(duration,velocity,stopAtTarget[,vector_3(x,y,z)[,start_time[, isForRoundMove]]]);
+16. charge(duration,velocity,stopAtTarget[,vector3(x,y,z)[,start_time[, isForRoundMove]]]);
     功能：冲锋。
     参数：
      - duration 冲锋时间
      - velocity 冲锋速度
      - stopAtTarget 是否冲到目标停止（0--调整 1--调整速度 2--调整时间）
-     - vector_3(x,y,z) 目标点的调整偏移（沿到目标的方向）
+     - vector3(x,y,z) 目标点的调整偏移（沿到目标的方向）
      - start_time 触发器开始工作时间（相对于所在section）
 
-17. jump(duration,height,velocity,stopAtTarget[,vector_3(x,y,z)[,start_time[, isForRoundMove]]]);
+17. jump(duration,height,velocity,stopAtTarget[,vector3(x,y,z)[,start_time[, isForRoundMove]]]);
     功能：跳。
     参数：
      - duration 跳的时间
      - height 跳的高度
      - velocity 跳的水平速度
      - stopAtTarget 是否跳到目标停止（0--调整 1--调整速度 2--调整时间）
-     - vector_3(x,y,z) 目标点的调整偏移（沿到目标的方向）
+     - vector3(x,y,z) 目标点的调整偏移（沿到目标的方向）
      - start_time 触发器开始工作时间（相对于所在section）
 
 18. born_finish([tart_time]);
@@ -260,7 +260,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     Example：
      animation_speed(200, 0.1, true);
 
-21. transform(startime, bone, vector_3(position), eular(rotate), relaitve_type,
+21. transform(startime, bone, vector3(position), eular(rotate), relaitve_type,
                  is_attach[, is_use_terrain_height=false][,randomrotate = Vector3.zero]);
     功能：设置当前技能的施法者的位置
     参数：
@@ -275,13 +275,13 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     - is_use_terrain_height 是否使用地形高度, 默认false
     - randomrotate 随机旋转的范围（在每个坐标轴上的值都是以零为中心，正负差的绝对值为此范围）
     Example
-      transform(0, " ", vector_3(0, 0, 3), eular(0, 0, 0), "RelativeSelf", false, true, vector_3(10, 10, 10));
+      transform(0, " ", vector3(0, 0, 3), eular(0, 0, 0), "RelativeSelf", false, true, vector3(10, 10, 10));
       
 22. emit_effect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     或
     emit_effect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]])
     {
-     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     };
     
     功能：发出一个飞向目标的特效，这个只是一个发起触发器，实际逻辑在emitskill里或者外部配表的emit skill处理。
@@ -290,7 +290,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     transform的3个参数分别是位置偏移，发射轨迹偏转方向与控制点位置参数
     -位置偏移指明特效相对于施法者朝向的位置
     -默认子弹是沿初始位置到目标的直线运动，发射轨迹偏转方向用以与控制点位置参数一起确定控制点的位置，一般只使用第二个欧拉角即可（俯视情形，正数为顺时针转动角，负数为逆时针转动角）。
-    -控制点位置参数是一个缩放矢量，范围为vector3(0,0,0)~vector_3(2,2,2)，默认为vector3(1,1,1)，此时控制点在距目标距离中点处。
+    -控制点位置参数是一个缩放矢量，范围为vector3(0,0,0)~vector3(2,2,2)，默认为vector3(1,1,1)，此时控制点在距目标距离中点处。
     
     控制点的计算方法：假设初始位置距目标S，则控制点在初始位置朝目标按偏转方向“S/2*缩放矢量”距离处。
     
@@ -345,7 +345,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     或
     aoe_emit_effect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
     {
-     transform(vector_3(0,1,0)[,eular(0,0,0)[,vector_3(1,1,1)]]);
+     transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     };
     功能：按指定偏移位置与配表的范围对指定目标发送轨迹impact
    
@@ -355,7 +355,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     transform的3个参数分别是位置偏移，发射轨迹偏转方向与控制点位置参数
     -位置偏移指明特效相对于施法者朝向的位置
     -默认子弹是沿初始位置到目标的直线运动，发射轨迹偏转方向用以与控制点位置参数一起确定控制点的位置，一般只使用第二个欧拉角即可（俯视情形，正数为顺时针转动角，负数为逆时针转动角）。
-    -控制点位置参数是一个缩放矢量，范围为vector3(0,0,0)~vector_3(2,2,2)，默认为vector3(1,1,1)，此时控制点在距目标距离中点处。
+    -控制点位置参数是一个缩放矢量，范围为vector3(0,0,0)~vector3(2,2,2)，默认为vector3(1,1,1)，此时控制点在距目标距离中点处。
     
     控制点的计算方法：假设初始位置距目标S，则控制点在初始位置朝目标按偏转方向“S/2*缩放矢量”距离处。
     

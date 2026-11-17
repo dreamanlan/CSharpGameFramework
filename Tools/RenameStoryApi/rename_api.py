@@ -101,6 +101,14 @@ MAXW = max(len(w) for w in WORDS)
 # single word (or abbreviation) so snake_case must leave them alone; renaming
 # them would rewrite C# syntax such as typeof(byte) and uint across both repos.
 KEEP_AS_IS = {'orderby', 'sbyte', 'typeof', 'uint', 'ulong', 'ushort'}
+# Engine type names carry their dimension digit as part of the word (Vector2/3/4,
+# Color32): these are single words, not "vector" + "2". Keep them out of the
+# digit-splitting path so scan/apply cannot rewrite them again.
+KEEP_AS_IS |= {'vector2', 'vector3', 'vector4', 'color32'}
+# Standard math / technical names keep their digits as part of the word too
+# (atan2, exp2, log2, log10, clamp01, md5). Splitting their digits is wrong;
+# calc_md5 only splits between "calc" and "md5".
+KEEP_AS_IS |= {'atan2', 'exp2', 'log2', 'log10', 'clamp01', 'calc_md5'}
 UNDO = {'order_by': 'orderby', 's_byte': 'sbyte', 'type_of': 'typeof',
         'u_int': 'uint', 'u_long': 'ulong', 'u_short': 'ushort'}
 
@@ -174,7 +182,7 @@ OVERRIDES = {
     'resumelocalmessagehandler': 'resume_local_message_handler',
     'resumelocalnamespacedmessagehandler': 'resume_local_namespaced_message_handler',
     'rndfromlist': 'rnd_from_list',
-    'rndvector2': 'rnd_vector_2', 'rndvector3': 'rnd_vector_3',
+    'rndvector2': 'rnd_vector2', 'rndvector3': 'rnd_vector3',
     'searchcomps': 'search_comps', 'searchobjs': 'search_objs',
     'sendaiconcurrentmessage': 'send_ai_concurrent_message',
     'sendaiconcurrentnamespacedmessage': 'send_ai_concurrent_namespaced_message',

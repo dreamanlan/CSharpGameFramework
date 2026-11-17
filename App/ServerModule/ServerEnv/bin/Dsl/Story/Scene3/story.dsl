@@ -22,7 +22,7 @@ story(story_main)
     obj_set_formation(@userId,0);
     loop(4){
       @unitId = @userId*100+$$;
-      create_npc(@unitId,vector_3(25+rnd_int(0,10),0,25+rnd_int(0,10)),0,@campId,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),@userId);
+      create_npc(@unitId,vector3(25+rnd_int(0,10),0,25+rnd_int(0,10)),0,@campId,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),@userId);
       npc_set_formation(@unitId,$$+1);
     };
     wait(1000);
@@ -55,14 +55,14 @@ story(story_main)
       @monsterRefresh=1;
       /*
       loop(26){
-      	@pt = vector_3(75+rnd_int(0,10),0,75+rnd_int(0,10));//get_component("pt"+($$/7),"PositionMarker").Position;
-        create_npc(1006+$$,rnd_vector_3(@pt,10),0,2,$$+6,2,string_list(""));
+      	@pt = vector3(75+rnd_int(0,10),0,75+rnd_int(0,10));//get_component("pt"+($$/7),"PositionMarker").Position;
+        create_npc(1006+$$,rnd_vector3(@pt,10),0,2,$$+6,2,string_list(""));
       };
      	*/
       loop(64){
 	      @monsterInfo = get_monster_info(2,$$);
 	      if(!is_null(@monsterInfo)){
-	      	create_npc(1006+$$,vector_3(@monsterInfo.x,0,@monsterInfo.y),@monsterInfo.dir*3.1415926/180,2,@monsterInfo.actorID,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+	      	create_npc(1006+$$,vector3(@monsterInfo.x,0,@monsterInfo.y),@monsterInfo.dir*3.1415926/180,2,@monsterInfo.actorID,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
 	      };
 	    };
     };

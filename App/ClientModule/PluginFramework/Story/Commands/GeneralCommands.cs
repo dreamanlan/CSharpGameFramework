@@ -985,7 +985,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// create_game_object(name,prefab[,parent]){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));}(obj(varname));
+    /// create_game_object(name,prefab[,parent]){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));}(obj(varname));
     /// </summary>
     internal class CreateGameObjectCommand : AbstractExpression
     {
@@ -1145,7 +1145,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveScale = false;
     }
     /// <summary>
-    /// set_transform(name, local_or_world){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));};
+    /// set_transform(name, local_or_world){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));};
     /// </summary>
     internal class SetTransformCommand : AbstractExpression
     {
@@ -1260,7 +1260,7 @@ namespace ScriptableFramework.Story.Commands
         private bool m_HaveScale = false;
     }
     /// <summary>
-    /// add_transform(name, local_or_world){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));};
+    /// add_transform(name, local_or_world){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));};
     /// </summary>
     internal class AddTransformCommand : AbstractExpression
     {

@@ -43,10 +43,10 @@ namespace GmCommands
                 registry.Register("set_time_scale", "set_time_scale(scale) command", new ExpressionFactoryHelper<SetTimeScaleCommand>());
                 registry.Register("clear_globals", "clear_globals() command", new ExpressionFactoryHelper<ClearGlobalsCommand>());
 
-                registry.Register("support_sgf", "support_sgf() command, print unsupported graphics format", new ExpressionFactoryHelper<SupportsGfxFormatCommand>());
+                registry.Register("supports_gfx_format", "supports_gfx_format() command, print unsupported graphics format", new ExpressionFactoryHelper<SupportsGfxFormatCommand>());
                 registry.Register("supports_tex", "supports_tex() command, print unsupported tex", new ExpressionFactoryHelper<SupportsTexCommand>());
-                registry.Register("supports_r_t", "supports_r_t() command, print unsupported rt", new ExpressionFactoryHelper<SupportsRTCommand>());
-                registry.Register("support_sva", "support_sva() command, print unsupported vertex attribute format", new ExpressionFactoryHelper<SupportsVertexAttributeFormatCommand>());
+                registry.Register("supports_rt", "supports_rt() command, print unsupported rt", new ExpressionFactoryHelper<SupportsRTCommand>());
+                registry.Register("supports_vertex_attribute_format", "supports_vertex_attribute_format() command, print unsupported vertex attribute format", new ExpressionFactoryHelper<SupportsVertexAttributeFormatCommand>());
                 registry.Register("device_supports", "device_supports() command, print unsupported feature", new ExpressionFactoryHelper<DeviceSupportsCommand>());
                 registry.Register("log_resolutions", "log_resolutions() command, print supported resolutions", new ExpressionFactoryHelper<LogResolutionsCommand>());
 
@@ -77,7 +77,7 @@ namespace GmCommands
                 registry.Register("pref_del", "pref_del(key) command", new ExpressionFactoryHelper<PlayerPrefDeleteCommand>());
                 registry.Register("pref_del_all", "pref_del_all() command", new ExpressionFactoryHelper<PlayerPrefDeleteAllCommand>());
                 registry.Register("pref_set_by_java", "pref_set_by_java(key,val) command", new ExpressionFactoryHelper<PrefByJavaCommand>());
-                registry.Register("we_test_touch", "we_test_touch(action,x,y) command, simulate touch event with WeTest", new ExpressionFactoryHelper<WeTestTouchCommand>());
+                registry.Register("wetest_touch", "wetest_touch(action,x,y) command, simulate touch event with WeTest", new ExpressionFactoryHelper<WeTestTouchCommand>());
                 registry.Register("log_mesh", "log_mesh(mesh_or_path) command", new ExpressionFactoryHelper<LogMeshCommand>());
                 registry.Register("set_mat", "set_mat(renderer_or_path,mat_or_path) or set_mat(renderer_or_path,ix,mat_or_path) or set_mat(renderer_or_path,ix,mats_or_path,ix) command", new ExpressionFactoryHelper<SetMaterialCommand>());
                 registry.Register("set_smat", "set_smat(renderer_or_path,mat_or_path) or set_smat(renderer_or_path,ix,mat_or_path) or set_smat(renderer_or_path,ix,mats_or_path,ix) command", new ExpressionFactoryHelper<SetSharedMaterialCommand>());
@@ -105,8 +105,8 @@ namespace GmCommands
                 registry.Register("run_startup", "run_startup(startup_dsl_file, rungm) command", new ExpressionFactoryHelper<RunStartupCommand>());
                 registry.Register("import", "import(ns,assembly) command", new ExpressionFactoryHelper<ImportNamespaceCommand>());
                 registry.Register("unimport", "unimport(ns,assembly) command", new ExpressionFactoryHelper<UnImportNamespaceCommand>());
-                registry.Register("set_viewer", "set_viewer(key) or set_viewer(key,rect) or set_viewer(key,rect,interval) command", new ExpressionFactoryHelper<AddOrUpdateSceneViewerCommand>());
-                registry.Register("viewer_look_at", "viewer_look_at(key) or viewer_look_at(key,dist) or viewer_look_at(key,dist,dir) or viewer_look_at(key,dist,dir,target) command", new ExpressionFactoryHelper<SceneViewerLookAtCommand>());
+                registry.Register("add_or_update_scene_viewer", "add_or_update_scene_viewer(key) or add_or_update_scene_viewer(key,rect) or add_or_update_scene_viewer(key,rect,interval) command", new ExpressionFactoryHelper<AddOrUpdateSceneViewerCommand>());
+                registry.Register("scene_viewer_look_at", "scene_viewer_look_at(key) or scene_viewer_look_at(key,dist) or scene_viewer_look_at(key,dist,dir) or scene_viewer_look_at(key,dist,dir,target) command", new ExpressionFactoryHelper<SceneViewerLookAtCommand>());
                 //register value or function
                 registry.Register("exists_dir", "exists_dir(dir) function", new ExpressionFactoryHelper<ExistsDirectoryFunction>());
                 registry.Register("exists_file", "exists_file(file) function", new ExpressionFactoryHelper<ExistsFileFunction>());
@@ -128,7 +128,7 @@ namespace GmCommands
                 registry.Register("get_object_by_id", "get_object_by_id(id) function, get unity object by instance id", new ExpressionFactoryHelper<GetObjectByIdFunction>());
                 registry.Register("get_object_id", "get_object_id(obj) function, get unity object instance id", new ExpressionFactoryHelper<GetObjectIdFunction>());
 
-                registry.Register("get_android_sdk", "get_android_sdk() function", new ExpressionFactoryHelper<GetAndroidSdkIntFunction>());
+                registry.Register("get_android_sdk_int", "get_android_sdk_int() function", new ExpressionFactoryHelper<GetAndroidSdkIntFunction>());
                 registry.Register("get_bool", "get_bool(str) function", new ExpressionFactoryHelper<GetBoolFunction>());
                 registry.Register("get_bool_array", "get_bool_array(str) function", new ExpressionFactoryHelper<GetBoolArrayFunction>());
                 registry.Register("get_string", "get_string(str) function", new ExpressionFactoryHelper<GetStringFunction>());
@@ -147,22 +147,22 @@ namespace GmCommands
                 registry.Register("get_float_array", "get_float_array(str) function", new ExpressionFactoryHelper<GetFloatArrayFunction>());
                 registry.Register("get_double", "get_double(str) function", new ExpressionFactoryHelper<GetDoubleFunction>());
                 registry.Register("get_double_array", "get_double_array(str) function", new ExpressionFactoryHelper<GetDoubleArrayFunction>());
-                registry.Register("get_activity_class", "get_activity_class() function", new ExpressionFactoryHelper<GetActivityClassNameFunction>());
+                registry.Register("get_activity_class_name", "get_activity_class_name() function", new ExpressionFactoryHelper<GetActivityClassNameFunction>());
 
                 registry.Register("pref_get_int", "pref_get_int(key,defval) function", new ExpressionFactoryHelper<PlayerPrefIntFunction>());
                 registry.Register("pref_get_float", "pref_get_float(key,defval) function", new ExpressionFactoryHelper<PlayerPrefFloatFunction>());
                 registry.Register("pref_get_str", "pref_get_str(key,defval) function", new ExpressionFactoryHelper<PlayerPrefStringFunction>());
                 registry.Register("pref_get_by_java", "pref_get_by_java(key,defval) function", new ExpressionFactoryHelper<PrefByJavaFunction>());
 
-                registry.Register("is_tex_supported", "is_tex_supported(fmt_str,usage_str) function", new ExpressionFactoryHelper<IsFormatSupportedFunction>());
+                registry.Register("is_format_supported", "is_format_supported(fmt_str,usage_str) function", new ExpressionFactoryHelper<IsFormatSupportedFunction>());
                 registry.Register("get_compatible_format", "get_compatible_format(fmt_str,usage_str) function", new ExpressionFactoryHelper<GetCompatibleFormatFunction>());
                 registry.Register("get_graphics_format", "get_graphics_format(def_fmt) function", new ExpressionFactoryHelper<GetGraphicsFormatFunction>());
-                registry.Register("get_m_s_a_a_sample_count", "get_m_s_a_a_sample_count(w,h,color_fmt,depth_bit,mip_ct) function", new ExpressionFactoryHelper<GetMSAASampleCountFunction>());
+                registry.Register("get_msaa_sample_count", "get_msaa_sample_count(w,h,color_fmt,depth_bit,mip_ct) function", new ExpressionFactoryHelper<GetMSAASampleCountFunction>());
                 registry.Register("sys_info", "sys_info() function, return typeof(SystemInfo)", new ExpressionFactoryHelper<SystemInfoFunction>());
                 registry.Register("screen", "screen() function, return typeof(Screen)", new ExpressionFactoryHelper<ScreenFunction>());
                 registry.Register("screen_width", "screen_width() function, return Screen.width", new ExpressionFactoryHelper<ScreenWidthFunction>());
                 registry.Register("screen_height", "screen_height() function, return Screen.height", new ExpressionFactoryHelper<ScreenHeightFunction>());
-                registry.Register("screen_d_p_i", "screen_d_p_i() function, return Screen.dpi", new ExpressionFactoryHelper<ScreenDPIFunction>());
+                registry.Register("screen_dpi", "screen_dpi() function, return Screen.dpi", new ExpressionFactoryHelper<ScreenDPIFunction>());
                 registry.Register("app", "app() function, return typeof(Application)", new ExpressionFactoryHelper<ApplicationFunction>());
                 registry.Register("app_id", "app_id() function, return Application.identifier", new ExpressionFactoryHelper<AppIdFunction>());
                 registry.Register("app_name", "app_name() function, return Application.productName", new ExpressionFactoryHelper<AppNameFunction>());
@@ -171,16 +171,16 @@ namespace GmCommands
                 registry.Register("is_console", "is_console() function, return Application.isConsolePlatform", new ExpressionFactoryHelper<IsConsoleFunction>());
                 registry.Register("is_mobile", "is_mobile() function, return Application.isMobilePlatform", new ExpressionFactoryHelper<IsMobileFunction>());
                 registry.Register("is_android", "is_android() function, return Application.platform==Android", new ExpressionFactoryHelper<IsAndroidFunction>());
-                registry.Register("is_i_phone", "is_i_phone() function, return Application.platform==IPhone", new ExpressionFactoryHelper<IsIPhoneFunction>());
-                registry.Register("is_p_c", "is_p_c() function, return not mobile and not console", new ExpressionFactoryHelper<IsPCFunction>());
+                registry.Register("is_iphone", "is_iphone() function, return Application.platform==IPhone", new ExpressionFactoryHelper<IsIPhoneFunction>());
+                registry.Register("is_pc", "is_pc() function, return not mobile and not console", new ExpressionFactoryHelper<IsPCFunction>());
                 registry.Register("get_shell", "get_shell(cmd) function, return string", new ExpressionFactoryHelper<ShellFunction>());
                 registry.Register("get_shell_timeout", "get_shell_timeout(cmd,ms) function, return string", new ExpressionFactoryHelper<ShellTimeoutFunction>());
                 registry.Register("is_java_task", "is_java_task() function, return int", new ExpressionFactoryHelper<IsJavaTaskFunction>());
                 registry.Register("get_task_count", "get_task_count() function, return int", new ExpressionFactoryHelper<GetTaskCountFunction>());
-                registry.Register("we_test_x", "we_test_x() function, WeTest GetX", new ExpressionFactoryHelper<WeTestGetXFunction>());
-                registry.Register("we_test_y", "we_test_y() function, WeTest GetY", new ExpressionFactoryHelper<WeTestGetYFunction>());
-                registry.Register("we_test_width", "we_test_width() function, WeTest GetWidth", new ExpressionFactoryHelper<WeTestGetWidthFunction>());
-                registry.Register("we_test_height", "we_test_height() function, WeTest GetHeight", new ExpressionFactoryHelper<WeTestGetHeightFunction>());
+                registry.Register("wetest_get_x", "wetest_get_x() function, WeTest GetX", new ExpressionFactoryHelper<WeTestGetXFunction>());
+                registry.Register("wetest_get_y", "wetest_get_y() function, WeTest GetY", new ExpressionFactoryHelper<WeTestGetYFunction>());
+                registry.Register("wetest_get_width", "wetest_get_width() function, WeTest GetWidth", new ExpressionFactoryHelper<WeTestGetWidthFunction>());
+                registry.Register("wetest_get_height", "wetest_get_height() function, WeTest GetHeight", new ExpressionFactoryHelper<WeTestGetHeightFunction>());
                 registry.Register("get_pointer", "get_pointer() function, return Input.mousePosition", new ExpressionFactoryHelper<GetPointerFunction>());
                 registry.Register("get_ptr_uis", "get_ptr_uis() function, return List<UnityEngine.EventSystems.RaycastResult>", new ExpressionFactoryHelper<PointerRaycastUisFunction>());
                 registry.Register("get_ptr_comps", "get_ptr_comps(type,include_inactive) function, return List<Component>", new ExpressionFactoryHelper<GetPointerComponentsFunction>());
@@ -212,8 +212,6 @@ namespace GmCommands
                 registry.Register("find_comp", "find_comp(root_name,[name1,name2,...],type,include_inactive) function", new ExpressionFactoryHelper<FindComponentFunction>());
                 registry.Register("search_comps", "search_comps(root_name,[name1,name2,...],type,include_inactive) function", new ExpressionFactoryHelper<SearchComponentsFunction>());
 
-                registry.Register("raycast_uis", "raycast_uis(x,y) function, return List<UnityEngine.EventSystems.RaycastResult>", new ExpressionFactoryHelper<RaycastUisFunction>());
-                registry.Register("raycast_comps", "raycast_comps(x,y,type,include_inactive) function, return List<Component>", new ExpressionFactoryHelper<RaycastComponentsFunction>());
 
                 if (null != OnRegisterGmCommandsAndFunctions) {
                     OnRegisterGmCommandsAndFunctions(registry);
@@ -247,9 +245,9 @@ namespace GmCommands
             registry.Register("send_message", "send_message(objname,msg,arg1,arg2,...) command", new ExpressionFactoryHelper<GmCommands.SendMessageCommand>());
             registry.Register("send_message_with_tag", "send_message_with_tag(tagname,msg,arg1,arg2,...) command", new ExpressionFactoryHelper<GmCommands.SendMessageWithTagCommand>());
             registry.Register("send_message_with_game_object", "send_message_with_game_object(gameobject,msg,arg1,arg2,...) command", new ExpressionFactoryHelper<GmCommands.SendMessageWithGameObjectCommand>());
-            registry.Register("create_game_object", "create_game_object(name,prefab[,parent])[obj(\"varname\")]{position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));loadtimeout(1000);disable(\"typename\", \"typename\", ...);remove(\"typename\", \"typename\", ...);} command", new ExpressionFactoryHelper<GmCommands.CreateGameObjectCommand>());
-            registry.Register("set_transform", "set_transform(name,local0_or_world1){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));} command", new ExpressionFactoryHelper<GmCommands.SetTransformCommand>());
-            registry.Register("add_transform", "add_transform(name,local0_or_world1){position(vector_3(x,y,z));rotation(vector_3(x,y,z));scale(vector_3(x,y,z));} command", new ExpressionFactoryHelper<GmCommands.AddTransformCommand>());
+            registry.Register("create_game_object", "create_game_object(name,prefab[,parent])[obj(\"varname\")]{position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));loadtimeout(1000);disable(\"typename\", \"typename\", ...);remove(\"typename\", \"typename\", ...);} command", new ExpressionFactoryHelper<GmCommands.CreateGameObjectCommand>());
+            registry.Register("set_transform", "set_transform(name,local0_or_world1){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));} command", new ExpressionFactoryHelper<GmCommands.SetTransformCommand>());
+            registry.Register("add_transform", "add_transform(name,local0_or_world1){position(vector3(x,y,z));rotation(vector3(x,y,z));scale(vector3(x,y,z));} command", new ExpressionFactoryHelper<GmCommands.AddTransformCommand>());
             registry.Register("destroy_game_object", "destroy_game_object(path) command", new ExpressionFactoryHelper<GmCommands.DestroyGameObjectCommand>());
             registry.Register("set_parent", "set_parent(obj_or_path,parent,int_stay_world_pos) command", new ExpressionFactoryHelper<GmCommands.SetParentCommand>());
             registry.Register("set_active", "set_active(obj_or_path,1_or_0) command", new ExpressionFactoryHelper<GmCommands.SetActiveCommand>());

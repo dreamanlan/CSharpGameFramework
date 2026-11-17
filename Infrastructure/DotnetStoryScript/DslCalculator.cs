@@ -3042,7 +3042,7 @@ namespace DotnetStoryScript.DslExpression
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            //the handling of the simple syntax 'for_each_value(exp1,exp_2,...) func(args);'
+            //the handling of the simple syntax 'for_each_value(exp1,exp2,...) func(args);'
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First.AsFunction;
                 var secondV = statementData.Second.AsValue;

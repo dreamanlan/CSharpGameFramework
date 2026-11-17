@@ -59,8 +59,8 @@
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
           "projectReferences": {
-            "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
-              "projectPath": "d:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+            "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
             }
           }
         }

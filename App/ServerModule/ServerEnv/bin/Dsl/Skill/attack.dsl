@@ -10,7 +10,7 @@ skill(3)
     adjust_section_duration("anim",200);
     self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     impact(100,0,0,0,false);
   };

@@ -3614,7 +3614,7 @@ namespace DotnetStoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count != 1)
-                throw new Exception("Expected: calc_md_5(file) api");
+                throw new Exception("Expected: calc_md5(file) api");
             BoxedValue r = BoxedValue.NullObject;
             if (operands.Count >= 1) {
                 var file = operands[0].AsString;
@@ -3730,7 +3730,7 @@ namespace DotnetStoryScript.DslExpression
             Register("asin", "asin(v) api", new ExpressionFactoryHelper<AsinExp>());
             Register("acos", "acos(v) api", new ExpressionFactoryHelper<AcosExp>());
             Register("atan", "atan(v) api", new ExpressionFactoryHelper<AtanExp>());
-            Register("atan_2", "atan_2(v1,v2) api", new ExpressionFactoryHelper<Atan2Exp>());
+            Register("atan2", "atan2(v1,v2) api", new ExpressionFactoryHelper<Atan2Exp>());
             Register("sinh", "sinh(v) api", new ExpressionFactoryHelper<SinhExp>());
             Register("cosh", "cosh(v) api", new ExpressionFactoryHelper<CoshExp>());
             Register("tanh", "tanh(v) api", new ExpressionFactoryHelper<TanhExp>());
@@ -3739,10 +3739,10 @@ namespace DotnetStoryScript.DslExpression
             Register("pow", "pow(v1,v2) api", new ExpressionFactoryHelper<PowExp>());
             Register("sqrt", "sqrt(v) api", new ExpressionFactoryHelper<SqrtExp>());
             Register("exp", "exp(v) api", new ExpressionFactoryHelper<ExpExp>());
-            Register("exp_2", "exp_2(v) api", new ExpressionFactoryHelper<Exp2Exp>());
+            Register("exp2", "exp2(v) api", new ExpressionFactoryHelper<Exp2Exp>());
             Register("log", "log(v) api", new ExpressionFactoryHelper<LogExp>());
-            Register("log_2", "log_2(v) api", new ExpressionFactoryHelper<Log2Exp>());
-            Register("log_10", "log_10(v) api", new ExpressionFactoryHelper<Log10Exp>());
+            Register("log2", "log2(v) api", new ExpressionFactoryHelper<Log2Exp>());
+            Register("log10", "log10(v) api", new ExpressionFactoryHelper<Log10Exp>());
             Register("floor", "floor(v) api", new ExpressionFactoryHelper<FloorExp>());
             Register("ceiling", "ceiling(v) api", new ExpressionFactoryHelper<CeilingExp>());
             Register("round", "round(v) api", new ExpressionFactoryHelper<RoundExp>());
@@ -3787,7 +3787,7 @@ namespace DotnetStoryScript.DslExpression
             Register("lerp_unclamped", "lerp_unclamped(a,b,t) api", new ExpressionFactoryHelper<LerpUnclampedExp>());
             Register("lerp_angle", "lerp_angle(a,b,t) api", new ExpressionFactoryHelper<LerpAngleExp>());
             Register("smooth_step", "smooth_step(from,to,t) api", new ExpressionFactoryHelper<SmoothStepExp>());
-            Register("clamp_01", "clamp_01(v) api", new ExpressionFactoryHelper<Clamp01Exp>());
+            Register("clamp01", "clamp01(v) api", new ExpressionFactoryHelper<Clamp01Exp>());
             Register("clamp", "clamp(v,v1,v2) api", new ExpressionFactoryHelper<ClampExp>());
             Register("approximately", "approximately(v1,v2) api", new ExpressionFactoryHelper<ApproximatelyExp>());
             Register("is_power_of_two", "is_power_of_two(v) api", new ExpressionFactoryHelper<IsPowerOfTwoExp>());
@@ -3987,7 +3987,7 @@ namespace DotnetStoryScript.DslExpression
             Register("wait_start_interval", "wait_start_interval(time) or wait_start_interval() api, used in Task.Wait for process/command", new ExpressionFactoryHelper<WaitStartIntervalExp>());
             Register("cleanup_completed_tasks", "cleanup_completed_tasks() api", new ExpressionFactoryHelper<CleanupCompletedTasksExp>());
             Register("get_task_count", "get_task_count() api", new ExpressionFactoryHelper<GetTaskCountExp>());
-            Register("calc_md_5", "calc_md_5(file) api", new ExpressionFactoryHelper<CalcMd5Exp>());
+            Register("calc_md5", "calc_md5(file) api", new ExpressionFactoryHelper<CalcMd5Exp>());
         }
 
         private LinqOperatorRegistry m_LinqOperatorRegistry = new LinqOperatorRegistry();

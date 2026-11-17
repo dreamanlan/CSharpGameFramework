@@ -900,7 +900,7 @@ namespace GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             var log1 = new StringBuilder();
-            var log_2 = new StringBuilder();
+            var log2 = new StringBuilder();
             int ct = 0;
             var t = typeof(SystemInfo);
             var pis = t.GetProperties(BindingFlags.Static | BindingFlags.Public);
@@ -916,12 +916,12 @@ namespace GmCommands
 
                 if (v is bool) {
                     if (!(bool)v) {
-                        log_2.AppendFormat("{0} = false", pi.Name);
-                        log_2.AppendLine();
+                        log2.AppendFormat("{0} = false", pi.Name);
+                        log2.AppendLine();
                     }
                 }
             }
-            LogSystem.Warn(log_2.ToString());
+            LogSystem.Warn(log2.ToString());
             return BoxedValue.NullObject;
         }
     }
@@ -3081,12 +3081,12 @@ namespace GmCommands
             Vector4Obj v4obj = null;
             float interval = 0.1f;
             switch (args.Count) {
-                case 1://set_viewer(key)
+                case 1://add_or_update_scene_viewer(key)
                     break;
-                case 2://set_viewer(key,rect)
+                case 2://add_or_update_scene_viewer(key,rect)
                     v4obj = args[1].As<Vector4Obj>();
                     break;
-                case 3://set_viewer(key,rect,interval)
+                case 3://add_or_update_scene_viewer(key,rect,interval)
                     v4obj = args[1].As<Vector4Obj>();
                     interval = args[2].GetFloat();
                     break;
@@ -3146,25 +3146,25 @@ namespace GmCommands
                 if (null != viewer) {
                     Transform player = AddOrUpdateSceneViewerCommand.GetCameraTarget();
                     switch (args.Count) {
-                        case 1://viewer_look_at(key)
+                        case 1://scene_viewer_look_at(key)
                             if (null != player) {
                                 viewer.target = player;
                             }
                             break;
-                        case 2://viewer_look_at(key, distance)
+                        case 2://scene_viewer_look_at(key, distance)
                             if (null != player) {
                                 viewer.target = player;
                             }
                             viewer.distToTarget = args[1].GetFloat();
                             break;
-                        case 3://viewer_look_at(key, distance, direction)
+                        case 3://scene_viewer_look_at(key, distance, direction)
                             if (null != player) {
                                 viewer.target = player;
                             }
                             viewer.distToTarget = args[1].GetFloat();
                             viewer.direction = args[2].As<Vector3Obj>().Value;
                             break;
-                        case 4://viewer_look_at(key, distance, direction, target)
+                        case 4://scene_viewer_look_at(key, distance, direction, target)
                             viewer.distToTarget = args[1].GetFloat();
                             viewer.direction = args[2].As<Vector3Obj>().Value;
                             if (args[3].IsString) {

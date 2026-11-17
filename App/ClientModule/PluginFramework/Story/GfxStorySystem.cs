@@ -183,7 +183,7 @@ namespace ScriptableFramework.Story
             registry.Register("blackboard_get", "blackboard_get function", new ExpressionFactoryHelper<Story.Functions.BlackboardGetFunction>());
             registry.Register("get_dialog_item", "get_dialog_item function", new ExpressionFactoryHelper<Story.Functions.GetDialogItemFunction>());
             registry.Register("offset_spline", "offset_spline function", new ExpressionFactoryHelper<Story.Functions.OffsetSplineFunction>());
-            registry.Register("offset_vector_3", "offset_vector_3 function", new ExpressionFactoryHelper<Story.Functions.OffsetVector3Function>());
+            registry.Register("offset_vector3", "offset_vector3 function", new ExpressionFactoryHelper<Story.Functions.OffsetVector3Function>());
             registry.Register("get_actor_icon", "get_actor_icon function", new ExpressionFactoryHelper<Story.Functions.GetActorIconFunction>());
             registry.Register("get_monster_info", "get_monster_info function", new ExpressionFactoryHelper<Story.Functions.GetMonsterInfoFunction>());
             registry.Register("get_ai_data", "get_ai_data function", new ExpressionFactoryHelper<Story.Functions.GetAiDataFunction>());

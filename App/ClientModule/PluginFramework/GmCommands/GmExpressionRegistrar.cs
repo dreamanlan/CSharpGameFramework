@@ -17,7 +17,7 @@ namespace ScriptableFramework.GmCommands
             // Register GM expressions
             registry.Register("enable_calculator_log", "enable_calculator_log(val1, val2, val3) - enable calculator log",
                 new ExpressionFactoryHelper<EnableCalculatorLogCommand>());
-            registry.Register("reset_dsl", "reset_dsl(val) - reset dsl",
+            registry.Register("resetdsl", "resetdsl(val) - reset dsl",
                 new ExpressionFactoryHelper<DoResetDslCommand>());
             registry.Register("scp", "scp(val) - scp command",
                 new ExpressionFactoryHelper<DoScpCommand>());

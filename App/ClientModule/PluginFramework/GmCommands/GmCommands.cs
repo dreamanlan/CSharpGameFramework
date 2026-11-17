@@ -28,7 +28,7 @@ namespace ScriptableFramework.GmCommands
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 1)
-                throw new Exception("Expected: reset_dsl(val)");
+                throw new Exception("Expected: resetdsl(val)");
 
             string val = operands[0].ToString();
             if (Network.NetworkSystem.Instance.CanSendMessage) {

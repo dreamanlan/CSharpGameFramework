@@ -2375,7 +2375,7 @@ namespace StoryScript.DslExpression
     // ===========================================================================
     // Editor-channel component add/remove.
     //
-    // The runtime GM registry already has add_component/remove_component
+    // The runtime GM registry already has editor_add_component/remove_component
     // (ClientGmStorySystem.cs / GeneralCommands.cs), but those call GameObject.AddComponent
     // and Object.Destroy directly: no Undo, no dry run, and they are unavailable on the
     // editor channel (which has its own Calculator). Editing scene objects needs reversible
@@ -2496,7 +2496,7 @@ namespace StoryScript.DslExpression
             if (!typeof(UnityEngine.Component).IsAssignableFrom(t))
                 return "ERROR: '" + t.FullName + "' is not a UnityEngine.Component";
             var sb = new StringBuilder();
-            sb.AppendLine(string.Format("add_component: '{0}' type='{1}' dryRun={2}", path, t.FullName, dryRun));
+            sb.AppendLine(string.Format("editor_add_component: '{0}' type='{1}' dryRun={2}", path, t.FullName, dryRun));
             var existing = go.GetComponents(t);
             sb.AppendLine("  existing instances of this type: " + existing.Length);
             if (dryRun)
@@ -2549,7 +2549,7 @@ namespace StoryScript.DslExpression
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
-            if (operands.Count < 1) return BoxedValue.FromString("ERROR: list_components(obj_or_path)");
+            if (operands.Count < 1) return BoxedValue.FromString("ERROR: editor_list_components(obj_or_path)");
             string path;
             var go = EditorComponentUtil.ResolveGameObject(operands[0], out path);
             if (go == null) return BoxedValue.FromString("ERROR: GameObject not found");
@@ -2562,7 +2562,7 @@ namespace StoryScript.DslExpression
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
         {
             if (operands.Count < 2)
-                return BoxedValue.FromString("ERROR: add_component(obj_or_path,type_or_str[,dryRun])");
+                return BoxedValue.FromString("ERROR: editor_add_component(obj_or_path,type_or_str[,dryRun])");
             bool dry = operands.Count < 3 || operands[2].GetBool();
             return BoxedValue.FromString(EditorComponentUtil.Add(operands[0], operands[1], dry));
         }
@@ -2633,6 +2633,8 @@ namespace StoryScript.DslExpression
             calculator.Register("display_dialog", "display_dialog(title,msg,ok[,cancel[,alt]]) api", new ExpressionFactoryHelper<DisplayDialogExp>());
             calculator.Register("has_cmd_arg", "has_cmd_arg(name) api, return (bool,string)", new ExpressionFactoryHelper<HasCmdArgExp>());
             calculator.Register("str_len", "str_len(str) api", new ExpressionFactoryHelper<StrLenExp>());
+			calculator.Register("strlen", "strlen(str) api", new ExpressionFactoryHelper<StrLenExp>());
+			
 #if UNITY_EDITOR
             calculator.Register("editor_play", "editor_play(play) - enter/exit Play mode on the next editor update; returns the state before the change", new ExpressionFactoryHelper<EditorPlayExp>());
             calculator.Register("editor_isplaying", "editor_isplaying() - current Play mode state", new ExpressionFactoryHelper<EditorIsPlayingExp>());
@@ -2654,9 +2656,9 @@ namespace StoryScript.DslExpression
             calculator.Register("cam_focus_info", "cam_focus_info(object_name) - report a scene object's path and renderer bounds (read-only)", new ExpressionFactoryHelper<CamFocusInfoExp>());
             calculator.Register("cam_focus_object", "cam_focus_object(object_name[,padding,sceneOnly]) - frame an object in SceneView and align the game camera to the same view", new ExpressionFactoryHelper<CamFocusObjectExp>());
             calculator.Register("api_list", "api_list([regex,...]) - regex search over all APIs/docs registered on the current editor interpreter (like helpall)", new ExpressionFactoryHelper<ApiListExp>());
-            calculator.Register("list_components", "list_components(obj_or_path) - list components on a scene GameObject, including inactive objects (read-only)", new ExpressionFactoryHelper<EditorListComponentsExp>());
-            calculator.Register("add_component", "add_component(obj_or_path,type_or_str[,dryRun]) - add a component in edit mode; defaults to DRY RUN, uses Undo.AddComponent, never saves the scene", new ExpressionFactoryHelper<EditorAddComponentExp>());
-            calculator.Register("remove_component", "remove_component(obj_or_path,type_or_str[,dryRun,all]) - remove component(s) in edit mode; defaults to DRY RUN, uses Undo.DestroyObjectImmediate, never saves the scene", new ExpressionFactoryHelper<EditorRemoveComponentExp>());
+            calculator.Register("editor_list_components", "editor_list_components(obj_or_path) - list components on a scene GameObject, including inactive objects (read-only)", new ExpressionFactoryHelper<EditorListComponentsExp>());
+            calculator.Register("editor_add_component", "editor_add_component(obj_or_path,type_or_str[,dryRun]) - add a component in edit mode; defaults to DRY RUN, uses Undo.AddComponent, never saves the scene", new ExpressionFactoryHelper<EditorAddComponentExp>());
+            calculator.Register("editor_remove_component", "editor_remove_component(obj_or_path,type_or_str[,dryRun,all]) - remove component(s) in edit mode; defaults to DRY RUN, uses Undo.DestroyObjectImmediate, never saves the scene", new ExpressionFactoryHelper<EditorRemoveComponentExp>());
 #endif
 #if USE_GM_STORY
             calculator.Register("story_var", "story_var(name,val) or story_var(name) api", new ExpressionFactoryHelper<StoryVarExp>());

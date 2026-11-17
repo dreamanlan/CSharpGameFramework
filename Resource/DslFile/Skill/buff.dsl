@@ -5,7 +5,7 @@ skill(7)
     animation("Attack");
     self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     adjust_section_duration("impact",100);
   };

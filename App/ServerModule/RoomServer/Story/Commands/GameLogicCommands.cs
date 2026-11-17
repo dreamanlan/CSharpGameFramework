@@ -201,7 +201,7 @@ namespace ScriptableFramework.Story.Commands
     /// <summary>
     /// cameralookat(npc_unit_id)[touser(userid)];
     /// or
-    /// cameralookat(vector_3(x,y,z))[touser(userid)];
+    /// cameralookat(vector3(x,y,z))[touser(userid)];
     /// </summary>
     public class CameraLookCommand : AbstractExpression
     {

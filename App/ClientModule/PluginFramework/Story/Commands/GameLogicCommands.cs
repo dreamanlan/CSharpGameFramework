@@ -98,7 +98,7 @@ namespace ScriptableFramework.Story.Commands
     /// <summary>
     /// cameralookat(npc_unit_id)[with(camera_path)];
     /// or
-    /// cameralookat(vector_3(x,y,z))[with(camera_path)];
+    /// cameralookat(vector3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookCommand : AbstractExpression
     {
@@ -157,7 +157,7 @@ namespace ScriptableFramework.Story.Commands
     /// <summary>
     /// cameralookatimmediately(npc_unit_id)[with(camera_path)];
     /// or
-    /// cameralookatimmediately(vector_3(x,y,z))[with(camera_path)];
+    /// cameralookatimmediately(vector3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookImmediatelyCommand : AbstractExpression
     {
@@ -216,7 +216,7 @@ namespace ScriptableFramework.Story.Commands
     /// <summary>
     /// camera_look_toward(npc_unit_id)[with(camera_path)];
     /// or
-    /// camera_look_toward(vector_3(x,y,z))[with(camera_path)];
+    /// camera_look_toward(vector3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookTowardCommand : AbstractExpression
     {
@@ -863,7 +863,7 @@ namespace ScriptableFramework.Story.Commands
         private IExpression m_ObjId;
     }
     /// <summary>
-    /// camera_look_copy(objpath, unitid or vector_3(x,y,z))[with(camera_path)];
+    /// camera_look_copy(objpath, unitid or vector3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookCopyCommand : AbstractExpression
     {

@@ -425,23 +425,23 @@
   
 七、内部函数
   
-  1、vector_2
+  1、vector2
   用法：
-  vector_2(x,y);
+  vector2(x,y);
   
   作用：
   构造一个vector2对象。
     
-  2、vector_3
+  2、vector3
   用法：
-  vector_3(x,y,z);
+  vector3(x,y,z);
   
   作用：
   构造一个vector3对象。
     
-  3、vector_4
+  3、vector4
   用法：
-  vector_4(x,y,z,w);
+  vector4(x,y,z,w);
   
   作用：
   构造一个vector4对象。
@@ -495,16 +495,16 @@
   作用：
   从字符串里读取字符串列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
   
-  11、vector_2_list
+  11、vector2_list
   用法：
-  vector_2_list("v1x v1y v2x v2y");
+  vector2_list("v1x v1y v2x v2y");
   
   作用：
   从字符串里读取vector2列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
   
-  12、vector_3_list
+  12、vector3_list
   用法：
-  vector_3_list("v1x v1y v1z v2x v2y v2z");
+  vector3_list("v1x v1y v1z v2x v2y v2z");
   
   作用：
   从字符串里读取vector3列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
@@ -565,30 +565,30 @@
   作用：
   取指定list的元素个数。
   
-  21、vector_2_dist
+  21、vector2_dist
   用法：
-  vector_2_dist(vector_2(1,2),vector_2(3,4));
+  vector2_dist(vector2(1,2),vector2(3,4));
   
   作用：
   计算2点距离。
   
-  22、vector_3_dist
+  22、vector3_dist
   用法：
-  vector_3_dist(vector_3(1,2,3),vector_3(4,5,6));
+  vector3_dist(vector3(1,2,3),vector3(4,5,6));
   
   作用：
   计算2点距离（2D距离）。
   
-  23、vector_2_to_3
+  23、vector2_to_3
   用法：
-  vector_2_to_3(vector_2(1,2));
+  vector2_to_3(vector2(1,2));
   
   作用：
   将vector2转换成vector3，y值部分置0。
   
-  24、vector_3_to_2
+  24、vector3_to_2
   用法：
-  vector_3_to_2(vector_3(1,2,3));
+  vector3_to_2(vector3(1,2,3));
   
   作用：
   将vector3转换成vector2，丢掉y值部分。
@@ -738,16 +738,16 @@
   获取指定名称的Class的Type。
   静态类名写法：TopNamespace.SubNameSpace.ContainingClass+NestedClass, MyAssembly, Version=1.3.0.0, Culture=neutral, PublicKeyToken=b17a5c561934e089
   
-  45、rnd_vector_3
+  45、rnd_vector3
   用法：
-  rnd_vector_3(center,radius);
+  rnd_vector3(center,radius);
   
   作用：
   取指定点周围的随机点。
   
-  46、rnd_vector_2
+  46、rnd_vector2
   用法：
-  rnd_vector_2(center,radius);
+  rnd_vector2(center,radius);
   
   作用：
   取指定点周围的随机点。
@@ -1002,7 +1002,7 @@
   
   35、calc_offset
   用法：
-  calc_offset(objid,targetobjid,vector_3(x,y,z));
+  calc_offset(objid,targetobjid,vector3(x,y,z));
   
   作用：
   计算沿objid->targetobjid方向，相对objid偏移(x,y,z)的位置。
@@ -1095,7 +1095,7 @@
   
   5、create_npc
   用法：
-  create_npc(npc_unit_id,vector_3(x,y,z),dir,camp,linkId[,ai,string_list("param1 param2 param3 ...")])[objid("@objid")];
+  create_npc(npc_unit_id,vector3(x,y,z),dir,camp,linkId[,ai,string_list("param1 param2 param3 ...")])[objid("@objid")];
   
   作用：
   创建npc，可指定位置与朝向。带objid语法的样式用于获取objid到指定变量名（字符串名，可以是运算结果构成的变量名）
@@ -1109,7 +1109,7 @@
   
   7、npc_move
   用法：
-  npc_move(unit_id,vector_3(x,y,z));
+  npc_move(unit_id,vector3(x,y,z));
   
   作用：
   移动指定npc到目标点。
@@ -1138,14 +1138,14 @@
   
   11、npc_move_with_waypoints
   用法：
-  npc_move_with_waypoints(unit_id,vector_3_list("v1x v1y v2x v2y"));
+  npc_move_with_waypoints(unit_id,vector3_list("v1x v1y v2x v2y"));
   
   作用：
   控制npc沿指定路线移动。
   
   12、npcpatrol
   用法：
-  npcpatrol(unit_id,vector_3_list("v1x v1y v2x v2y")[,isloop]);
+  npcpatrol(unit_id,vector3_list("v1x v1y v2x v2y")[,isloop]);
   
   作用：
   控制npc沿指定路线巡逻（如果指明isloop，路线应该形成一个环）。
@@ -1182,21 +1182,21 @@
   
   17、obj_move
   用法：
-  obj_move(objid,vector_3(x,y,z));
+  obj_move(objid,vector3(x,y,z));
   
   作用：
   移动游戏对象到目标点。
   
   18、obj_move_with_waypoints
   用法：
-  obj_move_with_waypoints(objid,vector_3_list("v1x v1y v2x v2y"));
+  obj_move_with_waypoints(objid,vector3_list("v1x v1y v2x v2y"));
   
   作用：
   控制游戏对象沿指定路线移动。
   
   19、objpatrol
   用法：
-  objpatrol(objid,vector_3_list("v1x v1y v2x v2y")[,isloop]);
+  objpatrol(objid,vector3_list("v1x v1y v2x v2y")[,isloop]);
   
   作用：
   控制游戏对象沿指定路线移动（如果指明isloop，路线应该形成一个环）。
@@ -1444,7 +1444,7 @@
   59、camera_look
   用法：
   camera_look(unit_id);
-  camera_look(vector_3(x,y,z));
+  camera_look(vector3(x,y,z));
   
   作用：
   让像机看着指定目标。  

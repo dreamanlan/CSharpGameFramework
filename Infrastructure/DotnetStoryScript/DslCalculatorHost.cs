@@ -110,7 +110,7 @@ namespace DotnetStoryScript
                 new ExpressionFactoryHelper<StoryBreakExp>());
 
             // Register context info expressions
-            registry.Register("eval", "eval(exp1, exp_2, ...) - evaluate all expressions and return the last value",
+            registry.Register("eval", "eval(exp1, exp2, ...) - evaluate all expressions and return the last value",
                 new ExpressionFactoryHelper<EvalExp>());
             registry.Register("namespace", "namespace() - get current story namespace",
                 new ExpressionFactoryHelper<NamespaceExp>());
@@ -136,11 +136,11 @@ namespace DotnetStoryScript
                 new ExpressionFactoryHelper<FromJsonExp>());
 
             // Register Vector constructor expressions
-            registry.Register("vector_2", "vector_2(x, y) - create Vector2",
+            registry.Register("vector2", "vector2(x, y) - create Vector2",
                 new ExpressionFactoryHelper<Vector2Exp>());
-            registry.Register("vector_3", "vector_3(x, y, z) - create Vector3",
+            registry.Register("vector3", "vector3(x, y, z) - create Vector3",
                 new ExpressionFactoryHelper<Vector3Exp>());
-            registry.Register("vector_4", "vector_4(x, y, z, w) - create Vector4",
+            registry.Register("vector4", "vector4(x, y, z, w) - create Vector4",
                 new ExpressionFactoryHelper<Vector4Exp>());
             registry.Register("quaternion", "quaternion(x, y, z, w) - create Quaternion",
                 new ExpressionFactoryHelper<QuaternionExp>());
@@ -148,29 +148,29 @@ namespace DotnetStoryScript
                 new ExpressionFactoryHelper<EularExp>());
             registry.Register("color", "color(r, g, b, a) - create ColorF",
                 new ExpressionFactoryHelper<ColorExp>());
-            registry.Register("color_32", "color_32(r, g, b, a) - create Color32",
+            registry.Register("color32", "color32(r, g, b, a) - create Color32",
                 new ExpressionFactoryHelper<Color32Exp>());
-            registry.Register("vector_2_int", "vector_2_int(x, y) - create Vector2Int",
+            registry.Register("vector2_int", "vector2_int(x, y) - create Vector2Int",
                 new ExpressionFactoryHelper<Vector2IntExp>());
-            registry.Register("vector_3_int", "vector_3_int(x, y, z) - create Vector3Int",
+            registry.Register("vector3_int", "vector3_int(x, y, z) - create Vector3Int",
                 new ExpressionFactoryHelper<Vector3IntExp>());
 
             // Register Vector list and math expressions
-            registry.Register("vector_2_list", "vector_2_list(str_split_by_sep) - parse string into list of Vector2",
+            registry.Register("vector2_list", "vector2_list(str_split_by_sep) - parse string into list of Vector2",
                 new ExpressionFactoryHelper<Vector2ListExp>());
-            registry.Register("vector_3_list", "vector_3_list(str_split_by_sep) - parse string into list of Vector3",
+            registry.Register("vector3_list", "vector3_list(str_split_by_sep) - parse string into list of Vector3",
                 new ExpressionFactoryHelper<Vector3ListExp>());
-            registry.Register("vector_2_dist", "vector_2_dist(pt1, pt2) - distance between two Vector2 points",
+            registry.Register("vector2_dist", "vector2_dist(pt1, pt2) - distance between two Vector2 points",
                 new ExpressionFactoryHelper<Vector2DistExp>());
-            registry.Register("vector_3_dist", "vector_3_dist(pt1, pt2) - distance between two Vector3 points",
+            registry.Register("vector3_dist", "vector3_dist(pt1, pt2) - distance between two Vector3 points",
                 new ExpressionFactoryHelper<Vector3DistExp>());
-            registry.Register("vector_2_to_3", "vector_2_to_3(pt) - convert Vector2(x,y) to Vector3(x, 0, y)",
+            registry.Register("vector2_to_3", "vector2_to_3(pt) - convert Vector2(x,y) to Vector3(x, 0, y)",
                 new ExpressionFactoryHelper<Vector2To3Exp>());
-            registry.Register("vector_3_to_2", "vector_3_to_2(pt) - convert Vector3(x,y,z) to Vector2(x, y)",
+            registry.Register("vector3_to_2", "vector3_to_2(pt) - convert Vector3(x,y,z) to Vector2(x, y)",
                 new ExpressionFactoryHelper<Vector3To2Exp>());
-            registry.Register("rnd_vector_3", "rnd_vector_3(pt, radius) - random Vector3 offset within radius",
+            registry.Register("rnd_vector3", "rnd_vector3(pt, radius) - random Vector3 offset within radius",
                 new ExpressionFactoryHelper<RndVector3Exp>());
-            registry.Register("rnd_vector_2", "rnd_vector_2(pt, radius) - random Vector2 offset within radius",
+            registry.Register("rnd_vector2", "rnd_vector2(pt, radius) - random Vector2 offset within radius",
                 new ExpressionFactoryHelper<RndVector2Exp>());
         }
     }

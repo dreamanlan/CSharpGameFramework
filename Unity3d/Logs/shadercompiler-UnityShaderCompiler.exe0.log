@@ -1,3 +1,4 @@
 Base path: 'E:/UGit/official_2022.3.35f1/build/WindowsEditor/x64/Release/Data', plugins path 'E:/UGit/official_2022.3.35f1/build'
 Cmd: initializeCompiler
 
+Cmd: shutdown

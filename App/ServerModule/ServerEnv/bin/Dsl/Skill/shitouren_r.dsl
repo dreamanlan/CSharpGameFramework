@@ -11,13 +11,13 @@ skill(102)
     animation("Walk");
     self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     target_effect(hitEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
-    charge(200,10,1,vector_3(0,0,-0.5),0){
+    charge(200,10,1,vector3(0,0,-0.5),0){
     	keyframe(0,0,2,2);
     	keyframe(1,1,2,2);
     };

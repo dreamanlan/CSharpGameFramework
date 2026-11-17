@@ -8,7 +8,7 @@ using StoryScript.DslExpression;
 // DSL evaluation: wrap into script{ ... }, run synchronously and return the last statement value.
 public static class GmDslEval
 {
-    // scriptName lets callers that share a Calculator avoid overwriting each other's
+    // scriptName lets callers that share a calculator avoid overwriting each other's
     // loaded "main" script (e.g. the GM socket edit channel vs the resource command window).
     public static string Eval(DslCalculator calc, string code, BoxedValue obj, BoxedValue item, string scriptName = "main")
     {
@@ -89,7 +89,7 @@ public static class GmCommandApi
         GmCommandDispatcher.ConsoleExecutor = ExecConsole;
     }
 
-    // The GM socket "exec" channel keeps one Calculator across requests so global
+    // The GM socket "exec" channel keeps one calculator across requests so global
     // variables/functions defined by an earlier call survive into the next one.
     // It deliberately does NOT reuse the story-based GM script runtime: stories run
     // across ticks and have no synchronous return value, which is exactly what exec

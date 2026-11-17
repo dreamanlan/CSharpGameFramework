@@ -9,9 +9,14 @@
   Tables/Server/WorldEvent.txt      仅用于统计本格线索数（不下发坐标，GBK 标准表）
 
 生成结构：
-  开场叙事 -> 逐战斗区推进（obj_move 带玩家过去 + 分段文案 + 分波刷怪）
+  开场叙事 -> 逐战斗区推进（波间短距离分段移动 + 分段文案 + 分波刷怪）
   -> all_killed 推进下一波 -> 最后一波清完结算
-  怪刷在玩家当前位置附近，保证 obj_move 若不生效也仍能打完、循环不卡。
+  波 2..N 每波先朝该波设计区方向推进 ADVANCE_STEP(20) 单位，到达后
+  (npcarrived:1000) 才刷怪；wait(ADVANCE_TIMEOUT_MS) 作超时兜底，
+  @spawned 守卫保证只刷一次。怪始终用玩家当前位置计算刷怪点，
+  因此移动不生效/超时也仍能打完、循环不卡。
+  步长远小于怪 view(35)，绝不把双方拉开几百单位；怪的 leash 由
+  HomePos(出生点) + GohomeRange(80) 天然提供。
 
 坐标：terrain PNG 256x256，1px=2 世界单位。Unity GetPixels32 自下而上，
       C# ReadPng 反转回自上而下，故 design_y == pil_y，pil_y = worldZ/2，
@@ -27,6 +32,12 @@ TILES = os.path.join(DESIGN, 'tiles')
 AREAS = os.path.join(ROOT, 'Unity3d', 'Assets', 'Resources', 'MapData')
 STORY = os.path.join(ROOT, 'Resource', 'DslFile', 'Story')
 EVENTS = os.path.join(ROOT, 'Resource', 'Tables', 'Server', 'WorldEvent.txt')
+
+# 每波推进距离：必须 <=25（设计 20.6），且加上刷怪环半径 14 后仍小于怪 view=35。
+ADVANCE_STEP = 20.0
+# obj_move 到达后由引擎发 npcarrived:1000；这里只是移动未生效/超时时的兜底。
+# 主角 speed=8，20 单位约 2.5s，留足余量避免超时早于到达（否则怪会刷在移动中途）。
+ADVANCE_TIMEOUT_MS = 4000
 
 OPENING = {
     'ARR': '洪水退去后，冰盖裂隙里还留着方舟的木痕。',
@@ -116,22 +127,77 @@ def esc(s):
     return s.replace('\\', '\\\\').replace('"', '\\"')
 
 
+def signed(v):
+    # Explicit +/- operator: "+-11.3" is not a valid DSL term.
+    return ('+%.1f' % v) if v >= 0 else ('-%.1f' % -v)
+
+
+def advance_vector(zones, w):
+    """第 w 波(>=2)的推进向量：沿相邻设计区链取方向，步长固定 ADVANCE_STEP。
+
+    区域坐标相距数百单位，这里只取方向、绝不走到区域中心（19.4 的教训）。
+    """
+    x0, z0, _ = zones[w - 2]
+    x1, z1, _ = zones[w - 1]
+    if w == 2:
+        x0, z0 = 60.0, 70.0          # 波 2 从队伍出生点出发
+    dx, dz = x1 - x0, z1 - z0
+    n = math.hypot(dx, dz)
+    if n < 1e-3:
+        return 0.0, ADVANCE_STEP
+    return ADVANCE_STEP * dx / n, ADVANCE_STEP * dz / n
+
+
 def wave_branch(code, name, w, x, y, z, diff, src):
     zone = ZONES[code][(w - 1) % len(ZONES[code])]
-    count = 4 + diff // 2
-    base = 1006 + w * 20
-    # Spawn the wave around the party instead of dragging the leader hundreds
-    # of units to the designed area circle. Mobs have view=15 / gohome=20 by
-    # default: a long obj_move made them oscillate between chase and go-home
-    # without ever engaging, and the leader cast skills at targets far offscreen.
-    # The area still drives the narrative beat and the designed point is kept
-    # for a later pass that gives mobs a proper roaming/leash radius.
+    # 波 1 保持原地开打（登录/首波链路已实机验证）；波 2..N 先做一段
+    # <=25 单位的推进，到达后才刷怪，避免把双方拉开几百单位（19.4/20.6）。
+    action = ('wave_spawn_1' if w == 1 else 'wave_advance_%d' % w)
     lines = [
         '      if(@wave<%d){' % (w + 1),
         '        fire_message("push_tip_info", "%s：%s·%s");' % (esc(name), esc(zone), esc(src)),
-        '        fire_message("wave_spawn_%d");' % w,
+        '        fire_message("%s");' % action,
         '      } else {',
     ]
+    return lines
+
+
+def advance_handler(w, dx, dz):
+    """波间推进：obj_move 的第三参是客户端到达事件名；服务端到达时固定发
+    npcarrived:1000，两者同名故双端都能触发 arrived_handler。wait 是移动
+    未生效/超时时的兜底，@advancing 守卫保证与到达信号只生效一次。"""
+    return [
+        '  onmessage("wave_advance_%d")' % w,
+        '  {',
+        '    @advancing=1;',
+        '    fire_message("push_tip_info", "向下一处遗迹推进 %d 步（第 %d 波）");' % (int(ADVANCE_STEP), w),
+        '    obj_move(get_leader_id(),vector3(get_position_x(get_leader_id())%s,'
+        'get_position_y(get_leader_id()),get_position_z(get_leader_id())%s),"npcarrived:1000");'
+        % (signed(dx), signed(dz)),
+        '    wait(%d);' % ADVANCE_TIMEOUT_MS,
+        '    if(@advancing>0){',
+        '      @advancing=0;',
+        '      fire_message("wave_spawn_%d");' % w,
+        '    };',
+        '  };',
+    ]
+
+
+def arrived_handler(total):
+    """obj_move 到达后刷当前波的怪（@spawned 守卫幂等）。"""
+    lines = [
+        '  onmessage("npcarrived:1000")',
+        '  {',
+        '    if(@advancing>0){',
+        '      @advancing=0;',
+    ]
+    for w in range(1, total + 1):
+        lines.append('      if(@wave<%d){' % (w + 1))
+        lines.append('        fire_message("wave_spawn_%d");' % w)
+        lines.append('      } else {')
+    for _ in range(total):
+        lines.append('      };')
+    lines += ['    };', '  };']
     return lines
 
 
@@ -155,7 +221,7 @@ def spawn_handler(w, diff):
         dxs = ('+%.1f' % dx) if dx >= 0 else ('-%.1f' % -dx)
         dzs = ('+%.1f' % dz) if dz >= 0 else ('-%.1f' % -dz)
         lines.append(
-            '      create_npc(%d,vector_3(get_position_x(get_leader_id())%s,'
+            '      create_npc(%d,vector3(get_position_x(get_leader_id())%s,'
             'get_position_y(get_leader_id()),get_position_z(get_leader_id())%s),'
             '0,4,%d,"ai_normal",string_list("Ai/ailogic_normal.dsl"));'
             % (base + i, dxs, dzs, 6 + i)
@@ -189,15 +255,16 @@ def build(t, rank):
     L.append('  {')
     L.append('    @wave(0);')
     L.append('    @spawned(0);')
+    L.append('    @advancing(0);')
     L.append('    @total(%d);' % total)
     L.append('  };')
     L.append('  onmessage("start")')
     L.append('  {')
-    L.append('    create_npc(1000,vector_3(60,%.1f,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));' % py)
+    L.append('    create_npc(1000,vector3(60,%.1f,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));' % py)
     L.append('    set_leader_id(unit_id_2_obj_id(1000));')
     L.append('    npc_set_formation(1000,0);')
     L.append('    loop(4){')
-    L.append('      create_npc(1001+$$,vector_3(60+rnd_int(0,10),%.1f,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());' % py)
+    L.append('      create_npc(1001+$$,vector3(60+rnd_int(0,10),%.1f,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());' % py)
     L.append('      npc_set_formation(1001+$$,$$+1);')
     L.append('    };')
     # No-arg form uses the already-set LeaderId directly; the unit-id form
@@ -235,6 +302,11 @@ def build(t, rank):
     L.append('  };')
     for w in range(1, total + 1):
         L.extend(spawn_handler(w, t['diff']))
+    for w in range(2, total + 1):
+        dx, dz = advance_vector(zones, w)
+        L.extend(advance_handler(w, dx, dz))
+    if total > 1:
+        L.extend(arrived_handler(total))
     L.append('  onmessage("all_killed")')
     L.append('  {')
     L.append('    fire_message("wave_go");')

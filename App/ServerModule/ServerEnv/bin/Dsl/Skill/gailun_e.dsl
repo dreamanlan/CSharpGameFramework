@@ -6,10 +6,10 @@ skill(100)
 	};
   section(3000)
   {
-  	rotate(0, 3000, vector_3(0, 1440, 0));
+  	rotate(0, 3000, vector3(0, 1440, 0));
     self_effect(selfEffect,3000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     aoe_impact(0,0,0,0,false);
     aoe_impact(500,0,0,0,false);

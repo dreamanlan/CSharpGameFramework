@@ -99,9 +99,9 @@ namespace GmCommands
 
     /// <summary>
     /// create_game_object(name, prefab[, parent])[obj("varname")]{
-    ///     position(vector_3(x,y,z));
-    ///     rotation(vector_3(x,y,z));
-    ///     scale(vector_3(x,y,z));
+    ///     position(vector3(x,y,z));
+    ///     rotation(vector3(x,y,z));
+    ///     scale(vector3(x,y,z));
     ///     loadtimeout(1000);
     ///     disable("typename", "typename", ...);
     ///     remove("typename", "typename", ...);
@@ -297,9 +297,9 @@ namespace GmCommands
 
     /// <summary>
     /// set_transform(name, world_or_local){
-    ///     position(vector_3(x,y,z));
-    ///     rotation(vector_3(x,y,z));
-    ///     scale(vector_3(x,y,z));
+    ///     position(vector3(x,y,z));
+    ///     rotation(vector3(x,y,z));
+    ///     scale(vector3(x,y,z));
     /// };
     /// </summary>
     internal sealed class SetTransformCommand : AbstractExpression
@@ -380,9 +380,9 @@ namespace GmCommands
     }
     /// <summary>
     /// add_transform(name, world_or_local){
-    ///     position(vector_3(x,y,z));
-    ///     rotation(vector_3(x,y,z));
-    ///     scale(vector_3(x,y,z));
+    ///     position(vector3(x,y,z));
+    ///     rotation(vector3(x,y,z));
+    ///     scale(vector3(x,y,z));
     /// };
     /// </summary>
     internal sealed class AddTransformCommand : AbstractExpression

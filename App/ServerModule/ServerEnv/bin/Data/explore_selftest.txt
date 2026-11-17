@@ -1,6 +1,6 @@
 ﻿EXPLORE_SELFTEST
 grids=64 events=148
-table_path=D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\Tables\Server\WorldEvent.dat reader=TableConfig.WorldEventProvider
+table_path=d:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\Tables\Server\WorldEvent.dat reader=TableConfig.WorldEventProvider
 cooldown_ms=2000 max_speed=18 tolerance=1.6 max_jump=16
 hit_exact=True hit_at_radius_edge=True miss_outside_radius=True
 claimed_blocked=True closed_blocked=True

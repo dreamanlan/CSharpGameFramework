@@ -33,10 +33,10 @@ story(skill_main)
     @anniTargetId=$senderObj.TargetActorId;
     if(@anniTargetId<=0){
       @anniTargetId = @anniId;
-      @anniPos = calc_offset(@anniTargetId,0,vector_3(0,0,2));
+      @anniPos = calc_offset(@anniTargetId,0,vector3(0,0,2));
       @anniDir=calc_dir(@anniId,0);
     }else{
-      @anniPos = calc_offset(@anniTargetId,@anniId,vector_3(0,0,-1));
+      @anniPos = calc_offset(@anniTargetId,@anniId,vector3(0,0,-1));
       @anniDir=calc_dir(@anniTargetId,@anniId);
     };
     log("summon_bear:{0} {1} {2}",@anniId,@anniPos,@anniDir);

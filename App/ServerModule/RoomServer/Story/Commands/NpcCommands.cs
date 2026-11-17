@@ -10,7 +10,7 @@ using ScriptableFrameworkMessage;
 namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
-    /// create_npc(npc_unit_id,vector_3(x,y,z),dir,camp,tableId[,ai,string_list("param1 param2 param3 ..."),leaderId])[objid("@objid")];
+    /// create_npc(npc_unit_id,vector3(x,y,z),dir,camp,tableId[,ai,string_list("param1 param2 param3 ..."),leaderId])[objid("@objid")];
     /// </summary>
     public class CreateNpcCommand : AbstractExpression
     {
@@ -186,7 +186,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npc_move(npc_unit_id,vector_3(x,y,z));
+    /// npc_move(npc_unit_id,vector3(x,y,z));
     /// </summary>
     public class NpcMoveCommand : SimpleExpressionBase
     {
@@ -222,7 +222,7 @@ namespace ScriptableFramework.Story.Commands
         }
     }
     /// <summary>
-    /// npc_move_with_waypoints(npc_unit_id,vector_3_list("1 2 3 4 5 6"));
+    /// npc_move_with_waypoints(npc_unit_id,vector3_list("1 2 3 4 5 6"));
     /// </summary>
     public class NpcMoveWithWaypointsCommand : SimpleExpressionBase
     {

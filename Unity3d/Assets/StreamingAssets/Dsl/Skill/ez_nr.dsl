@@ -6,7 +6,7 @@ skill(117)
     adjust_section_duration("anim",100);
     self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     send_story_message(50,"ez_skill_r");
   };

@@ -54,7 +54,7 @@ story(story_main)
       loop(32){
 	      $monsterInfo = get_monster_info(1,$$);
 	      if(!is_null($monsterInfo)){
-	      	create_npc(1006+$$,vector_3($monsterInfo.x,0,$monsterInfo.y),$monsterInfo.dir*3.1415926/180,2,$monsterInfo.actorID,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
+	      	create_npc(1006+$$,vector3($monsterInfo.x,0,$monsterInfo.y),$monsterInfo.dir*3.1415926/180,2,$monsterInfo.actorID,"ai_normal",string_list("Ai/ailogic_normal.dsl"));
 	      };
 	    };
     };

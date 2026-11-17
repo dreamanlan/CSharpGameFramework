@@ -205,19 +205,19 @@ skilltemplate("5球子弹技")
     //adjust_section_duration("anim",100);
     self_effect(selfEffect,1000,"hit",0);
     emit_effect(emitEffect,"hit",0,15,0){
-      transform(vector_3(-2,2,0),eular(0,-60,0),vector_3(0.3,0.3,0.3));
+      transform(vector3(-2,2,0),eular(0,-60,0),vector3(0.3,0.3,0.3));
     };
     emit_effect(emitEffect,"hit",0,15,150){
-      transform(vector_3(-1,2,0),eular(0,-30,0),vector_3(0.3,0.3,0.3));
+      transform(vector3(-1,2,0),eular(0,-30,0),vector3(0.3,0.3,0.3));
     };
     emit_effect(emitEffect,"hit",0,15,200){
-      transform(vector_3(0,2,0));
+      transform(vector3(0,2,0));
     };
     emit_effect(emitEffect,"hit",0,15,150){
-      transform(vector_3(1,2,0),eular(0,30,0),vector_3(0.3,0.3,0.3));
+      transform(vector3(1,2,0),eular(0,30,0),vector3(0.3,0.3,0.3));
     };
     emit_effect(emitEffect,"hit",0,15,0){
-      transform(vector_3(2,2,0),eular(0,60,0),vector_3(0.3,0.3,0.3));
+      transform(vector3(2,2,0),eular(0,60,0),vector3(0.3,0.3,0.3));
     };
   };   
   emitskill

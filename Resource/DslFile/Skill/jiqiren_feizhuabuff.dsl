@@ -6,10 +6,10 @@ skill(116)
     animation("Stand");
     self_effect(selfEffect,1000,"eyes",0)
     {
-      transform(vector_3(0,1,0));
+      transform(vector3(0,1,0));
     };
     face_to_target(0,100);
-    charge(200,10,1,vector_3(-1,0,-1),0);
+    charge(200,10,1,vector3(-1,0,-1),0);
     damage(0);
     add_impact_to_self(0,10002);
   };

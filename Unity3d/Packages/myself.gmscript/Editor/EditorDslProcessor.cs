@@ -23,7 +23,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 internal sealed class EditorDslEditWindow : EditorWindow
 {
-    [MenuItem("Tests/DSL脚本工具/DSL编辑器命令", false, 9999)]
+    [MenuItem("Dsl资源工具/编辑器命令", false, 199)]
     internal static void InitWindowAndShowCommand()
     {
         EditorDslEditWindow window = (EditorDslEditWindow) EditorWindow.GetWindow(typeof(EditorDslEditWindow));
@@ -32,7 +32,7 @@ internal sealed class EditorDslEditWindow : EditorWindow
         EditorUtility.ClearProgressBar();
         window.ShowCommand();
     }
-    [MenuItem("Tests/DSL脚本工具/DSL资源工具", false, 10000)]
+    [MenuItem("Dsl资源工具/资源处理", false, 200)]
     internal static void InitWindow()
     {
         EditorDslEditWindow window = (EditorDslEditWindow)EditorWindow.GetWindow(typeof(EditorDslEditWindow));
@@ -2653,8 +2653,8 @@ internal sealed class EditorDslProcessor
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(string), Value = v, StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);
         }
-        else if (id == "int_list") {
-            //int_list(name, val);
+        else if (id == "intlist") {
+            //intlist(name, val);
             var v = val.Split(s_NumberListSeps, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<int>();
             foreach (var str in v) {
@@ -2701,8 +2701,8 @@ internal sealed class EditorDslProcessor
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(List<ulong>), Value = BoxedValue.FromObject(list), StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);
         }
-        else if (id == "float_list") {
-            //float_list(name, val);
+        else if (id == "floatlist") {
+            //floatlist(name, val);
             var v = val.Split(s_NumberListSeps, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<float>();
             foreach (var str in v) {
@@ -2725,8 +2725,8 @@ internal sealed class EditorDslProcessor
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(List<double>), Value = BoxedValue.FromObject(list), StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);
         }
-        else if (id == "string_list") {
-            //string_list(name, val);
+        else if (id == "stringlist") {
+            //stringlist(name, val);
             var v = val.Split(s_StringListSeps, StringSplitOptions.RemoveEmptyEntries);
             m_Params[key] = new EditorDslProcessorUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = BoxedValue.FromObject(v), StringValue = val, Caption = caption, Tooltip = tooltip };
             m_ParamNames.Add(key);
