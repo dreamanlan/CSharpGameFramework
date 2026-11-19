@@ -9,6 +9,18 @@ story(auto_battle)
     // The grid id is sent by each per-scene story (it knows its own tile).
     fire_message("report_pos");
   };
+  // Clicking the ground sends "move_to" from Game.cs. All 640 battlefield
+  // scenes share this ClientDslFile, so one handler here covers every one.
+  // Resolve the leader by unitId at click time: PluginFramework.LeaderId is a
+  // cached objId that survives entity teardown/rebuild between battle rounds,
+  // so get_leader_id() can point at an already destroyed actor (obj_move then
+  // silently no-ops on GetEntityById). unit_id_2_obj_id(1000) looks up the
+  // live player each time, matching how battle_main sets the leader.
+  // obj_move switches the AI to MoveCommand; it returns to Idle on arrival.
+  onmessage("move_to")params($x,$y,$z)
+  {
+    obj_move(unit_id_2_obj_id(1000),vector3($x,$y,$z));
+  };
   onmessage("report_pos")
   {
     $obj = get_leader_id();

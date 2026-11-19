@@ -1,150 +1,642 @@
 string	string	string	float	float	float	int32	string	string
 id	grid_id	era	x	z	radius	reward	token	title
-ev_r0c0_0	r0c0	flood	312.0	272.0	8.9	76	frag_r0c0_0	冰盖裂隙：C 大洪水
-ev_r0c0_1	r0c0	flood	170.0	402.0	8.9	76	frag_r0c0_1	冰盖裂隙：C 大洪水
-ev_r0c1_0	r0c1	flood	366.0	172.0	8.9	160	frag_r0c1_0	方舟残骸：C 大洪水
-ev_r0c1_1	r0c1	flood	288.0	266.0	8.9	160	frag_r0c1_1	方舟残骸：C 大洪水
-ev_r0c1_2	r0c1	flood	186.0	320.0	8.9	160	frag_r0c1_2	方舟残骸：C 大洪水
-ev_r0c2_0	r0c2	flood	370.0	118.0	8.9	76	frag_r0c2_0	亚拉腊雪线：C 大洪水
-ev_r0c2_1	r0c2	flood	306.0	176.0	8.9	76	frag_r0c2_1	亚拉腊雪线：C 大洪水
-ev_r0c3_0	r0c3	flood	210.0	148.0	8.9	76	frag_r0c3_0	洪水冲刷谷：C 大洪水
-ev_r0c3_1	r0c3	flood	400.0	352.0	8.9	76	frag_r0c3_1	洪水冲刷谷：C 大洪水
-ev_r0c4_0	r0c4	prediluvian	382.0	100.0	8.9	100	frag_r0c4_0	火星信标：A 降临与设施 · G 回归
-ev_r0c4_1	r0c4	prediluvian	370.0	414.0	8.9	100	frag_r0c4_1	火星信标：A 降临与设施 · G 回归
-ev_r0c5_0	r0c5	prediluvian	280.0	130.0	8.9	100	frag_r0c5_0	废弃中转站：A 降临与设施 · G 回归
-ev_r0c5_1	r0c5	prediluvian	138.0	154.0	8.9	100	frag_r0c5_1	废弃中转站：A 降临与设施 · G 回归
-ev_r0c6_0	r0c6	prediluvian	330.0	224.0	8.9	200	frag_r0c6_0	月球背面：A 降临与设施 · G 回归
-ev_r0c6_1	r0c6	prediluvian	142.0	346.0	8.9	200	frag_r0c6_1	月球背面：A 降临与设施 · G 回归
-ev_r0c6_2	r0c6	prediluvian	418.0	372.0	8.9	200	frag_r0c6_2	月球背面：A 降临与设施 · G 回归
-ev_r0c7_0	r0c7	prediluvian	266.0	192.0	8.9	200	frag_r0c7_0	归来之门：A 降临与设施 · G 回归
-ev_r0c7_1	r0c7	prediluvian	152.0	208.0	8.9	200	frag_r0c7_1	归来之门：A 降临与设施 · G 回归
-ev_r0c7_2	r0c7	prediluvian	228.0	306.0	8.9	200	frag_r0c7_2	归来之门：A 降临与设施 · G 回归
-ev_r1c0_0	r1c0	flood	182.0	132.0	8.9	76	frag_r1c0_0	幸存者营地：C 大洪水
-ev_r1c0_1	r1c0	flood	106.0	248.0	8.9	76	frag_r1c0_1	幸存者营地：C 大洪水
-ev_r1c1_0	r1c1	flood	392.0	138.0	8.9	76	frag_r1c1_0	彩虹之约台：C 大洪水
-ev_r1c1_1	r1c1	flood	118.0	378.0	8.9	76	frag_r1c1_1	彩虹之约台：C 大洪水
-ev_r1c2_0	r1c2	flood	280.0	118.0	8.9	76	frag_r1c2_0	泥板沉层：C 大洪水
-ev_r1c2_1	r1c2	flood	378.0	348.0	8.9	76	frag_r1c2_1	泥板沉层：C 大洪水
-ev_r1c3_0	r1c3	flood	364.0	116.0	8.9	76	frag_r1c3_0	泄密者之径：C 大洪水
-ev_r1c3_1	r1c3	flood	198.0	274.0	8.9	76	frag_r1c3_1	泄密者之径：C 大洪水
-ev_r1c4_0	r1c4	prediluvian	104.0	222.0	8.9	100	frag_r1c4_0	第十二天体：A 降临与设施 · G 回归
-ev_r1c4_1	r1c4	prediluvian	236.0	408.0	8.9	100	frag_r1c4_1	第十二天体：A 降临与设施 · G 回归
-ev_r1c5_0	r1c5	prediluvian	154.0	414.0	8.9	100	frag_r1c5_0	轨道解码台：A 降临与设施 · G 回归
-ev_r1c5_1	r1c5	prediluvian	312.0	414.0	8.9	100	frag_r1c5_1	轨道解码台：A 降临与设施 · G 回归
-ev_r1c6_0	r1c6	prediluvian	268.0	194.0	8.9	200	frag_r1c6_0	尼比鲁观测台：A 降临与设施 · G 回归
-ev_r1c6_1	r1c6	prediluvian	270.0	320.0	8.9	200	frag_r1c6_1	尼比鲁观测台：A 降临与设施 · G 回归
-ev_r1c6_2	r1c6	prediluvian	348.0	412.0	8.9	200	frag_r1c6_2	尼比鲁观测台：A 降临与设施 · G 回归
-ev_r1c7_0	r1c7	prediluvian	358.0	210.0	8.9	100	frag_r1c7_0	天外锚点：A 降临与设施 · G 回归
-ev_r1c7_1	r1c7	prediluvian	284.0	318.0	8.9	100	frag_r1c7_1	天外锚点：A 降临与设施 · G 回归
-ev_r2c0_0	r2c0	sumerian	158.0	102.0	8.9	88	frag_r2c0_0	巴勒贝克巨石：E 设施 · F 神族战争
-ev_r2c0_1	r2c0	sumerian	164.0	284.0	8.9	88	frag_r2c0_1	巴勒贝克巨石：E 设施 · F 神族战争
-ev_r2c1_0	r2c1	sumerian	176.0	230.0	8.9	180	frag_r2c1_0	西奈太空港：E 设施 · F 神族战争
-ev_r2c1_1	r2c1	sumerian	314.0	256.0	8.9	180	frag_r2c1_1	西奈太空港：E 设施 · F 神族战争
-ev_r2c1_2	r2c1	sumerian	334.0	368.0	8.9	180	frag_r2c1_2	西奈太空港：E 设施 · F 神族战争
-ev_r2c2_0	r2c2	sumerian	210.0	148.0	8.9	88	frag_r2c2_0	语言之塔：E 设施 · F 神族战争
-ev_r2c2_1	r2c2	sumerian	400.0	352.0	8.9	88	frag_r2c2_1	语言之塔：E 设施 · F 神族战争
-ev_r2c3_0	r2c3	sumerian	382.0	100.0	8.9	88	frag_r2c3_0	变乱碑：E 设施 · F 神族战争
-ev_r2c3_1	r2c3	sumerian	370.0	414.0	8.9	88	frag_r2c3_1	变乱碑：E 设施 · F 神族战争
-ev_r2c4_0	r2c4	sumer	320.0	98.0	8.9	140	frag_r2c4_0	埃利都：D 文明与权能
-ev_r2c4_1	r2c4	sumer	210.0	260.0	8.9	140	frag_r2c4_1	埃利都：D 文明与权能
-ev_r2c4_2	r2c4	sumer	200.0	398.0	8.9	140	frag_r2c4_2	埃利都：D 文明与权能
-ev_r2c5_0	r2c5	sumer	224.0	142.0	8.9	64	frag_r2c5_0	尼普尔中枢：D 文明与权能
-ev_r2c5_1	r2c5	sumer	334.0	318.0	8.9	64	frag_r2c5_1	尼普尔中枢：D 文明与权能
-ev_r2c6_0	r2c6	sumer	368.0	250.0	8.9	64	frag_r2c6_0	乌鲁克城墙：D 文明与权能
-ev_r2c6_1	r2c6	sumer	100.0	262.0	8.9	64	frag_r2c6_1	乌鲁克城墙：D 文明与权能
-ev_r2c7_0	r2c7	sumer	204.0	198.0	8.9	140	frag_r2c7_0	巴别塔：D 文明与权能
-ev_r2c7_1	r2c7	sumer	326.0	214.0	8.9	140	frag_r2c7_1	巴别塔：D 文明与权能
-ev_r2c7_2	r2c7	sumer	278.0	334.0	8.9	140	frag_r2c7_2	巴别塔：D 文明与权能
-ev_r3c0_0	r3c0	sumerian	392.0	138.0	8.9	88	frag_r3c0_0	罪恶之城：E 设施 · F 神族战争
-ev_r3c0_1	r3c0	sumerian	118.0	378.0	8.9	88	frag_r3c0_1	罪恶之城：E 设施 · F 神族战争
-ev_r3c1_0	r3c1	sumerian	280.0	118.0	8.9	88	frag_r3c1_0	死海玻璃原：E 设施 · F 神族战争
-ev_r3c1_1	r3c1	sumerian	378.0	348.0	8.9	88	frag_r3c1_1	死海玻璃原：E 设施 · F 神族战争
-ev_r3c2_0	r3c2	sumerian	364.0	116.0	8.9	88	frag_r3c2_0	所多玛残迹：E 设施 · F 神族战争
-ev_r3c2_1	r3c2	sumerian	198.0	274.0	8.9	88	frag_r3c2_1	所多玛残迹：E 设施 · F 神族战争
-ev_r3c3_0	r3c3	sumerian	104.0	222.0	8.9	88	frag_r3c3_0	流亡之路：E 设施 · F 神族战争
-ev_r3c3_1	r3c3	sumerian	236.0	408.0	8.9	88	frag_r3c3_1	流亡之路：E 设施 · F 神族战争
-ev_r3c4_0	r3c4	sumer	102.0	162.0	8.9	140	frag_r3c4_0	王表库：D 文明与权能
-ev_r3c4_1	r3c4	sumer	112.0	244.0	8.9	140	frag_r3c4_1	王表库：D 文明与权能
-ev_r3c4_2	r3c4	sumer	376.0	420.0	8.9	140	frag_r3c4_2	王表库：D 文明与权能
-ev_r3c5_0	r3c5	sumer	268.0	194.0	8.9	140	frag_r3c5_0	Me 泥板库：D 文明与权能
-ev_r3c5_1	r3c5	sumer	270.0	320.0	8.9	140	frag_r3c5_1	Me 泥板库：D 文明与权能
-ev_r3c5_2	r3c5	sumer	348.0	412.0	8.9	140	frag_r3c5_2	Me 泥板库：D 文明与权能
-ev_r3c6_0	r3c6	sumer	358.0	210.0	8.9	64	frag_r3c6_0	伊南娜神殿：D 文明与权能
-ev_r3c6_1	r3c6	sumer	284.0	318.0	8.9	64	frag_r3c6_1	伊南娜神殿：D 文明与权能
-ev_r3c7_0	r3c7	sumer	378.0	308.0	8.9	64	frag_r3c7_0	两河渡口：D 文明与权能
-ev_r3c7_1	r3c7	sumer	108.1	388.2	8.5	64	frag_r3c7_1	两河渡口：D 文明与权能
-ev_r3c7_2	r3c7	sumer	122.0	392.0	8.0	64	frag_r3c7_2	两河渡口：D 文明与权能
-ev_r3c7_3	r3c7	sumer	104.0	402.0	8.0	64	frag_r3c7_3	两河渡口：D 文明与权能
-ev_r4c0_0	r4c0	prediluvian	176.0	230.0	8.9	180	frag_r4c0_0	吉萨大金字塔：E 设施 · F 神族战争
-ev_r4c0_1	r4c0	prediluvian	314.0	256.0	8.9	180	frag_r4c0_1	吉萨大金字塔：E 设施 · F 神族战争
-ev_r4c0_2	r4c0	prediluvian	334.0	368.0	8.9	180	frag_r4c0_2	吉萨大金字塔：E 设施 · F 神族战争
-ev_r4c1_0	r4c1	prediluvian	210.0	148.0	8.9	88	frag_r4c1_0	狮身人面：E 设施 · F 神族战争
-ev_r4c1_1	r4c1	prediluvian	400.0	352.0	8.9	88	frag_r4c1_1	狮身人面：E 设施 · F 神族战争
-ev_r4c2_0	r4c2	prediluvian	382.0	100.0	8.9	88	frag_r4c2_0	金字塔战争场：E 设施 · F 神族战争
-ev_r4c2_1	r4c2	prediluvian	370.0	414.0	8.9	88	frag_r4c2_1	金字塔战争场：E 设施 · F 神族战争
-ev_r4c3_0	r4c3	prediluvian	280.0	130.0	8.9	88	frag_r4c3_0	顶端晶石：E 设施 · F 神族战争
-ev_r4c3_1	r4c3	prediluvian	138.0	154.0	8.9	88	frag_r4c3_1	顶端晶石：E 设施 · F 神族战争
-ev_r4c4_0	r4c4	prediluvian	330.0	224.0	8.9	160	frag_r4c4_0	阿布祖金矿：A 降临 · B 造人
-ev_r4c4_1	r4c4	prediluvian	142.0	346.0	8.9	160	frag_r4c4_1	阿布祖金矿：A 降临 · B 造人
-ev_r4c4_2	r4c4	prediluvian	418.0	372.0	8.9	160	frag_r4c4_2	阿布祖金矿：A 降临 · B 造人
-ev_r4c5_0	r4c5	prediluvian	368.0	250.0	8.9	76	frag_r4c5_0	采金竖井：A 降临 · B 造人
-ev_r4c5_1	r4c5	prediluvian	100.0	262.0	8.9	76	frag_r4c5_1	采金竖井：A 降临 · B 造人
-ev_r4c6_0	r4c6	prediluvian	370.0	284.0	8.9	76	frag_r4c6_0	伊吉吉矿坑：A 降临 · B 造人
-ev_r4c6_1	r4c6	prediluvian	184.0	346.0	8.9	76	frag_r4c6_1	伊吉吉矿坑：A 降临 · B 造人
-ev_r4c7_0	r4c7	prediluvian	132.0	224.0	8.9	76	frag_r4c7_0	基因工房：A 降临 · B 造人
-ev_r4c7_1	r4c7	prediluvian	222.0	348.0	8.9	76	frag_r4c7_1	基因工房：A 降临 · B 造人
-ev_r5c0_0	r5c0	prediluvian	280.0	118.0	8.9	88	frag_r5c0_0	孟菲斯：E 设施 · F 神族战争
-ev_r5c0_1	r5c0	prediluvian	378.0	348.0	8.9	88	frag_r5c0_1	孟菲斯：E 设施 · F 神族战争
-ev_r5c1_0	r5c1	prediluvian	364.0	116.0	8.9	88	frag_r5c1_0	拉的神殿：E 设施 · F 神族战争
-ev_r5c1_1	r5c1	prediluvian	198.0	274.0	8.9	88	frag_r5c1_1	拉的神殿：E 设施 · F 神族战争
-ev_r5c2_0	r5c2	prediluvian	104.0	222.0	8.9	88	frag_r5c2_0	Zep Tepi 标记：E 设施 · F 神族战争
-ev_r5c2_1	r5c2	prediluvian	236.0	408.0	8.9	88	frag_r5c2_1	Zep Tepi 标记：E 设施 · F 神族战争
-ev_r5c3_0	r5c3	prediluvian	154.0	414.0	8.9	88	frag_r5c3_0	尼罗河台地：E 设施 · F 神族战争
-ev_r5c3_1	r5c3	prediluvian	312.0	414.0	8.9	88	frag_r5c3_1	尼罗河台地：E 设施 · F 神族战争
-ev_r5c4_0	r5c4	prediluvian	268.0	194.0	8.9	160	frag_r5c4_0	伊甸园：A 降临 · B 造人
-ev_r5c4_1	r5c4	prediluvian	270.0	320.0	8.9	160	frag_r5c4_1	伊甸园：A 降临 · B 造人
-ev_r5c4_2	r5c4	prediluvian	348.0	412.0	8.9	160	frag_r5c4_2	伊甸园：A 降临 · B 造人
-ev_r5c5_0	r5c5	prediluvian	358.0	210.0	8.9	76	frag_r5c5_0	拿非利人遗迹：A 降临 · B 造人
-ev_r5c5_1	r5c5	prediluvian	284.0	318.0	8.9	76	frag_r5c5_1	拿非利人遗迹：A 降临 · B 造人
-ev_r5c6_0	r5c6	prediluvian	378.0	308.0	8.9	76	frag_r5c6_0	宁胡尔萨格营地：A 降临 · B 造人
-ev_r5c6_1	r5c6	prediluvian	108.1	388.2	8.5	76	frag_r5c6_1	宁胡尔萨格营地：A 降临 · B 造人
-ev_r5c6_2	r5c6	prediluvian	122.0	392.0	8.0	76	frag_r5c6_2	宁胡尔萨格营地：A 降临 · B 造人
-ev_r5c6_3	r5c6	prediluvian	104.0	402.0	8.0	76	frag_r5c6_3	宁胡尔萨格营地：A 降临 · B 造人
-ev_r5c7_0	r5c7	prediluvian	366.0	246.0	8.9	76	frag_r5c7_0	人类初生地：A 降临 · B 造人
-ev_r5c7_1	r5c7	prediluvian	226.0	320.0	8.9	76	frag_r5c7_1	人类初生地：A 降临 · B 造人
-ev_r6c0_0	r6c0	postdiluvian	210.0	148.0	8.9	88	frag_r6c0_0	太阳门：E 设施 · F 失落国度
-ev_r6c0_1	r6c0	postdiluvian	400.0	352.0	8.9	88	frag_r6c0_1	太阳门：E 设施 · F 失落国度
-ev_r6c1_0	r6c1	postdiluvian	382.0	100.0	8.9	88	frag_r6c1_0	萨克塞华曼：E 设施 · F 失落国度
-ev_r6c1_1	r6c1	postdiluvian	370.0	414.0	8.9	88	frag_r6c1_1	萨克塞华曼：E 设施 · F 失落国度
-ev_r6c2_0	r6c2	postdiluvian	280.0	130.0	8.9	88	frag_r6c2_0	冶金炉场：E 设施 · F 失落国度
-ev_r6c2_1	r6c2	postdiluvian	138.0	154.0	8.9	88	frag_r6c2_1	冶金炉场：E 设施 · F 失落国度
-ev_r6c3_0	r6c3	postdiluvian	224.0	142.0	8.9	88	frag_r6c3_0	维拉科查台：E 设施 · F 失落国度
-ev_r6c3_1	r6c3	postdiluvian	334.0	318.0	8.9	88	frag_r6c3_1	维拉科查台：E 设施 · F 失落国度
-ev_r6c4_0	r6c4	ancient	368.0	250.0	8.9	76	frag_r6c4_0	复活节岛摩艾：E 设施 · G 回归
-ev_r6c4_1	r6c4	ancient	100.0	262.0	8.9	76	frag_r6c4_1	复活节岛摩艾：E 设施 · G 回归
-ev_r6c5_0	r6c5	ancient	370.0	284.0	8.9	76	frag_r6c5_0	巨石阵：E 设施 · G 回归
-ev_r6c5_1	r6c5	ancient	184.0	346.0	8.9	76	frag_r6c5_1	巨石阵：E 设施 · G 回归
-ev_r6c6_0	r6c6	ancient	364.0	168.0	8.9	160	frag_r6c6_0	远洋导航标：E 设施 · G 回归
-ev_r6c6_1	r6c6	ancient	390.0	266.0	8.9	160	frag_r6c6_1	远洋导航标：E 设施 · G 回归
-ev_r6c6_2	r6c6	ancient	178.0	376.0	8.9	160	frag_r6c6_2	远洋导航标：E 设施 · G 回归
-ev_r6c7_0	r6c7	ancient	324.0	182.0	8.9	76	frag_r6c7_0	星象对齐台：E 设施 · G 回归
-ev_r6c7_1	r6c7	ancient	92.0	198.0	8.9	76	frag_r6c7_1	星象对齐台：E 设施 · G 回归
-ev_r7c0_0	r7c0	postdiluvian	286.0	134.0	8.9	180	frag_r7c0_0	水晶头骨窟：E 设施 · F 失落国度
-ev_r7c0_1	r7c0	postdiluvian	284.0	226.0	8.9	180	frag_r7c0_1	水晶头骨窟：E 设施 · F 失落国度
-ev_r7c0_2	r7c0	postdiluvian	238.0	388.0	8.9	180	frag_r7c0_2	水晶头骨窟：E 设施 · F 失落国度
-ev_r7c1_0	r7c1	postdiluvian	104.0	222.0	8.9	88	frag_r7c1_0	羽蛇神殿：E 设施 · F 失落国度
-ev_r7c1_1	r7c1	postdiluvian	236.0	408.0	8.9	88	frag_r7c1_1	羽蛇神殿：E 设施 · F 失落国度
-ev_r7c2_0	r7c2	postdiluvian	154.0	414.0	8.9	88	frag_r7c2_0	玛雅观星台：E 设施 · F 失落国度
-ev_r7c2_1	r7c2	postdiluvian	312.0	414.0	8.9	88	frag_r7c2_1	玛雅观星台：E 设施 · F 失落国度
-ev_r7c3_0	r7c3	postdiluvian	182.0	96.0	8.9	88	frag_r7c3_0	失落的国度：E 设施 · F 失落国度
-ev_r7c3_1	r7c3	postdiluvian	406.0	242.0	8.9	88	frag_r7c3_1	失落的国度：E 设施 · F 失落国度
-ev_r7c4_0	r7c4	ancient	358.0	210.0	8.9	76	frag_r7c4_0	洪前航图：E 设施 · G 回归
-ev_r7c4_1	r7c4	ancient	284.0	318.0	8.9	76	frag_r7c4_1	洪前航图：E 设施 · G 回归
-ev_r7c5_0	r7c5	ancient	378.0	308.0	8.9	76	frag_r7c5_0	孤岛遗迹：E 设施 · G 回归
-ev_r7c5_1	r7c5	ancient	108.1	388.2	8.5	76	frag_r7c5_1	孤岛遗迹：E 设施 · G 回归
-ev_r7c5_2	r7c5	ancient	122.0	392.0	8.0	76	frag_r7c5_2	孤岛遗迹：E 设施 · G 回归
-ev_r7c5_3	r7c5	ancient	104.0	402.0	8.0	76	frag_r7c5_3	孤岛遗迹：E 设施 · G 回归
-ev_r7c6_0	r7c6	ancient	366.0	246.0	8.9	76	frag_r7c6_0	深潜点：E 设施 · G 回归
-ev_r7c6_1	r7c6	ancient	226.0	320.0	8.9	76	frag_r7c6_1	深潜点：E 设施 · G 回归
-ev_r7c7_0	r7c7	ancient	200.0	240.0	8.9	76	frag_r7c7_0	归航信标：E 设施 · G 回归
-ev_r7c7_1	r7c7	ancient	418.0	386.0	8.9	76	frag_r7c7_1	归航信标：E 设施 · G 回归
+ev_r0c0_s00_0	r0c0_s00	flood	16.0	16.0	8.9	64	branch_r0c0_s00	冰盖裂隙：flood勘察点 01
+ev_r0c0_s01_1	r0c0_s01	flood	496.0	16.0	8.9	64	branch_r0c0_s01	冰盖裂隙：flood勘察点 02
+ev_r0c0_s02_2	r0c0_s02	flood	240.0	48.0	8.9	64	branch_r0c0_s02	冰盖裂隙：flood勘察点 03
+ev_r0c0_s03_3	r0c0_s03	flood	16.0	240.0	8.9	64	branch_r0c0_s03	冰盖裂隙：flood勘察点 04
+ev_r0c0_s04_4	r0c0_s04	flood	496.0	240.0	8.9	64	branch_r0c0_s04	冰盖裂隙：flood勘察点 05
+ev_r0c0_s05_5	r0c0_s05	flood	312.0	272.0	8.9	76	frag_r0c0_0	冰盖裂隙：C 大洪水
+ev_r0c0_s06_6	r0c0_s06	flood	170.0	402.0	8.9	76	frag_r0c0_1	冰盖裂隙：C 大洪水
+ev_r0c0_s07_7	r0c0_s07	flood	336.0	464.0	8.9	64	branch_r0c0_s07	冰盖裂隙：flood勘察点 08
+ev_r0c0_s08_8	r0c0_s08	flood	16.0	496.0	8.9	64	branch_r0c0_s08	冰盖裂隙：flood勘察点 09
+ev_r0c0_s09_9	r0c0_s09	flood	496.0	496.0	8.9	64	branch_r0c0_s09	冰盖裂隙：flood勘察点 10
+ev_r0c1_s00_10	r0c1_s00	flood	16.0	16.0	8.9	64	branch_r0c1_s00	方舟残骸：flood勘察点 01
+ev_r0c1_s01_11	r0c1_s01	flood	240.0	16.0	8.9	64	branch_r0c1_s01	方舟残骸：flood勘察点 02
+ev_r0c1_s02_12	r0c1_s02	flood	496.0	16.0	8.9	64	branch_r0c1_s02	方舟残骸：flood勘察点 03
+ev_r0c1_s03_13	r0c1_s03	flood	366.0	172.0	8.9	160	frag_r0c1_0	方舟残骸：C 大洪水
+ev_r0c1_s04_14	r0c1_s04	flood	16.0	208.0	8.9	64	branch_r0c1_s04	方舟残骸：flood勘察点 05
+ev_r0c1_s05_15	r0c1_s05	flood	288.0	266.0	8.9	160	frag_r0c1_1	方舟残骸：C 大洪水
+ev_r0c1_s06_16	r0c1_s06	flood	186.0	320.0	8.9	160	frag_r0c1_2	方舟残骸：C 大洪水
+ev_r0c1_s07_17	r0c1_s07	flood	16.0	496.0	8.9	64	branch_r0c1_s07	方舟残骸：flood勘察点 08
+ev_r0c1_s08_18	r0c1_s08	flood	304.0	496.0	8.9	64	branch_r0c1_s08	方舟残骸：flood勘察点 09
+ev_r0c1_s09_19	r0c1_s09	flood	496.0	496.0	8.9	64	branch_r0c1_s09	方舟残骸：flood勘察点 10
+ev_r0c2_s00_20	r0c2_s00	flood	16.0	16.0	8.9	64	branch_r0c2_s00	亚拉腊雪线：flood勘察点 01
+ev_r0c2_s01_21	r0c2_s01	flood	208.0	16.0	8.9	64	branch_r0c2_s01	亚拉腊雪线：flood勘察点 02
+ev_r0c2_s02_22	r0c2_s02	flood	496.0	16.0	8.9	64	branch_r0c2_s02	亚拉腊雪线：flood勘察点 03
+ev_r0c2_s03_23	r0c2_s03	flood	370.0	118.0	8.9	76	frag_r0c2_0	亚拉腊雪线：C 大洪水
+ev_r0c2_s04_24	r0c2_s04	flood	306.0	176.0	8.9	76	frag_r0c2_1	亚拉腊雪线：C 大洪水
+ev_r0c2_s05_25	r0c2_s05	flood	80.0	240.0	8.9	64	branch_r0c2_s05	亚拉腊雪线：flood勘察点 06
+ev_r0c2_s06_26	r0c2_s06	flood	496.0	272.0	8.9	64	branch_r0c2_s06	亚拉腊雪线：flood勘察点 07
+ev_r0c2_s07_27	r0c2_s07	flood	240.0	432.0	8.9	64	branch_r0c2_s07	亚拉腊雪线：flood勘察点 08
+ev_r0c2_s08_28	r0c2_s08	flood	16.0	496.0	8.9	64	branch_r0c2_s08	亚拉腊雪线：flood勘察点 09
+ev_r0c2_s09_29	r0c2_s09	flood	496.0	496.0	8.9	64	branch_r0c2_s09	亚拉腊雪线：flood勘察点 10
+ev_r0c3_s00_30	r0c3_s00	flood	16.0	16.0	8.9	64	branch_r0c3_s00	洪水冲刷谷：flood勘察点 01
+ev_r0c3_s01_31	r0c3_s01	flood	496.0	16.0	8.9	64	branch_r0c3_s01	洪水冲刷谷：flood勘察点 02
+ev_r0c3_s02_32	r0c3_s02	flood	368.0	112.0	8.9	64	branch_r0c3_s02	洪水冲刷谷：flood勘察点 03
+ev_r0c3_s03_33	r0c3_s03	flood	210.0	148.0	8.9	76	frag_r0c3_0	洪水冲刷谷：C 大洪水
+ev_r0c3_s04_34	r0c3_s04	flood	496.0	208.0	8.9	64	branch_r0c3_s04	洪水冲刷谷：flood勘察点 05
+ev_r0c3_s05_35	r0c3_s05	flood	16.0	272.0	8.9	64	branch_r0c3_s05	洪水冲刷谷：flood勘察点 06
+ev_r0c3_s06_36	r0c3_s06	flood	176.0	336.0	8.9	64	branch_r0c3_s06	洪水冲刷谷：flood勘察点 07
+ev_r0c3_s07_37	r0c3_s07	flood	400.0	352.0	8.9	76	frag_r0c3_1	洪水冲刷谷：C 大洪水
+ev_r0c3_s08_38	r0c3_s08	flood	16.0	496.0	8.9	64	branch_r0c3_s08	洪水冲刷谷：flood勘察点 09
+ev_r0c3_s09_39	r0c3_s09	flood	240.0	496.0	8.9	64	branch_r0c3_s09	洪水冲刷谷：flood勘察点 10
+ev_r0c4_s00_40	r0c4_s00	prediluvian	112.0	16.0	8.9	80	branch_r0c4_s00	火星信标：prediluvian勘察点 01
+ev_r0c4_s01_41	r0c4_s01	prediluvian	496.0	16.0	8.9	80	branch_r0c4_s01	火星信标：prediluvian勘察点 02
+ev_r0c4_s02_42	r0c4_s02	prediluvian	382.0	100.0	8.9	100	frag_r0c4_0	火星信标：A 降临与设施 · G 回归
+ev_r0c4_s03_43	r0c4_s03	prediluvian	208.0	240.0	8.9	80	branch_r0c4_s03	火星信标：prediluvian勘察点 04
+ev_r0c4_s04_44	r0c4_s04	prediluvian	496.0	240.0	8.9	80	branch_r0c4_s04	火星信标：prediluvian勘察点 05
+ev_r0c4_s05_45	r0c4_s05	prediluvian	16.0	272.0	8.9	80	branch_r0c4_s05	火星信标：prediluvian勘察点 06
+ev_r0c4_s06_46	r0c4_s06	prediluvian	370.0	414.0	8.9	100	frag_r0c4_1	火星信标：A 降临与设施 · G 回归
+ev_r0c4_s07_47	r0c4_s07	prediluvian	16.0	432.0	8.9	80	branch_r0c4_s07	火星信标：prediluvian勘察点 08
+ev_r0c4_s08_48	r0c4_s08	prediluvian	144.0	496.0	8.9	80	branch_r0c4_s08	火星信标：prediluvian勘察点 09
+ev_r0c4_s09_49	r0c4_s09	prediluvian	496.0	496.0	8.9	80	branch_r0c4_s09	火星信标：prediluvian勘察点 10
+ev_r0c5_s00_50	r0c5_s00	prediluvian	16.0	16.0	8.9	80	branch_r0c5_s00	废弃中转站：prediluvian勘察点 01
+ev_r0c5_s01_51	r0c5_s01	prediluvian	336.0	16.0	8.9	80	branch_r0c5_s01	废弃中转站：prediluvian勘察点 02
+ev_r0c5_s02_52	r0c5_s02	prediluvian	496.0	16.0	8.9	80	branch_r0c5_s02	废弃中转站：prediluvian勘察点 03
+ev_r0c5_s03_53	r0c5_s03	prediluvian	138.0	154.0	8.9	100	frag_r0c5_1	废弃中转站：A 降临与设施 · G 回归
+ev_r0c5_s04_54	r0c5_s04	prediluvian	280.0	130.0	8.9	100	frag_r0c5_0	废弃中转站：A 降临与设施 · G 回归
+ev_r0c5_s05_55	r0c5_s05	prediluvian	464.0	272.0	8.9	80	branch_r0c5_s05	废弃中转站：prediluvian勘察点 06
+ev_r0c5_s06_56	r0c5_s06	prediluvian	16.0	304.0	8.9	80	branch_r0c5_s06	废弃中转站：prediluvian勘察点 07
+ev_r0c5_s07_57	r0c5_s07	prediluvian	240.0	400.0	8.9	80	branch_r0c5_s07	废弃中转站：prediluvian勘察点 08
+ev_r0c5_s08_58	r0c5_s08	prediluvian	16.0	496.0	8.9	80	branch_r0c5_s08	废弃中转站：prediluvian勘察点 09
+ev_r0c5_s09_59	r0c5_s09	prediluvian	496.0	496.0	8.9	80	branch_r0c5_s09	废弃中转站：prediluvian勘察点 10
+ev_r0c6_s00_60	r0c6_s00	prediluvian	16.0	16.0	8.9	80	branch_r0c6_s00	月球背面：prediluvian勘察点 01
+ev_r0c6_s01_61	r0c6_s01	prediluvian	240.0	16.0	8.9	80	branch_r0c6_s01	月球背面：prediluvian勘察点 02
+ev_r0c6_s02_62	r0c6_s02	prediluvian	496.0	16.0	8.9	80	branch_r0c6_s02	月球背面：prediluvian勘察点 03
+ev_r0c6_s03_63	r0c6_s03	prediluvian	16.0	208.0	8.9	80	branch_r0c6_s03	月球背面：prediluvian勘察点 04
+ev_r0c6_s04_64	r0c6_s04	prediluvian	496.0	208.0	8.9	80	branch_r0c6_s04	月球背面：prediluvian勘察点 05
+ev_r0c6_s05_65	r0c6_s05	prediluvian	330.0	224.0	8.9	200	frag_r0c6_0	月球背面：A 降临与设施 · G 回归
+ev_r0c6_s06_66	r0c6_s06	prediluvian	142.0	346.0	8.9	200	frag_r0c6_1	月球背面：A 降临与设施 · G 回归
+ev_r0c6_s07_67	r0c6_s07	prediluvian	418.0	372.0	8.9	200	frag_r0c6_2	月球背面：A 降临与设施 · G 回归
+ev_r0c6_s08_68	r0c6_s08	prediluvian	16.0	496.0	8.9	80	branch_r0c6_s08	月球背面：prediluvian勘察点 09
+ev_r0c6_s09_69	r0c6_s09	prediluvian	272.0	496.0	8.9	80	branch_r0c6_s09	月球背面：prediluvian勘察点 10
+ev_r0c7_s00_70	r0c7_s00	prediluvian	16.0	16.0	8.9	80	branch_r0c7_s00	归来之门：prediluvian勘察点 01
+ev_r0c7_s01_71	r0c7_s01	prediluvian	240.0	16.0	8.9	80	branch_r0c7_s01	归来之门：prediluvian勘察点 02
+ev_r0c7_s02_72	r0c7_s02	prediluvian	496.0	16.0	8.9	80	branch_r0c7_s02	归来之门：prediluvian勘察点 03
+ev_r0c7_s03_73	r0c7_s03	prediluvian	152.0	208.0	8.9	200	frag_r0c7_1	归来之门：A 降临与设施 · G 回归
+ev_r0c7_s04_74	r0c7_s04	prediluvian	266.0	192.0	8.9	200	frag_r0c7_0	归来之门：A 降临与设施 · G 回归
+ev_r0c7_s05_75	r0c7_s05	prediluvian	496.0	272.0	8.9	80	branch_r0c7_s05	归来之门：prediluvian勘察点 06
+ev_r0c7_s06_76	r0c7_s06	prediluvian	228.0	306.0	8.9	200	frag_r0c7_2	归来之门：A 降临与设施 · G 回归
+ev_r0c7_s07_77	r0c7_s07	prediluvian	16.0	496.0	8.9	80	branch_r0c7_s07	归来之门：prediluvian勘察点 08
+ev_r0c7_s08_78	r0c7_s08	prediluvian	272.0	496.0	8.9	80	branch_r0c7_s08	归来之门：prediluvian勘察点 09
+ev_r0c7_s09_79	r0c7_s09	prediluvian	496.0	496.0	8.9	80	branch_r0c7_s09	归来之门：prediluvian勘察点 10
+ev_r1c0_s00_80	r1c0_s00	flood	16.0	16.0	8.9	64	branch_r1c0_s00	幸存者营地：flood勘察点 01
+ev_r1c0_s01_81	r1c0_s01	flood	304.0	16.0	8.9	64	branch_r1c0_s01	幸存者营地：flood勘察点 02
+ev_r1c0_s02_82	r1c0_s02	flood	496.0	16.0	8.9	64	branch_r1c0_s02	幸存者营地：flood勘察点 03
+ev_r1c0_s03_83	r1c0_s03	flood	182.0	132.0	8.9	76	frag_r1c0_0	幸存者营地：C 大洪水
+ev_r1c0_s04_84	r1c0_s04	flood	106.0	248.0	8.9	76	frag_r1c0_1	幸存者营地：C 大洪水
+ev_r1c0_s05_85	r1c0_s05	flood	400.0	240.0	8.9	64	branch_r1c0_s05	幸存者营地：flood勘察点 06
+ev_r1c0_s06_86	r1c0_s06	flood	304.0	368.0	8.9	64	branch_r1c0_s06	幸存者营地：flood勘察点 07
+ev_r1c0_s07_87	r1c0_s07	flood	16.0	432.0	8.9	64	branch_r1c0_s07	幸存者营地：flood勘察点 08
+ev_r1c0_s08_88	r1c0_s08	flood	208.0	496.0	8.9	64	branch_r1c0_s08	幸存者营地：flood勘察点 09
+ev_r1c0_s09_89	r1c0_s09	flood	496.0	496.0	8.9	64	branch_r1c0_s09	幸存者营地：flood勘察点 10
+ev_r1c1_s00_90	r1c1_s00	flood	16.0	16.0	8.9	64	branch_r1c1_s00	彩虹之约台：flood勘察点 01
+ev_r1c1_s01_91	r1c1_s01	flood	240.0	16.0	8.9	64	branch_r1c1_s01	彩虹之约台：flood勘察点 02
+ev_r1c1_s02_92	r1c1_s02	flood	392.0	138.0	8.9	76	frag_r1c1_0	彩虹之约台：C 大洪水
+ev_r1c1_s03_93	r1c1_s03	flood	16.0	208.0	8.9	64	branch_r1c1_s03	彩虹之约台：flood勘察点 04
+ev_r1c1_s04_94	r1c1_s04	flood	208.0	208.0	8.9	64	branch_r1c1_s04	彩虹之约台：flood勘察点 05
+ev_r1c1_s05_95	r1c1_s05	flood	496.0	304.0	8.9	64	branch_r1c1_s05	彩虹之约台：flood勘察点 06
+ev_r1c1_s06_96	r1c1_s06	flood	118.0	378.0	8.9	76	frag_r1c1_1	彩虹之约台：C 大洪水
+ev_r1c1_s07_97	r1c1_s07	flood	336.0	368.0	8.9	64	branch_r1c1_s07	彩虹之约台：flood勘察点 08
+ev_r1c1_s08_98	r1c1_s08	flood	240.0	496.0	8.9	64	branch_r1c1_s08	彩虹之约台：flood勘察点 09
+ev_r1c1_s09_99	r1c1_s09	flood	496.0	496.0	8.9	64	branch_r1c1_s09	彩虹之约台：flood勘察点 10
+ev_r1c2_s00_100	r1c2_s00	flood	16.0	16.0	8.9	64	branch_r1c2_s00	泥板沉层：flood勘察点 01
+ev_r1c2_s01_101	r1c2_s01	flood	496.0	16.0	8.9	64	branch_r1c2_s01	泥板沉层：flood勘察点 02
+ev_r1c2_s02_102	r1c2_s02	flood	280.0	118.0	8.9	76	frag_r1c2_0	泥板沉层：C 大洪水
+ev_r1c2_s03_103	r1c2_s03	flood	496.0	208.0	8.9	64	branch_r1c2_s03	泥板沉层：flood勘察点 04
+ev_r1c2_s04_104	r1c2_s04	flood	80.0	272.0	8.9	64	branch_r1c2_s04	泥板沉层：flood勘察点 05
+ev_r1c2_s05_105	r1c2_s05	flood	208.0	336.0	8.9	64	branch_r1c2_s05	泥板沉层：flood勘察点 06
+ev_r1c2_s06_106	r1c2_s06	flood	378.0	348.0	8.9	76	frag_r1c2_1	泥板沉层：C 大洪水
+ev_r1c2_s07_107	r1c2_s07	flood	16.0	496.0	8.9	64	branch_r1c2_s07	泥板沉层：flood勘察点 08
+ev_r1c2_s08_108	r1c2_s08	flood	240.0	496.0	8.9	64	branch_r1c2_s08	泥板沉层：flood勘察点 09
+ev_r1c2_s09_109	r1c2_s09	flood	496.0	496.0	8.9	64	branch_r1c2_s09	泥板沉层：flood勘察点 10
+ev_r1c3_s00_110	r1c3_s00	flood	16.0	16.0	8.9	64	branch_r1c3_s00	泄密者之径：flood勘察点 01
+ev_r1c3_s01_111	r1c3_s01	flood	208.0	16.0	8.9	64	branch_r1c3_s01	泄密者之径：flood勘察点 02
+ev_r1c3_s02_112	r1c3_s02	flood	496.0	16.0	8.9	64	branch_r1c3_s02	泄密者之径：flood勘察点 03
+ev_r1c3_s03_113	r1c3_s03	flood	364.0	116.0	8.9	76	frag_r1c3_0	泄密者之径：C 大洪水
+ev_r1c3_s04_114	r1c3_s04	flood	16.0	240.0	8.9	64	branch_r1c3_s04	泄密者之径：flood勘察点 05
+ev_r1c3_s05_115	r1c3_s05	flood	198.0	274.0	8.9	76	frag_r1c3_1	泄密者之径：C 大洪水
+ev_r1c3_s06_116	r1c3_s06	flood	496.0	272.0	8.9	64	branch_r1c3_s06	泄密者之径：flood勘察点 07
+ev_r1c3_s07_117	r1c3_s07	flood	16.0	496.0	8.9	64	branch_r1c3_s07	泄密者之径：flood勘察点 08
+ev_r1c3_s08_118	r1c3_s08	flood	272.0	496.0	8.9	64	branch_r1c3_s08	泄密者之径：flood勘察点 09
+ev_r1c3_s09_119	r1c3_s09	flood	496.0	496.0	8.9	64	branch_r1c3_s09	泄密者之径：flood勘察点 10
+ev_r1c4_s00_120	r1c4_s00	prediluvian	16.0	16.0	8.9	80	branch_r1c4_s00	第十二天体：prediluvian勘察点 01
+ev_r1c4_s01_121	r1c4_s01	prediluvian	240.0	16.0	8.9	80	branch_r1c4_s01	第十二天体：prediluvian勘察点 02
+ev_r1c4_s02_122	r1c4_s02	prediluvian	496.0	16.0	8.9	80	branch_r1c4_s02	第十二天体：prediluvian勘察点 03
+ev_r1c4_s03_123	r1c4_s03	prediluvian	272.0	176.0	8.9	80	branch_r1c4_s03	第十二天体：prediluvian勘察点 04
+ev_r1c4_s04_124	r1c4_s04	prediluvian	104.0	222.0	8.9	100	frag_r1c4_0	第十二天体：A 降临与设施 · G 回归
+ev_r1c4_s05_125	r1c4_s05	prediluvian	432.0	240.0	8.9	80	branch_r1c4_s05	第十二天体：prediluvian勘察点 06
+ev_r1c4_s06_126	r1c4_s06	prediluvian	16.0	336.0	8.9	80	branch_r1c4_s06	第十二天体：prediluvian勘察点 07
+ev_r1c4_s07_127	r1c4_s07	prediluvian	236.0	408.0	8.9	100	frag_r1c4_1	第十二天体：A 降临与设施 · G 回归
+ev_r1c4_s08_128	r1c4_s08	prediluvian	16.0	496.0	8.9	80	branch_r1c4_s08	第十二天体：prediluvian勘察点 09
+ev_r1c4_s09_129	r1c4_s09	prediluvian	496.0	496.0	8.9	80	branch_r1c4_s09	第十二天体：prediluvian勘察点 10
+ev_r1c5_s00_130	r1c5_s00	prediluvian	16.0	16.0	8.9	80	branch_r1c5_s00	轨道解码台：prediluvian勘察点 01
+ev_r1c5_s01_131	r1c5_s01	prediluvian	176.0	16.0	8.9	80	branch_r1c5_s01	轨道解码台：prediluvian勘察点 02
+ev_r1c5_s02_132	r1c5_s02	prediluvian	496.0	16.0	8.9	80	branch_r1c5_s02	轨道解码台：prediluvian勘察点 03
+ev_r1c5_s03_133	r1c5_s03	prediluvian	272.0	144.0	8.9	80	branch_r1c5_s03	轨道解码台：prediluvian勘察点 04
+ev_r1c5_s04_134	r1c5_s04	prediluvian	16.0	240.0	8.9	80	branch_r1c5_s04	轨道解码台：prediluvian勘察点 05
+ev_r1c5_s05_135	r1c5_s05	prediluvian	496.0	272.0	8.9	80	branch_r1c5_s05	轨道解码台：prediluvian勘察点 06
+ev_r1c5_s06_136	r1c5_s06	prediluvian	154.0	414.0	8.9	100	frag_r1c5_0	轨道解码台：A 降临与设施 · G 回归
+ev_r1c5_s07_137	r1c5_s07	prediluvian	312.0	414.0	8.9	100	frag_r1c5_1	轨道解码台：A 降临与设施 · G 回归
+ev_r1c5_s08_138	r1c5_s08	prediluvian	16.0	496.0	8.9	80	branch_r1c5_s08	轨道解码台：prediluvian勘察点 09
+ev_r1c5_s09_139	r1c5_s09	prediluvian	496.0	496.0	8.9	80	branch_r1c5_s09	轨道解码台：prediluvian勘察点 10
+ev_r1c6_s00_140	r1c6_s00	prediluvian	16.0	16.0	8.9	80	branch_r1c6_s00	尼比鲁观测台：prediluvian勘察点 01
+ev_r1c6_s01_141	r1c6_s01	prediluvian	240.0	16.0	8.9	80	branch_r1c6_s01	尼比鲁观测台：prediluvian勘察点 02
+ev_r1c6_s02_142	r1c6_s02	prediluvian	496.0	16.0	8.9	80	branch_r1c6_s02	尼比鲁观测台：prediluvian勘察点 03
+ev_r1c6_s03_143	r1c6_s03	prediluvian	268.0	194.0	8.9	200	frag_r1c6_0	尼比鲁观测台：A 降临与设施 · G 回归
+ev_r1c6_s04_144	r1c6_s04	prediluvian	48.0	240.0	8.9	80	branch_r1c6_s04	尼比鲁观测台：prediluvian勘察点 05
+ev_r1c6_s05_145	r1c6_s05	prediluvian	496.0	240.0	8.9	80	branch_r1c6_s05	尼比鲁观测台：prediluvian勘察点 06
+ev_r1c6_s06_146	r1c6_s06	prediluvian	270.0	320.0	8.9	200	frag_r1c6_1	尼比鲁观测台：A 降临与设施 · G 回归
+ev_r1c6_s07_147	r1c6_s07	prediluvian	348.0	412.0	8.9	200	frag_r1c6_2	尼比鲁观测台：A 降临与设施 · G 回归
+ev_r1c6_s08_148	r1c6_s08	prediluvian	16.0	496.0	8.9	80	branch_r1c6_s08	尼比鲁观测台：prediluvian勘察点 09
+ev_r1c6_s09_149	r1c6_s09	prediluvian	496.0	496.0	8.9	80	branch_r1c6_s09	尼比鲁观测台：prediluvian勘察点 10
+ev_r1c7_s00_150	r1c7_s00	prediluvian	16.0	16.0	8.9	80	branch_r1c7_s00	天外锚点：prediluvian勘察点 01
+ev_r1c7_s01_151	r1c7_s01	prediluvian	240.0	16.0	8.9	80	branch_r1c7_s01	天外锚点：prediluvian勘察点 02
+ev_r1c7_s02_152	r1c7_s02	prediluvian	496.0	16.0	8.9	80	branch_r1c7_s02	天外锚点：prediluvian勘察点 03
+ev_r1c7_s03_153	r1c7_s03	prediluvian	144.0	144.0	8.9	80	branch_r1c7_s03	天外锚点：prediluvian勘察点 04
+ev_r1c7_s04_154	r1c7_s04	prediluvian	358.0	210.0	8.9	100	frag_r1c7_0	天外锚点：A 降临与设施 · G 回归
+ev_r1c7_s05_155	r1c7_s05	prediluvian	48.0	272.0	8.9	80	branch_r1c7_s05	天外锚点：prediluvian勘察点 06
+ev_r1c7_s06_156	r1c7_s06	prediluvian	284.0	318.0	8.9	100	frag_r1c7_1	天外锚点：A 降临与设施 · G 回归
+ev_r1c7_s07_157	r1c7_s07	prediluvian	16.0	496.0	8.9	80	branch_r1c7_s07	天外锚点：prediluvian勘察点 08
+ev_r1c7_s08_158	r1c7_s08	prediluvian	240.0	496.0	8.9	80	branch_r1c7_s08	天外锚点：prediluvian勘察点 09
+ev_r1c7_s09_159	r1c7_s09	prediluvian	496.0	496.0	8.9	80	branch_r1c7_s09	天外锚点：prediluvian勘察点 10
+ev_r2c0_s00_160	r2c0_s00	sumerian	16.0	16.0	8.9	72	branch_r2c0_s00	巴勒贝克巨石：sumerian勘察点 01
+ev_r2c0_s01_161	r2c0_s01	sumerian	304.0	16.0	8.9	72	branch_r2c0_s01	巴勒贝克巨石：sumerian勘察点 02
+ev_r2c0_s02_162	r2c0_s02	sumerian	496.0	16.0	8.9	72	branch_r2c0_s02	巴勒贝克巨石：sumerian勘察点 03
+ev_r2c0_s03_163	r2c0_s03	sumerian	158.0	102.0	8.9	88	frag_r2c0_0	巴勒贝克巨石：E 设施 · F 神族战争
+ev_r2c0_s04_164	r2c0_s04	sumerian	432.0	240.0	8.9	72	branch_r2c0_s04	巴勒贝克巨石：sumerian勘察点 05
+ev_r2c0_s05_165	r2c0_s05	sumerian	164.0	284.0	8.9	88	frag_r2c0_1	巴勒贝克巨石：E 设施 · F 神族战争
+ev_r2c0_s06_166	r2c0_s06	sumerian	16.0	304.0	8.9	72	branch_r2c0_s06	巴勒贝克巨石：sumerian勘察点 07
+ev_r2c0_s07_167	r2c0_s07	sumerian	16.0	496.0	8.9	72	branch_r2c0_s07	巴勒贝克巨石：sumerian勘察点 08
+ev_r2c0_s08_168	r2c0_s08	sumerian	240.0	496.0	8.9	72	branch_r2c0_s08	巴勒贝克巨石：sumerian勘察点 09
+ev_r2c0_s09_169	r2c0_s09	sumerian	496.0	496.0	8.9	72	branch_r2c0_s09	巴勒贝克巨石：sumerian勘察点 10
+ev_r2c1_s00_170	r2c1_s00	sumerian	16.0	16.0	8.9	72	branch_r2c1_s00	西奈太空港：sumerian勘察点 01
+ev_r2c1_s01_171	r2c1_s01	sumerian	240.0	16.0	8.9	72	branch_r2c1_s01	西奈太空港：sumerian勘察点 02
+ev_r2c1_s02_172	r2c1_s02	sumerian	496.0	16.0	8.9	72	branch_r2c1_s02	西奈太空港：sumerian勘察点 03
+ev_r2c1_s03_173	r2c1_s03	sumerian	176.0	230.0	8.9	180	frag_r2c1_0	西奈太空港：E 设施 · F 神族战争
+ev_r2c1_s04_174	r2c1_s04	sumerian	496.0	240.0	8.9	72	branch_r2c1_s04	西奈太空港：sumerian勘察点 05
+ev_r2c1_s05_175	r2c1_s05	sumerian	314.0	256.0	8.9	180	frag_r2c1_1	西奈太空港：E 设施 · F 神族战争
+ev_r2c1_s06_176	r2c1_s06	sumerian	334.0	368.0	8.9	180	frag_r2c1_2	西奈太空港：E 设施 · F 神族战争
+ev_r2c1_s07_177	r2c1_s07	sumerian	16.0	496.0	8.9	72	branch_r2c1_s07	西奈太空港：sumerian勘察点 08
+ev_r2c1_s08_178	r2c1_s08	sumerian	208.0	496.0	8.9	72	branch_r2c1_s08	西奈太空港：sumerian勘察点 09
+ev_r2c1_s09_179	r2c1_s09	sumerian	496.0	496.0	8.9	72	branch_r2c1_s09	西奈太空港：sumerian勘察点 10
+ev_r2c2_s00_180	r2c2_s00	sumerian	16.0	16.0	8.9	72	branch_r2c2_s00	语言之塔：sumerian勘察点 01
+ev_r2c2_s01_181	r2c2_s01	sumerian	496.0	16.0	8.9	72	branch_r2c2_s01	语言之塔：sumerian勘察点 02
+ev_r2c2_s02_182	r2c2_s02	sumerian	368.0	112.0	8.9	72	branch_r2c2_s02	语言之塔：sumerian勘察点 03
+ev_r2c2_s03_183	r2c2_s03	sumerian	210.0	148.0	8.9	88	frag_r2c2_0	语言之塔：E 设施 · F 神族战争
+ev_r2c2_s04_184	r2c2_s04	sumerian	496.0	208.0	8.9	72	branch_r2c2_s04	语言之塔：sumerian勘察点 05
+ev_r2c2_s05_185	r2c2_s05	sumerian	16.0	272.0	8.9	72	branch_r2c2_s05	语言之塔：sumerian勘察点 06
+ev_r2c2_s06_186	r2c2_s06	sumerian	176.0	336.0	8.9	72	branch_r2c2_s06	语言之塔：sumerian勘察点 07
+ev_r2c2_s07_187	r2c2_s07	sumerian	400.0	352.0	8.9	88	frag_r2c2_1	语言之塔：E 设施 · F 神族战争
+ev_r2c2_s08_188	r2c2_s08	sumerian	16.0	496.0	8.9	72	branch_r2c2_s08	语言之塔：sumerian勘察点 09
+ev_r2c2_s09_189	r2c2_s09	sumerian	240.0	496.0	8.9	72	branch_r2c2_s09	语言之塔：sumerian勘察点 10
+ev_r2c3_s00_190	r2c3_s00	sumerian	144.0	16.0	8.9	72	branch_r2c3_s00	变乱碑：sumerian勘察点 01
+ev_r2c3_s01_191	r2c3_s01	sumerian	496.0	16.0	8.9	72	branch_r2c3_s01	变乱碑：sumerian勘察点 02
+ev_r2c3_s02_192	r2c3_s02	sumerian	16.0	80.0	8.9	72	branch_r2c3_s02	变乱碑：sumerian勘察点 03
+ev_r2c3_s03_193	r2c3_s03	sumerian	382.0	100.0	8.9	88	frag_r2c3_0	变乱碑：E 设施 · F 神族战争
+ev_r2c3_s04_194	r2c3_s04	sumerian	16.0	240.0	8.9	72	branch_r2c3_s04	变乱碑：sumerian勘察点 05
+ev_r2c3_s05_195	r2c3_s05	sumerian	496.0	240.0	8.9	72	branch_r2c3_s05	变乱碑：sumerian勘察点 06
+ev_r2c3_s06_196	r2c3_s06	sumerian	208.0	272.0	8.9	72	branch_r2c3_s06	变乱碑：sumerian勘察点 07
+ev_r2c3_s07_197	r2c3_s07	sumerian	370.0	414.0	8.9	88	frag_r2c3_1	变乱碑：E 设施 · F 神族战争
+ev_r2c3_s08_198	r2c3_s08	sumerian	112.0	496.0	8.9	72	branch_r2c3_s08	变乱碑：sumerian勘察点 09
+ev_r2c3_s09_199	r2c3_s09	sumerian	496.0	496.0	8.9	72	branch_r2c3_s09	变乱碑：sumerian勘察点 10
+ev_r2c4_s00_200	r2c4_s00	sumer	16.0	16.0	8.9	56	branch_r2c4_s00	埃利都：sumer勘察点 01
+ev_r2c4_s01_201	r2c4_s01	sumer	496.0	16.0	8.9	56	branch_r2c4_s01	埃利都：sumer勘察点 02
+ev_r2c4_s02_202	r2c4_s02	sumer	176.0	80.0	8.9	56	branch_r2c4_s02	埃利都：sumer勘察点 03
+ev_r2c4_s03_203	r2c4_s03	sumer	320.0	98.0	8.9	140	frag_r2c4_0	埃利都：D 文明与权能
+ev_r2c4_s04_204	r2c4_s04	sumer	16.0	240.0	8.9	56	branch_r2c4_s04	埃利都：sumer勘察点 05
+ev_r2c4_s05_205	r2c4_s05	sumer	210.0	260.0	8.9	140	frag_r2c4_1	埃利都：D 文明与权能
+ev_r2c4_s06_206	r2c4_s06	sumer	496.0	272.0	8.9	56	branch_r2c4_s06	埃利都：sumer勘察点 07
+ev_r2c4_s07_207	r2c4_s07	sumer	200.0	398.0	8.9	140	frag_r2c4_2	埃利都：D 文明与权能
+ev_r2c4_s08_208	r2c4_s08	sumer	16.0	496.0	8.9	56	branch_r2c4_s08	埃利都：sumer勘察点 09
+ev_r2c4_s09_209	r2c4_s09	sumer	496.0	496.0	8.9	56	branch_r2c4_s09	埃利都：sumer勘察点 10
+ev_r2c5_s00_210	r2c5_s00	sumer	16.0	16.0	8.9	56	branch_r2c5_s00	尼普尔中枢：sumer勘察点 01
+ev_r2c5_s01_211	r2c5_s01	sumer	336.0	16.0	8.9	56	branch_r2c5_s01	尼普尔中枢：sumer勘察点 02
+ev_r2c5_s02_212	r2c5_s02	sumer	496.0	16.0	8.9	56	branch_r2c5_s02	尼普尔中枢：sumer勘察点 03
+ev_r2c5_s03_213	r2c5_s03	sumer	224.0	142.0	8.9	64	frag_r2c5_0	尼普尔中枢：D 文明与权能
+ev_r2c5_s04_214	r2c5_s04	sumer	496.0	208.0	8.9	56	branch_r2c5_s04	尼普尔中枢：sumer勘察点 05
+ev_r2c5_s05_215	r2c5_s05	sumer	48.0	272.0	8.9	56	branch_r2c5_s05	尼普尔中枢：sumer勘察点 06
+ev_r2c5_s06_216	r2c5_s06	sumer	334.0	318.0	8.9	64	frag_r2c5_1	尼普尔中枢：D 文明与权能
+ev_r2c5_s07_217	r2c5_s07	sumer	16.0	496.0	8.9	56	branch_r2c5_s07	尼普尔中枢：sumer勘察点 08
+ev_r2c5_s08_218	r2c5_s08	sumer	240.0	496.0	8.9	56	branch_r2c5_s08	尼普尔中枢：sumer勘察点 09
+ev_r2c5_s09_219	r2c5_s09	sumer	496.0	496.0	8.9	56	branch_r2c5_s09	尼普尔中枢：sumer勘察点 10
+ev_r2c6_s00_220	r2c6_s00	sumer	16.0	16.0	8.9	56	branch_r2c6_s00	乌鲁克城墙：sumer勘察点 01
+ev_r2c6_s01_221	r2c6_s01	sumer	496.0	16.0	8.9	56	branch_r2c6_s01	乌鲁克城墙：sumer勘察点 02
+ev_r2c6_s02_222	r2c6_s02	sumer	240.0	48.0	8.9	56	branch_r2c6_s02	乌鲁克城墙：sumer勘察点 03
+ev_r2c6_s03_223	r2c6_s03	sumer	368.0	250.0	8.9	64	frag_r2c6_0	乌鲁克城墙：D 文明与权能
+ev_r2c6_s04_224	r2c6_s04	sumer	100.0	262.0	8.9	64	frag_r2c6_1	乌鲁克城墙：D 文明与权能
+ev_r2c6_s05_225	r2c6_s05	sumer	240.0	336.0	8.9	56	branch_r2c6_s05	乌鲁克城墙：sumer勘察点 06
+ev_r2c6_s06_226	r2c6_s06	sumer	368.0	400.0	8.9	56	branch_r2c6_s06	乌鲁克城墙：sumer勘察点 07
+ev_r2c6_s07_227	r2c6_s07	sumer	16.0	496.0	8.9	56	branch_r2c6_s07	乌鲁克城墙：sumer勘察点 08
+ev_r2c6_s08_228	r2c6_s08	sumer	240.0	496.0	8.9	56	branch_r2c6_s08	乌鲁克城墙：sumer勘察点 09
+ev_r2c6_s09_229	r2c6_s09	sumer	496.0	496.0	8.9	56	branch_r2c6_s09	乌鲁克城墙：sumer勘察点 10
+ev_r2c7_s00_230	r2c7_s00	sumer	16.0	16.0	8.9	56	branch_r2c7_s00	巴别塔：sumer勘察点 01
+ev_r2c7_s01_231	r2c7_s01	sumer	272.0	16.0	8.9	56	branch_r2c7_s01	巴别塔：sumer勘察点 02
+ev_r2c7_s02_232	r2c7_s02	sumer	496.0	16.0	8.9	56	branch_r2c7_s02	巴别塔：sumer勘察点 03
+ev_r2c7_s03_233	r2c7_s03	sumer	204.0	198.0	8.9	140	frag_r2c7_0	巴别塔：D 文明与权能
+ev_r2c7_s04_234	r2c7_s04	sumer	326.0	214.0	8.9	140	frag_r2c7_1	巴别塔：D 文明与权能
+ev_r2c7_s05_235	r2c7_s05	sumer	16.0	272.0	8.9	56	branch_r2c7_s05	巴别塔：sumer勘察点 06
+ev_r2c7_s06_236	r2c7_s06	sumer	496.0	304.0	8.9	56	branch_r2c7_s06	巴别塔：sumer勘察点 07
+ev_r2c7_s07_237	r2c7_s07	sumer	278.0	334.0	8.9	140	frag_r2c7_2	巴别塔：D 文明与权能
+ev_r2c7_s08_238	r2c7_s08	sumer	16.0	496.0	8.9	56	branch_r2c7_s08	巴别塔：sumer勘察点 09
+ev_r2c7_s09_239	r2c7_s09	sumer	496.0	496.0	8.9	56	branch_r2c7_s09	巴别塔：sumer勘察点 10
+ev_r3c0_s00_240	r3c0_s00	sumerian	16.0	16.0	8.9	72	branch_r3c0_s00	罪恶之城：sumerian勘察点 01
+ev_r3c0_s01_241	r3c0_s01	sumerian	240.0	16.0	8.9	72	branch_r3c0_s01	罪恶之城：sumerian勘察点 02
+ev_r3c0_s02_242	r3c0_s02	sumerian	496.0	16.0	8.9	72	branch_r3c0_s02	罪恶之城：sumerian勘察点 03
+ev_r3c0_s03_243	r3c0_s03	sumerian	392.0	138.0	8.9	88	frag_r3c0_0	罪恶之城：E 设施 · F 神族战争
+ev_r3c0_s04_244	r3c0_s04	sumerian	112.0	176.0	8.9	72	branch_r3c0_s04	罪恶之城：sumerian勘察点 05
+ev_r3c0_s05_245	r3c0_s05	sumerian	496.0	304.0	8.9	72	branch_r3c0_s05	罪恶之城：sumerian勘察点 06
+ev_r3c0_s06_246	r3c0_s06	sumerian	118.0	378.0	8.9	88	frag_r3c0_1	罪恶之城：E 设施 · F 神族战争
+ev_r3c0_s07_247	r3c0_s07	sumerian	336.0	368.0	8.9	72	branch_r3c0_s07	罪恶之城：sumerian勘察点 08
+ev_r3c0_s08_248	r3c0_s08	sumerian	240.0	496.0	8.9	72	branch_r3c0_s08	罪恶之城：sumerian勘察点 09
+ev_r3c0_s09_249	r3c0_s09	sumerian	496.0	496.0	8.9	72	branch_r3c0_s09	罪恶之城：sumerian勘察点 10
+ev_r3c1_s00_250	r3c1_s00	sumerian	80.0	16.0	8.9	72	branch_r3c1_s00	死海玻璃原：sumerian勘察点 01
+ev_r3c1_s01_251	r3c1_s01	sumerian	496.0	16.0	8.9	72	branch_r3c1_s01	死海玻璃原：sumerian勘察点 02
+ev_r3c1_s02_252	r3c1_s02	sumerian	280.0	118.0	8.9	88	frag_r3c1_0	死海玻璃原：E 设施 · F 神族战争
+ev_r3c1_s03_253	r3c1_s03	sumerian	16.0	208.0	8.9	72	branch_r3c1_s03	死海玻璃原：sumerian勘察点 04
+ev_r3c1_s04_254	r3c1_s04	sumerian	496.0	208.0	8.9	72	branch_r3c1_s04	死海玻璃原：sumerian勘察点 05
+ev_r3c1_s05_255	r3c1_s05	sumerian	176.0	304.0	8.9	72	branch_r3c1_s05	死海玻璃原：sumerian勘察点 06
+ev_r3c1_s06_256	r3c1_s06	sumerian	378.0	348.0	8.9	88	frag_r3c1_1	死海玻璃原：E 设施 · F 神族战争
+ev_r3c1_s07_257	r3c1_s07	sumerian	16.0	496.0	8.9	72	branch_r3c1_s07	死海玻璃原：sumerian勘察点 08
+ev_r3c1_s08_258	r3c1_s08	sumerian	240.0	496.0	8.9	72	branch_r3c1_s08	死海玻璃原：sumerian勘察点 09
+ev_r3c1_s09_259	r3c1_s09	sumerian	496.0	496.0	8.9	72	branch_r3c1_s09	死海玻璃原：sumerian勘察点 10
+ev_r3c2_s00_260	r3c2_s00	sumerian	16.0	16.0	8.9	72	branch_r3c2_s00	所多玛残迹：sumerian勘察点 01
+ev_r3c2_s01_261	r3c2_s01	sumerian	208.0	16.0	8.9	72	branch_r3c2_s01	所多玛残迹：sumerian勘察点 02
+ev_r3c2_s02_262	r3c2_s02	sumerian	364.0	116.0	8.9	88	frag_r3c2_0	所多玛残迹：E 设施 · F 神族战争
+ev_r3c2_s03_263	r3c2_s03	sumerian	16.0	240.0	8.9	72	branch_r3c2_s03	所多玛残迹：sumerian勘察点 04
+ev_r3c2_s04_264	r3c2_s04	sumerian	198.0	274.0	8.9	88	frag_r3c2_1	所多玛残迹：E 设施 · F 神族战争
+ev_r3c2_s05_265	r3c2_s05	sumerian	496.0	272.0	8.9	72	branch_r3c2_s05	所多玛残迹：sumerian勘察点 06
+ev_r3c2_s06_266	r3c2_s06	sumerian	368.0	368.0	8.9	72	branch_r3c2_s06	所多玛残迹：sumerian勘察点 07
+ev_r3c2_s07_267	r3c2_s07	sumerian	16.0	496.0	8.9	72	branch_r3c2_s07	所多玛残迹：sumerian勘察点 08
+ev_r3c2_s08_268	r3c2_s08	sumerian	272.0	496.0	8.9	72	branch_r3c2_s08	所多玛残迹：sumerian勘察点 09
+ev_r3c2_s09_269	r3c2_s09	sumerian	496.0	496.0	8.9	72	branch_r3c2_s09	所多玛残迹：sumerian勘察点 10
+ev_r3c3_s00_270	r3c3_s00	sumerian	16.0	16.0	8.9	72	branch_r3c3_s00	流亡之路：sumerian勘察点 01
+ev_r3c3_s01_271	r3c3_s01	sumerian	240.0	16.0	8.9	72	branch_r3c3_s01	流亡之路：sumerian勘察点 02
+ev_r3c3_s02_272	r3c3_s02	sumerian	496.0	16.0	8.9	72	branch_r3c3_s02	流亡之路：sumerian勘察点 03
+ev_r3c3_s03_273	r3c3_s03	sumerian	272.0	176.0	8.9	72	branch_r3c3_s03	流亡之路：sumerian勘察点 04
+ev_r3c3_s04_274	r3c3_s04	sumerian	104.0	222.0	8.9	88	frag_r3c3_0	流亡之路：E 设施 · F 神族战争
+ev_r3c3_s05_275	r3c3_s05	sumerian	432.0	240.0	8.9	72	branch_r3c3_s05	流亡之路：sumerian勘察点 06
+ev_r3c3_s06_276	r3c3_s06	sumerian	16.0	336.0	8.9	72	branch_r3c3_s06	流亡之路：sumerian勘察点 07
+ev_r3c3_s07_277	r3c3_s07	sumerian	236.0	408.0	8.9	88	frag_r3c3_1	流亡之路：E 设施 · F 神族战争
+ev_r3c3_s08_278	r3c3_s08	sumerian	16.0	496.0	8.9	72	branch_r3c3_s08	流亡之路：sumerian勘察点 09
+ev_r3c3_s09_279	r3c3_s09	sumerian	496.0	496.0	8.9	72	branch_r3c3_s09	流亡之路：sumerian勘察点 10
+ev_r3c4_s00_280	r3c4_s00	sumer	16.0	16.0	8.9	56	branch_r3c4_s00	王表库：sumer勘察点 01
+ev_r3c4_s01_281	r3c4_s01	sumer	240.0	16.0	8.9	56	branch_r3c4_s01	王表库：sumer勘察点 02
+ev_r3c4_s02_282	r3c4_s02	sumer	496.0	16.0	8.9	56	branch_r3c4_s02	王表库：sumer勘察点 03
+ev_r3c4_s03_283	r3c4_s03	sumer	102.0	162.0	8.9	140	frag_r3c4_0	王表库：D 文明与权能
+ev_r3c4_s04_284	r3c4_s04	sumer	336.0	208.0	8.9	56	branch_r3c4_s04	王表库：sumer勘察点 05
+ev_r3c4_s05_285	r3c4_s05	sumer	112.0	244.0	8.9	140	frag_r3c4_1	王表库：D 文明与权能
+ev_r3c4_s06_286	r3c4_s06	sumer	496.0	304.0	8.9	56	branch_r3c4_s06	王表库：sumer勘察点 07
+ev_r3c4_s07_287	r3c4_s07	sumer	376.0	420.0	8.9	140	frag_r3c4_2	王表库：D 文明与权能
+ev_r3c4_s08_288	r3c4_s08	sumer	16.0	496.0	8.9	56	branch_r3c4_s08	王表库：sumer勘察点 09
+ev_r3c4_s09_289	r3c4_s09	sumer	208.0	496.0	8.9	56	branch_r3c4_s09	王表库：sumer勘察点 10
+ev_r3c5_s00_290	r3c5_s00	sumer	16.0	16.0	8.9	56	branch_r3c5_s00	Me 泥板库：sumer勘察点 01
+ev_r3c5_s01_291	r3c5_s01	sumer	240.0	16.0	8.9	56	branch_r3c5_s01	Me 泥板库：sumer勘察点 02
+ev_r3c5_s02_292	r3c5_s02	sumer	496.0	16.0	8.9	56	branch_r3c5_s02	Me 泥板库：sumer勘察点 03
+ev_r3c5_s03_293	r3c5_s03	sumer	268.0	194.0	8.9	140	frag_r3c5_0	Me 泥板库：D 文明与权能
+ev_r3c5_s04_294	r3c5_s04	sumer	496.0	240.0	8.9	56	branch_r3c5_s04	Me 泥板库：sumer勘察点 05
+ev_r3c5_s05_295	r3c5_s05	sumer	48.0	272.0	8.9	56	branch_r3c5_s05	Me 泥板库：sumer勘察点 06
+ev_r3c5_s06_296	r3c5_s06	sumer	270.0	320.0	8.9	140	frag_r3c5_1	Me 泥板库：D 文明与权能
+ev_r3c5_s07_297	r3c5_s07	sumer	348.0	412.0	8.9	140	frag_r3c5_2	Me 泥板库：D 文明与权能
+ev_r3c5_s08_298	r3c5_s08	sumer	16.0	496.0	8.9	56	branch_r3c5_s08	Me 泥板库：sumer勘察点 09
+ev_r3c5_s09_299	r3c5_s09	sumer	496.0	496.0	8.9	56	branch_r3c5_s09	Me 泥板库：sumer勘察点 10
+ev_r3c6_s00_300	r3c6_s00	sumer	16.0	16.0	8.9	56	branch_r3c6_s00	伊南娜神殿：sumer勘察点 01
+ev_r3c6_s01_301	r3c6_s01	sumer	240.0	16.0	8.9	56	branch_r3c6_s01	伊南娜神殿：sumer勘察点 02
+ev_r3c6_s02_302	r3c6_s02	sumer	496.0	16.0	8.9	56	branch_r3c6_s02	伊南娜神殿：sumer勘察点 03
+ev_r3c6_s03_303	r3c6_s03	sumer	358.0	210.0	8.9	64	frag_r3c6_0	伊南娜神殿：D 文明与权能
+ev_r3c6_s04_304	r3c6_s04	sumer	48.0	240.0	8.9	56	branch_r3c6_s04	伊南娜神殿：sumer勘察点 05
+ev_r3c6_s05_305	r3c6_s05	sumer	284.0	318.0	8.9	64	frag_r3c6_1	伊南娜神殿：D 文明与权能
+ev_r3c6_s06_306	r3c6_s06	sumer	464.0	336.0	8.9	56	branch_r3c6_s06	伊南娜神殿：sumer勘察点 07
+ev_r3c6_s07_307	r3c6_s07	sumer	16.0	496.0	8.9	56	branch_r3c6_s07	伊南娜神殿：sumer勘察点 08
+ev_r3c6_s08_308	r3c6_s08	sumer	240.0	496.0	8.9	56	branch_r3c6_s08	伊南娜神殿：sumer勘察点 09
+ev_r3c6_s09_309	r3c6_s09	sumer	496.0	496.0	8.9	56	branch_r3c6_s09	伊南娜神殿：sumer勘察点 10
+ev_r3c7_s00_310	r3c7_s00	sumer	16.0	16.0	8.9	56	branch_r3c7_s00	两河渡口：sumer勘察点 01
+ev_r3c7_s01_311	r3c7_s01	sumer	496.0	16.0	8.9	56	branch_r3c7_s01	两河渡口：sumer勘察点 02
+ev_r3c7_s02_312	r3c7_s02	sumer	240.0	80.0	8.9	56	branch_r3c7_s02	两河渡口：sumer勘察点 03
+ev_r3c7_s03_313	r3c7_s03	sumer	496.0	176.0	8.9	56	branch_r3c7_s03	两河渡口：sumer勘察点 04
+ev_r3c7_s04_314	r3c7_s04	sumer	80.0	208.0	8.9	56	branch_r3c7_s04	两河渡口：sumer勘察点 05
+ev_r3c7_s05_315	r3c7_s05	sumer	208.0	272.0	8.9	56	branch_r3c7_s05	两河渡口：sumer勘察点 06
+ev_r3c7_s06_316	r3c7_s06	sumer	378.0	308.0	8.9	64	frag_r3c7_0	两河渡口：D 文明与权能
+ev_r3c7_s07_317	r3c7_s07	sumer	108.1	388.2	8.5	64	frag_r3c7_1	两河渡口：D 文明与权能
+ev_r3c7_s08_318	r3c7_s08	sumer	304.0	496.0	8.9	56	branch_r3c7_s08	两河渡口：sumer勘察点 09
+ev_r3c7_s09_319	r3c7_s09	sumer	496.0	496.0	8.9	56	branch_r3c7_s09	两河渡口：sumer勘察点 10
+ev_r4c0_s00_320	r4c0_s00	prediluvian	16.0	16.0	8.9	72	branch_r4c0_s00	吉萨大金字塔：prediluvian勘察点 01
+ev_r4c0_s01_321	r4c0_s01	prediluvian	272.0	16.0	8.9	72	branch_r4c0_s01	吉萨大金字塔：prediluvian勘察点 02
+ev_r4c0_s02_322	r4c0_s02	prediluvian	496.0	16.0	8.9	72	branch_r4c0_s02	吉萨大金字塔：prediluvian勘察点 03
+ev_r4c0_s03_323	r4c0_s03	prediluvian	176.0	230.0	8.9	180	frag_r4c0_0	吉萨大金字塔：E 设施 · F 神族战争
+ev_r4c0_s04_324	r4c0_s04	prediluvian	496.0	240.0	8.9	72	branch_r4c0_s04	吉萨大金字塔：prediluvian勘察点 05
+ev_r4c0_s05_325	r4c0_s05	prediluvian	314.0	256.0	8.9	180	frag_r4c0_1	吉萨大金字塔：E 设施 · F 神族战争
+ev_r4c0_s06_326	r4c0_s06	prediluvian	334.0	368.0	8.9	180	frag_r4c0_2	吉萨大金字塔：E 设施 · F 神族战争
+ev_r4c0_s07_327	r4c0_s07	prediluvian	16.0	496.0	8.9	72	branch_r4c0_s07	吉萨大金字塔：prediluvian勘察点 08
+ev_r4c0_s08_328	r4c0_s08	prediluvian	208.0	496.0	8.9	72	branch_r4c0_s08	吉萨大金字塔：prediluvian勘察点 09
+ev_r4c0_s09_329	r4c0_s09	prediluvian	496.0	496.0	8.9	72	branch_r4c0_s09	吉萨大金字塔：prediluvian勘察点 10
+ev_r4c1_s00_330	r4c1_s00	prediluvian	16.0	16.0	8.9	72	branch_r4c1_s00	狮身人面：prediluvian勘察点 01
+ev_r4c1_s01_331	r4c1_s01	prediluvian	304.0	16.0	8.9	72	branch_r4c1_s01	狮身人面：prediluvian勘察点 02
+ev_r4c1_s02_332	r4c1_s02	prediluvian	496.0	16.0	8.9	72	branch_r4c1_s02	狮身人面：prediluvian勘察点 03
+ev_r4c1_s03_333	r4c1_s03	prediluvian	210.0	148.0	8.9	88	frag_r4c1_0	狮身人面：E 设施 · F 神族战争
+ev_r4c1_s04_334	r4c1_s04	prediluvian	400.0	176.0	8.9	72	branch_r4c1_s04	狮身人面：prediluvian勘察点 05
+ev_r4c1_s05_335	r4c1_s05	prediluvian	16.0	272.0	8.9	72	branch_r4c1_s05	狮身人面：prediluvian勘察点 06
+ev_r4c1_s06_336	r4c1_s06	prediluvian	176.0	336.0	8.9	72	branch_r4c1_s06	狮身人面：prediluvian勘察点 07
+ev_r4c1_s07_337	r4c1_s07	prediluvian	400.0	352.0	8.9	88	frag_r4c1_1	狮身人面：E 设施 · F 神族战争
+ev_r4c1_s08_338	r4c1_s08	prediluvian	16.0	496.0	8.9	72	branch_r4c1_s08	狮身人面：prediluvian勘察点 09
+ev_r4c1_s09_339	r4c1_s09	prediluvian	240.0	496.0	8.9	72	branch_r4c1_s09	狮身人面：prediluvian勘察点 10
+ev_r4c2_s00_340	r4c2_s00	prediluvian	112.0	16.0	8.9	72	branch_r4c2_s00	金字塔战争场：prediluvian勘察点 01
+ev_r4c2_s01_341	r4c2_s01	prediluvian	496.0	16.0	8.9	72	branch_r4c2_s01	金字塔战争场：prediluvian勘察点 02
+ev_r4c2_s02_342	r4c2_s02	prediluvian	382.0	100.0	8.9	88	frag_r4c2_0	金字塔战争场：E 设施 · F 神族战争
+ev_r4c2_s03_343	r4c2_s03	prediluvian	208.0	240.0	8.9	72	branch_r4c2_s03	金字塔战争场：prediluvian勘察点 04
+ev_r4c2_s04_344	r4c2_s04	prediluvian	16.0	272.0	8.9	72	branch_r4c2_s04	金字塔战争场：prediluvian勘察点 05
+ev_r4c2_s05_345	r4c2_s05	prediluvian	496.0	272.0	8.9	72	branch_r4c2_s05	金字塔战争场：prediluvian勘察点 06
+ev_r4c2_s06_346	r4c2_s06	prediluvian	370.0	414.0	8.9	88	frag_r4c2_1	金字塔战争场：E 设施 · F 神族战争
+ev_r4c2_s07_347	r4c2_s07	prediluvian	16.0	432.0	8.9	72	branch_r4c2_s07	金字塔战争场：prediluvian勘察点 08
+ev_r4c2_s08_348	r4c2_s08	prediluvian	144.0	496.0	8.9	72	branch_r4c2_s08	金字塔战争场：prediluvian勘察点 09
+ev_r4c2_s09_349	r4c2_s09	prediluvian	496.0	496.0	8.9	72	branch_r4c2_s09	金字塔战争场：prediluvian勘察点 10
+ev_r4c3_s00_350	r4c3_s00	prediluvian	16.0	16.0	8.9	72	branch_r4c3_s00	顶端晶石：prediluvian勘察点 01
+ev_r4c3_s01_351	r4c3_s01	prediluvian	208.0	16.0	8.9	72	branch_r4c3_s01	顶端晶石：prediluvian勘察点 02
+ev_r4c3_s02_352	r4c3_s02	prediluvian	496.0	16.0	8.9	72	branch_r4c3_s02	顶端晶石：prediluvian勘察点 03
+ev_r4c3_s03_353	r4c3_s03	prediluvian	138.0	154.0	8.9	88	frag_r4c3_1	顶端晶石：E 设施 · F 神族战争
+ev_r4c3_s04_354	r4c3_s04	prediluvian	280.0	130.0	8.9	88	frag_r4c3_0	顶端晶石：E 设施 · F 神族战争
+ev_r4c3_s05_355	r4c3_s05	prediluvian	464.0	272.0	8.9	72	branch_r4c3_s05	顶端晶石：prediluvian勘察点 06
+ev_r4c3_s06_356	r4c3_s06	prediluvian	16.0	304.0	8.9	72	branch_r4c3_s06	顶端晶石：prediluvian勘察点 07
+ev_r4c3_s07_357	r4c3_s07	prediluvian	240.0	400.0	8.9	72	branch_r4c3_s07	顶端晶石：prediluvian勘察点 08
+ev_r4c3_s08_358	r4c3_s08	prediluvian	16.0	496.0	8.9	72	branch_r4c3_s08	顶端晶石：prediluvian勘察点 09
+ev_r4c3_s09_359	r4c3_s09	prediluvian	496.0	496.0	8.9	72	branch_r4c3_s09	顶端晶石：prediluvian勘察点 10
+ev_r4c4_s00_360	r4c4_s00	prediluvian	16.0	16.0	8.9	64	branch_r4c4_s00	阿布祖金矿：prediluvian勘察点 01
+ev_r4c4_s01_361	r4c4_s01	prediluvian	272.0	16.0	8.9	64	branch_r4c4_s01	阿布祖金矿：prediluvian勘察点 02
+ev_r4c4_s02_362	r4c4_s02	prediluvian	496.0	16.0	8.9	64	branch_r4c4_s02	阿布祖金矿：prediluvian勘察点 03
+ev_r4c4_s03_363	r4c4_s03	prediluvian	144.0	144.0	8.9	64	branch_r4c4_s03	阿布祖金矿：prediluvian勘察点 04
+ev_r4c4_s04_364	r4c4_s04	prediluvian	496.0	208.0	8.9	64	branch_r4c4_s04	阿布祖金矿：prediluvian勘察点 05
+ev_r4c4_s05_365	r4c4_s05	prediluvian	330.0	224.0	8.9	160	frag_r4c4_0	阿布祖金矿：A 降临 · B 造人
+ev_r4c4_s06_366	r4c4_s06	prediluvian	142.0	346.0	8.9	160	frag_r4c4_1	阿布祖金矿：A 降临 · B 造人
+ev_r4c4_s07_367	r4c4_s07	prediluvian	418.0	372.0	8.9	160	frag_r4c4_2	阿布祖金矿：A 降临 · B 造人
+ev_r4c4_s08_368	r4c4_s08	prediluvian	16.0	496.0	8.9	64	branch_r4c4_s08	阿布祖金矿：prediluvian勘察点 09
+ev_r4c4_s09_369	r4c4_s09	prediluvian	272.0	496.0	8.9	64	branch_r4c4_s09	阿布祖金矿：prediluvian勘察点 10
+ev_r4c5_s00_370	r4c5_s00	prediluvian	208.0	16.0	8.9	64	branch_r4c5_s00	采金竖井：prediluvian勘察点 01
+ev_r4c5_s01_371	r4c5_s01	prediluvian	496.0	16.0	8.9	64	branch_r4c5_s01	采金竖井：prediluvian勘察点 02
+ev_r4c5_s02_372	r4c5_s02	prediluvian	16.0	80.0	8.9	64	branch_r4c5_s02	采金竖井：prediluvian勘察点 03
+ev_r4c5_s03_373	r4c5_s03	prediluvian	368.0	250.0	8.9	76	frag_r4c5_0	采金竖井：A 降临 · B 造人
+ev_r4c5_s04_374	r4c5_s04	prediluvian	100.0	262.0	8.9	76	frag_r4c5_1	采金竖井：A 降临 · B 造人
+ev_r4c5_s05_375	r4c5_s05	prediluvian	240.0	336.0	8.9	64	branch_r4c5_s05	采金竖井：prediluvian勘察点 06
+ev_r4c5_s06_376	r4c5_s06	prediluvian	496.0	336.0	8.9	64	branch_r4c5_s06	采金竖井：prediluvian勘察点 07
+ev_r4c5_s07_377	r4c5_s07	prediluvian	16.0	496.0	8.9	64	branch_r4c5_s07	采金竖井：prediluvian勘察点 08
+ev_r4c5_s08_378	r4c5_s08	prediluvian	240.0	496.0	8.9	64	branch_r4c5_s08	采金竖井：prediluvian勘察点 09
+ev_r4c5_s09_379	r4c5_s09	prediluvian	496.0	496.0	8.9	64	branch_r4c5_s09	采金竖井：prediluvian勘察点 10
+ev_r4c6_s00_380	r4c6_s00	prediluvian	16.0	16.0	8.9	64	branch_r4c6_s00	伊吉吉矿坑：prediluvian勘察点 01
+ev_r4c6_s01_381	r4c6_s01	prediluvian	496.0	16.0	8.9	64	branch_r4c6_s01	伊吉吉矿坑：prediluvian勘察点 02
+ev_r4c6_s02_382	r4c6_s02	prediluvian	240.0	80.0	8.9	64	branch_r4c6_s02	伊吉吉矿坑：prediluvian勘察点 03
+ev_r4c6_s03_383	r4c6_s03	prediluvian	496.0	176.0	8.9	64	branch_r4c6_s03	伊吉吉矿坑：prediluvian勘察点 04
+ev_r4c6_s04_384	r4c6_s04	prediluvian	16.0	208.0	8.9	64	branch_r4c6_s04	伊吉吉矿坑：prediluvian勘察点 05
+ev_r4c6_s05_385	r4c6_s05	prediluvian	370.0	284.0	8.9	76	frag_r4c6_0	伊吉吉矿坑：A 降临 · B 造人
+ev_r4c6_s06_386	r4c6_s06	prediluvian	184.0	346.0	8.9	76	frag_r4c6_1	伊吉吉矿坑：A 降临 · B 造人
+ev_r4c6_s07_387	r4c6_s07	prediluvian	16.0	496.0	8.9	64	branch_r4c6_s07	伊吉吉矿坑：prediluvian勘察点 08
+ev_r4c6_s08_388	r4c6_s08	prediluvian	304.0	496.0	8.9	64	branch_r4c6_s08	伊吉吉矿坑：prediluvian勘察点 09
+ev_r4c6_s09_389	r4c6_s09	prediluvian	496.0	496.0	8.9	64	branch_r4c6_s09	伊吉吉矿坑：prediluvian勘察点 10
+ev_r4c7_s00_390	r4c7_s00	prediluvian	16.0	16.0	8.9	64	branch_r4c7_s00	基因工房：prediluvian勘察点 01
+ev_r4c7_s01_391	r4c7_s01	prediluvian	496.0	16.0	8.9	64	branch_r4c7_s01	基因工房：prediluvian勘察点 02
+ev_r4c7_s02_392	r4c7_s02	prediluvian	272.0	48.0	8.9	64	branch_r4c7_s02	基因工房：prediluvian勘察点 03
+ev_r4c7_s03_393	r4c7_s03	prediluvian	132.0	224.0	8.9	76	frag_r4c7_0	基因工房：A 降临 · B 造人
+ev_r4c7_s04_394	r4c7_s04	prediluvian	432.0	272.0	8.9	64	branch_r4c7_s04	基因工房：prediluvian勘察点 05
+ev_r4c7_s05_395	r4c7_s05	prediluvian	16.0	336.0	8.9	64	branch_r4c7_s05	基因工房：prediluvian勘察点 06
+ev_r4c7_s06_396	r4c7_s06	prediluvian	222.0	348.0	8.9	76	frag_r4c7_1	基因工房：A 降临 · B 造人
+ev_r4c7_s07_397	r4c7_s07	prediluvian	16.0	496.0	8.9	64	branch_r4c7_s07	基因工房：prediluvian勘察点 08
+ev_r4c7_s08_398	r4c7_s08	prediluvian	304.0	496.0	8.9	64	branch_r4c7_s08	基因工房：prediluvian勘察点 09
+ev_r4c7_s09_399	r4c7_s09	prediluvian	496.0	496.0	8.9	64	branch_r4c7_s09	基因工房：prediluvian勘察点 10
+ev_r5c0_s00_400	r5c0_s00	prediluvian	16.0	16.0	8.9	72	branch_r5c0_s00	孟菲斯：prediluvian勘察点 01
+ev_r5c0_s01_401	r5c0_s01	prediluvian	496.0	16.0	8.9	72	branch_r5c0_s01	孟菲斯：prediluvian勘察点 02
+ev_r5c0_s02_402	r5c0_s02	prediluvian	280.0	118.0	8.9	88	frag_r5c0_0	孟菲斯：E 设施 · F 神族战争
+ev_r5c0_s03_403	r5c0_s03	prediluvian	496.0	208.0	8.9	72	branch_r5c0_s03	孟菲斯：prediluvian勘察点 04
+ev_r5c0_s04_404	r5c0_s04	prediluvian	80.0	272.0	8.9	72	branch_r5c0_s04	孟菲斯：prediluvian勘察点 05
+ev_r5c0_s05_405	r5c0_s05	prediluvian	240.0	272.0	8.9	72	branch_r5c0_s05	孟菲斯：prediluvian勘察点 06
+ev_r5c0_s06_406	r5c0_s06	prediluvian	378.0	348.0	8.9	88	frag_r5c0_1	孟菲斯：E 设施 · F 神族战争
+ev_r5c0_s07_407	r5c0_s07	prediluvian	16.0	496.0	8.9	72	branch_r5c0_s07	孟菲斯：prediluvian勘察点 08
+ev_r5c0_s08_408	r5c0_s08	prediluvian	240.0	496.0	8.9	72	branch_r5c0_s08	孟菲斯：prediluvian勘察点 09
+ev_r5c0_s09_409	r5c0_s09	prediluvian	496.0	496.0	8.9	72	branch_r5c0_s09	孟菲斯：prediluvian勘察点 10
+ev_r5c1_s00_410	r5c1_s00	prediluvian	16.0	16.0	8.9	72	branch_r5c1_s00	拉的神殿：prediluvian勘察点 01
+ev_r5c1_s01_411	r5c1_s01	prediluvian	208.0	16.0	8.9	72	branch_r5c1_s01	拉的神殿：prediluvian勘察点 02
+ev_r5c1_s02_412	r5c1_s02	prediluvian	496.0	16.0	8.9	72	branch_r5c1_s02	拉的神殿：prediluvian勘察点 03
+ev_r5c1_s03_413	r5c1_s03	prediluvian	364.0	116.0	8.9	88	frag_r5c1_0	拉的神殿：E 设施 · F 神族战争
+ev_r5c1_s04_414	r5c1_s04	prediluvian	16.0	240.0	8.9	72	branch_r5c1_s04	拉的神殿：prediluvian勘察点 05
+ev_r5c1_s05_415	r5c1_s05	prediluvian	198.0	274.0	8.9	88	frag_r5c1_1	拉的神殿：E 设施 · F 神族战争
+ev_r5c1_s06_416	r5c1_s06	prediluvian	496.0	272.0	8.9	72	branch_r5c1_s06	拉的神殿：prediluvian勘察点 07
+ev_r5c1_s07_417	r5c1_s07	prediluvian	16.0	496.0	8.9	72	branch_r5c1_s07	拉的神殿：prediluvian勘察点 08
+ev_r5c1_s08_418	r5c1_s08	prediluvian	272.0	496.0	8.9	72	branch_r5c1_s08	拉的神殿：prediluvian勘察点 09
+ev_r5c1_s09_419	r5c1_s09	prediluvian	496.0	496.0	8.9	72	branch_r5c1_s09	拉的神殿：prediluvian勘察点 10
+ev_r5c2_s00_420	r5c2_s00	prediluvian	16.0	16.0	8.9	72	branch_r5c2_s00	Zep Tepi 标记：prediluvian勘察点 01
+ev_r5c2_s01_421	r5c2_s01	prediluvian	240.0	16.0	8.9	72	branch_r5c2_s01	Zep Tepi 标记：prediluvian勘察点 02
+ev_r5c2_s02_422	r5c2_s02	prediluvian	496.0	16.0	8.9	72	branch_r5c2_s02	Zep Tepi 标记：prediluvian勘察点 03
+ev_r5c2_s03_423	r5c2_s03	prediluvian	272.0	176.0	8.9	72	branch_r5c2_s03	Zep Tepi 标记：prediluvian勘察点 04
+ev_r5c2_s04_424	r5c2_s04	prediluvian	104.0	222.0	8.9	88	frag_r5c2_0	Zep Tepi 标记：E 设施 · F 神族战争
+ev_r5c2_s05_425	r5c2_s05	prediluvian	432.0	240.0	8.9	72	branch_r5c2_s05	Zep Tepi 标记：prediluvian勘察点 06
+ev_r5c2_s06_426	r5c2_s06	prediluvian	16.0	336.0	8.9	72	branch_r5c2_s06	Zep Tepi 标记：prediluvian勘察点 07
+ev_r5c2_s07_427	r5c2_s07	prediluvian	236.0	408.0	8.9	88	frag_r5c2_1	Zep Tepi 标记：E 设施 · F 神族战争
+ev_r5c2_s08_428	r5c2_s08	prediluvian	16.0	496.0	8.9	72	branch_r5c2_s08	Zep Tepi 标记：prediluvian勘察点 09
+ev_r5c2_s09_429	r5c2_s09	prediluvian	496.0	496.0	8.9	72	branch_r5c2_s09	Zep Tepi 标记：prediluvian勘察点 10
+ev_r5c3_s00_430	r5c3_s00	prediluvian	16.0	16.0	8.9	72	branch_r5c3_s00	尼罗河台地：prediluvian勘察点 01
+ev_r5c3_s01_431	r5c3_s01	prediluvian	496.0	16.0	8.9	72	branch_r5c3_s01	尼罗河台地：prediluvian勘察点 02
+ev_r5c3_s02_432	r5c3_s02	prediluvian	240.0	144.0	8.9	72	branch_r5c3_s02	尼罗河台地：prediluvian勘察点 03
+ev_r5c3_s03_433	r5c3_s03	prediluvian	400.0	144.0	8.9	72	branch_r5c3_s03	尼罗河台地：prediluvian勘察点 04
+ev_r5c3_s04_434	r5c3_s04	prediluvian	16.0	240.0	8.9	72	branch_r5c3_s04	尼罗河台地：prediluvian勘察点 05
+ev_r5c3_s05_435	r5c3_s05	prediluvian	496.0	272.0	8.9	72	branch_r5c3_s05	尼罗河台地：prediluvian勘察点 06
+ev_r5c3_s06_436	r5c3_s06	prediluvian	154.0	414.0	8.9	88	frag_r5c3_0	尼罗河台地：E 设施 · F 神族战争
+ev_r5c3_s07_437	r5c3_s07	prediluvian	312.0	414.0	8.9	88	frag_r5c3_1	尼罗河台地：E 设施 · F 神族战争
+ev_r5c3_s08_438	r5c3_s08	prediluvian	16.0	496.0	8.9	72	branch_r5c3_s08	尼罗河台地：prediluvian勘察点 09
+ev_r5c3_s09_439	r5c3_s09	prediluvian	496.0	496.0	8.9	72	branch_r5c3_s09	尼罗河台地：prediluvian勘察点 10
+ev_r5c4_s00_440	r5c4_s00	prediluvian	16.0	16.0	8.9	64	branch_r5c4_s00	伊甸园：prediluvian勘察点 01
+ev_r5c4_s01_441	r5c4_s01	prediluvian	240.0	16.0	8.9	64	branch_r5c4_s01	伊甸园：prediluvian勘察点 02
+ev_r5c4_s02_442	r5c4_s02	prediluvian	496.0	16.0	8.9	64	branch_r5c4_s02	伊甸园：prediluvian勘察点 03
+ev_r5c4_s03_443	r5c4_s03	prediluvian	268.0	194.0	8.9	160	frag_r5c4_0	伊甸园：A 降临 · B 造人
+ev_r5c4_s04_444	r5c4_s04	prediluvian	48.0	240.0	8.9	64	branch_r5c4_s04	伊甸园：prediluvian勘察点 05
+ev_r5c4_s05_445	r5c4_s05	prediluvian	496.0	240.0	8.9	64	branch_r5c4_s05	伊甸园：prediluvian勘察点 06
+ev_r5c4_s06_446	r5c4_s06	prediluvian	270.0	320.0	8.9	160	frag_r5c4_1	伊甸园：A 降临 · B 造人
+ev_r5c4_s07_447	r5c4_s07	prediluvian	348.0	412.0	8.9	160	frag_r5c4_2	伊甸园：A 降临 · B 造人
+ev_r5c4_s08_448	r5c4_s08	prediluvian	16.0	496.0	8.9	64	branch_r5c4_s08	伊甸园：prediluvian勘察点 09
+ev_r5c4_s09_449	r5c4_s09	prediluvian	496.0	496.0	8.9	64	branch_r5c4_s09	伊甸园：prediluvian勘察点 10
+ev_r5c5_s00_450	r5c5_s00	prediluvian	16.0	16.0	8.9	64	branch_r5c5_s00	拿非利人遗迹：prediluvian勘察点 01
+ev_r5c5_s01_451	r5c5_s01	prediluvian	240.0	16.0	8.9	64	branch_r5c5_s01	拿非利人遗迹：prediluvian勘察点 02
+ev_r5c5_s02_452	r5c5_s02	prediluvian	496.0	16.0	8.9	64	branch_r5c5_s02	拿非利人遗迹：prediluvian勘察点 03
+ev_r5c5_s03_453	r5c5_s03	prediluvian	358.0	210.0	8.9	76	frag_r5c5_0	拿非利人遗迹：A 降临 · B 造人
+ev_r5c5_s04_454	r5c5_s04	prediluvian	48.0	240.0	8.9	64	branch_r5c5_s04	拿非利人遗迹：prediluvian勘察点 05
+ev_r5c5_s05_455	r5c5_s05	prediluvian	284.0	318.0	8.9	76	frag_r5c5_1	拿非利人遗迹：A 降临 · B 造人
+ev_r5c5_s06_456	r5c5_s06	prediluvian	464.0	336.0	8.9	64	branch_r5c5_s06	拿非利人遗迹：prediluvian勘察点 07
+ev_r5c5_s07_457	r5c5_s07	prediluvian	16.0	496.0	8.9	64	branch_r5c5_s07	拿非利人遗迹：prediluvian勘察点 08
+ev_r5c5_s08_458	r5c5_s08	prediluvian	240.0	496.0	8.9	64	branch_r5c5_s08	拿非利人遗迹：prediluvian勘察点 09
+ev_r5c5_s09_459	r5c5_s09	prediluvian	496.0	496.0	8.9	64	branch_r5c5_s09	拿非利人遗迹：prediluvian勘察点 10
+ev_r5c6_s00_460	r5c6_s00	prediluvian	16.0	16.0	8.9	64	branch_r5c6_s00	宁胡尔萨格营地：prediluvian勘察点 01
+ev_r5c6_s01_461	r5c6_s01	prediluvian	496.0	16.0	8.9	64	branch_r5c6_s01	宁胡尔萨格营地：prediluvian勘察点 02
+ev_r5c6_s02_462	r5c6_s02	prediluvian	272.0	80.0	8.9	64	branch_r5c6_s02	宁胡尔萨格营地：prediluvian勘察点 03
+ev_r5c6_s03_463	r5c6_s03	prediluvian	496.0	176.0	8.9	64	branch_r5c6_s03	宁胡尔萨格营地：prediluvian勘察点 04
+ev_r5c6_s04_464	r5c6_s04	prediluvian	80.0	208.0	8.9	64	branch_r5c6_s04	宁胡尔萨格营地：prediluvian勘察点 05
+ev_r5c6_s05_465	r5c6_s05	prediluvian	240.0	240.0	8.9	64	branch_r5c6_s05	宁胡尔萨格营地：prediluvian勘察点 06
+ev_r5c6_s06_466	r5c6_s06	prediluvian	378.0	308.0	8.9	76	frag_r5c6_0	宁胡尔萨格营地：A 降临 · B 造人
+ev_r5c6_s07_467	r5c6_s07	prediluvian	108.1	388.2	8.5	76	frag_r5c6_1	宁胡尔萨格营地：A 降临 · B 造人
+ev_r5c6_s08_468	r5c6_s08	prediluvian	304.0	496.0	8.9	64	branch_r5c6_s08	宁胡尔萨格营地：prediluvian勘察点 09
+ev_r5c6_s09_469	r5c6_s09	prediluvian	496.0	496.0	8.9	64	branch_r5c6_s09	宁胡尔萨格营地：prediluvian勘察点 10
+ev_r5c7_s00_470	r5c7_s00	prediluvian	16.0	16.0	8.9	64	branch_r5c7_s00	人类初生地：prediluvian勘察点 01
+ev_r5c7_s01_471	r5c7_s01	prediluvian	496.0	16.0	8.9	64	branch_r5c7_s01	人类初生地：prediluvian勘察点 02
+ev_r5c7_s02_472	r5c7_s02	prediluvian	240.0	48.0	8.9	64	branch_r5c7_s02	人类初生地：prediluvian勘察点 03
+ev_r5c7_s03_473	r5c7_s03	prediluvian	16.0	240.0	8.9	64	branch_r5c7_s03	人类初生地：prediluvian勘察点 04
+ev_r5c7_s04_474	r5c7_s04	prediluvian	366.0	246.0	8.9	76	frag_r5c7_0	人类初生地：A 降临 · B 造人
+ev_r5c7_s05_475	r5c7_s05	prediluvian	226.0	320.0	8.9	76	frag_r5c7_1	人类初生地：A 降临 · B 造人
+ev_r5c7_s06_476	r5c7_s06	prediluvian	496.0	336.0	8.9	64	branch_r5c7_s06	人类初生地：prediluvian勘察点 07
+ev_r5c7_s07_477	r5c7_s07	prediluvian	16.0	496.0	8.9	64	branch_r5c7_s07	人类初生地：prediluvian勘察点 08
+ev_r5c7_s08_478	r5c7_s08	prediluvian	304.0	496.0	8.9	64	branch_r5c7_s08	人类初生地：prediluvian勘察点 09
+ev_r5c7_s09_479	r5c7_s09	prediluvian	496.0	496.0	8.9	64	branch_r5c7_s09	人类初生地：prediluvian勘察点 10
+ev_r6c0_s00_480	r6c0_s00	postdiluvian	16.0	16.0	8.9	72	branch_r6c0_s00	太阳门：postdiluvian勘察点 01
+ev_r6c0_s01_481	r6c0_s01	postdiluvian	496.0	16.0	8.9	72	branch_r6c0_s01	太阳门：postdiluvian勘察点 02
+ev_r6c0_s02_482	r6c0_s02	postdiluvian	210.0	148.0	8.9	88	frag_r6c0_0	太阳门：E 设施 · F 失落国度
+ev_r6c0_s03_483	r6c0_s03	postdiluvian	496.0	208.0	8.9	72	branch_r6c0_s03	太阳门：postdiluvian勘察点 04
+ev_r6c0_s04_484	r6c0_s04	postdiluvian	16.0	272.0	8.9	72	branch_r6c0_s04	太阳门：postdiluvian勘察点 05
+ev_r6c0_s05_485	r6c0_s05	postdiluvian	176.0	336.0	8.9	72	branch_r6c0_s05	太阳门：postdiluvian勘察点 06
+ev_r6c0_s06_486	r6c0_s06	postdiluvian	400.0	352.0	8.9	88	frag_r6c0_1	太阳门：E 设施 · F 失落国度
+ev_r6c0_s07_487	r6c0_s07	postdiluvian	16.0	496.0	8.9	72	branch_r6c0_s07	太阳门：postdiluvian勘察点 08
+ev_r6c0_s08_488	r6c0_s08	postdiluvian	240.0	496.0	8.9	72	branch_r6c0_s08	太阳门：postdiluvian勘察点 09
+ev_r6c0_s09_489	r6c0_s09	postdiluvian	496.0	496.0	8.9	72	branch_r6c0_s09	太阳门：postdiluvian勘察点 10
+ev_r6c1_s00_490	r6c1_s00	postdiluvian	112.0	16.0	8.9	72	branch_r6c1_s00	萨克塞华曼：postdiluvian勘察点 01
+ev_r6c1_s01_491	r6c1_s01	postdiluvian	272.0	16.0	8.9	72	branch_r6c1_s01	萨克塞华曼：postdiluvian勘察点 02
+ev_r6c1_s02_492	r6c1_s02	postdiluvian	496.0	16.0	8.9	72	branch_r6c1_s02	萨克塞华曼：postdiluvian勘察点 03
+ev_r6c1_s03_493	r6c1_s03	postdiluvian	382.0	100.0	8.9	88	frag_r6c1_0	萨克塞华曼：E 设施 · F 失落国度
+ev_r6c1_s04_494	r6c1_s04	postdiluvian	208.0	240.0	8.9	72	branch_r6c1_s04	萨克塞华曼：postdiluvian勘察点 05
+ev_r6c1_s05_495	r6c1_s05	postdiluvian	16.0	272.0	8.9	72	branch_r6c1_s05	萨克塞华曼：postdiluvian勘察点 06
+ev_r6c1_s06_496	r6c1_s06	postdiluvian	496.0	272.0	8.9	72	branch_r6c1_s06	萨克塞华曼：postdiluvian勘察点 07
+ev_r6c1_s07_497	r6c1_s07	postdiluvian	370.0	414.0	8.9	88	frag_r6c1_1	萨克塞华曼：E 设施 · F 失落国度
+ev_r6c1_s08_498	r6c1_s08	postdiluvian	112.0	496.0	8.9	72	branch_r6c1_s08	萨克塞华曼：postdiluvian勘察点 09
+ev_r6c1_s09_499	r6c1_s09	postdiluvian	496.0	496.0	8.9	72	branch_r6c1_s09	萨克塞华曼：postdiluvian勘察点 10
+ev_r6c2_s00_500	r6c2_s00	postdiluvian	16.0	16.0	8.9	72	branch_r6c2_s00	冶金炉场：postdiluvian勘察点 01
+ev_r6c2_s01_501	r6c2_s01	postdiluvian	336.0	16.0	8.9	72	branch_r6c2_s01	冶金炉场：postdiluvian勘察点 02
+ev_r6c2_s02_502	r6c2_s02	postdiluvian	496.0	16.0	8.9	72	branch_r6c2_s02	冶金炉场：postdiluvian勘察点 03
+ev_r6c2_s03_503	r6c2_s03	postdiluvian	138.0	154.0	8.9	88	frag_r6c2_1	冶金炉场：E 设施 · F 失落国度
+ev_r6c2_s04_504	r6c2_s04	postdiluvian	280.0	130.0	8.9	88	frag_r6c2_0	冶金炉场：E 设施 · F 失落国度
+ev_r6c2_s05_505	r6c2_s05	postdiluvian	464.0	272.0	8.9	72	branch_r6c2_s05	冶金炉场：postdiluvian勘察点 06
+ev_r6c2_s06_506	r6c2_s06	postdiluvian	16.0	304.0	8.9	72	branch_r6c2_s06	冶金炉场：postdiluvian勘察点 07
+ev_r6c2_s07_507	r6c2_s07	postdiluvian	240.0	400.0	8.9	72	branch_r6c2_s07	冶金炉场：postdiluvian勘察点 08
+ev_r6c2_s08_508	r6c2_s08	postdiluvian	16.0	496.0	8.9	72	branch_r6c2_s08	冶金炉场：postdiluvian勘察点 09
+ev_r6c2_s09_509	r6c2_s09	postdiluvian	496.0	496.0	8.9	72	branch_r6c2_s09	冶金炉场：postdiluvian勘察点 10
+ev_r6c3_s00_510	r6c3_s00	postdiluvian	16.0	16.0	8.9	72	branch_r6c3_s00	维拉科查台：postdiluvian勘察点 01
+ev_r6c3_s01_511	r6c3_s01	postdiluvian	336.0	16.0	8.9	72	branch_r6c3_s01	维拉科查台：postdiluvian勘察点 02
+ev_r6c3_s02_512	r6c3_s02	postdiluvian	496.0	16.0	8.9	72	branch_r6c3_s02	维拉科查台：postdiluvian勘察点 03
+ev_r6c3_s03_513	r6c3_s03	postdiluvian	224.0	142.0	8.9	88	frag_r6c3_0	维拉科查台：E 设施 · F 失落国度
+ev_r6c3_s04_514	r6c3_s04	postdiluvian	496.0	208.0	8.9	72	branch_r6c3_s04	维拉科查台：postdiluvian勘察点 05
+ev_r6c3_s05_515	r6c3_s05	postdiluvian	48.0	272.0	8.9	72	branch_r6c3_s05	维拉科查台：postdiluvian勘察点 06
+ev_r6c3_s06_516	r6c3_s06	postdiluvian	334.0	318.0	8.9	88	frag_r6c3_1	维拉科查台：E 设施 · F 失落国度
+ev_r6c3_s07_517	r6c3_s07	postdiluvian	16.0	496.0	8.9	72	branch_r6c3_s07	维拉科查台：postdiluvian勘察点 08
+ev_r6c3_s08_518	r6c3_s08	postdiluvian	240.0	496.0	8.9	72	branch_r6c3_s08	维拉科查台：postdiluvian勘察点 09
+ev_r6c3_s09_519	r6c3_s09	postdiluvian	496.0	496.0	8.9	72	branch_r6c3_s09	维拉科查台：postdiluvian勘察点 10
+ev_r6c4_s00_520	r6c4_s00	ancient	208.0	16.0	8.9	64	branch_r6c4_s00	复活节岛摩艾：ancient勘察点 01
+ev_r6c4_s01_521	r6c4_s01	ancient	496.0	16.0	8.9	64	branch_r6c4_s01	复活节岛摩艾：ancient勘察点 02
+ev_r6c4_s02_522	r6c4_s02	ancient	16.0	80.0	8.9	64	branch_r6c4_s02	复活节岛摩艾：ancient勘察点 03
+ev_r6c4_s03_523	r6c4_s03	ancient	496.0	176.0	8.9	64	branch_r6c4_s03	复活节岛摩艾：ancient勘察点 04
+ev_r6c4_s04_524	r6c4_s04	ancient	368.0	250.0	8.9	76	frag_r6c4_0	复活节岛摩艾：E 设施 · G 回归
+ev_r6c4_s05_525	r6c4_s05	ancient	100.0	262.0	8.9	76	frag_r6c4_1	复活节岛摩艾：E 设施 · G 回归
+ev_r6c4_s06_526	r6c4_s06	ancient	368.0	400.0	8.9	64	branch_r6c4_s06	复活节岛摩艾：ancient勘察点 07
+ev_r6c4_s07_527	r6c4_s07	ancient	16.0	496.0	8.9	64	branch_r6c4_s07	复活节岛摩艾：ancient勘察点 08
+ev_r6c4_s08_528	r6c4_s08	ancient	240.0	496.0	8.9	64	branch_r6c4_s08	复活节岛摩艾：ancient勘察点 09
+ev_r6c4_s09_529	r6c4_s09	ancient	496.0	496.0	8.9	64	branch_r6c4_s09	复活节岛摩艾：ancient勘察点 10
+ev_r6c5_s00_530	r6c5_s00	ancient	16.0	16.0	8.9	64	branch_r6c5_s00	巨石阵：ancient勘察点 01
+ev_r6c5_s01_531	r6c5_s01	ancient	496.0	16.0	8.9	64	branch_r6c5_s01	巨石阵：ancient勘察点 02
+ev_r6c5_s02_532	r6c5_s02	ancient	240.0	80.0	8.9	64	branch_r6c5_s02	巨石阵：ancient勘察点 03
+ev_r6c5_s03_533	r6c5_s03	ancient	496.0	176.0	8.9	64	branch_r6c5_s03	巨石阵：ancient勘察点 04
+ev_r6c5_s04_534	r6c5_s04	ancient	16.0	208.0	8.9	64	branch_r6c5_s04	巨石阵：ancient勘察点 05
+ev_r6c5_s05_535	r6c5_s05	ancient	370.0	284.0	8.9	76	frag_r6c5_0	巨石阵：E 设施 · G 回归
+ev_r6c5_s06_536	r6c5_s06	ancient	184.0	346.0	8.9	76	frag_r6c5_1	巨石阵：E 设施 · G 回归
+ev_r6c5_s07_537	r6c5_s07	ancient	16.0	496.0	8.9	64	branch_r6c5_s07	巨石阵：ancient勘察点 08
+ev_r6c5_s08_538	r6c5_s08	ancient	304.0	496.0	8.9	64	branch_r6c5_s08	巨石阵：ancient勘察点 09
+ev_r6c5_s09_539	r6c5_s09	ancient	496.0	496.0	8.9	64	branch_r6c5_s09	巨石阵：ancient勘察点 10
+ev_r6c6_s00_540	r6c6_s00	ancient	16.0	16.0	8.9	64	branch_r6c6_s00	远洋导航标：ancient勘察点 01
+ev_r6c6_s01_541	r6c6_s01	ancient	240.0	16.0	8.9	64	branch_r6c6_s01	远洋导航标：ancient勘察点 02
+ev_r6c6_s02_542	r6c6_s02	ancient	496.0	16.0	8.9	64	branch_r6c6_s02	远洋导航标：ancient勘察点 03
+ev_r6c6_s03_543	r6c6_s03	ancient	364.0	168.0	8.9	160	frag_r6c6_0	远洋导航标：E 设施 · G 回归
+ev_r6c6_s04_544	r6c6_s04	ancient	16.0	240.0	8.9	64	branch_r6c6_s04	远洋导航标：ancient勘察点 05
+ev_r6c6_s05_545	r6c6_s05	ancient	390.0	266.0	8.9	160	frag_r6c6_1	远洋导航标：E 设施 · G 回归
+ev_r6c6_s06_546	r6c6_s06	ancient	178.0	376.0	8.9	160	frag_r6c6_2	远洋导航标：E 设施 · G 回归
+ev_r6c6_s07_547	r6c6_s07	ancient	16.0	496.0	8.9	64	branch_r6c6_s07	远洋导航标：ancient勘察点 08
+ev_r6c6_s08_548	r6c6_s08	ancient	304.0	496.0	8.9	64	branch_r6c6_s08	远洋导航标：ancient勘察点 09
+ev_r6c6_s09_549	r6c6_s09	ancient	496.0	496.0	8.9	64	branch_r6c6_s09	远洋导航标：ancient勘察点 10
+ev_r6c7_s00_550	r6c7_s00	ancient	176.0	16.0	8.9	64	branch_r6c7_s00	星象对齐台：ancient勘察点 01
+ev_r6c7_s01_551	r6c7_s01	ancient	496.0	16.0	8.9	64	branch_r6c7_s01	星象对齐台：ancient勘察点 02
+ev_r6c7_s02_552	r6c7_s02	ancient	16.0	48.0	8.9	64	branch_r6c7_s02	星象对齐台：ancient勘察点 03
+ev_r6c7_s03_553	r6c7_s03	ancient	324.0	182.0	8.9	76	frag_r6c7_0	星象对齐台：E 设施 · G 回归
+ev_r6c7_s04_554	r6c7_s04	ancient	92.0	198.0	8.9	76	frag_r6c7_1	星象对齐台：E 设施 · G 回归
+ev_r6c7_s05_555	r6c7_s05	ancient	496.0	304.0	8.9	64	branch_r6c7_s05	星象对齐台：ancient勘察点 06
+ev_r6c7_s06_556	r6c7_s06	ancient	16.0	400.0	8.9	64	branch_r6c7_s06	星象对齐台：ancient勘察点 07
+ev_r6c7_s07_557	r6c7_s07	ancient	336.0	400.0	8.9	64	branch_r6c7_s07	星象对齐台：ancient勘察点 08
+ev_r6c7_s08_558	r6c7_s08	ancient	176.0	496.0	8.9	64	branch_r6c7_s08	星象对齐台：ancient勘察点 09
+ev_r6c7_s09_559	r6c7_s09	ancient	496.0	496.0	8.9	64	branch_r6c7_s09	星象对齐台：ancient勘察点 10
+ev_r7c0_s00_560	r7c0_s00	postdiluvian	16.0	16.0	8.9	72	branch_r7c0_s00	水晶头骨窟：postdiluvian勘察点 01
+ev_r7c0_s01_561	r7c0_s01	postdiluvian	496.0	16.0	8.9	72	branch_r7c0_s01	水晶头骨窟：postdiluvian勘察点 02
+ev_r7c0_s02_562	r7c0_s02	postdiluvian	112.0	144.0	8.9	72	branch_r7c0_s02	水晶头骨窟：postdiluvian勘察点 03
+ev_r7c0_s03_563	r7c0_s03	postdiluvian	286.0	134.0	8.9	180	frag_r7c0_0	水晶头骨窟：E 设施 · F 失落国度
+ev_r7c0_s04_564	r7c0_s04	postdiluvian	284.0	226.0	8.9	180	frag_r7c0_1	水晶头骨窟：E 设施 · F 失落国度
+ev_r7c0_s05_565	r7c0_s05	postdiluvian	496.0	240.0	8.9	72	branch_r7c0_s05	水晶头骨窟：postdiluvian勘察点 06
+ev_r7c0_s06_566	r7c0_s06	postdiluvian	16.0	272.0	8.9	72	branch_r7c0_s06	水晶头骨窟：postdiluvian勘察点 07
+ev_r7c0_s07_567	r7c0_s07	postdiluvian	238.0	388.0	8.9	180	frag_r7c0_2	水晶头骨窟：E 设施 · F 失落国度
+ev_r7c0_s08_568	r7c0_s08	postdiluvian	16.0	496.0	8.9	72	branch_r7c0_s08	水晶头骨窟：postdiluvian勘察点 09
+ev_r7c0_s09_569	r7c0_s09	postdiluvian	496.0	496.0	8.9	72	branch_r7c0_s09	水晶头骨窟：postdiluvian勘察点 10
+ev_r7c1_s00_570	r7c1_s00	postdiluvian	16.0	16.0	8.9	72	branch_r7c1_s00	羽蛇神殿：postdiluvian勘察点 01
+ev_r7c1_s01_571	r7c1_s01	postdiluvian	240.0	16.0	8.9	72	branch_r7c1_s01	羽蛇神殿：postdiluvian勘察点 02
+ev_r7c1_s02_572	r7c1_s02	postdiluvian	496.0	16.0	8.9	72	branch_r7c1_s02	羽蛇神殿：postdiluvian勘察点 03
+ev_r7c1_s03_573	r7c1_s03	postdiluvian	104.0	222.0	8.9	88	frag_r7c1_0	羽蛇神殿：E 设施 · F 失落国度
+ev_r7c1_s04_574	r7c1_s04	postdiluvian	304.0	208.0	8.9	72	branch_r7c1_s04	羽蛇神殿：postdiluvian勘察点 05
+ev_r7c1_s05_575	r7c1_s05	postdiluvian	496.0	304.0	8.9	72	branch_r7c1_s05	羽蛇神殿：postdiluvian勘察点 06
+ev_r7c1_s06_576	r7c1_s06	postdiluvian	16.0	336.0	8.9	72	branch_r7c1_s06	羽蛇神殿：postdiluvian勘察点 07
+ev_r7c1_s07_577	r7c1_s07	postdiluvian	236.0	408.0	8.9	88	frag_r7c1_1	羽蛇神殿：E 设施 · F 失落国度
+ev_r7c1_s08_578	r7c1_s08	postdiluvian	16.0	496.0	8.9	72	branch_r7c1_s08	羽蛇神殿：postdiluvian勘察点 09
+ev_r7c1_s09_579	r7c1_s09	postdiluvian	432.0	496.0	8.9	72	branch_r7c1_s09	羽蛇神殿：postdiluvian勘察点 10
+ev_r7c2_s00_580	r7c2_s00	postdiluvian	16.0	16.0	8.9	72	branch_r7c2_s00	玛雅观星台：postdiluvian勘察点 01
+ev_r7c2_s01_581	r7c2_s01	postdiluvian	336.0	16.0	8.9	72	branch_r7c2_s01	玛雅观星台：postdiluvian勘察点 02
+ev_r7c2_s02_582	r7c2_s02	postdiluvian	496.0	16.0	8.9	72	branch_r7c2_s02	玛雅观星台：postdiluvian勘察点 03
+ev_r7c2_s03_583	r7c2_s03	postdiluvian	240.0	144.0	8.9	72	branch_r7c2_s03	玛雅观星台：postdiluvian勘察点 04
+ev_r7c2_s04_584	r7c2_s04	postdiluvian	16.0	240.0	8.9	72	branch_r7c2_s04	玛雅观星台：postdiluvian勘察点 05
+ev_r7c2_s05_585	r7c2_s05	postdiluvian	496.0	272.0	8.9	72	branch_r7c2_s05	玛雅观星台：postdiluvian勘察点 06
+ev_r7c2_s06_586	r7c2_s06	postdiluvian	154.0	414.0	8.9	88	frag_r7c2_0	玛雅观星台：E 设施 · F 失落国度
+ev_r7c2_s07_587	r7c2_s07	postdiluvian	312.0	414.0	8.9	88	frag_r7c2_1	玛雅观星台：E 设施 · F 失落国度
+ev_r7c2_s08_588	r7c2_s08	postdiluvian	16.0	496.0	8.9	72	branch_r7c2_s08	玛雅观星台：postdiluvian勘察点 09
+ev_r7c2_s09_589	r7c2_s09	postdiluvian	496.0	496.0	8.9	72	branch_r7c2_s09	玛雅观星台：postdiluvian勘察点 10
+ev_r7c3_s00_590	r7c3_s00	postdiluvian	16.0	16.0	8.9	72	branch_r7c3_s00	失落的国度：postdiluvian勘察点 01
+ev_r7c3_s01_591	r7c3_s01	postdiluvian	496.0	16.0	8.9	72	branch_r7c3_s01	失落的国度：postdiluvian勘察点 02
+ev_r7c3_s02_592	r7c3_s02	postdiluvian	336.0	48.0	8.9	72	branch_r7c3_s02	失落的国度：postdiluvian勘察点 03
+ev_r7c3_s03_593	r7c3_s03	postdiluvian	182.0	96.0	8.9	88	frag_r7c3_0	失落的国度：E 设施 · F 失落国度
+ev_r7c3_s04_594	r7c3_s04	postdiluvian	406.0	242.0	8.9	88	frag_r7c3_1	失落的国度：E 设施 · F 失落国度
+ev_r7c3_s05_595	r7c3_s05	postdiluvian	16.0	272.0	8.9	72	branch_r7c3_s05	失落的国度：postdiluvian勘察点 06
+ev_r7c3_s06_596	r7c3_s06	postdiluvian	208.0	304.0	8.9	72	branch_r7c3_s06	失落的国度：postdiluvian勘察点 07
+ev_r7c3_s07_597	r7c3_s07	postdiluvian	496.0	432.0	8.9	72	branch_r7c3_s07	失落的国度：postdiluvian勘察点 08
+ev_r7c3_s08_598	r7c3_s08	postdiluvian	16.0	496.0	8.9	72	branch_r7c3_s08	失落的国度：postdiluvian勘察点 09
+ev_r7c3_s09_599	r7c3_s09	postdiluvian	304.0	496.0	8.9	72	branch_r7c3_s09	失落的国度：postdiluvian勘察点 10
+ev_r7c4_s00_600	r7c4_s00	ancient	16.0	16.0	8.9	64	branch_r7c4_s00	洪前航图：ancient勘察点 01
+ev_r7c4_s01_601	r7c4_s01	ancient	240.0	16.0	8.9	64	branch_r7c4_s01	洪前航图：ancient勘察点 02
+ev_r7c4_s02_602	r7c4_s02	ancient	496.0	16.0	8.9	64	branch_r7c4_s02	洪前航图：ancient勘察点 03
+ev_r7c4_s03_603	r7c4_s03	ancient	358.0	210.0	8.9	76	frag_r7c4_0	洪前航图：E 设施 · G 回归
+ev_r7c4_s04_604	r7c4_s04	ancient	48.0	240.0	8.9	64	branch_r7c4_s04	洪前航图：ancient勘察点 05
+ev_r7c4_s05_605	r7c4_s05	ancient	284.0	318.0	8.9	76	frag_r7c4_1	洪前航图：E 设施 · G 回归
+ev_r7c4_s06_606	r7c4_s06	ancient	496.0	304.0	8.9	64	branch_r7c4_s06	洪前航图：ancient勘察点 07
+ev_r7c4_s07_607	r7c4_s07	ancient	16.0	496.0	8.9	64	branch_r7c4_s07	洪前航图：ancient勘察点 08
+ev_r7c4_s08_608	r7c4_s08	ancient	240.0	496.0	8.9	64	branch_r7c4_s08	洪前航图：ancient勘察点 09
+ev_r7c4_s09_609	r7c4_s09	ancient	496.0	496.0	8.9	64	branch_r7c4_s09	洪前航图：ancient勘察点 10
+ev_r7c5_s00_610	r7c5_s00	ancient	16.0	16.0	8.9	64	branch_r7c5_s00	孤岛遗迹：ancient勘察点 01
+ev_r7c5_s01_611	r7c5_s01	ancient	496.0	16.0	8.9	64	branch_r7c5_s01	孤岛遗迹：ancient勘察点 02
+ev_r7c5_s02_612	r7c5_s02	ancient	272.0	80.0	8.9	64	branch_r7c5_s02	孤岛遗迹：ancient勘察点 03
+ev_r7c5_s03_613	r7c5_s03	ancient	80.0	208.0	8.9	64	branch_r7c5_s03	孤岛遗迹：ancient勘察点 04
+ev_r7c5_s04_614	r7c5_s04	ancient	496.0	208.0	8.9	64	branch_r7c5_s04	孤岛遗迹：ancient勘察点 05
+ev_r7c5_s05_615	r7c5_s05	ancient	208.0	272.0	8.9	64	branch_r7c5_s05	孤岛遗迹：ancient勘察点 06
+ev_r7c5_s06_616	r7c5_s06	ancient	378.0	308.0	8.9	76	frag_r7c5_0	孤岛遗迹：E 设施 · G 回归
+ev_r7c5_s07_617	r7c5_s07	ancient	108.1	388.2	8.5	76	frag_r7c5_1	孤岛遗迹：E 设施 · G 回归
+ev_r7c5_s08_618	r7c5_s08	ancient	304.0	496.0	8.9	64	branch_r7c5_s08	孤岛遗迹：ancient勘察点 09
+ev_r7c5_s09_619	r7c5_s09	ancient	496.0	496.0	8.9	64	branch_r7c5_s09	孤岛遗迹：ancient勘察点 10
+ev_r7c6_s00_620	r7c6_s00	ancient	16.0	16.0	8.9	64	branch_r7c6_s00	深潜点：ancient勘察点 01
+ev_r7c6_s01_621	r7c6_s01	ancient	496.0	16.0	8.9	64	branch_r7c6_s01	深潜点：ancient勘察点 02
+ev_r7c6_s02_622	r7c6_s02	ancient	240.0	48.0	8.9	64	branch_r7c6_s02	深潜点：ancient勘察点 03
+ev_r7c6_s03_623	r7c6_s03	ancient	16.0	240.0	8.9	64	branch_r7c6_s03	深潜点：ancient勘察点 04
+ev_r7c6_s04_624	r7c6_s04	ancient	366.0	246.0	8.9	76	frag_r7c6_0	深潜点：E 设施 · G 回归
+ev_r7c6_s05_625	r7c6_s05	ancient	226.0	320.0	8.9	76	frag_r7c6_1	深潜点：E 设施 · G 回归
+ev_r7c6_s06_626	r7c6_s06	ancient	496.0	336.0	8.9	64	branch_r7c6_s06	深潜点：ancient勘察点 07
+ev_r7c6_s07_627	r7c6_s07	ancient	16.0	496.0	8.9	64	branch_r7c6_s07	深潜点：ancient勘察点 08
+ev_r7c6_s08_628	r7c6_s08	ancient	304.0	496.0	8.9	64	branch_r7c6_s08	深潜点：ancient勘察点 09
+ev_r7c6_s09_629	r7c6_s09	ancient	496.0	496.0	8.9	64	branch_r7c6_s09	深潜点：ancient勘察点 10
+ev_r7c7_s00_630	r7c7_s00	ancient	16.0	16.0	8.9	64	branch_r7c7_s00	归航信标：ancient勘察点 01
+ev_r7c7_s01_631	r7c7_s01	ancient	272.0	16.0	8.9	64	branch_r7c7_s01	归航信标：ancient勘察点 02
+ev_r7c7_s02_632	r7c7_s02	ancient	496.0	16.0	8.9	64	branch_r7c7_s02	归航信标：ancient勘察点 03
+ev_r7c7_s03_633	r7c7_s03	ancient	464.0	208.0	8.9	64	branch_r7c7_s03	归航信标：ancient勘察点 04
+ev_r7c7_s04_634	r7c7_s04	ancient	200.0	240.0	8.9	76	frag_r7c7_0	归航信标：E 设施 · G 回归
+ev_r7c7_s05_635	r7c7_s05	ancient	16.0	272.0	8.9	64	branch_r7c7_s05	归航信标：ancient勘察点 06
+ev_r7c7_s06_636	r7c7_s06	ancient	144.0	368.0	8.9	64	branch_r7c7_s06	归航信标：ancient勘察点 07
+ev_r7c7_s07_637	r7c7_s07	ancient	418.0	386.0	8.9	76	frag_r7c7_1	归航信标：E 设施 · G 回归
+ev_r7c7_s08_638	r7c7_s08	ancient	16.0	496.0	8.9	64	branch_r7c7_s08	归航信标：ancient勘察点 09
+ev_r7c7_s09_639	r7c7_s09	ancient	240.0	496.0	8.9	64	branch_r7c7_s09	归航信标：ancient勘察点 10

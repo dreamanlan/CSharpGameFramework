@@ -8,6 +8,10 @@ public sealed class OverHeadBarManager
 {
     public void Init()
     {
+        // sceneLoaded fires for Additive battle scenes too. Subscribing again
+        // would duplicate every handler (one AddActor call per subscription)
+        // while views still holds the previous battle's bars.
+        if (subscribes.Count > 0) return;
         subscribes.Add(Utility.EventSystem.Subscribe<int, bool, TableConfig.Actor>("ui_add_actor", "ui", AddActor));
         subscribes.Add(Utility.EventSystem.Subscribe<int, float>("ui_actor_hp", "ui", ChangeHp));
         subscribes.Add(Utility.EventSystem.Subscribe<int, float, int>("ui_actor_mp", "ui", ChangeMp));
@@ -18,16 +22,53 @@ public sealed class OverHeadBarManager
         subscribes.Add(Utility.EventSystem.Subscribe<int, string>("ui_show_paopao", "ui", ShowPaoPao));
         subscribes.Add(Utility.EventSystem.Subscribe<int>("ui_hide_paopao", "ui", HidePaoPao));
     }
+
+    private void DestroyBar(OverHeadBar view)
+    {
+        if (null == view) return;
+        // ResourceSystem tracks pooled objects by the GameObject's instance id
+        // (AddToUsedResources), so the component itself can never be recycled.
+        GameObject go = view.gameObject;
+        if (!ResourceSystem.Instance.RecycleObject(go)) {
+            // The pool ledger may already have been cleared by ChangeScene(),
+            // or the bar came from FindChildObject on an actor prefab. Either
+            // way it must not survive as an orphan across a scene switch.
+            GameObject.Destroy(go);
+        }
+    }
+
     public void Release()
     {
         foreach (OverHeadBar view in views.Values) {
-            ResourceSystem.Instance.RecycleObject(view);
+            DestroyBar(view);
         }
         views.Clear();
         for (int i = 0; i < subscribes.Count; i++) {
             Utility.EventSystem.Unsubscribe(subscribes[i]);
         }
         subscribes.Clear();
+    }
+
+    /// <summary>
+    /// Drop bars whose owning entity is gone. Additive battle unloading does
+    /// not destroy them: actors live in the active/base scene and pooled bars
+    /// live under the DontDestroyOnLoad ResPool root. Called on battle unload
+    /// so bars from a finished battle do not pile up in the next one.
+    /// </summary>
+    public int PurgeOrphans()
+    {
+        var dead = new List<int>();
+        foreach (var pair in views) {
+            OverHeadBar view = pair.Value;
+            if (null == view || PluginFramework.Instance.GetGameObject(pair.Key) == null)
+                dead.Add(pair.Key);
+        }
+        foreach (int id in dead) {
+            OverHeadBar view;
+            if (views.TryGetValue(id, out view)) DestroyBar(view);
+            views.Remove(id);
+        }
+        return dead.Count;
     }
     private void UpdateVisible(int actorID)
     {
@@ -139,8 +180,7 @@ public sealed class OverHeadBarManager
     private void RemoveActor(int actorID)
     {
         if (views.ContainsKey(actorID)) {
-            ResourceSystem.Instance.RecycleObject(views[actorID].gameObject);
-            //GameObject.Destroy(views[actorID].gameObject);
+            DestroyBar(views[actorID]);
             views.Remove(actorID);
         }
     }

@@ -78,6 +78,11 @@ namespace ScriptableFramework
                 LogSys.Log(ServerLogType.DEBUG, "charactor {0}({1},{2},{3}) not exist", user.RoleId, user.GetKey(), user.Guid, user.Name);
                 return;
             }
+            Scene worldScene = null != user.OwnRoomUserManager ? user.OwnRoomUserManager.ActiveScene : null;
+            if (WorldSyncSystem.IsWorldScene(worldScene)) {
+                WorldSyncSystem.HandleMoveIntent(user, move_msg, worldScene);
+                return;
+            }
             ///
             if (charactor.GetAIEnable()) {
                 float tx = move_msg.target_pos.x;

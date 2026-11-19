@@ -51,11 +51,13 @@ public sealed class AppEditorDslApi
         calc.Register("scene_shot", "scene_shot([battle_number]) - render each battle scene camera to e:/tmp/scene_previews/BattleN.png", new ExpressionFactoryHelper<SceneShotExp>());
         calc.Register("scene_fix", "scene_fix([battle_number]) - apply the battle-scene standard (camera/atmosphere/props/navmesh)", new ExpressionFactoryHelper<SceneFixExp>());
         calc.Register("scene_verify", "scene_verify([battle_number]) - audit each battle scene against the standard", new ExpressionFactoryHelper<SceneVerifyExp>());
-        calc.Register("map_build", "map_build([tile_id]) - build 64 battle scenes from stage-0 design PNGs via pure channel translation", new ExpressionFactoryHelper<MapBuildExp>());
+        calc.Register("map_build", "map_build([tile_id]) - build 64 world tiles + 640 magnified battlefields (design doc 35)", new ExpressionFactoryHelper<MapBuildExp>());
         calc.Register("map_verify", "map_verify([tile_id]) - audit scene/terrain/areas/minimap/story and real relief for all tiles", new ExpressionFactoryHelper<MapVerifyExp>());
         calc.Register("map_shot", "map_shot([tile_id]) - render tile scene cameras to e:/tmp/map_previews", new ExpressionFactoryHelper<MapShotExp>());
-        calc.Register("map_nav", "map_nav() - bake legacy NavMesh for all 64 era battle scenes", new ExpressionFactoryHelper<MapNavExp>());
-        calc.Register("map_camera_fix", "map_camera_fix() - patch all 128 scene cameras to a close follow pose without rebuilding NavMesh", new ExpressionFactoryHelper<MapCameraFixExp>());
+        calc.Register("map_nav", "map_nav() - bake NavMesh for all 640 battlefield scenes", new ExpressionFactoryHelper<MapNavExp>());
+        calc.Register("map_camera_fix", "map_camera_fix() - patch all 704 scene cameras (64 world + 640 battlefields) without rebuilding NavMesh", new ExpressionFactoryHelper<MapCameraFixExp>());
+        calc.Register("map_world_build", "map_world_build([tile_id]) - rebuild world-map scenes with Config waypoints, leaving battlefield scenes untouched", new ExpressionFactoryHelper<MapWorldBuildExp>());
+        calc.Register("map_world_nav", "map_world_nav([tile_id]) - bake NavMesh for world-map scenes (resumable)", new ExpressionFactoryHelper<MapWorldNavExp>());
         calc.Register("camera_probe", "camera_probe() - report live camera pose and distance to the party leader", new ExpressionFactoryHelper<CameraProbeExp>());
         calc.Register("combat_probe", "combat_probe() - dump live entity AI state/home/target ranges", new ExpressionFactoryHelper<CombatProbeExp>());
         calc.Register("explore_probe", "explore_probe() - dispatch cast_explore in Play mode to verify the server explore round trip", new ExpressionFactoryHelper<ExploreProbeExp>());

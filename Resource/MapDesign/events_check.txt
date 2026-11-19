@@ -1,5 +1,6 @@
 EVENTS_CHECK
-tiles=64 events=148
+tiles=64 battlefields=640 events=640
+axis=142 branch=498
 server_table=D:\GitHub\CSharpGameFramework\Resource\Tables\Server\WorldEvent.txt
 client_Tables_Server_exists=False
 client_area_event_rows=0

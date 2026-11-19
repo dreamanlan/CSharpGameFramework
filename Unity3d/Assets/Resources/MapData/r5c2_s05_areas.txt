@@ -1,0 +1,6 @@
+# battlefield-local area hints (design doc 35)
+# type | worldX | worldZ | radius | intensity(G) | trigger(B) | pixels
+60 | 256.0 | 256.0 | 45.0 | 100 | 255 | 1595
+220 | 256.0 | 256.0 | 8.9 | 120 | 160 | 113
+240 | 320.0 | 320.0 | 10.2 | 150 | 80 | 81
+250 | 60.0 | 70.0 | 13.8 | 0 | 0 | 149

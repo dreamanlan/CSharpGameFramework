@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+LEGACY / DO NOT RUN after design doc 35 (640-battlefield layout).
+
 阶段 1 实机修正：让 64 个战场的入口遭遇能真正打完并轮换。
+
+警告：本脚本按旧布局（每格 1 个战场、id 10001..10064）重写 story，
+在 640 战场布局上运行会覆盖 build_story.py 生成的 640 份故事并使用错误的
+close_battle id。阶段 3 之后请只用 build_story.py。保留此文件仅供历史回溯。
 
 原因：新地形有起伏，story 骨架仍把实体放在 y=0（埋地下），且战斗区在世界
 120~440、玩家在 (60,70)，AI 感知不到 -> 全场 Idle、all_killed 永不触发。

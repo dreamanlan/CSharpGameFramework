@@ -40,10 +40,15 @@ namespace ScriptableFramework
                         m_Agent.acceleration = c_Acceleration;
                         m_Agent.radius = entity.GetRadius();
                         m_Agent.speed = entity.ActualProperty.GetFloat(CharacterPropertyEnum.x2011_最终速度);
-                        // Mobs used to share one pursuit point with no avoidance,
-                        // stacking into a single blob at the player's feet.
-                        m_Agent.obstacleAvoidanceType = ObstacleAvoidanceType.MedQualityObstacleAvoidance;
                     }
+                    // Apply outside the AddComponent branch so prefabs that
+                    // already carry a NavMeshAgent are covered too.
+                    // Experiment switch: false disables agent-to-agent separation
+                    // (the "collision" that pushed player/mobs off their
+                    // authoritative path). Set true to restore design doc 22.3.
+                    m_Agent.obstacleAvoidanceType = c_EnableObstacleAvoidance
+                        ? ObstacleAvoidanceType.MedQualityObstacleAvoidance
+                        : ObstacleAvoidanceType.NoObstacleAvoidance;
                     m_Animator = Actor.GetComponentInChildren<Animator>();
                     EntityDrawGizmos gizmos = Actor.GetComponent<EntityDrawGizmos>();
                     if (null == gizmos) {
@@ -75,6 +80,8 @@ namespace ScriptableFramework
             UpdateSpatial();
             UpdateEdgeColor();
             SyncMovement();
+            CalibrateAnimLock();
+            RefreshLocomotion();
         }
         public void SyncSpatial()
         {
@@ -89,9 +96,7 @@ namespace ScriptableFramework
                     Vector3 tpos = new Vector3(msi.TargetPosition.X, msi.TargetPosition.Y, msi.TargetPosition.Z);
                     if ((tpos - v3).sqrMagnitude < c_StopDistSqr) {
                         msi.IsMoving = false;
-                        if (null != Animator && CanPlayLocomotion) {
-                            Animator.Play(c_StandAnim);
-                        }
+                        PlayLocomotion(c_StandAnim);
                         msi.IsMoving = false;
                     }
                 }
@@ -206,9 +211,7 @@ namespace ScriptableFramework
                     LogSystem.Error("MoveTo({0}, {1}, {2}) agent {3}({4}) failed.", x, y, z, m_ObjId, m_Entity.GetUnitId());
                 }
             }
-            if (null != Animator && CanPlayLocomotion) {
-                Animator.Play(c_MoveAnim);
-            }
+            PlayLocomotion(c_MoveAnim);
         }
 
         public void StopMove()
@@ -222,16 +225,14 @@ namespace ScriptableFramework
                     m_Agent.enabled = true;
                 }
             }
-            if (null != Animator && CanPlayLocomotion) {
-                Animator.Play(c_StandAnim);
-            }
+            PlayLocomotion(c_StandAnim);
         }
 
         public void PlayAnimation(string anim)
         {
             if (null != Animator) {
                 Animator.Play(anim);
-                LockAnimation(0.6f);
+                LockAnimation(c_DefaultAnimLockSeconds, anim);
             }
         }
 
@@ -240,17 +241,77 @@ namespace ScriptableFramework
         private Animator m_Animator = null;
 
         private float m_LastSyncTime = 0;
-        // AI ticks call MoveTo every 100ms, which used to restart the Run clip
-        // on every tick and stomp any attack/skill animation. Skill clips hold
-        // locomotion off briefly so they are actually visible.
+        // AI ticks call MoveTo every 100ms. A skill clip must be allowed to run
+        // for its whole length: locomotion is suppressed while locked, then the
+        // correct clip is restored once the lock expires. The caller supplies
+        // the clip length instead of a fixed 0.6s, which used to cut Attack
+        // (0.83s) short and left the actor looking like it was always running.
         private float m_AnimLockUntil = 0f;
+        private bool m_HasAnimLock = false;
+        private bool m_AnimLockNeedsCalibration = false;
+        private int m_AnimLockStateHash = 0;
+        private int m_LastLocomotionHash = 0;
         private bool CanPlayLocomotion { get { return Time.time >= m_AnimLockUntil; } }
 
-        public void LockAnimation(float seconds)
+        /// <summary>
+        /// Hold locomotion off while a skill clip plays. State names do not match
+        /// clip names (e.g. state "Attack" uses clip "Skill_01"), so the real
+        /// length is calibrated from AnimatorStateInfo on the next frame.
+        /// </summary>
+        public void LockAnimation(float seconds, string anim = null)
         {
-            m_AnimLockUntil = Time.time + Mathf.Max(0f, seconds);
+            float duration = Mathf.Max(0f, seconds);
+            m_AnimLockUntil = Mathf.Max(m_AnimLockUntil, Time.time + duration);
+            m_HasAnimLock = true;
+            m_AnimLockStateHash = string.IsNullOrEmpty(anim)
+                ? 0 : UnityEngine.Animator.StringToHash(anim);
+            m_AnimLockNeedsCalibration = m_AnimLockStateHash != 0;
+            // A skill clip is playing now, so no locomotion state is current.
+            m_LastLocomotionHash = 0;
         }
 
+        private void CalibrateAnimLock()
+        {
+            if (!m_AnimLockNeedsCalibration || !m_HasAnimLock) return;
+            if (null == Animator || !Animator.isInitialized) return;
+            AnimatorStateInfo st = Animator.GetCurrentAnimatorStateInfo(0);
+            if (st.shortNameHash != m_AnimLockStateHash) return;
+            m_AnimLockNeedsCalibration = false;
+            float speed = Animator.speed > 0.01f ? Animator.speed : 1.0f;
+            if (!float.IsInfinity(st.length) && st.length > 0.01f) {
+                float progress = Mathf.Repeat(st.normalizedTime, 1.0f);
+                float remaining = st.length * (1.0f - progress) / speed;
+                m_AnimLockUntil = Mathf.Max(m_AnimLockUntil, Time.time + Mathf.Max(0f, remaining));
+            }
+        }
+
+        private void PlayLocomotion(string anim)
+        {
+            if (null == Animator || !CanPlayLocomotion) return;
+            int hash = UnityEngine.Animator.StringToHash(anim);
+            // MoveTo is called every AI tick; re-playing the same state restarts
+            // the clip from frame 0 and stomps any skill animation.
+            if (m_LastLocomotionHash == hash && Animator.isInitialized &&
+                Animator.GetCurrentAnimatorStateInfo(0).shortNameHash == hash) return;
+            m_LastLocomotionHash = hash;
+            Animator.Play(anim);
+        }
+
+        private void RefreshLocomotion()
+        {
+            if (!m_HasAnimLock || !CanPlayLocomotion) return;
+            m_HasAnimLock = false;
+            if (null == m_Entity || null == Animator) return;
+            // Restore from the live movement state, not from a stale intent:
+            // the actor may have arrived while the skill clip was locked.
+            MovementStateInfo msi = m_Entity.GetMovementStateInfo();
+            PlayLocomotion(msi.IsMoving ? c_MoveAnim : c_StandAnim);
+        }
+
+        // Experiment: false = no NavMeshAgent separation between entities.
+        // Restore to true if mobs stack into one blob again (design doc 22.3).
+        private const bool c_EnableObstacleAvoidance = false;
+        private const float c_DefaultAnimLockSeconds = 0.6f;
         private const float c_SyncInterval = 0.5f;
         private const float c_StopDistSqr = 0.25f;
         private const float c_AngularSpeed = 3600;

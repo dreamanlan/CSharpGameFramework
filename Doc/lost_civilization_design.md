@@ -1147,3 +1147,898 @@ start → wave_go → [波1] wave_spawn_1 → 清怪 all_killed
 - 不要在 Play 中改 C# 或 `asset_refresh()`：先 `editor_stop_now()`
 - 服务端 DSL 为文本副本，改动走 `DslCopy` 两端同步（本次只改 story，无 C#/DLL 变更，不需 `buildall`；若服务在跑，重启才加载）
 - 本轮未改 `Actor.txt`、`AiDoNormal.cs` 等已调好的战斗参数，避免回退 19.2 的震荡修复
+
+---
+
+## 25. 主场景多玩家信息同步（RoomServer 位移与状态，2026-11-18）
+
+对应 16.4「差距与下一步」与 12.7.2「平行时空状态标记」的服务端部分。目标是把「多玩家互相可见」从「有链路」补成「信息正确、后进房不丢、离开不残留」。范围严格限定在 RoomServer：**不改 proto / 生成代码 / 客户端 / 表 / Unity**，复用现有 `Msg_RC_NpcMove` 与 `Msg_CRC_StoryMessage` 通道。
+
+### 25.1 方案取舍
+
+三种可行路径各有权衡：一是复用现有消息通道、逻辑集中在服务端新类，风险最低但状态位不进二进制协议、靠消息回放；二是启用 proto 里已有却两端被注释的 `Msg_RC_SyncProperty.state`，更"权威"但 `StateFlag` 全仓只剩注释占位，且 int 位标志装不下 `grid/era/enter_time`，仍要 story 消息补；三是连 AOI、跨格、断线重连、双客户端实机一次做完，范围爆炸且本轮没有双客户端可验。
+
+结论：**取第一种**，吸收第二种的「低频权威心跳」；AOI / 跨格 / 3D 锚点表现留后续。所有新逻辑用 `Level.type == 2`（Story）门禁，战斗场景 type=4 保持原路径，战斗链路零改动。
+
+### 25.2 位移同步（原有 4 个缺口）
+
+| 缺口 | 修复 |
+|---|---|
+| `Msg_CR_UserMoveToPos.is_stop` 被完全忽略，停止时仍 `IsMoving=true` 并广播带速度的消息 | 世界层意图转 `WorldSyncSystem.HandleMoveIntent`：`is_stop` 置 `IsMoving=false`；非停止才写 `TargetPosition` 与朝向 |
+| 目标点无校验 | 拒绝 `NaN` / `Infinity` / 超出 `4096`（整图尺寸）的坐标；伪造目标不会瞬移，服务端仍按自身速度推进 |
+| `MovementSystem` 到达后 `IsMoving=false` 却不广播，客户端只靠本地插值 | `WorldSyncSystem.Tick` 每 200ms 检测「上帧移动→本帧停止」，广播带权威 `cur_pos` 的 `Msg_RC_NpcMove` |
+| 进房 `Msg_RC_CreateNpc` 只有位置与朝向，后进房者看不到别人正在移动 | `SyncSceneObjectsToUser` 末尾补 `SyncMovementToUser`，把房间内移动中实体逐条发给新玩家 |
+
+另有两处健壮性：进房门禁 `GetAIEnable()` 在 born 阶段为 false 会吞掉首个移动意图，世界层新路径不再依赖它；对移动中实体加 5 秒低频权威心跳，且**排除移动者自己**（重发 `NpcMove` 会让客户端重新 `MoveTo`、重启移动动画）。
+
+### 25.3 状态同步（原有 4 个缺口）
+
+`ExploreSystem` 原先只在 `enter_parallel` / `leave_parallel` 时一次性广播 `parallel_state`，状态只存在于内存 `s_Sessions`，且 `SyncForNewUser` 不回放。新增 `WorldSyncSystem` 持有可见状态表（roleId / state / grid / era / enter 与活跃时间 / 场景引用）：
+
+| 缺口 | 修复 |
+|---|---|
+| 后进房玩家看不到已有玩家的平行时空状态 | `SyncStateToUser` 在进房时回放本场景全部 `InParallelSpace` 状态 |
+| 30 秒超时只 `s_Sessions.Remove`，其它客户端永久残留锚点 | `Tick` 每次（200ms）检查，超时广播 `Left`；`ExploreSystem.WriteTraffic` 不再在锁内做广播 |
+| 断线 / 退房不清理 | `Scene.LeaveScene` 开头 `ClearState(user)` 广播 `Left` |
+| 全仓无 `leave_parallel` 发送者 | 超时与断线两条兜底路径覆盖，不依赖客户端主动发 |
+
+状态消息保持 4 参 `roleId / state / grid / era`，与 `Story/Common/localmain.dsl` 的 `onmessage("parallel_state")` 完全兼容；`ClearState` 幂等，超时与主动离开不会重复广播。消息里**不含事件 ID、精确坐标、半径、收益、suspicion、session**，与 12.6 的隔离约束一致。
+
+### 25.4 改动文件
+
+| 文件 | 内容 |
+|---|---|
+| `App/ServerModule/RoomServer/World/WorldSyncSystem.cs` | 新文件：位移意图/快照/心跳、状态表/回放/清理、确定性自检 |
+| `RoomServer/LogicMsgHandler.cs` | 世界层移动意图分流；`EnterHandler` 不变 |
+| `RoomServer/Scene/Scene_Utility.cs` | 进房快照追加移动与状态回放 |
+| `RoomServer/Scene/Scene.cs` | `LeaveScene` 清状态；`Reset` 清 tick 状态 |
+| `RoomServer/Scene/Scene_Tick.cs` | `TickRunning` 在 `MovementSystem.Tick` 后驱动同步 |
+| `RoomServer/Explore/ExploreSystem.cs` | 进入/离开/位置上报委托给同步系统；删除自行构造的 `Broadcast` |
+| `RoomServer/RoomServer.cs` | 启动时跑 `WorldSyncSystem.RunSelfTest()` |
+
+### 25.5 验证
+
+- `dotnet build App/ServerModule/RoomServer/RoomServer.csproj -c Debug`：**0 错误**（仅既有 `MSB3884` 规则集警告）
+- `WORLD_SYNC_SELFTEST`（`ServerEnv/bin/Data/world_sync_selftest.txt`，服务启动时产出）：`RESULT=PASS`。断言世界层门禁（Story 生效 / Battle、MainUi 不生效）、坐标校验边界、超时边界、状态消息 4 参形状、状态表生命周期与幂等清理
+- **未做**：全套服务重启后的实机验证、双客户端同屏。本次改动是服务端 C# / DLL，须按第 5 节四步流程部署后才生效；双客户端同屏仍属 16.4 遗留项
+
+### 25.6 剩余项
+
+跨格无缝换房、断线重连恢复、双客户端同屏实机、3D 锚点光柱 / 半透明残影 / 头顶「已潜入·某层」文案（客户端表现，需 `ParallelAnchor.prefab` 与按 roleId 找实体视图的挂点）、探索收益接角色数值与真知解锁。AOI 已由第 26 节补上。
+
+---
+
+## 26. 主场景 AOI 可见范围过滤与部署（2026-11-18）
+
+对应 16.4 第一条差距与 12.7.2「AOI 内才广播」。范围仍严格限定在 RoomServer：不改 proto / 生成代码 / 客户端 / 表 / Unity，只改 `WorldSyncSystem.cs`。
+
+### 26.1 方案取舍
+
+三条路线各有权衡：一是只过滤高频位移、状态保持全量（风险最低，但状态广播仍全房）；二是严格按设计把状态与位移都按 AOI 过滤，并补「进入视野回放」（对齐设计，需维护可见集合与状态配对）；三是复活 `AddCareList/RemoveCareList` 空循环与 `RoomPeer.BroadCastMsgToCareList`（最贴引擎原意，但 care list 是死代码、改动面大且无双客户端可验）。
+
+结论：**取第二条为主，吸收第一条的配对约束**。位移与 `InParallelSpace` 走 AOI；`Left` 保持全量——曾收到 `InParallelSpace` 的玩家可能已走出视野，只有全量才能保证锚点不残留。不复活 care list。
+
+### 26.2 实现
+
+| 项 | 内容 |
+|---|---|
+| 半径 | `AoiRadius = 80`。世界格 512×512，80 覆盖 ~35 的相机视距并与既有 `gohome=80` leash 一致，不跨整格 |
+| 过滤 | 新增 `WithinAoi(x1,z1,x2,z2)` 纯函数（半径平方比较，NaN 自然为 false）与 `NotifyNearby(scene,id,msg,x,z,exceptId)`，按 `RoomUsers` 的权威位置过滤；Observer 仍全量通知 |
+| 进入视野回放 | `SceneSyncState.Visible` 记录每个观察者上一 tick 的可见集合；`EnteredView(previous,current)` 求差集，对新进入的目标补发 `Msg_RC_NpcMove`（权威位置）与当前 `InParallelSpace` 状态。锁内只算集合、锁外发消息 |
+| 状态坐标 | `PlayerState` 增 `X/Z`；`user.Info` 尚未就绪时用 `float.NaN` 标记，广播与快照回放一律退化为全房，不静默丢状态 |
+| 受影响广播 | 移动意图、到达、5 秒心跳、进房移动/状态快照、`InParallelSpace` 均按 AOI；`Left`、`CreateNpc`/`SyncProperty` 等未改 |
+| 边界 | `CollectViews` 只取 `IsEntered` 且 `Info` 非空的玩家；心跳仍排除移动者自己，避免重启动画；场景 `Reset` 清掉可见集合 |
+
+`Left` 全量与「半径 80」共同保证：走进/走出视野都不会让客户端永久停留在错误状态。战斗场景 `type=4` 走原路径，零影响。
+
+### 26.3 验证
+
+- `dotnet build RoomServer.csproj -c Debug`：**0 错误**（1 个既有警告）；`read_lints` 0 诊断
+- `WORLD_SYNC_SELFTEST RESULT=PASS`：新增 `aoi_inside / aoi_boundary / aoi_outside / aoi_diagonal / aoi_nan`、`entered_view`、`aoi_radius=80` 与 `left_full_broadcast=True` 断言，原有断言全部保留
+- **四步部署完成**：`buildall Debug False`（`Client.sln.log` / `Server.sln.log` 均为当日新生成，`BuildLog` 全目录无 `error CS`）→ `copyserverdlls Debug` → `RunServer` → 全套服务起、`9001` 监听
+- **服务端实机自检**：`ServerEnv/bin/Data/world_sync_selftest.txt` 与 `explore_selftest.txt` 均为 17:16 新产出，`RESULT=PASS`；服务日志近 8 分钟无 `Exception` / `Unhandled` / `TypeLoadException` / `unknown func`
+- Unity 编辑器已启动、脚本编译完成（648 个 Bee 目标，仅既有 warning，无 `error CS`）
+- **单客户端实机全链通过**（19:10~19:12）：MCP editor + runtime 双通道连出（39528）；GM 登录自动化 `dotnet_set(find_input("Account"/"Passwd"),"text",...)` → `click_ui("Button")` → 昵称框自动随机再点 Button → 剧情 5 秒/条自动推进 → `send Msg_CR_Enter to roomserver` → `open_battle`。客户端日志出现 `parallel_state` 回包、`wave_go → wave_spawn_1 → all_killed → wave_advance_2 → npcarrived:1000 → wave_spawn_2` 闭环、`report_pos` 300ms 持续；无 `unknown func`、无异常。服务端 `explore_traffic.txt` 19:12 刷新为 `enter_parallel=2 / battle_pos=140 / session 119 grid=r0c1`，RoomServer 日志无异常。这证明 `WorldSyncSystem.SetState / Touch / Tick` 在真实链路上跑通，AOI 过滤未破坏状态回包。
+
+### 26.4 未完成：双客户端同屏实机验证
+
+单客户端已全链通过（见上），MCP 双通道正常，**此前记录的「GM 通道未连出」是误判**：Unity 冷启动后 `GmSocketClient` 每 10 秒重连，而 `unity_wait_ready()` 会独占 MCP 服务最长 180 秒，冷启动期间连续长等待 + 立即查连接表容易看到空表。等编译/域重载完成后直接查 `unity_info` 即显示 `ok:true`。
+
+剩余缺口只是**第二个客户端实例**：仓内无 standalone 构建，同工程多开 Unity 会争抢 `Temp/UnityLockfile`（MCP 工具明确警告）。需构建一个 player 或复制工程，再用两个账号登录同一世界格，才能验证 AOI 半径过滤、`Left` 全量与进入视野回放的双端表现。本轮未做，也未声称通过。
+
+### 26.5 剩余项
+
+跨格无缝换房、断线重连恢复、双客户端同屏实机（见 26.4）、3D 锚点光柱 / 半透明残影 / 头顶文案、探索收益接角色数值与真知解锁。AOI 已落地，不再列为缺口。
+
+---
+
+## 27. 战斗观感：朝向定量验证、小地图核对与轮换卡住归因（2026-11-18）
+
+用户退出 Play 时反馈「卡在 world 场景」，本轮先做归因，再回到战斗部分工作计划。范围：只改一个 Editor 侧诊断文件，不动游戏逻辑 / proto / 表 / 服务端。
+
+### 27.1 world 轮换卡住：归因结论
+
+`Unity3d/Game.log`（19:08~19:44 会话）证据：
+
+- 正常轮换链 `on_battle_closed → findnpc → touchnpc → open_battle → LoadBattle` 在 19:11~19:19 成功 10 次，间隔 4~5 秒。
+- `19:19:35 dialog_over:998 → UnloadBattle → on_battle_closed`、`19:19:38 findnpc` 之后，直到 `19:44:40` 退出，25 分钟内 `report_pos` 每 300ms 正常、网络心跳正常，但**再无 `touchnpc` / `open_battle` / `wave_go`**；无 `Exception` / `unknown func` / `error CS`。
+- 即静默卡在 `autorun.dsl:26` 的 `obj_move(get_player_id(), $pos, "touchnpc")` 到达事件之前。
+
+链路核查（零改动静态）：
+
+- 到达事件是**客户端本地判定**：`App/ClientModule/PluginFramework/Story/Commands/ObjectCommands.cs:47` 的 `ObjMoveCommand` 把目标写入 `AiData_ForMoveCommand` 并切到 `PredefinedAiStateId.MoveCommand`，到点本地触发 `touchnpc`，再由 `Story1/story.dsl:26` 的 `client:touchnpc` 推进 `open_battle`。服务端广播不参与该判定。
+- **排除本轮服务端回归**：曾怀疑 `WorldSyncSystem.HandleMoveIntent` 新增的 `is_stop` 语义会让移动提前结束，但 `SyncPlayerStopMove()`（`App/ClientModule/PluginFramework/RoomNetWork/NetWorkSystem.cs:281`）在全仓**只有定义、无调用点**，客户端根本不发 `is_stop=true`。该嫌疑不成立。
+- 本轮重起 Play 后自动轮换正常（`22:27:13 findnpc → 22:27:17 touchnpc`，4.2s），说明卡住非必现、非本轮改动直接造成。
+
+**仍未定位根因**：`findnpc` 的 `log("... index:{1}, pos:{2}")` 输出未落到 `Game.log` 或 `Logs/StoryScript.log`，拿不到卡住那轮的 `Config/$index` 与坐标，无法区分 index 越界、`Config/N` 点不存在或 NavMesh 不可达。按纪律停止猜测。彻底修复建议归到「以后做 AOI 验证」那一轮一起处理（两者都依赖 world 层移动链路），本轮采取绕路线：GM 登录后在单场战斗内完成验证，不依赖多轮自动轮换。
+
+### 27.2 朝向定量验证（第 1 项，已完成）
+
+`Unity3d/Assets/Scripts/GmScript/Editor/AppEditorDslApi.Maps.cs` 的 `CombatProbe.Run()` 补：
+
+- 每实体 `face`（实际朝向角度）、`wanted`（目标朝向角度）、`faceErr`（两者最短角差）、`expect`（指向当前 target 的期望角度，`atan2(dx,dz)`，与 `Geometry.GetYRadian` 同约定：0° = +z）、`expectErr`。
+- 表头汇总 `facing`（有有效 target 的实体数）、`expectErrAvg`、`expectErrMax`。
+
+实机两次采样（战斗进行中，间隔 8 秒）：
+
+| 采样 | 主角 id=1100 状态 | face | wanted | faceErr | expectErr | 汇总 |
+|---|---|---|---|---|---|---|
+| 1 | `state=1 anim=Attack moving=False target=1114` | 226.5° | 226.5° | **0.0°** | **1.7°** | `facing=2 expectErrAvg=4.8 expectErrMax=7.9` |
+| 2 | `state=1 anim=Attack moving=False target=1122` | 100.5° | 100.5° | **0.0°** | **2.6°** | `facing=1 expectErrAvg=2.6 expectErrMax=2.6` |
+
+结论：`SetWantedFaceDir → UpdateSpatial.RotateTowards` **在攻击/静止态确实收敛到当前目标方向**（误差 1.7°~2.6°），第 22.4 节「未做定量验证」的缺口已补上。
+
+**新观察（不属原计划、如实记录）**：移动中实体 `faceErr` 明显偏大——队友 `state=102` / `anim=Run` 时读到 14.6°、40.3°、55.1°、65.4°、66.5°、100.5°，怪 `state=101` 读到 25.3°。说明转向是有限速插值、追不上快速变化的 `wanted`（移动方向），静止/攻击态才收敛。这是观感项而非功能错误，后续若要调可从 `EntityViewModel_Npc.cs` 的 `c_TurnRoundSpeed` 入手。
+
+### 27.3 小地图显示核对（第 3 项，部分完成）
+
+GM 实机读 `MainUI/Panel/Image/RawImage`：`texture=r1c5_minimap_prediluvian`、512×512、`enabled=True`、`color=RGBA(1,1,1,1)`、`uvRect=(0,0,1,1)`。贴图正确挂载且全幅不透明显示，与 `set_map_image` 消息及 128 张 PNG 资源一致。**像素级截图仍未做**，第 3 项不算完全结案。
+
+### 27.4 顺带确认的既有项
+
+`combat_probe()` 两次采样中 4 个队友（id 1101~1104）全部 `state=102`（Gohome）、`anim=Run`、`moving=True`，与第 22.4 节「队友 Gohome 偏活跃」记录一致，该项仍待调 `GohomeHandler` 容差。`self_effect / track bone eyes|hit can't find` Warn 仍在刷（fallback 已生效）。
+
+### 27.5 本轮环境经验（已写入交接文档第 2 节）
+
+- **同一账号重复登录会卡住**：`ai_1818` 已注册时 `do_login` 有 ws 101 握手与登录返回，但跳过 `show_nickname`、UI 消失且 story 不推进；重启 Play 无效，换随机账号（`ai_2234`、`ai_2240`）即恢复。
+- **改 Editor 侧 C# 后必须 `asset_refresh()`**：直接写文件 Unity 不重编译（`Assembly-CSharp-Editor.dll` 时间戳不动），探针仍返回旧格式；`asset_refresh()` 后 DLL 更新、无 `error CS`。域重载会让 GM 通道断约 30~60 秒后自动重连，直接查 `unity_info` 即可。
+- 编译验证：Unity `error CS=0`，`read_lints` 0 诊断；探针编译前后输出格式差异（`facing` 字段）已实机确认。
+
+### 27.6 剩余项
+
+world 轮换卡住根因（`Config/$index` / NavMesh，需让 `findnpc` 日志落盘）、移动中转向滞后（调 `c_TurnRoundSpeed`）、队友 Gohome 容差、小地图像素级截图、骨骼挂点 Warn。AOI 双客户端验证（26.4）按用户要求留到以后。
+
+---
+
+## 28. 动作/行为不一致诊断：技能动画被 Run 覆盖（2026-11-18）
+
+用户反馈「现在动作与行为是不是不一致，好像总是跑步动作」。本轮按推荐先做**诊断**而非直接修，目标是区分「技能动画没播」与「播了被 locomotion 覆盖」，避免改错地方。
+
+### 28.1 诊断前的事实
+
+- `combat_probe()` 三次采样：单帧上 `moving=True → anim=Run`、`moving=False → anim=Idle`，标志与动画**一致**，所以不是状态位错位。
+- `anim_runtime_probe()` 两次（间隔约 200 秒）显示大量 animator 停在 `hash=1748754976`，`normalizedTime` 从 314→523 单调增长，即 Run 状态长时间未被打断；采样里没抓到 `Attack`。
+- 状态哈希经 `Animator.StringToHash` 实机确认：`Run=1748754976`、`Idle=2081823275`、`Attack=1080829965`。
+- 但技能确实在施放：`Game.log` 有 `CreateTriger, type:animation triger:AnimationTriger`、周期性 `ManualSkill 4 activate/deactivate`；`attack.dsl` 等技能 DSL 都写了 `animation("Attack")`。
+- 另发现一个「原地跑步」实例：`id=1207` 三次采样坐标完全相同 `(63.5, 15.27345, 79.5)`，却 `moving=True / anim=Run`，`tgtPos` 在约 3.6 单位外。
+
+### 28.2 诊断手段（临时代码，修复后需删除）
+
+在 `App/ClientModule/PluginFramework/Skill/Trigers/AnimationTrigger.cs` 新增 `AnimDiag` 静态诊断类，并在三个分支埋点：
+
+| 埋点 | 作用 |
+|---|---|
+| `NotePlayDetail` | 记录播放时的 `objId / skillId / anim / onObj / isTrack / beforeHash / afterHash / viewLocked / ctl`，每 20 次打一条 |
+| `NoteSkip` | 区分 `no_animator` 与 `empty_anim` |
+| `NoteLocomotion` | 在 `EntityViewModel_Npc.cs` 的 `MoveTo` / `StopMove` / `SyncSpatial` 三处 `Animator.Play` 前调用，若距最近一次技能动画 < 3 秒则打 `overwritten` |
+
+部署：`dotnet build ClientPlugins.csproj -c Debug` → 复制 `PluginFramework.dll/.pdb` 到 `Unity3d/Assets/Plugins/` → `asset_refresh()`。编译 0 错误，`read_lints` 0 诊断。
+
+### 28.3 实机结论：**播了但被覆盖**
+
+`Unity3d/Game.log` 本轮 `ANIMDIAG` 输出：
+
+```
+[ANIMDIAG] play#1  objId=123  skill=1 dsl=1 anim=Stand  ... viewLocked=True ctl=5_IP_YiNa_01
+[ANIMDIAG] play#21 objId=1104 skill=1 dsl=1 anim=Stand  ... viewLocked=True ctl=5_Mon_Assassin_01
+[ANIMDIAG] skip reason=empty_anim noAnimator=0 emptyAnim=1 play=37
+[ANIMDIAG] play#41 objId=1104 skill=3 dsl=3 anim=Attack ... beforeHash=2081823275 afterHash=2081823275 viewLocked=True
+[ANIMDIAG] overwritten objId=1111 anim=Stand  by Run after 0.603s count=1
+[ANIMDIAG] play#81 objId=1102 skill=5 dsl=5 anim=Attack ... viewLocked=True
+[ANIMDIAG] skip reason=empty_anim noAnimator=0 emptyAnim=21 play=81
+[ANIMDIAG] overwritten objId=1102 anim=Attack by Run after 1.335s count=2
+```
+
+判读：
+
+1. **不是"没播"**：`play#41` / `play#81` 明确播了 `Attack`；`noAnimator=0`；`viewLocked=True`（`EntityViewModelManager.GetEntityViewById` 拿得到 view，`LockAnimation` 生效）；`track=False`（没被 `TrackEffectObj` 劫持）；`ctl` 正常。
+2. **是"被覆盖"**：两条 `overwritten ... by Run after 0.603s / 1.335s`。`0.603s` 精确对应 `LockAnimation(0.6f)` 到期——锁一过，`SyncMovement()` 每帧的 `MoveTo → Animator.Play("Run")` 立刻把技能动画顶掉。`1.335s` 是同类事件的另一次。
+3. **`empty_anim` 属预期**：预定义 impact/buff 技能按设计没有动画名（`AnimationTrigger.cs` 已有注释），不是 bug；数量 `emptyAnim=21` 相对 `play=81` 占少数，不是主因。
+4. `beforeHash=afterHash=2081823275`（Idle）：`Animator.Play` 当帧读 `GetCurrentAnimatorStateInfo` 仍返回旧状态，属 Unity 延迟生效，不能据此判定"没播"。本轮另一次 `anim_runtime_probe()` 抓到 `hash=1080829965`（Attack）与 `646380074`，证实 Attack 状态**确实会进入**，只是窗口极短。`combat_probe()` 某帧 10 个战斗实体里 4 个 `Attack` / 6 个 `Run`，也印证这点。
+
+所以用户看到"总是跑步"的根因是：**技能动画被 0.6 秒后恢复的 locomotion 抢占，可见窗口太短**；叠加队友 `state=102` Gohome 长期 `moving=True`（第 27.4 节），画面上大部分单位长期处于 Run。
+
+### 28.4 修复建议（A 已于第 29 节落地）
+
+按成本排序，前两条针对已确证的根因：
+
+| 方案 | 内容 | 评价 |
+|---|---|---|
+| A 最小修 | 让 `LockAnimation` 时长与技能动画实际长度对齐（读 `GetCurrentAnimatorStateInfo(0).length` 或用 `adjust_section_duration("anim",...)` 的结果），并在锁到期时按当前 `IsMoving` 补播正确的 locomotion，避免"锁内到达不切 Idle、锁后也不补播"（`SyncSpatial` 的门控漏洞） | 直接命中 `0.603s` 覆盖点，改动局部 |
+| B 结构修 | 改为 Animator 参数驱动（`SetBool("Moving")` / `SetTrigger("Attack")` + 状态机过渡），取消 `MoveTo` 每帧 `Animator.Play("Run")`，让动画状态由单一权威源决定 | 从根上消除覆盖，但要动 controller 资源与多个调用点，范围大 |
+| C 附带修 | 修「原地跑步」：`id=1207` 坐标不动却 `IsMoving=true`，因 `SyncMovement` 只按 `DistanceSquare(pos, tgtPos) > 0.625` 判定继续移动，NavMesh 到不了目标时永不触发停止分支 | 独立观感问题，可单独做 |
+
+用户选择 **A**（见第 29 节）；B、C 未做。`AnimDiag` 及所有埋点已在验证后删除。
+
+### 28.5 本轮环境补充
+
+`ClientPlugins.csproj` 是聚合工程（`ProjectReference` 到 `PluginFramework.csproj`），`buildall` 部署的 DLL 来自 `ClientPlugins/bin/Debug/netstandard2.1/`，不是 `PluginFramework/bin/`。域重载后 editor 通道偶发不自动重连，`SetForegroundWindow` 激活 Unity 主窗口可在 12 秒内恢复。均已写入交接文档第 2 节。
+
+---
+
+## 29. 方案 A 落地与两项新调查（2026-11-19）
+
+### 29.1 方案取舍
+
+三条路线：固定调大 `LockAnimation`（保守，但 clip 长度 0.6~4.13s 不一，必然仍截断或压太久）、改 Animator 参数驱动状态机（方案 B，彻底但范围大）、**锁时长按实际 clip 对齐 + 锁到期补播**（适配派）。取第三种：直接命中已确证的 `0.603s` 窄根因，不动状态机资源。
+
+### 29.2 实现（两个文件）
+
+`App/ClientModule/PluginFramework/GameObjects/EntityViewModel_Npc.cs`：
+
+| 改动 | 内容 |
+|---|---|
+| `Update()` | 末尾依次调 `CalibrateAnimLock()`、`RefreshLocomotion()` |
+| `PlayLocomotion(string)` | 统一入口：锁内抑制；同状态且 `GetCurrentAnimatorStateInfo(0).shortNameHash` 已匹配时直接返回，消除 `MoveTo` 每 100ms 重播 Run |
+| `MoveTo` / `StopMove` / `SyncSpatial` | 三处 `Animator.Play` 全部改走 `PlayLocomotion`，顺带修掉"锁内到达不播 Idle、锁后也不补播"的门控漏洞 |
+| `LockAnimation(float, string anim = null)` | 记录状态 hash、标记待校准、清 `m_LastLocomotionHash`；默认兜底 0.6s |
+| `CalibrateAnimLock()` | 锁内下一帧读 `AnimatorStateInfo`，按 `length * (1 - normalizedTime % 1) / speed` 动态延长锁 |
+| `RefreshLocomotion()` | 锁到期按**实时** `msi.IsMoving` 补播 `Run`/`Idle` |
+| `PlayAnimation(string)` | 固定 0.6s → `LockAnimation(c_DefaultAnimLockSeconds, anim)` |
+
+`App/ClientModule/PluginFramework/Skill/Trigers/AnimationTrigger.cs`：`view.LockAnimation(0.6f)` → `view.LockAnimation(0.6f, anim)`。
+
+**关键坑**：最初用 `runtimeAnimatorController.animationClips` 按状态名查长度，全部回退 0.6s。`actor_probe()` 实证 **状态名 ≠ clip 名**——`Attack` 对应 `YiNa_Skill01` / `Skill_01` / `Attack_01`，`Death` 对应 `YiNa_Dead` / `Dead`。改为运行时从 `AnimatorStateInfo.length` 校准，绕开命名映射。
+
+### 29.3 实机验证（诊断埋点保留一轮，验证后已删除）
+
+| 指标 | 修复前 | 修复后 |
+|---|---|---|
+| `by Run` 覆盖次数 | 2 次（`0.603s` / `1.335s`） | **0 次** |
+| `Attack` 锁时长 | `0.601~0.602s`（截断 0.83s clip） | **0.837 / 0.838s**（= clip 长度） |
+| `Death` 锁时长 | `0.601s` | **2.071s**（= 2.07s clip） |
+| `Stand` 锁时长 | `0.603s` | **1.505s** |
+| 剩余 `overwritten` 事件 | 被 Run 顶掉 | 6 条全部是锁到期按 `IsMoving=false` 补播 `Idle`，属设计内恢复 |
+
+编译：`ClientPlugins.csproj` 0 错误、Unity `error CS=0`、`read_lints` 0 诊断。诊断代码（`AnimDiag` 类、`NotePlayDetail`/`NoteSkip`/`NoteLocomotion`）已全部删除，最终 DLL 重新构建部署并 `asset_refresh()` 通过。
+
+### 29.4 新调查一：避让/碰撞影响玩家与怪的位置（未修）
+
+用户反馈"避让或碰撞会影响玩家与怪的位置"。只读调查结论：**机制上存在真实的位置分叉闭环**。
+
+- `EntityViewModel_Npc.cs:36-46` 运行时给每个实体 `AddComponent<NavMeshAgent>`，设 `angularSpeed=3600`、`acceleration=64`、`radius=GetRadius()`、`speed=最终速度`、`obstacleAvoidanceType=MedQualityObstacleAvoidance`；未设 `autoBraking` / `stoppingDistance` / `avoidancePriority`，业务代码中无 `CharacterController` / `Rigidbody` / `NavMeshObstacle`。
+- `SyncPosition()`（:111-118）每帧把 `Actor.transform.position` **无条件**写回 `msi`，无偏差判断、无来源判断；`SyncSpatial` 用 `c_StopDistSqr=0.25`、`SyncMovement` 用硬编码 `0.625`，三个阈值不一致。
+- 服务端 `MovementSystem`（`Movement/MovementSystem.cs:46-74`）按 `TargetPosition` 直线推进 `Position`，注释明确 "NPCs ignore blocking and avoidance"；`DataSyncUtility` 广播权威 `cur_pos`/`target_pos`，客户端 `MsgHandler.cs:142` 只在偏差平方 > 256（16m）才纠正。
+- 客户端每 0.5s 用被避让影响过的 transform 预测点上报，服务端再写成 `TargetPosition`，构成回写闭环。
+- 环形刷怪（半径 14，`build_story.py:204-228`）与 `AiDoNormal.cs:103-109` 的 `objId%8` 半径 4 追击点分散，是为缓解"挤成一团"加的，但**没有任何针对 avoidance 偏移的专门位置校正**；文档 28.4 的「原地跑步」实例（`id=1207` 坐标不动却 `IsMoving=true`）与此链路直接相关。
+
+### 29.5 新调查二：鼠标点地面临时脱离 AI + 超时恢复（原语义已丢失，未修）
+
+- **点击链路仍完整**：`Unity3d/Assets/Scripts/Game.cs:334-359`（`Input.GetMouseButtonDown` → `Physics.Raycast` 命中 Terrain → `PluginFramework.Instance.MoveTo`）→ `PluginFramework_Entity.cs:196-203`（战斗态发 `GfxStorySystem.SendMessage("move_to",...)`，非战斗态发 `Msg_CR_UserMoveToPos`）→ `Battle1/story.dsl:34-37` 的 `onmessage("move_to")` → `npc_move` → `NpcCommands.cs:196-208` 切 `PredefinedAiStateId.MoveCommand`。
+- **"短暂脱离 AI + 有超时 + 超时恢复"语义不存在**：全仓精确搜 `SetUnderControl` / `m_ControlTime` / `ControlTimeout` / 控制超时 / AI 恢复计时器 **0 命中**；`IsControlByManual` 的所有写入都是清零（`Entity_Base.cs:557`、`EntityController.cs:198,283`），无任何置 true 处；`SetAIEnable` / `obj_enable_ai` / `npc_enable_ai` / `mark_control_by_story` 注册了但 DSL 中 0 处调用；改名清单 `rename_registry.tsv` 也无相关条目，排除"改名移除"。
+- 现状是借 `MoveCommand` 状态挂起 AI story，按 `WayPointArrived <= 1f`（`PluginFramework_Ai.cs:107-112,126-131`）**到达**才回 `Idle`，没有时间超时；NavMesh 到不了目标就一直挂着。`Battle1/story.dsl:27` 还留着气泡文案「鼠标点击地面短暂改变主角的移动目的地。」，是语义残留。
+- 附带：`LogicMsgHandler.cs:87` 的 `if (charactor.GetAIEnable())` 意味着"先禁 AI 再手动移动"并不是当前点击路径的设计。
+
+### 29.6 关闭实体间避让的实验（2026-11-19）
+
+用户提议「先把玩家与怪的碰撞关了看看」。先澄清：全仓无 `CharacterController` / `Rigidbody` / 实体 `Collider`，所谓"碰撞"实际是 `NavMeshAgent.obstacleAvoidanceType = MedQualityObstacleAvoidance` 产生的 agent 间分离力（22.1 记录 `NoObstacleAvoidance` 曾是"挤成一团"根因，22.3 才改成 `Med`）。
+
+**方案取舍**：全关（回退 22.3，怪与怪避让也一起关）／只关玩家（需运行时判断 `IsLeader`，怪仍避让主角、只消一半）／**编译期开关（取此）**。理由：实验要能一行回滚，且 `m_Agent` 可能来自 prefab 自带组件，原代码只在 `AddComponent` 分支设 avoidance，必须移到分支外才对所有实体生效。
+
+**实现**：`App/ClientModule/PluginFramework/GameObjects/EntityViewModel_Npc.cs` 加 `private const bool c_EnableObstacleAvoidance = false;`，`Create()` 里分支外统一设 `Med` / `No`。改动仅此一处，未动服务端 / 表 / proto / 动画 A 的成果。
+
+部署：`dotnet build ClientPlugins.csproj -c Debug`（0 错误）→ 复制 `PluginFramework.dll/.pdb` 到 `Unity3d/Assets/Plugins/` → `asset_refresh()`（Unity `error CS=0`）→ 激活窗口恢复 GM editor 通道 → 进 Play 用新账号 `ai_0020` 登录。
+
+**实机观察**（`combat_probe()` 五次采样，跨多波战斗）：
+
+| 项 | 结果 |
+|---|---|
+| 异常 | `Game.log` 无 `Exception` / `NullReference` / `unknown func` / NavMesh 报错 |
+| 战斗轮换 | 连续多轮 `open_battle → wave_go → wave_spawn_1 → all_killed → wave_advance_2 → wave_spawn_2 → all_killed → UnloadBattle` 正常，**未再卡在 world 场景** |
+| 聚集 | 有一次采样 5 个战斗实体全在 `58~60, 68~72`（约 2~4 单位）且全 `Idle`；另一次 3 个实体坐标完全相同 `57, 2.333, 80`（波次切换重建态）。但后续采样又回到 `70~73, 84~87` 分散、有 `Attack`/`Run`，说明不是持续叠死 |
+| 高度异常 | 多次 `pos.y` 明显低于 `home.y`（如 `2.33` vs `7.4`、`3.5` vs `7.1`），与 29.4 记录的"位置分叉"一致，关闭避让**并未消除**这类 Y 偏差 |
+| 朝向 | `expectErrAvg` 在 `0.0 ~ 97.4` 间大幅波动，攻击实体有 75~149°，比 29.3 修复后更差；但这是跨波次采样，不能单独归因于关闭避让 |
+
+**用户实机反馈（2026-11-19，结论更新）**：「关了碰撞后好多了」。据此**保留 `c_EnableObstacleAvoidance = false` 作为当前基线**，不再按上面"暂未定结论"处理。如实保留两点观察：Y 偏差仍在、有短时聚集，但从用户主观观感看，位置被推挤的问题明显改善，收益大于代价。
+
+**回滚点**：把 `c_EnableObstacleAvoidance` 改回 `true`，重新走一遍 DLL 部署即可，无需改其它文件。
+
+---
+
+## 30. 鼠标点击地面移动单点修（2026-11-19）
+
+用户反馈「关了碰撞后好多了，不过鼠标点击移动好像没效果」。只做单点修，不恢复"超时脱离 AI"语义（用户明确要求先看效果）。
+
+### 30.1 根因（确证）
+
+点击链路本身完整：`Unity3d/Assets/Scripts/Game.cs:334-359`（左键 → `Physics.Raycast`，mask 含 `Terrain` 层；实机查 `LayerMask.NameToLayer("Terrain")=8`、地形 layer=8 → `PluginFramework.Instance.MoveTo`）→ `App/ClientModule/PluginFramework/PluginFramework_Entity.cs:196-203`，战斗态发 `GfxStorySystem.Instance.SendMessage("move_to", x, y, z)`。
+
+**但没有任何当前加载的 story 接收该消息**：
+
+- `Resource/Tables/Public/Level.txt` 里 10001~10064 的 `SceneDslFile` 是 `Story/Battle_r*c*/story.dsl`——64 个文件全部没有 `move_to`（实测 `NONE_IN_64_BATTLE_STORIES`）
+- 全部战场共用的 `ClientDslFile` = `Story/Common/autorun_battle.dsl`，以及其它 `Common/*.dsl`，也没有
+- 只有旧场景 `Resource/DslFile/Story/Battle1..12/story.dsl:34` 与 `SkillViewer/story.dsl:22` 有 `onmessage("move_to")`，这些场景已不加载（实机 `OnLoadBattleComplete 10057/10058/10059/10010`）
+
+`StoryInstance.SendMessage`（`Infrastructure/DotnetStoryScript/StoryInstance.cs:471-493`）对**未注册**的 msgId 静默回收消息、不打日志；只有 `m_MessageQueues.TryGetValue(msgId, out queue)` 成功才打 `StoryInstance queue message {0}` 并入队。这解释了 29.5 记录里"链路完整却无实际功能"的疑问，也成为 30.3 的验证判据。
+
+### 30.2 方案取舍与实现
+
+三条路线：改 64 个 per-scene story（或 `build_story.py` 模板重生成，范围最大、要三端同步 64 个文件）／恢复完整原语义（需补控制计时与 AI 恢复，可能动 C#，属另一功能）／**共用 story 单点修（取此）**。
+
+`Level.txt` 里 64 个战场的 `ClientDslFile` 都是 `Story/Common/autorun_battle.dsl`，且该 story 已在实机运行（`report_pos` 每 300ms）；`GfxStorySystem.SendMessage` 广播给所有已加载 story。所以一处加 handler 即可覆盖全部战场。
+
+`Resource/DslFile/Story/Common/autorun_battle.dsl` 新增：
+
+```dsl
+  onmessage("move_to")params($x,$y,$z)
+  {
+    obj_move(get_leader_id(),vector3($x,$y,$z));
+  };
+```
+
+用 `obj_move(get_leader_id(), ...)` 而非旧 `Battle1` 的 `npc_move(1000, ...)`：前者用 objId，与 64 个 per-scene story 的分段推进写法（`Battle_r0c0_flood/story.dsl:76`，§24 已实机通过）一致；该文件自身也在用 `get_leader_id()` 做 `report_pos` / `cast_explore`。
+
+**边界**：只让点击重新生效。`obj_move` 切到 `PredefinedAiStateId.MoveCommand`，按「到达目标点」回 `Idle`，**没有超时恢复**；NavMesh 到不了目标会一直挂着 `MoveCommand`——正是 29.5 记录的语义缺失，本次未改。
+
+### 30.3 部署与验证
+
+- `dslcopy.bat Debug False` 三端同步：`Resource/DslFile`、`Unity3d/Assets/StreamingAssets/Dsl`、`App/ServerModule/ServerEnv/bin/Dsl` 三处 `autorun_battle.dsl` 均 `len=1538`、`move_to=1`；无 `*.bytes` 二进制产物（`DslCopy` Debug 版为纯文本），运行时读的就是这三处文本
+- `asset_refresh()` 后重启 Play，用新账号 `ai_0035` 登录，等剧情进战斗（`OnLoadBattleComplete 10010`、`StartStory battle_main`），全程无 `Exception` / `unknown func` / `unassigned global` / `error CS`
+- GM 的 `click_on_pos(x,y)` 只做 UI raycast（`myself.gmscript/Runtime/GmCommands/GmCommands.cs:2915-2926`），不注入 `Input.GetMouseButtonDown`，**无法模拟真实点击**；改用 `dotnet_call(PluginFramework.Instance, "MoveTo", x, y, z)` 直接命中 `Game.cs` 点击后的同一入口
+- **决定性证据**：调用后 `Game.log` 出现 `StoryInstance queue message move_to`（多次：`00-35-22`、`00-36-38`、`00-37-31`、`00-38-39`）。按 `StoryInstance.cs:481-491`，这条日志只在该 story 已注册 `onmessage("move_to")` 时才会打——修复前消息会被静默回收。故 **handler 已注册并被命中，单点修生效**
+- **未确证**：调用后 `combat_probe()` 里主角 `tgtPos` 仍为 `(0,0,0)`、未见明显位移。`move_to` 携带的坐标经由 `obj_move` 写入后可能被战斗 AI 每 100ms 的 `AiPursue` / `MoveCommand` 抢占覆盖；采样又多次跨到波次切换，实体 id 整体刷新，无法在同一波次内做干净的位移对比。GM 的 `dotnet_get` 读 `ScriptRuntime.Vector3` 返回空，也没能直接取到 `TargetPosition` 标量。按纪律停止验证，不声称"点击后主角确实走过去了"
+- 环境插曲：`asset_refresh()` 的域重载延迟触发了一次 Play 重启；域重载后 editor 通道偶发需 `SetForegroundWindow` 激活窗口才重连
+
+### 30.4 剩余项
+
+点击后脱离 AI 的时长与超时恢复语义（29.5）、避让/碰撞位置校正（29.4，当前保留关闭状态）、方案 C「原地跑步」、方案 B（参数驱动状态机）、队友 Gohome 容差、移动中转向滞后、小地图像素级截图、骨骼挂点 Warn、world 轮换卡住根因、AOI 双客户端验证。
+
+---
+
+## 33. 点击移动「消息收到但人不走」根因与修复（2026-11-19，重启后续）
+
+### 33.1 背景
+
+第 30 节的单点修只证明了 `StoryInstance queue message move_to` 出现（handler 已注册），用户实机反馈「鼠标点击怎么还是不移动呢」。本轮用**临时诊断日志**把链路打穿，定位到真正的断点；诊断代码验证后已删除。
+
+### 33.2 诊断方法与决定性证据
+
+在 `App/ClientModule/PluginFramework/Story/Commands/ObjectCommands.cs` 的 `ObjMoveCommand.OnCalc` 临时加一行 `CLICKDIAG`，打印 `objId`、`pos`、`entityNull`、`LeaderId`；编译部署后进 Play（`ai_3101`），用 `dotnet_call(PluginFramework.Instance, "MoveTo", x,y,z)` 命中 `Game.cs` 点击后的同一入口。
+
+先排除的静态疑点（均已读源码核实）：
+
+| 疑点 | 结论 |
+|---|---|
+| `obj_move` / `vector3` 未注册 | 均在 `GfxStorySystem.cs:124` / `Vector3Exp` 注册，且都是 `ExpressionFactoryHelper`，与工作的 `npc_move` 同型 |
+| `params($x,$y,$z)` 绑定失败 | `StoryInstance.ProcessOnMessage`(:216-317) 正确提取 `paramNames` 并 `LoadDsl`；实测日志 `pos=(75.00,28.00,88.00)` 与发送值完全一致 |
+| 消息被活跃 coroutine 门控 | `ProcessMessageQueues`(:658-679) 每帧无条件出队，`Tick` 每帧调；`auto_battle` 的 `report_pos` 无限 `wait(300)` 循环不阻塞 |
+| 发送端走错分支 | `IsBattleState=True` 时 `PluginFramework_Entity.cs:201` 走 `GfxStorySystem.SendMessage("move_to",...)`；world 间隙走网络分支 |
+| `IsPointOnMainUI` 吞点击 | `Game.cs:593-600` 只判 `MainUI/Panel`（实机 1024×155 横条），非全屏 |
+
+**决定性日志**：
+
+```
+03-05-42-109 [CLICKDIAG] obj_move called objId=1100 pos=(75.00,28.00,88.00) entityNull=True leaderId=1100
+03-04-55-146 [CLICKDIAG] obj_move called objId=1100 pos=(70.20,28.67,87.20) entityNull=False leaderId=1100
+```
+
+即 **handler 执行了、参数正确，但 `PluginFramework.Instance.GetEntityById(1100)` 返回 null**，`ObjMoveCommand` 的 `if (null != obj)` 整个跳过，静默无效果。同一 `leaderId=1100` 前后从有效变无效，且 per-scene 波次推进的 `obj_move(get_leader_id(),...)` 也出现 `entityNull=True`。
+
+### 33.3 根因
+
+`get_leader_id()` 返回缓存的 `PluginFramework.Instance.LeaderId`（`GameLogicFunctions.cs` 无参形式）。战斗轮换会销毁并重建实体、objId 递增，但 `LeaderId` 缓存不随之失效；`set_leader_id(unit_id_2_obj_id(1000))` 只在 `battle_main` 的 `onmessage("start")` 执行一次。于是 `get_leader_id()` 常指向上一场战斗已销毁的旧主角。
+
+`GetEntityById` 与 `GetLeaderEntityInfo` 都是 `m_EntityManager.GetEntityInfo(id)`（`PluginFramework.cs:454-460,592-595`），所以这不是两个取实体方法的差异，而是**传入的 id 本身过期**。
+
+### 33.4 修复（仍是单点一行）
+
+`Resource/DslFile/Story/Common/autorun_battle.dsl` 的 `move_to` handler：
+
+```dsl
+// 修复前
+obj_move(get_leader_id(),vector3($x,$y,$z));
+// 修复后
+obj_move(unit_id_2_obj_id(1000),vector3($x,$y,$z));
+```
+
+`unit_id_2_obj_id(1000)` 实现是 `GetEntityByUnitId(1000).GetId()`（`Story/Functions/ObjectFunctions.cs:10-22`），**每次点击实时查当前存活主角**，与 64 个战场 `set_leader_id(unit_id_2_obj_id(1000))` 用的是同一取法；不依赖可能过期的缓存 objId。`dslcopy.bat Debug False` 三端同步，三份 `autorun_battle.dsl` 均 `len=1928`。
+
+### 33.5 实机验证
+
+| 判据 | 修复前 | 修复后 |
+|---|---|---|
+| `obj_move` 的 `entityNull` | `True`（旧 id 1100，静默 no-op） | **`False`**（`objId=1130`、`objId=1115` 等，实时跟波次变化） |
+| 参数绑定 | 正确 `(75,28,88)` | 正确 `(75,0,88)` / `(68,42,78)` |
+| 主角解析 | 缓存旧 id | `GetEntityByUnitId(1000)` 实机返回 `1115`，与当时 `combat_probe()` 主角一致 |
+| 消息入队 | 有 | 有（`03-14-12-250` 等） |
+| 异常 | 无 | 无 `Exception` / `unknown func` / `unassigned global` / `error CS` |
+
+诊断日志保留一轮验证后**已删除**；最终 `PluginFramework.dll`/`.pdb` 重新编译（0 错误）部署、`asset_refresh()`、`NO_CS_ERRORS`。最终冒烟（`ai_3137`）：`StartStory battle_main` / `OnLoadBattleComplete 10008`、`wave_spawn_1 → all_killed → wave_spawn_2 → all_killed → wave_spawn_3` 正常推进，`CLICKDIAG` 残留 0，`move_to` 正常入队，无异常。
+
+**验证边界（如实说明）**：`entityNull=False` 证明 `obj_move` 已写入 `TargetPosition` 并 `ChangeToState(MoveCommand)`；但 `combat_probe()` 采样时 `tgtPos` 仍多为 `(0,0,0)`，且日志显示点击后约 136ms 有一次 per-scene 波次推进的 `obj_move` 把目标覆盖（`03-14-12-387`）。波次切换很快、实体 id 频繁刷新，未能在同一波次内做出干净的位移定量对比；GM 的 `click_on_pos` 只做 UI raycast、不注入 `Input.GetMouseButtonDown`，也未能走真实鼠标路径。故不声称"点一下主角必定走过去"，只确证此前那个静默失效的断点已消除。
+
+### 33.6 附带发现（未修，超出单点范围）
+
+64 个 `Battle_r*c*/story.dsl` 的波次推进也用 `obj_move(get_leader_id(), vector3(...), "npcarrived:1000")`，同样会命中过期的 `LeaderId`。诊断中 `03-05-38-645 ... entityNull=True` 就是这一条，靠各波的 `wait(4000)` 超时兜底才没卡死。若要根治，建议在 `build_story.py` 模板里统一把推进用的 `get_leader_id()` 换成 `unit_id_2_obj_id(1000)`（重新生成 64 个 story + 三端同步），或改 `GetLeaderIdFunction` 在缓存 id 失效时回退到按 unitId 实时解析。本轮未改。
+
+### 33.7 环境恢复记录（电脑重启后）
+
+- 全套服务按 `RunServer.cmd` 恢复（`ServerCenter×2 / node×3 / Lobby / DataCache / UserServer / RoomServer`），9001 监听正常
+- Unity 冷启动（`unity_start_by_name`，pid 50400），处理 `Unity is running as administrator.` 弹窗（枚举子窗口找 `&I wish to continue at my own risk` 按钮发 `BM_CLICK`）
+- 域重载后 editor GM 通道多次不自动连出：`unity_activate` 无效时按纪律重启编辑器（pid 9352 → 50400），重启后通道恢复
+- 诊断 DLL 与最终 DLL 各部署一次，均 `dotnet build ClientPlugins.csproj` 0 错误 + `asset_refresh()` + `NO_CS_ERRORS`
+
+---
+
+## 31. 相机拉远为「足球场观众视角」（2026-11-19）
+
+用户反馈：点击移动修好后，问题其实在相机跟随距离太近，移动了也看不出全局位移；要求拉远到能看到 **1/8~1/4 个场景范围**，获得全局感。
+
+### 31.1 现状与换算
+
+实机 `camera_probe()`：`CAM rot=(52,0,0) fov=50 setting=[distance=28 up=8 pitch=52]`、`LEADER camDist=34.7`。
+
+- 跟随公式（`Unity3d/Assets/Scripts/CameraController.cs:95,102`）：`camPos = leader + (0,up,0) − Euler(pitch,yaw,0)·forward·distance`；`Game.LateUpdate → CameraController.Update` 每帧重算，`followTargetId>0` 时才生效
+- 战场参数由 `AppEditorDslApi.Maps.cs:246-248` 的 `BattleCamDistance/Up/Pitch` 定义，`ApplyBattleCamera()`（:277-295）写入 128 个场景相机 Transform + `CameraSetting` 四字段 + FOV 50；`MakeScene()` 复用同一函数
+- 场景尺寸 `WorldSize=512`（`AppEditorDslApi.Maps.cs:24`），`MiniMap.cs:47-48` 同为 512×512，`farClipPlane=1200`
+- 视锥换算：FOV 50、16:9 下水平半角约 40.2°，地面可见宽度 ≈ `2 × camDist × tan(40.2°) ≈ 1.69 × camDist`。当前 `34.7 → ≈57 单位 ≈ 1/9 格`，确实太近；要覆盖 64~128 单位（1/8~1/4 格）需 `camDist ≈ 38~76`
+
+### 31.2 方案取舍
+
+| 路线 | 评价 |
+|---|---|
+| 只加 `distance`（28→~60），保持 `pitch=52/up=8` | 改动最小，但俯角不变、相机贴地后退，远景易被地形起伏挡住，"观众席俯瞰"出不来 |
+| 提高 FOV（50→65~70） | 不用改资产，但广角畸变明显、远处角色/血条被压扁，且 `OverHeadBar.cs:114-117` 按 `fieldOfView` 算尺寸会跟着变 |
+| **机位重塑（取此）**：同时抬 `distance`/`up`、放平 `pitch` | 满足 1/8~1/4 视野且贴合观众席高后方斜俯瞰；FOV 保持 50 不动 |
+
+另有一处实现路径取舍：原计划改 `AppEditorDslApi.Maps.cs` 常量后跑 `map_camera_fix()` 写 128 个二进制 `.unity`（§18.2 的既有标准路径），但本轮域重载后 editor GM 通道始终未连出、该命令无法执行。改为**运行时统一覆盖**：`CameraController` 构造时调 `CameraSetting.ApplyBattleView()`，一处 C# 覆盖所有场景，不依赖 GM 通道、不改 128 个场景资产；`MakeScene/map_camera_fix` 的常量同步改成同一组值，保证未来重建场景一致。
+
+### 31.3 参数与改动
+
+取 `distance=52 / up=16 / pitch=46°`：
+
+- `camDist = √(52²+16²+2·52·16·sin46°) ≈ 60.5`（原 34.7）
+- 地面可见宽 ≈ `1.69 × 60.5 ≈ 102 单位 ≈ 1/5 格`，落在 1/8~1/4 区间
+- 俯角 52°→46°、`up` 8→16，纵深更明显；FOV 50 与 `farClipPlane=1200` 不变
+
+| 文件 | 改动 |
+|---|---|
+| `Unity3d/Assets/Scripts/Gizmos/CameraSetting.cs` | 新增 `BattleDistance/Up/Pitch` 常量、`ApplyBattleView()`；类默认值同步 |
+| `Unity3d/Assets/Scripts/CameraController.cs:35-42` | 构造时 `cameraSetting.ApplyBattleView()`，覆盖场景序列化值 |
+| `Unity3d/Assets/Scripts/GmScript/Editor/AppEditorDslApi.Maps.cs:246-248` | `BattleCamDistance/Up/Pitch` 改为 52/16/46（字面值，因 `CameraSetting` 在特殊 `Gizmos` 目录，避免跨程序集引用），供 `MakeScene` / `map_camera_fix` 使用 |
+
+**范围说明**：world 场景与战场共用 `CameraController`，统一覆盖会让两边都变远视角，与"全局感"诉求一致，但改动面比只改战场大。AI 全用世界距离（`view=35`、刷怪环 14、每波推进 20），相机拉远不影响战斗逻辑；地形高 70，抬高 `up` 有助于越过起伏。
+
+### 31.4 验证与边界
+
+- Unity 重新编译完成：`NO_CS_ERRORS`、`Mono: successfully reloaded assembly`；`read_lints` 0 诊断
+- **实机 `camera_probe()` 未复测**：改 Editor 侧 C# 触发域重载后，`EditorGmSocketClient`（`[InitializeOnLoad]` + `EditorApplication.delayCall`）未重新连出；按纪律停止重试、未重启编辑器（避免冷启动编译与管理员弹窗），因此没有实测新的 `camDist` 与截图。下次进 Play 即生效，可用 `camera_probe()` 核对 `setting=[distance=52 up=16 pitch=46]` 与 `camDist≈60.5`
+- 临时试验时发现 `get_component("Main Camera", ...)` 命中的是主场景相机（类默认 60/10/60 / FOV 45），与战场相机（28/8/52 / FOV 50）不是同一个对象；必须用 `Camera.main` 精确定位。场景切换会换 `Camera.main`
+- `map_camera_fix()` 本轮**未执行**，128 个 `.unity` 场景资产里仍是旧的 28/8/52；运行时覆盖已使实机生效，但若日后要编辑器预览/资产一致性，需通道恢复后跑一次 `map_camera_fix()`
+
+### 31.5 回滚点
+
+把 `CameraSetting.cs` 的 `BattleDistance/Up/Pitch` 改回 `28/8/52`（同时同步 `AppEditorDslApi.Maps.cs` 的字面常量），重新编译即可；若要恢复改动前的完整状态，另需把 `CameraController.cs` 构造里的 `ApplyBattleView()` 调用去掉。
+
+---
+
+## 32. 屏幕居中、小地图圆点与「卡住」诊断（2026-11-19）
+
+用户一次提三点：①相机角度不对，玩家快到屏幕下方提示区，应居中；②小地图没有玩家/怪物圆点（玩家黄、友方绿、敌方红）；③查一下当前状态为何卡住、点击不移动、也不切回 world。①②已实现，③按「查一下」的授权范围只做诊断、未改代码。
+
+### 32.1 玩家偏离屏幕中心：几何根因
+
+`Unity3d/Assets/Scripts/CameraController.cs:95` 的跟随公式：
+
+```csharp
+followPose.pos = obj.transform.position + Vector3.up * cameraSetting.up
+                 - camera.transform.rotation * Vector3.forward * cameraSetting.distance;
+```
+
+相机朝向固定 `camera.transform.rotation = cameraSetting.GetRotation()`（`:102`），即 `Euler(pitch, yaw, 0)`。因此**相机视线中心落在 `leader + (0, up, 0)`，不是 leader 本身**。第 31 节把 `up` 从 8 抬到 16，等于把注视点上抬 16 单位，主角被推到屏幕下方约 `16·cos(pitch) / (camDist·tan(FOV/2))` ≈ 40% 半屏高，正好压进底部提示区。
+
+实机 `camera_probe()` 佐证：`CAM pos=(103.4, 53.5, 31.4) rot=(46,0,0) fov=45`、`LEADER id=130 pos=(103.4, 0.1, 67.6) camDist=64.5`——相机确实在主角后上方，且注视点高于主角。
+
+**修复**：`BattleUp = 0`（`Unity3d/Assets/Scripts/Gizmos/CameraSetting.cs`），并同步 `AppEditorDslApi.Maps.cs` 的 `BattleCamUp = 0`。相机高度仍由 `distance·sin(pitch)` 提供（52·sin46° ≈ 37.4 单位），不会贴地；`distance=52 / pitch=46` 不变，1/5 格视野保持。`up` 的语义是「注视点上移量」，不是「相机抬高量」，已在代码注释里写明。
+
+### 32.2 小地图圆点：实现
+
+`App/ClientModule/ClientPlugins/UI/MiniMap.cs` 原本只更新一个 `Player` 子节点（实机读到它是白色 `Image`，`color=RGBA(1,1,1,1)`），从没画过其它实体。工厂注册（`Program.cs:36`）、`install_plugin("MainUI/Panel/Image/RawImage","MiniMap",1,0)`（`Resource/DslFile/UI/MainUI.dsl:20`）、每帧 `Update()`（`PluginProxyTick.cs:25-33`）均已就绪，故只改这一个文件，不动 DSL / 表 / prefab。
+
+| 项 | 实现 |
+|---|---|
+| 圆点外观 | 运行时 `Texture2D(16,16,RGBA32)` 画实心圆 → `Sprite.Create`，白色纹理靠 `Image.color` 上色；`hideFlags=HideAndDontSave`（照抄 `UiHandler.cs:611-630` 的模式，全仓唯一 `Sprite.Create` 范例） |
+| 配色 | 玩家 `RGB(1, 0.9, 0.1)` 黄、友方 `RGB(0.2, 0.9, 0.25)` 绿、敌方 `RGB(0.95, 0.2, 0.2)` 红 |
+| 玩家点 | 复用 prefab 已有的 `Player` 节点，染黄；仅当它没有 sprite 时才补圆点 sprite，避免破坏已有设计图标 |
+| 阵营判定 | `EntityInfo.GetRelation(leaderCamp, info.GetCampId())`（`InformationService/GameObjects/ObjectInfo/Entity_Base.cs:616-645`），不硬编码 camp 3/4；过滤 `IsDead()` / `!IsCombatNpc()` / `RELATION_INVALID` |
+| 坐标 | 与原玩家点完全相同的公式 `x = pos.x·W/Tw − W/2`、`y = pos.z·H/Th − H/2`，`z→+y` 不做翻转（17.4 已确认旧 Y 翻转约定作废） |
+| 生命周期 | `Dictionary<int, RectTransform>` 池化；按 `Dot_<id>` 名字复用已有子节点（`Init` 可能被重复调用）；消失/死亡/变 INVALID 的点 `Destroy` 并移除 |
+| 性能 | 0.1s 节流（参考 `HighlightPromptManager.cs:29`），玩家点仍每帧更新；`raycastTarget=false` |
+| 健壮性 | `m_MapPlayer` / `m_Root` / `Terrain.activeTerrain` / `GetLeaderEntityInfo()` / `GetGameObject(id)` 全部判空；`LeaderId` 变化时重新取玩家对象 |
+
+**部署注意**：`MiniMap.cs` 属于 `ClientPlugins.dll`，不是前几轮一直部署的 `PluginFramework.dll`。本轮 `dotnet build ClientPlugins.csproj -c Debug` 后复制的是 `ClientPlugins.dll`（48128 字节）到 `Unity3d/Assets/Plugins/`。
+
+### 32.3 「卡住」诊断：**是第 30 节单点修引入的回归**
+
+用户反馈「点击也不移动，也没切回世界场景」。实机取证：
+
+- `Unity3d/Game.log`（1:40~1:56 会话）：`01-42-57~01-43-14` 密集 `move_to`（反复点击）；`01-50-59 all_killed → wave_go → wave_advance_3`、`01-51-03 wave_spawn_3` 刷出第 3 波后，直到 1:56 再无 `all_killed`，也无 `dialog_over` / `UnloadBattle` / `on_battle_closed`。战斗不结算，自然切不回 world。
+- `combat_probe()`：主角 `id=1308 state=2 moving=True anim=Run`，`pos=(81.41, 8.03, 103.30)`、`tgtPos=(80.19, 16.89, 103.68)`——**目标点 y 比当前高 8.86**，距离平方远大于 1。
+- `InformationService/GameObjects/AiInfo/AiInfo.cs:9-15`：`state=2` = `PredefinedAiStateId.MoveCommand`。
+- `App/ClientModule/PluginFramework/PluginFramework_Ai.cs:126-135`：`WayPointArrived()` 要求 `CalcDistancSquareToTarget() <= 1` 才把 `data.IsFinish` 置真；不满足则 `MoveCommand` 永不结束、AI story 挂起、主角不再施法 → 怪杀不掉 → 无 `all_killed` → 战斗不结算。
+- `all_killed` 发送方是客户端 `PluginFramework.TryAllKilledOrAllDied()`（`PluginFramework.cs:731-738`），条件是敌方剩余数 <= 0，佐证「怪没被杀光」这一环。
+
+**因果链**：第 30 节新增的 `onmessage("move_to"){ obj_move(get_leader_id(), vector3($x,$y,$z)); }` 把点击点原样交给 `ObjMoveCommand`，切到 `MoveCommand`；点击点 y 来自 `Game.cs:351` 的 `Physics.Raycast(..., Terrain|Default)`，可能命中另一层高度的地形/物件，与主角所在 NavMesh 高度不一致，目标不可达且**没有超时恢复**，`MoveCommand` 永久挂起。
+
+**修复建议（未实施，等确认）**：三选一或组合——
+1. 单点修范围内：`move_to` handler 里把 `$y` 换成主角当前高度 `get_position_y(get_leader_id())`，只保留 x/z，避免不可达高度；
+2. 恢复用户提到过的原语义：给 `MoveCommand` 加超时（如 2~3 秒）强制 `ChangeToState(Idle)` 并恢复 AI，这正好补上第 29.5 节记录的「短暂脱离 AI + 超时恢复」缺失；
+3. 若点击仍无效，另查 `Game.cs` raycast 是否命中了 world 层残留 Terrain（`:495-508` 只在进战场时禁用主场景 Terrain）。
+
+### 32.4 验证与边界
+
+- `dotnet build ClientPlugins.csproj -c Debug` **0 错误**；`read_lints` 3 个改动文件 **0 诊断**
+- Unity `asset_refresh()` 后重编译：`NO_CS_ERRORS`、`Mono: successfully reloaded assembly`
+- 部署：`ClientPlugins.dll`（48128B）复制到 `Unity3d/Assets/Plugins/`；相机两处常量属 Unity 自身程序集，冷启动重编译已覆盖
+- 为恢复 GM editor 通道曾按纪律重启 Unity 编辑器（`unity_stop force` → `unity_start_by_name`，pid 34000），处理了 `Unity is running as administrator.` 弹窗；冷启动后通道短暂未连出，但**稍后自动恢复**，随后完成完整实机复测（见 32.6）
+- 第 3 条按用户「查一下」的授权范围只诊断、未改代码；其修复涉及 `autorun_battle.dsl` 或 `PluginFramework_Ai.cs`，需单独确认
+
+### 32.6 实机复测（2026-11-19，用户要求「你测试一下吧」）
+
+通道恢复后（pid 34000、editor+runtime 双通道），`editor_play_now()` 进 Play，用新账号 `ai_0215` 登录 → `show_nickname` → 剧情 → `02-29-45 OnLoadBattleComplete 10046` 进战斗。
+
+**① 相机居中：通过**
+
+```
+camera_probe():
+CAM pos=(78.9, 66.8, 40.5) rot=(46.0, 0.0, 0.0) fov=50.0 setting=[distance=52 up=0 pitch=46]
+LEADER id=1137 pos=(78.9, 29.4, 76.6) camDist=52.0
+```
+
+几何核算：`camPos − leader = (0, 37.4, −36.1)`，相机朝向 `(0, −sin46°, cos46°)`，沿该方向走 `distance=52` 正好回到 `leader` 坐标——**视线中心精确落在主角身上**，`up=0` 生效。相机高度 37.4 单位，不贴地。
+
+**② 小地图三色圆点：通过**
+
+| 检查 | 实机值 |
+|---|---|
+| 玩家点 | `MainUI/Panel/Image/RawImage/Player` 的 `Image.color = RGBA(1.000, 0.900, 0.100, 1.000)` → 黄 |
+| 圆点生成 | `RawImage` 下枚举到 30 个 `Dot_<id>` 子节点（如 `Dot_100`…`Dot_1204`、`Dot_1260`…`Dot_1267`），随实体增删动态变化 |
+| 友方 | `Dot_1260~1264` = `RGBA(0.200, 0.900, 0.250, 1.000)` → 绿 |
+| 敌方 | `Dot_1265~1267` = `RGBA(0.950, ...)` → 红 |
+| 阵营基准 | `PluginFramework.Instance.CampId = 3`、`GetLeaderEntityInfo().GetCampId() = 3` |
+
+注意红点需要抓准波次：怪存活窗口很短，多数时刻只剩主角/队友/world NPC（camp 3 或 1），采样会全绿；曾误判「没生成红点」，换到怪刚刷出的时刻即读到红色。字典池化确实随波次重建更新（`Dot_1195~1204` → `Dot_1260~1267`）。
+
+**③ 点击移动与「卡住」：未复现，上一轮归因需修正**
+
+- 用 GM 走同一入口 `dotnet_call(PluginFramework.Instance, "MoveTo", x, y, z)` 发两次（正确高度 `(64, 7.3, 74)`、错误高度 `(88, 30, 96)`），`Game.log` 均出现 `StoryInstance queue message move_to`（handler 已注册）
+- 发送后 `combat_probe()` 主角仍 `state=1` / `tgtPos=(0,0,0)` / 位置不变——**点击确实没让主角移动**，这一点与用户反馈一致
+- 但**没有复现卡住**：`02-36-54 open_battle → wave_spawn_1 → all_killed(02-37-08) → wave_spawn_2 → all_killed(02-37-18) → wave_spawn_3 → all_killed(02-37-29) → wave_spawn_4 → all_killed(02-37-46) → dialog_over:998 → UnloadBattle → on_battle_closed → 02-37-57 open_battle` 完整闭环，全程无 `Exception` / `NullReference` / `unknown func`
+- world 场景里看到 `id=131 state=2 (MoveCommand)` 是 `autorun.dsl` 的 `findnpc → obj_move → touchnpc` **正常轮换**（`tgtPos` 为 `Config/N` 点），不是点击造成的
+- `LeaderId` 随每轮 open_battle 重建而变化（实测 1245 → 1275 → 1310），所以两次采样常不是同一实体，不能据单帧下结论
+
+**归因修正**：32.3 记录的「1:40~1:56 会话卡在 `wave_spawn_3`、主角 `state=2` 挂起」是真实历史证据，但把它完全归因为「点击导致 `MoveCommand` 永久挂起」证据不足——本轮 GM 注入 `move_to` 后战斗照常结算。更可能的两层问题：
+1. **点击目标没作用到主角**（本轮确证）：`move_to` handler 用 `get_leader_id()`，而 `LeaderId` 在战斗切换时可能指向 world 层实体或已被重建，导致 `obj_move` 落到非画面主角上；或目标被 AI 每 100ms 的 `AiPursue` 覆盖
+2. 上一轮那次卡住另有触发条件（真实点击的 raycast 命中点 y、或某次 `wave_advance` 超时兜底失效），本轮 GM 直调 `MoveTo` 绕过了 raycast，不能等价复现
+
+因此 32.3 的修复建议①（把 `$y` 换成主角当前高度）仍值得做，但**不足以解释「点击不移动」**；优先应查 `get_leader_id()` 在 `auto_battle` story 上下文里是否指向正确实体，以及 AI 是否覆盖 `TargetPosition`。这两项都需单独确认后再改代码。
+
+**补充观察（非本轮改动引入）**：实机 `Terrain.activeTerrain.terrainData.size = (128, 8, 128)`，而 `MiniMap.cs` 的字段默认值是 512；`Init()` 会读真实 activeTerrain 覆盖，故坐标换算本身正确（`RawImage.rect` 为 119×118，玩家点 `localPosition` 落在合理范围）。但 world 层 512 与战斗层 128 的地形尺寸差异意味着**同一张小地图底图要按当前场景地形换算**，若日后发现圆点位置偏移，应从这里入手。
+
+### 32.5 本轮环境经验
+
+- 域重载后 `EditorGmSocketClient` 依赖 `EditorApplication.delayCall`，冷启动/重编译后偶发不触发；`unity_activate` + `SetForegroundWindow` 也不一定救得回来。**编辑模式下可直接用 `unity_stop force` + `unity_start_by_name` 重启编辑器恢复**，重开后要处理管理员提示弹窗（枚举子窗口找 `&I wish to continue at my own risk` 按钮，发 `BM_CLICK`）
+- 改 `ClientPlugins/UI/` 下的代码要部署 `ClientPlugins.dll`；改 `PluginFramework/` 才部署 `PluginFramework.dll`，两者别混
+- 128 个 `.unity` 场景资产里仍是第 31 节之前的 28/8/52（`map_camera_fix()` 未跑），运行时 `ApplyBattleView()` 覆盖才生效
+
+---
+
+## 34. 相机再拉远一倍（52 → 104，2026-11-19）
+
+用户反馈 `camDist=52` 仍太近，要求「再拉远一倍试试」。因 32.1 已把 `up` 归零，`camDist == distance`，所以直接翻倍 `distance` 即可精确翻倍视距。
+
+### 34.1 必须联动的一处回归
+
+`Unity3d/Assets/Scripts/Game.cs:351` 的点击射线是 `Physics.Raycast(ray, out hit, 100, Terrain|Default)`。距离翻倍后：
+
+- 相机到主角（地面）中心射线长 = `camDist = 104` > 100
+- 屏幕上边缘射线更长（俯角 46°、FOV 50 下约 209）
+
+若只改相机常量，真实鼠标点击会**再次全部脱靶**，刚在 33 节修好的点击链路被破坏。故同步把射线距离 `100 → 500`（`farClipPlane=1200` 足够）。这是本轮除相机外的唯一代码改动。
+
+`SkillViewer.cs:95` 也有一个 100 的射线，但那是独立技能预览场景、自带 `SkillViewerCameraController`（射线 1000），不受战场相机影响，未改。
+
+### 34.2 改动（3 处）
+
+| 文件 | 改动 |
+|---|---|
+| `Unity3d/Assets/Scripts/Gizmos/CameraSetting.cs:8` | `BattleDistance` 52 → **104**（`up=0` / `pitch=46` 不动） |
+| `Unity3d/Assets/Scripts/GmScript/Editor/AppEditorDslApi.Maps.cs:253` | `BattleCamDistance` 52 → **104**，镜像同步（供 `MakeScene` / `map_camera_fix`） |
+| `Unity3d/Assets/Scripts/Game.cs:354` | 点击 raycast 距离 100 → **500** |
+
+FOV 保持 50（`OverHeadBar.cs` 按 `fieldOfView` 算血条尺寸，不动避免变形）；`up=0` 保持，玩家仍在屏幕中心；AI 全用世界距离，不受相机影响。
+
+### 34.3 实机验证
+
+`ai_3209` 登录 → `OnLoadBattleComplete 10014` → `camera_probe()`：
+
+```
+CAM pos=(109.8, 93.7, 76.9) rot=(46.0, 0.0, 0.0) fov=50.0 setting=[distance=104 up=0 pitch=46]
+LEADER id=1100 pos=(109.8, 18.9, 149.2) camDist=104.0
+```
+
+**`camDist` 从 52.0 精确翻倍到 104.0**，FOV 50 不变、`up=0` 居中保持。FOV 50 / 16:9 下地面可见宽 ≈ `1.69 × 104 ≈ 176 单位 ≈ 1/3 格`（512 格），是原先 88 单位的两倍。
+
+Unity 重编译 `NO_CS_ERRORS` + `Mono: successfully reloaded assembly`、`read_lints` 0 诊断；`Game.log` 无 `Exception` / `unknown func` / `error CS`，`move_to` 消息持续正常入队、战斗波次正常推进。
+
+**验证边界（如实说明）**：真实鼠标点击的端到端验证未成功。用 Win32 `mouse_event` 向 Game 视图（实机矩形 `759,209–1482,649`）注入左键后，`queue message move_to` 计数没有可归因的增量；GM 的 `dotnet_call` 对 `Vector3` / `Ray` 结构体与 `out` 参数也不稳定，`ScreenPointToRay` 反射失败。因此**不声称"真实点击已验证通过"**。raycast 的 100→500 是按几何确定性做的防御性修复（中心射线 104 > 100 必然脱靶），代码与编译均已核实；要确证需用户实机点几下，或补一个可注入 `Input` 的自动化。
+
+### 34.4 回滚点
+
+- 只回退相机：`CameraSetting.cs` 与 `AppEditorDslApi.Maps.cs` 的 `104` 改回 `52`，Unity 重编译
+- 完整回退到本轮之前：再把 `Game.cs` 的射线 `500` 改回 `100`
+- 若要回到第 31 节最初状态：`distance=28 / up=8 / pitch=52`，并去掉 `CameraController.cs` 构造里的 `ApplyBattleView()` 调用
+
+### 34.5 观察项（未做）
+
+视野到 176 单位 ≈ 1/3 格，已超出用户第 31 节最初提的 1/8~1/4 区间，按"试试"的实验性质保留。若观感过远、角色太小，把 `BattleDistance` 调到 70~80（`camDist` 相同、可见宽 118~135 单位）即可；只需改常量并让 Unity 重编译，不动场景资产。128 个 `.unity` 场景资产仍是旧值，运行时 `ApplyBattleView()` 覆盖生效；`map_camera_fix()` 仍未跑。
+
+---
+
+## 35. 战场重构：事件点邻域放大 + 每格 10 战场（2026-11-19 确认）
+
+用户确认最终方案：**邻域 32×32、放大 16 倍 → 512×512 独立战场**；8×8=64 张世界地图，每张对应约 10 个战场，**总战场数约 640**。148 条主轴事件是事件表主轴，需补充分支/次要事件。核心诉求：战场是世界事件点邻域的放大、引入更多细节、**不能与世界层共用同一份地形**。
+
+### 35.1 设计依据与数字（实测 + 精确计算）
+
+| 项 | 值 | 依据 |
+|---|---|---|
+| 世界地图 | 4096×4096 藏宝图拆 8×8 = 64 格，每格独立 512×512 场景 | `draw_maps.py:101-102,179`、文档 :19/:67-75 |
+| 权威事件数 | **148 条**（`WorldEvent.txt:3-150`），64 格分布 47×2 + 14×3 + 3×4 | 文档 :519/:561、`events_check.txt:2` |
+| 真实事件地点 | **142**（3 组碎裂伪事件 `r3c7/r5c6/r7c5` 各 3 条合成 1 条，−6） | 实测坐标间距 14.4~20.6、半径 9.0/1.1/1.1 |
+| 目标 | **640 张战场** = 64 格 × 10 | 用户确认 |
+| 需补分支事件 | **498**（640 − 142），按表行口径 492（640 − 148） | 计算 |
+| 每格槽位 | 16×16 = **256** 个 32×32 槽，全域 16384 | 512/32 = 16 |
+| 主轴占用 | 每格 2~3 槽（均值 2.22），剩 253~254 空槽 | 按 `floor(x/32), floor(z/32)` 实测 |
+| 补点分布 | 14 格补 7、50 格补 8 | 计算 |
+| 最远点采样结果 | 最小槽间距 **≥2 槽 = 64 世界单位**（最差 `r3c4`），零重叠 | 确定性 seed 计算 |
+| 邻域总占地 | 640×32×32 = 世界总面积的 **3.9%** | 计算 |
+| 放大后战场 | 32×16 = 512（与 `WorldSize=512` 吻合）；16×16=256 个源高度样本 | `draw_maps.py:16`（256×256，1px=2 单位） |
+
+**方案取舍**：曾考虑 `16×16 邻域 ×32`，放弃理由：① 半宽 8 小于事件圆盘直径 17.8；② 源高度样本仅 8×8=64（16 倍方案的 1/4），放大后几乎全是插值；③ 会把 3 组碎裂伪事件拆成 3 张几乎相同的战场。**32×32 网格自然把碎裂簇收进同一桶，得到 142 张 = 142 个真实事件地点**。
+
+**概念澄清（重要）**：`*_areas.txt` 第 4 列的 `radius`（41~48）是**布局 PNG 同色连通分量的等效圆半径**（`Maps.cs:194` `sqrt(n/π)×scale`），纯几何量，`build_story.py:295` 显式丢弃（`_r`），运行时无消费；`WorldEvent.radius`（8.0~8.9）是服务端交互/触发半径（`build_events.py:146`）；`HINT_RADIUS=48` 是小地图模糊提示圈半径。三者**都不是战场尺寸约束**，不能拿世界层色块面积去限制放大战场。战场内刷怪用 `spawn_handler` 的 `radius=14` 环形站位，应按放大倍率重新定义。
+
+### 35.2 命名与 ID 方案（取连续段）
+
+**取 `10001..10640` 连续段**，`grid = (id-10001)/10`、`slot = (id-10001)%10`，行优先；世界格保持 `20001..20064`。理由：现有轮换链是单整数 `+1`，连续段是唯一不破坏 `inc($bi)` 遍历算法的方案；结构化编码/运行参数化都要重写轮换或命令签名，收益不抵成本。
+
+| 项 | 规则 |
+|---|---|
+| 战场 level id | `10000 + (r*8+c)*10 + s + 1` → 10001..10640 |
+| 战场 `.unity` | `Battle_{tid}_{era}_s{slot:02d}.unity`（每格 10 个） |
+| 世界层 `.unity` | `Battle_{tid}.unity`（保持 64 个） |
+| `TerrainData` | 每战场独立：`MapData/{tid}_s{slot:02d}_Ground.asset`（**不共享**） |
+| NavMesh / Minimap / story | 命名都带 `s{slot:02d}`，否则同格 10 个战场撞名 |
+| 事件 `grid_id` | 扩到战场级 `r0c0_s03`；`ExploreSystem.cs:299` 的 `arg[0]=='r' && IndexOf('c')>0` 判定**实测兼容** |
+| 事件 `id` | `ev_{tid}_s{slot:02d}_{n}` |
+| 事件表新列 | `kind`（axis/branch）、`slot`、`level_id`；`radius` 保持语义不变 |
+
+**无论选哪个 ID 方案都躲不掉的一件事**：`WorldEvent.grid_id` 目前是 `t['tid']`（`build_events.py:148`），`ExploreSystem` 用它建 `s_ByGrid`（:111/:116-119/:245）。同一格 10 个战场若共用 `r0c0` 键，10 个战场的事件会混在一起，必须把键扩到战场级，并同步 `build_events.py`、`build_story.py:106-115/:278`、`ExploreSystem.cs:285-301`。
+
+### 35.3 会打破的硬编码（8 处，已核实）
+
+| # | 阻断点 | 位置 |
+|---|---|---|
+| 1 | `GridFromLevel()` 的 `idx>=64` 与 `idx/8, idx%8` | `ExploreSystem.cs:285-291` |
+| 2 | `battleIndex` 单整数 +1、上限 10064（**三端 6 份 DSL**） | `Story1/story.dsl:29-41`、`Story2:34-46` |
+| 3 | `close_battle(10000+rank)`，rank 仅 1..64 | `build_story.py:245/327/332`、`Maps.cs:240-241`、`fix_story_spawn.py:121` |
+| 4 | `Level.txt` 只有 64 战斗行 + 生成器上限、`20001..20064` 去重范围 | `cutover.py:74-99`、`cutover_world.py:43-54` |
+| 5 | `regions.txt` 64 行 + `Build()/FixCameras()/BakeNav()` 按「每格 2 场景」写死（`ok*2`、两个名字数组） | `Maps.cs:411-481, 306-352, 545-583` |
+| 6 | **地形共享 + 无邻域裁剪工具**：64 份 `_Ground.asset` 被两层共用，`SampleR()` 是整图 256×256 最近邻，无 sub-rect/双线性 | `Maps.cs:81-93, 354-356, 437`、`draw_all_tiles.py:180-188` |
+| 7 | 波次数据源：`battle_zones()` 只读 `{tid}_areas.txt` 取 60/80/100 型最多 4 个，`ZONES` 每区仅 4 名字 | `build_story.py:52-61, 90-103, 294-300` |
+| 8 | 事件表 148 条 + `grid_id=tid` | `build_events.py:139-152`、`WorldEvent.txt` |
+
+**可沿用**：`int32` id 无范围约束（`DataReader.cs:1279`）、`OpenBattle/LoadBattle` 只查表无上限（`GeneralCommands.cs:1696-1719`、`PluginFramework.cs:281-315`）、`Common/*.dsl` 四个共享文件不含 64 常量、`RegisterBuildScenes` 无登记上限（`Maps.cs:396-409`）、`DslCopy` 递归无静态清单、`spawn radius=14 / ADVANCE_STEP=20 / view=35` 与格数无关、`RoomServer` 动态池 8×32=256 room（640 个 `type=4` 配置行 ≠ 640 常驻 room）。
+
+### 35.4 工程量清单
+
+| 产物 | 现状 | 640 后 |
+|---|---|---|
+| `Level.txt` | 132 行（4+64+64） | **708 行**（4+640+64） |
+| 战场 `.unity` | 64 | **640**（+64 世界层 = 704；Levels 目录总数 719） |
+| `TerrainData` | 64（共享） | **640 独立** |
+| NavMesh / Minimap PNG / story 目录 | 64 / 128 / 64 | **640 / 640 / 640** |
+| `WorldEvent.txt` | 148 行 | **640 行** + 新列 |
+| 三端 DSL 副本 | 64×3 | 640×3 |
+
+### 35.5 三阶段开发顺序（用户确认）
+
+- **阶段 1 · 表 / 生成器 / 事件模型**（不动 Unity 资产）：① 新增 640 行「格×slot」正式数据源；② `build_events.py` 148→640、`grid_id` 带 slot、新列；③ `WorldEvent.txt` → `TableReaderGenerator` → `WorldEvent.dat`；④ `cutover.py` / `cutover_world.py` 产出 708 行 `Level.txt`；⑤ `close_battle` 用全局战场序号；⑥ `Story1/Story2` + 三端 6 份轮换上限；⑦ `ExploreSystem.GridFromLevel` 两级除法；⑧ `event_count` / `enter_parallel` / `set_map_image` 带 slot；⑨ `TableReaderGenerator` + `DslCopy` 同步 + 自检
+- **阶段 2 · 地形 / 场景**：`BuildTerrain()` 加子矩形 UV + 双线性上采样、`assetPath` 含 slot、`Build()` 循环 704 场景、`MakeScene`/`WriteStorySkeleton`/`FixCameras`/`BakeNav`/`Verify`/`Shot` 参数化、`ok*2`、`draw_all_tiles.py` 产出 640 张邻域裁剪 PNG + 640 张 minimap、`AppEditorDslApi.cs:54-58` 命令描述
+- **阶段 3 · story / 波次**：`build_story.py` 改成 640 份 story，`battle_zones()` 改读 slot 布局，`ZONES`/`@total`/嵌套 if 链按新波次源生成；`Common/*.dsl` 保持共享；`DslCopy` 三端同步；重跑 `map_build / map_nav / map_camera_fix / map_verify`；更新文档 §6 全部数字与自检基线
+
+### 35.6 实施结果（三阶段已完成，2026-11-19）
+
+**阶段 1 · 表 / 生成器 / 事件模型**
+
+| 产物 | 结果 |
+|---|---|
+| `Resource/MapDesign/axis_events.txt` | 148 条主轴事件的不可变 UTF-8 快照 |
+| `Resource/MapDesign/build_battle_slots.py` | 640 槽位规划器：主轴占 2~3 槽、碎裂簇合并 6 条、其余最远点采样 |
+| `Resource/MapDesign/battle_slots.txt` | **640 行**；`axis=142 branch=498`；id 10001..10640 唯一；最小槽间距 2（64 世界单位） |
+| `build_events.py` | 改从槽位表生成；**保持 9 列 schema**（不触发 DataReader.cs 重生成），战场身份编码进 `grid_id=r0c0_s00`、`id`、`token` |
+| `WorldEvent.txt` / `.dat` | **640 行** GBK；`EVENTS_CHECK tiles=64 battlefields=640 events=640 axis=142 branch=498 leaks=0` |
+| `cutover.py` | 重写：`Level.txt` **708 行**（4 遗留+640 战斗+64 世界格）；轮换上限 10064→10640 |
+| `ExploreSystem.cs` | `GridFromLevel` 改两级除法（`tile=idx/10, slot=idx%10 → r0c0_s00`）；自检改 `battlefields=640 events=640` |
+| 三端同步 | `dslcopy.bat Debug False`；`WorldEvent.dat` 11956→72774 字节 |
+
+**阶段 2 · 地形 / 场景**
+
+| 产物 | 结果 |
+|---|---|
+| `build_battlefield_art.py` | 每战场从整格 256×256 PNG 裁 16×16 像素邻域 → PIL 双线性放大到 256×256 → 叠加 3 层确定性 value noise（±9/255） |
+| 战场地形 / 小地图 / areas | **各 640 张**；实测两张战场 64506/65536 像素不同，细节层生效 |
+| `AppEditorDslApi.Maps.cs` | 新增 `Slot` / `LoadSlots()` / `SlotSceneName()`；`BuildTerrain` 接受指定 PNG；`Build()` 生成 64 世界层 + 640 独立 TerrainData 战场；`FixCameras`/`BakeNav`/`Verify`/`Shot` 参数化到 704 |
+| 全量 `map_build()` | **64 世界 + 640 战场 = 704 场景**；704 份 `_Ground.asset` 各自独立（文件大小不同）；0 缺失 |
+| `map_verify()` | **`MAP_VERIFY total=704 pass=704 fail=0`** |
+
+**阶段 3 · story / 波次**
+
+| 产物 | 结果 |
+|---|---|
+| `build_story.py` | 重写：640 份 story，每战场 2 波（波 1 原地、波 2 按 `level_id` 派生方向推进 20 单位）；`close_battle(level_id)` 用 10001..10640；`set_map_image`/`enter_parallel` 带 `grid_key` |
+| 出生高度 | 从**战场自己的**放大 PNG 采样（`r0c0_s00` 得 43.4，整格原为 28.5），避免埋地 |
+| 共用 DSL | `autorun_battle.dsl` 等 4 个文件不含 64 常量，全部沿用；`grid_key` 通过 `ExploreSystem.Enter` 的 `arg[0]=='r' && IndexOf('c')>0` 判定 |
+| 三端同步 | 源 / 客户端 / 服务端各 640 份新 story |
+| `fix_story_spawn.py` | 标注 LEGACY / DO NOT RUN（旧 64 布局会覆盖新 story） |
+
+**实机冒烟**：Unity 冷启动重编译 `NO_CS_ERRORS`；`RoomServer.dll` 部署后重启；`ai_6401` 登录 → `15-55-27 OnLoadBattleComplete 10001` → `StartStory battle_main` → `wave_spawn_1` → `all_killed` → `wave_spawn_2`，全程无 `Exception` / `NullReference` / `unknown func`。`explore_selftest.txt` 输出 **`battlefields=640 events=640`**，证明新表与新 DLL 生效。
+
+### 35.7 NavMesh 烘焙与结算链复测（2026-11-19 21:30 完成）
+
+**烘焙完成**：`map_nav()` 全量耗时约 5.4 小时（16:07 → 21:29，640 个 × 约 13~17 秒），最终 `battlefield_navmesh=640 / 640`、按 `battle_slots.txt` 逐槽核对 **0 缺失**、文件 490952~598220 字节（均值 509755）、`NAV_FAIL` / `error CS` / `NullReferenceException` 均为 0。期间 Unity 后台又跑了一轮重复烘焙（覆盖写同名资产，无害），21:29:47 结束后窗口回到 `Start`、`Responding=True`、GM 通道恢复。`BakeNav` 已支持可选 `which` 参数分批与**断点续跑**（跳过已有 `NavMesh.asset`）。
+
+**静态一致性校验**（临时脚本，验证后删除）：`slots=640 / navmesh_present=640 / missing=0`；640 份 story 的 `close_battle(level_id)` 与槽位表 id **0 处不匹配**；`Level.txt` 的 640 行战斗 prefab 与场景名 **0 处不匹配**。
+
+**实机结算链复测通过**（`ai_640done`，21:31 登录）：
+
+```
+21-32-52 all_killed → 21-32-57 dialog_over:998 → UnloadBattle → on_battle_closed
+21-33-01 open_battle → OnLoadBattleComplete 10004 → wave_spawn_1 → all_killed
+21-33-08 → wave_spawn_2 → all_killed → 21-33-20 dialog_over:998 → UnloadBattle → on_battle_closed
+21-33-24 open_battle → OnLoadBattleComplete 10005 → wave_spawn_1 → all_killed → wave_spawn_2
+```
+
+两场战斗均 **两波全清 → 结算 → 卸载 → 轮换到下一个 id**，全程无 `Exception` / `NullReference` / `unknown func` / `error CS`。此前「第二波 `all_killed` 不触发、战斗不结算」确由 NavMesh 缺失引起，烘焙后已消除。
+
+**残留观察（非阻塞）**：`combat_probe()` 里怪的 `pos.y≈2.4` 与 `home.y=30.2` 仍不一致，主角 `pos.y=2.58` / `home.y=30.2`；但双方能正常交战并结算，说明高度差不再阻断 AI。若日后要做贴地/落点精度，从这里入手。
+
+### 35.8 剩余项（如实记录）
+
+- 旧 64 个 `Battle_{tid}_{era}.unity` 与 64 份旧 story 目录仍留在仓库（Level.txt 已不再引用），未清理
+- `MapBuild.WriteStorySkeleton()` 已成为死代码（Build 不再调用），保留未删
+- `build_events.py` 的每格 hints 现为 10 条（共 640），模糊提示密度上升，需实机看观感
+- 每战场波次固定 2 波、刷怪环半径 14 / 推进 20 / view 35 等数值沿用旧 512 场地调参，放大后需复测
+- 「每格 10 个左右」按严格每格 10 实现；若要弹性（主线 12、支线 8），总数会偏离 640，需另定规则
+- 服务端 `close_battle → on_battle_closed` 的具体广播实现在仓库中未找到（只找到客户端 `PluginFramework.cs:317-320`），但结算链已实机跑通
+- 未找到 id 连续性校验工具、`EditorBuildSettings` 登记数硬上限
+
+---
+
+## 36. 世界地图层接入运行时 · 第一阶段（2026-11-20）
+
+用户指出「世界地图场景还是以前旧的」，核查确认三种含义都属实：① 运行时基底一直是 `Story1`（level 101），全仓 0 处 `change_scene(20001+)`；② 64 个 `Battle_rXcY.unity` 世界层场景只按阶段 1 的整格地形生成，不消费 `battle_slots.txt`、无 `Config` 巡点、无 NavMesh；③ 藏宝图 UI 底图仍是 `UITexture/Story1` / `UITexture/Map1`，4096 `world_map.png` 未进 `Assets/Resources`。
+
+### 36.1 方案取舍
+
+原提议「把 64 个世界层改名 `World_{tid}`」需要动 `Level.txt` 64 行、资产名、BuildSettings、表同步，风险大。**技术收敛为不改命名**：把 `Game.cs` 的视觉隐藏判定从「前缀 `StartsWith("Battle")`」换成「按 `levelId` 查表拿到战场 prefab 名、精确比对场景名」。同样消除双层 Terrain，且完全不动表与服务端，符合第一阶段「可独立验证」的目标。历史命名债留待后续阶段清理。
+
+### 36.2 改动（4 处）
+
+| 文件 | 改动 |
+|---|---|
+| `Unity3d/Assets/Scripts/Game.cs:501-544` | `OnLoadBattleComplete` 用 `TableConfig.LevelProvider.Instance.GetLevel(levelId).prefab` 精确识别战场场景，其余已加载场景全部隐藏；查表失败时回退旧前缀判定 |
+| `Unity3d/Assets/Scripts/Game.cs:38-50, 546-552` | 原 4 个 `m_MainScene*` 列表只记录「当前 enabled」的组件，多次 Additive 交错时会漏记、导致卸载后世界层 Terrain 无法恢复。改为 `List<KeyValuePair<Behaviour,bool>> m_HiddenVisuals` + `HideVisual()` 保存**原始 enabled 状态**、去重记录，`RestoreMainSceneVisuals()` 按原值恢复（不会误启用本就禁用的 UI 组件） |
+| `Unity3d/Assets/Scripts/GmScript/Editor/AppEditorDslApi.Maps.cs` | `MakeScene()` 新增可选 `waypoints` 参数：世界层生成 `Config/1..10` 巡点节点，坐标取 `battle_slots.txt` 的 `(x,z)`、`y` 由 `TerrainData.GetInterpolatedHeight` 采样 +1；`Build()` 世界层调用传入该格 10 槽；新增 `BuildWorld(which)` 只重建世界层（**不碰 640 战场已烘 NavMesh**）、`BakeWorldNav(which)` 只烘世界层（支持断点续跑） |
+| `Unity3d/Assets/Scripts/GmScript/Editor/AppEditorDslApi.cs` | 注册 `map_world_build([tile_id])` / `map_world_nav([tile_id])` 及两个表达式类 |
+
+`Config` 命名依据：`autorun.dsl:18-26` 用 `get_child_count("Config")` 与 `get_position("Config/"+$index)`，`index` 从 1 起、到 `$ct` 回卷，故子节点命名 `1..10`。
+
+### 36.3 单格样板产物
+
+`map_world_build("r0c0")` → `MAP_WORLD_BUILD tiles=1 built=1`、`WORLD r0c0 waypoints=10`、`BUILD_SETTINGS added=0 total=786`；`map_world_nav("r0c0")` → `MAP_WORLD_NAV tiles=1 baked=1`。产物 `Battle_r0c0.unity` 28084 字节（含 `Config` 节点）、`Battle_r0c0/NavMesh.asset` 487868 字节。实测 640 个战场场景时间戳未变，确认未被覆盖。
+
+### 36.4 实机验证（干净复测通过）
+
+环境：电脑重启后服务全套未自动恢复，按 `RunServer.cmd` 重启 6 个服务 + `node nodejs/app.js` 网关（9001）。Unity 冷启动（pid 50248）、处理管理员弹窗、域重载后 editor GM 通道一度不连出，最终 `unity_wait_ready` 等到连接。
+
+用 GM 直接 `ChangeScene(20001)` 把基底切到世界层（不改三端 DSL），再让自然轮换链进战斗：
+
+```
+02-24-05 OnLoadSceneComplete 20001
+02-24-08 findnpc                      ← Config 巡点生效
+02-24-09 open_battle → OnLoadBattleComplete 10015
+02-24-54 OnLoadBattleComplete 10016
+02-25-02 all_killed → 02-25-09 all_killed → 02-25-14 dialog_over:998
+         → UnloadBattle → on_battle_closed → 02-25-36 OnLoadBattleComplete 10017
+```
+
+**决定性证据**：战斗中 `Terrain_r0c0=False; Terrain_r0c1_s05=True`，Main Camera `False;True` —— 世界层被隐藏、只剩战场层一套 Terrain/Camera/Light，双层 Terrain 消除。战斗间隙采样到 `Terrain_r0c0=True`（恢复链生效）。两波全清、结算、卸载、轮换到下一 id 完整闭环，日志最后 1800 行无 `Exception` / `unassigned global` / `unknown func` / `error CS`。Unity 编译 `NO_CS_ERRORS`、`read_lints` 0 诊断。
+
+**验证边界（如实说明）**：基底切换用 GM 直调 `ChangeScene(20001)`，不是正式入口（`MainUi/story.dsl:30` 仍是 `change_scene(101)`）；`DelayChangeScene(20001)` 走服务端 `EnterScene` 时服务端未响应（世界格 room 未创建），因此**跨格换房链路仍未验证**。另外切到 20001 时 `sceneCount=1`（Single 模式卸掉了 Main UI 场景），UI 表现需在正式入口实现后复核。
+
+**编译错误修正（复核时抓到，已修）**：`m_HiddenVisuals` 初版写成 `List<KeyValuePair<Behaviour,bool>>`，但 `Renderer` 继承 `Component` 而非 `Behaviour`，Unity 报 `error CS1503: cannot convert from 'UnityEngine.Renderer' to 'UnityEngine.Behaviour'`（该错误 `read_lints` 未报，只有 `Editor.log` 抓到，故 `read_lints` 0 诊断不能替代 Unity 编译日志）。已改为 `List<KeyValuePair<Component,bool>>` + `VisualEnabled()` / `SetVisualEnabled()` 按具体类型读写 `enabled`。修复后最新重编译区间（日志 106579 行起）0 个 `error CS`，并**重新做了完整实机复测**（`ai_wld4`）：`OnLoadSceneComplete 20001` → `findnpc` → 自然进 `10021/10022/10023`；战斗中 `Terrain_r0c0=False; Terrain_r0c2_s01=True`、Main Camera `False;True`；两波 `all_killed` → `dialog_over:998` → `UnloadBattle` → `on_battle_closed` → 下一场，最后 2000 行无异常。战斗间隙 `Terrain_r0c0=True` 证明按原始状态恢复生效。
+
+### 36.5 后续阶段清单（未做）
+
+1. **P0-2 入口与轮换链**：`MainUi/story.dsl:30` 及三端副本改 `change_scene(20001)`；`Story1/Story2` 6 份 `battleIndex`；`world_main.dsl` 空 `start` 补进入战场逻辑；三端 `DslCopy` / `TableReaderGenerator`
+2. **P0-3 服务端世界格语义**：`ExploreSystem.GridFromLevel` 扩到 20001..20064；确认世界格 field room 创建与 `EnterScene` / `change_room_scene` 换房；双客户端 AOI 同屏验证
+3. **P1 相机与小地图**：`Game.cs:409/415/481` 的 `Camera.main` 多相机仲裁、`OnLevelLoaded` 的 `buildIndex` 分支；`MiniMap.cs:24-28` 只在 `Init()` 读一次 `Terrain.activeTerrain`，换场景需重初始化；4096 藏宝图复制进 `Assets/Resources/UITexture/` 并把 `.meta` 的 `maxTextureSize` 提到 4096
+4. **P2 铺 64 格**：`map_world_build()` / `map_world_nav()` 全量（64 格，各约 10 秒）；64 场景补 `Config`、传送点可视化、事件点光柱；`Level.txt` 按格出生点；`map_verify()` 增加世界层 NavMesh/Config 校验
+5. **清理**：旧 64 个 `Battle_{tid}_{era}.unity` 与旧 story 目录、`MapBuild.WriteStorySkeleton()` 死代码
+
+### 36.6 环境经验（本轮）
+
+- 电脑重启后服务全套需手动恢复，且 `RunServer.cmd` 里的 `node.exe nodejs/app.js` 在系统 PATH 无 node 时会静默失败 → 需显式用 `C:\Users\dreamanlan\.workbuddy\binaries\node\versions\22.22.2-6\node.exe`；网关端口 9001 是登录链路必需
+- 改 Editor 侧 C# 后必须 `asset_refresh()` 才会重编译，`api_list("新命令")` 可快速确认是否生效
+- 域重载后 editor GM 通道偶发不自动连出：`unity_activate` 无效时按纪律重启编辑器（本次重启后仍不连，最终 `unity_wait_ready(timeout=120)` 等到连接，比反复重启更省事）
+
+---
+
+## 37. 名字板残留：切场景漏清理（2026-11-20）
+
+用户反馈「刚才 Unity 里有很多名字板残留，是不是切场景忘记销毁了」。核查确认**属实，且是三处叠加**，不是单一遗漏。名字板 = `OverHeadBar : MonoBehaviour` + 静态单例 `OverHeadBarManager`（没有 `NameBoard/NamePlate/HeadBar` 等其它类）。
+
+### 37.1 生命周期与归属（实测代码）
+
+| 环节 | 位置 | 行为 |
+|---|---|---|
+| 创建 | `OverHeadBarManager.cs:40-93` | `ui_add_actor` → `NewObject("UI/OverHeadBar")` → `SetParent(obj.transform)`，父节点是**实体 Actor GameObject** |
+| Actor 归属 | `ResourceSystem.cs:433-440` | `InitializeObject` 里 `SetParent(null)` → 落在当前 active scene 根；全仓 `SetActiveScene` **0 命中**，Additive 战场不改 active scene |
+| 回收 | `ResourceSystem.cs:442-449` | `FinalizeObject` 把对象挂到 `ResPool`，而 `ResPool` 是 `DontDestroyOnLoad`（`:73-78`） |
+| 死亡 | `PluginFramework.cs:776-783` | `OnDestroyEntity` 发 `ui_remove_actor` → `RemoveActor()` |
+| 隐藏 | `OverHeadBarManager.cs:32-39, 94-103` | `hp==0` 只 `SetActive(false)`，**不回收、不删 `views`** |
+| 销毁 | 全类 | `OverHeadBar.cs` / `OverHeadBarManager.cs` 中 `OnDestroy/OnDisable/DestroyImmediate` **0 命中** |
+
+关键推论：**Additive 卸载战场场景带不走名字板**——活跃血条在 base/active 场景的 Actor 下，回收态血条在 `DontDestroyOnLoad` 的 `ResPool` 下。
+
+### 37.2 三处确定的 bug
+
+1. **`Release()` 传错类型**（`OverHeadBarManager.cs:24`）：`RecycleObject(view)` 传的是 `OverHeadBar` **组件**，而池账本用 **GameObject** 的 `GetInstanceID()` 建键（`ResourceSystem.cs:179, 396`）→ 查不到 → 不回收，随后 `views.Clear()` 丢弃引用，血条变孤儿。`RemoveActor():142` 传的是 `.gameObject`，是对的——两处不一致本身就说明第 24 行是笔误。
+2. **Additive 重复 `Init()`**（`Game.cs:81, 429-444`）：`sceneLoaded` 对 Additive 也触发，`OnLevelLoaded` 不判断 `loadSceneMode`，每次都创建 `UI/UiCamera`、`TopMenuManager.Init()`、`OverHeadBarManager.Init()`；而 `Init()` 无幂等，重复订阅 9 个事件（一个 `ui_add_actor` 会触发多次 `AddActor`），`views` 也不清。
+3. **战场进出链完全不清理**（`Game.cs:465-495`）：`LoadBattle()` / `UnloadBattle()` 都不调用 `Release()`；`PluginFramework.UnloadBattle():300-316` 只把 `!IsServerEntity` 的 `Hp=0`（只隐藏血条），server 实体连这一步都没有。`on_battle_closed` story（`localmain.dsl:14-22`）也没有清理。
+
+附带放大：`PluginFramework.ChangeScene():252-262` 先 `CleanupResourcePool()`（清账本但不销毁对象），再触发 `LoadScene` 的 `Release()`；所以即使把第 24 行改成 `.gameObject`，此时 `RecycleObject` 也必然查不到账本。
+
+### 37.3 修复（4 处，最小范围）
+
+| 文件 | 改动 |
+|---|---|
+| `Unity3d/Assets/Scripts/OverHeadBarManager.cs` | 新增 `DestroyBar()`：传 `view.gameObject`，`RecycleObject` 失败时 `GameObject.Destroy` 兜底；`Release()` 改走它；`RemoveActor()` 也统一走它；`Init()` 加 `if (subscribes.Count > 0) return;` 幂等；新增 `PurgeOrphans()` 清理"实体已消失"的血条 |
+| `Unity3d/Assets/Scripts/Game.cs` | `OnLevelLoaded` 判断 `loadSceneMode`：Additive 只调幂等的 `OverHeadBarManager.Init()` + 重建相机控制器，**不再重复创建 UiCamera/TopMenu/Highlight**；`LoadBattle()` 开头与 `UnloadBattle()` 中各调一次 `PurgeOrphans()`（前者覆盖"上一场实体已销毁"的时机） |
+| `App/ClientModule/PluginFramework/PluginFramework.cs` | `UnloadBattle()` 对 `!IsServerEntity` 的实体在 `Hp=0` 时补发 `Utility.EventSystem.Publish("ui_remove_actor", "ui", info.GetId())`（签名与既有 `:787` 一致），让血条走正常回收链 |
+| `Unity3d/Assets/Scripts/GmScript/Editor/AppEditorDslApi.Maps.cs` | `CombatProbe.Run()` 增加 `orphans` / `noParent` 计数并输出，便于实机量化 `overheadBars > entities` 的残留 |
+
+`dotnet build ClientPlugins.csproj` 0 错误，`PluginFramework.dll` 已部署；Unity 冷启动重编译 `NO_CS_ERRORS`、`read_lints` 0 诊断。
+
+### 37.4 验证边界（如实说明）
+
+**实机未复测**：本轮 Unity 重启后 editor GM 通道始终未连出（`unity_activate`、`unity_wait_ready`、重启编辑器均无效，`EditorPrefs` 自动启动开关为默认 true，属已知的 `delayCall` 偶发问题）。按纪律停止重试，因此**没有跑到 `combat_probe()` 看 `orphans` 是否归零**，不声称画面上已无残留。下次通道恢复后建议：进 Play → 连续跑 3~4 场战斗 → 每场间隙 `combat_probe()`，核对 `orphans=0`、`noParent=0`、`overheadBars≈entities`。
+
+### 37.5 未修的相邻问题（超出本次范围）
+
+- `TopMenuManager` / `HighlightPromptManager` 的 `Init()` 同样无幂等、`Release()` 只回收最后一个对象（Additive 分支已不再调用它们，但 Single 多次切换仍可能累积）
+- `ResourceSystem.CleanupResourcePool()`（`:271-301`）只清账本不销毁对象；`PluginFramework.Reset()` / `RefreshRoomScene()` / `Msg_RC_DestroyNpc_Handler` 绕过 `ui_remove_actor`；`ui_drop` 有订阅无发布者
+- `OverHeadBar.Reset()` 只 `DetachChildren()` 飘字；`Game.LoadUi()` 重复实例化 UI 无旧 UI 清理；退出链 `GameControler.Release()` 无 UI 管理器清理
+- 历史文档记录的 `overheadBars` 样本都是 `overheadBars==entities`（§19/§22），未记录过 `>` 的残留采样，故无法用历史数据对比本轮修复前后的数量

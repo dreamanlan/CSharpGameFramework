@@ -1634,6 +1634,59 @@ namespace StoryScript.DslExpression
     // Play mode control for the GM socket / MCP editor channel. Entering Play triggers a
     // domain reload that tears down the socket server, so the state change is deferred to
     // the next editor update: the RPC returns normally before the reload happens.
+    internal class BuildTargetInfoExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            var target = UnityEditor.EditorUserBuildSettings.activeBuildTarget;
+            var group = UnityEditor.BuildPipeline.GetBuildTargetGroup(target);
+            bool iosSupported = UnityEditor.BuildPipeline.IsBuildTargetSupported(UnityEditor.BuildTargetGroup.iOS, UnityEditor.BuildTarget.iOS);
+            return BoxedValue.FromString(string.Format("active={0} group={1} iosSupported={2} playing={3} compiling={4} updating={5}",
+                target, group, iosSupported, UnityEditor.EditorApplication.isPlaying,
+                UnityEditor.EditorApplication.isCompiling, UnityEditor.EditorApplication.isUpdating));
+        }
+    }
+    internal class SwitchBuildTargetExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            if (operands.Count < 1)
+                return BoxedValue.FromString("ERROR: switch_build_target(name) - name: iOS | StandaloneOSX");
+            string name = operands[0].GetString();
+            UnityEditor.BuildTargetGroup group;
+            UnityEditor.BuildTarget target;
+            switch (name.ToLowerInvariant())
+            {
+                case "ios":
+                case "iphone":
+                    group = UnityEditor.BuildTargetGroup.iOS;
+                    target = UnityEditor.BuildTarget.iOS;
+                    break;
+                case "osx":
+                case "standaloneosx":
+                case "standalone":
+                    group = UnityEditor.BuildTargetGroup.Standalone;
+                    target = UnityEditor.BuildTarget.StandaloneOSX;
+                    break;
+                default:
+                    return BoxedValue.FromString("ERROR: unsupported target '" + name + "'; use iOS | StandaloneOSX");
+            }
+            if (UnityEditor.EditorApplication.isPlaying)
+                return BoxedValue.FromString("ERROR: exit Play mode before switching build target");
+            if (UnityEditor.EditorApplication.isCompiling || UnityEditor.EditorApplication.isUpdating)
+                return BoxedValue.FromString("ERROR: editor is compiling/importing; retry later");
+            if (!UnityEditor.BuildPipeline.IsBuildTargetSupported(group, target))
+                return BoxedValue.FromString("ERROR: playback engine not installed for " + target);
+            var g = group;
+            var t = target;
+            UnityEditor.EditorApplication.delayCall += () =>
+            {
+                bool ok = UnityEditor.EditorUserBuildSettings.SwitchActiveBuildTarget(g, t);
+                Debug.Log("[GM] switch_build_target(" + t + ") ok=" + ok);
+            };
+            return BoxedValue.FromString("SCHEDULED: switch_build_target(" + target + ") - editor will reload/reimport; poll build_target() after reconnect");
+        }
+    }
     internal class EditorPlayExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
@@ -2580,6 +2633,265 @@ namespace StoryScript.DslExpression
         }
     }
 
+    // Generic player build support. Project-specific preparation can be injected via
+    // prepareHook (see uc_local_build_player on the project side); the generic package
+    // layer itself only uses UnityEditor.BuildPipeline and knows nothing about UC.
+    [Serializable]
+    public sealed class BuildStateData
+    {
+        public string status = "idle";
+        public string platform = "";
+        public string output = "";
+        public bool development = false;
+        public bool append = false;
+        public string scenes = "";
+        public string startedAt = "";
+        public string finishedAt = "";
+        public string result = "";
+        public string error = "";
+    }
+
+    public static class BuildPlayerUtil
+    {
+        private static string StatePath
+        {
+            get { return Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "../Library/build_state.json")); }
+        }
+
+        public static BuildStateData ReadState()
+        {
+            try
+            {
+                if (File.Exists(StatePath))
+                {
+                    var st = JsonUtility.FromJson<BuildStateData>(File.ReadAllText(StatePath));
+                    if (st != null)
+                        return st;
+                }
+            }
+            catch (Exception) { }
+            return new BuildStateData();
+        }
+
+        public static void WriteState(BuildStateData st)
+        {
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(StatePath));
+                File.WriteAllText(StatePath, JsonUtility.ToJson(st, true));
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("[build_player] failed to persist build state: " + e.Message);
+            }
+        }
+
+        // A queued build cannot survive a domain reload (platform switch or recompile).
+        // Persisted pending/running states are marked interrupted on the next load.
+        [InitializeOnLoadMethod]
+        private static void MarkInterruptedOnReload()
+        {
+            var st = ReadState();
+            if (st.status == "pending" || st.status == "running")
+            {
+                st.status = "interrupted";
+                st.error = "editor domain reload/restart during build; re-issue build_player()";
+                st.finishedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                WriteState(st);
+            }
+        }
+
+        public static bool ResolveTarget(string platform, out BuildTarget target, out BuildTargetGroup group, out string label)
+        {
+            target = BuildTarget.StandaloneOSX;
+            group = BuildTargetGroup.Standalone;
+            label = "";
+            switch ((platform ?? "").ToLowerInvariant().Replace("-", "").Replace("_", ""))
+            {
+                case "mac":
+                case "macos":
+                case "osx":
+                case "standaloneosx":
+                    target = BuildTarget.StandaloneOSX;
+                    group = BuildTargetGroup.Standalone;
+                    label = "mac";
+                    return true;
+                case "ios":
+                case "iphone":
+                    target = BuildTarget.iOS;
+                    group = BuildTargetGroup.iOS;
+                    label = "ios";
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static string DefaultOutput(string label)
+        {
+            var rel = label == "mac" ? "Build/Mac/UCRayTracing.app" : "Build/iOS";
+            return Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..", rel));
+        }
+
+        public static void Schedule(BuildStateData st, BuildTarget target, BuildOptions options)
+        {
+            st.status = "pending";
+            st.startedAt = "";
+            st.finishedAt = "";
+            st.result = "";
+            st.error = "";
+            WriteState(st);
+            EditorApplication.delayCall += () => RunBuild(target, options);
+        }
+
+        private static void RunBuild(BuildTarget target, BuildOptions options)
+        {
+            var st = ReadState();
+            st.status = "running";
+            st.startedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            WriteState(st);
+            try
+            {
+                var scenes = (st.scenes ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                Directory.CreateDirectory(Path.GetDirectoryName(st.output));
+                var bp = new BuildPlayerOptions
+                {
+                    scenes = scenes,
+                    locationPathName = st.output,
+                    target = target,
+                    options = options
+                };
+                var report = BuildPipeline.BuildPlayer(bp);
+                st.result = report.summary.result.ToString();
+                st.status = st.result == "Succeeded" ? "succeeded" : "failed";
+                st.error = report.summary.totalErrors > 0
+                    ? string.Format("errors={0} warnings={1} size={2}", report.summary.totalErrors, report.summary.totalWarnings, report.summary.totalSize)
+                    : "";
+            }
+            catch (Exception e)
+            {
+                st.status = "failed";
+                st.error = e.GetType().Name + ": " + e.Message;
+            }
+            st.finishedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            WriteState(st);
+            Debug.Log("[build_player] " + st.status + " -> " + st.output + " " + st.error);
+        }
+
+        // Shared plan/validation/scheduling for all player build commands.
+        // prepareHook(dryRun) is optional and supplied by project-specific commands.
+        public static string Request(string platform, string outDir, bool development, bool dryRun, string scenesArg, Func<bool, string> prepareHook, bool append)
+        {
+            BuildTarget target;
+            BuildTargetGroup group;
+            string label;
+            if (!ResolveTarget(platform, out target, out group, out label))
+                return "ERROR: unknown platform '" + platform + "'; use \"mac\" or \"ios\".";
+
+            var active = EditorUserBuildSettings.activeBuildTarget;
+            bool supported = BuildPipeline.IsBuildTargetSupported(group, target);
+            var output = string.IsNullOrEmpty(outDir) ? DefaultOutput(label) : Path.GetFullPath(outDir);
+
+            var scenes = new List<string>();
+            string scenesFrom;
+            if (!string.IsNullOrEmpty(scenesArg))
+            {
+                foreach (var s in scenesArg.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries))
+                    scenes.Add(s.Trim());
+                scenesFrom = "argument";
+            }
+            else
+            {
+                foreach (var s in EditorBuildSettings.scenes)
+                    if (s.enabled) scenes.Add(s.path);
+                scenesFrom = "EditorBuildSettings(enabled)";
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendFormat("dryRun={0} requested={1} target={2} active={3} supported={4} development={5} append={6}\n",
+                dryRun, platform, target, active, supported, development, append);
+            sb.AppendFormat("output={0}\nscenes({1}, from={2}): {3}\n",
+                output, scenes.Count, scenesFrom, string.Join(", ", scenes.ToArray()));
+            if (prepareHook != null)
+                sb.Append(prepareHook(dryRun)).Append("\n");
+            if (append)
+                sb.AppendFormat("append=True (BuildOptions.AcceptExternalModificationsToPlayer): keeps manual edits in the existing Xcode project; requires an appendable target at {0}.\n", output);
+
+            if (!supported)
+                sb.Append("BLOCKED: playback engine for this target is not installed.\n");
+            if (active != target)
+                sb.AppendFormat("BLOCKED: active target is {0}; call switch_build_target(\"{1}\") first, wait for the domain reload, then re-issue this command.\n",
+                    active, label == "mac" ? "StandaloneOSX" : "iOS");
+            if (EditorApplication.isPlayingOrWillChangePlaymode)
+                sb.Append("BLOCKED: exit Play mode before building.\n");
+            if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+                sb.Append("BLOCKED: editor is compiling/importing; retry when idle.\n");
+            if (scenes.Count == 0)
+                sb.Append("BLOCKED: no enabled scenes; enable scenes in Build Settings or pass the scenes argument.\n");
+            var existing = ReadState();
+            if (existing.status == "pending" || existing.status == "running")
+                sb.Append("BLOCKED: another build is pending/running; poll build_state().\n");
+
+            if (dryRun || sb.ToString().Contains("BLOCKED:"))
+            {
+                sb.Append("NOTE: dryRun defaults to true; pass dryRun=false to queue the build. Poll build_state().");
+                return sb.ToString();
+            }
+
+            var options = BuildOptions.None;
+            if (development)
+                options |= BuildOptions.Development | BuildOptions.AllowDebugging;
+            if (append)
+                options |= BuildOptions.AcceptExternalModificationsToPlayer;
+            EditorUserBuildSettings.development = development;
+            var state = new BuildStateData
+            {
+                platform = label,
+                output = output,
+                development = development,
+                append = append,
+                scenes = string.Join(",", scenes.ToArray())
+            };
+            Schedule(state, target, options);
+            sb.Append("SCHEDULED: BuildPlayer queued via EditorApplication.delayCall.\n");
+            sb.Append("The build blocks the editor main thread; the GM socket may be unreachable until it finishes.\n");
+            sb.Append("Result is persisted in Library/build_state.json - poll build_state() after reconnecting.");
+            return sb.ToString();
+        }
+    }
+
+    internal class BuildPlayerExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            if (operands.Count < 1)
+                return BoxedValue.FromString("ERROR: build_player(platform[,outDir[,development[,dryRun[,scenes[,append]]]]]) platform: \"mac\" or \"ios\"");
+            var platform = operands[0].GetString();
+            var outDir = operands.Count > 1 ? operands[1].GetString() : "";
+            bool development = operands.Count > 2 && operands[2].GetBool();
+            bool dryRun = operands.Count < 4 || operands[3].GetBool();
+            var scenes = operands.Count > 4 ? operands[4].GetString() : "";
+            bool append = operands.Count > 5 && operands[5].GetBool();
+            return BoxedValue.FromString(BuildPlayerUtil.Request(platform, outDir, development, dryRun, scenes, null, append));
+        }
+    }
+
+    internal class BuildStateExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            var st = BuildPlayerUtil.ReadState();
+            var sb = new StringBuilder();
+            sb.AppendFormat("status={0} platform={1} development={2} append={3}\n", st.status, st.platform, st.development, st.append);
+            sb.AppendFormat("output={0}\nscenes={1}\n", st.output, st.scenes);
+            sb.AppendFormat("started={0} finished={1} result={2}\n", st.startedAt, st.finishedAt, st.result);
+            if (!string.IsNullOrEmpty(st.error))
+                sb.AppendFormat("error={0}\n", st.error);
+            sb.Append("stateFile=Library/build_state.json (persists across domain reloads)");
+            return BoxedValue.FromString(sb.ToString());
+        }
+    }
+
 #endif
     public sealed class EditorDslApi
     {
@@ -2636,6 +2948,8 @@ namespace StoryScript.DslExpression
 			calculator.Register("strlen", "strlen(str) api", new ExpressionFactoryHelper<StrLenExp>());
 			
 #if UNITY_EDITOR
+            calculator.Register("build_target", "build_target() - report active build target/group, iOS playback engine availability and editor state (read-only)", new ExpressionFactoryHelper<BuildTargetInfoExp>());
+            calculator.Register("switch_build_target", "switch_build_target(name) - switch to iOS | StandaloneOSX on the next editor update (edit mode only, async; triggers domain reload / reimport)", new ExpressionFactoryHelper<SwitchBuildTargetExp>());
             calculator.Register("editor_play", "editor_play(play) - enter/exit Play mode on the next editor update; returns the state before the change", new ExpressionFactoryHelper<EditorPlayExp>());
             calculator.Register("editor_isplaying", "editor_isplaying() - current Play mode state", new ExpressionFactoryHelper<EditorIsPlayingExp>());
             calculator.Register("gfx_format_probe", "gfx_format_probe() - report graphics format capabilities, URP HDR format and B10G11R11 render textures", new ExpressionFactoryHelper<GfxFormatProbeExp>());
@@ -2659,6 +2973,8 @@ namespace StoryScript.DslExpression
             calculator.Register("editor_list_components", "editor_list_components(obj_or_path) - list components on a scene GameObject, including inactive objects (read-only)", new ExpressionFactoryHelper<EditorListComponentsExp>());
             calculator.Register("editor_add_component", "editor_add_component(obj_or_path,type_or_str[,dryRun]) - add a component in edit mode; defaults to DRY RUN, uses Undo.AddComponent, never saves the scene", new ExpressionFactoryHelper<EditorAddComponentExp>());
             calculator.Register("editor_remove_component", "editor_remove_component(obj_or_path,type_or_str[,dryRun,all]) - remove component(s) in edit mode; defaults to DRY RUN, uses Undo.DestroyObjectImmediate, never saves the scene", new ExpressionFactoryHelper<EditorRemoveComponentExp>());
+            calculator.Register("build_player", "build_player(platform[,outDir[,development[,dryRun[,scenes[,append]]]]]) - build a mac or iOS player with Unity BuildPipeline; platform: \"mac\"|\"ios\"; append=1 keeps manual edits in an existing Xcode project (AcceptExternalModificationsToPlayer); dryRun defaults to true; real build is queued asynchronously, poll build_state()", new ExpressionFactoryHelper<BuildPlayerExp>());
+            calculator.Register("build_state", "build_state() - report the last/queued player build (persisted in Library/build_state.json, survives domain reloads)", new ExpressionFactoryHelper<BuildStateExp>());
 #endif
 #if USE_GM_STORY
             calculator.Register("story_var", "story_var(name,val) or story_var(name) api", new ExpressionFactoryHelper<StoryVarExp>());

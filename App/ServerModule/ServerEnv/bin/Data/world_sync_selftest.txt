@@ -1,0 +1,10 @@
+﻿WORLD_SYNC_SELFTEST
+world_scene_story=True world_scene_battle=False world_scene_mainui=False
+finite_ok=True reject_nan=True reject_inf=True reject_range=True
+stale_boundary=True
+aoi_radius=80 aoi_inside=True aoi_boundary=True aoi_outside=True aoi_diagonal=True aoi_nan=True
+entered_view=True left_full_broadcast=True
+state_msg_id=parallel_state state_msg_args=4 state_msg_shape=True
+snapshot_before=0 snapshot_after_set=1 snapshot_after_clear=0
+snapshot_shape=True clear_idempotent=True lifecycle=True
+RESULT=PASS

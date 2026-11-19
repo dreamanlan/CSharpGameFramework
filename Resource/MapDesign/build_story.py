@@ -1,43 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-把 64 个战斗 story 从「同一个刷怪模板」补成有世界观叙事的章节关卡。
+Stage 3: generate 640 battlefield stories (design doc 35).
 
-数据源（设计意图都在数据里，脚本只做翻译）：
-  regions.txt                       格名 / 大区 / 时代层 / 主线支线 / 素材引用 / 难度
-  MapData/{tid}_areas.txt           战斗区中心（来自布局图）
-  tiles/{tid}_terrain.png           真实地表高度（R 通道）
-  Tables/Server/WorldEvent.txt      仅用于统计本格线索数（不下发坐标，GBK 标准表）
+One 32x32 neighbourhood per battlefield -> one event point per story. The old
+per-tile "2~4 battle zones" chain no longer applies, so each battlefield gets
+a compact 2-wave encounter: wave 1 in place, wave 2 after a short advance
+whose direction is derived deterministically from the slot. All numbers
+(ADVANCE_STEP=20, spawn ring=14, view=35, gohome=80) stay valid because the
+magnified battlefield is still 512x512.
 
-生成结构：
-  开场叙事 -> 逐战斗区推进（波间短距离分段移动 + 分段文案 + 分波刷怪）
-  -> all_killed 推进下一波 -> 最后一波清完结算
-  波 2..N 每波先朝该波设计区方向推进 ADVANCE_STEP(20) 单位，到达后
-  (npcarrived:1000) 才刷怪；wait(ADVANCE_TIMEOUT_MS) 作超时兜底，
-  @spawned 守卫保证只刷一次。怪始终用玩家当前位置计算刷怪点，
-  因此移动不生效/超时也仍能打完、循环不卡。
-  步长远小于怪 view(35)，绝不把双方拉开几百单位；怪的 leash 由
-  HomePos(出生点) + GohomeRange(80) 天然提供。
+Data sources:
+  battle_slots.txt                 640 rows: level_id / grid_key / era / kind / x,z
+  tiles/{tid}_terrain.png          world-tile height (for narrative only)
+  WorldEvent.txt                   event count per battlefield (GBK)
 
-坐标：terrain PNG 256x256，1px=2 世界单位。Unity GetPixels32 自下而上，
-      C# ReadPng 反转回自上而下，故 design_y == pil_y，pil_y = worldZ/2，
-      height = R/255*70（与 TerrainData / areas.txt 一致）。
+Every story keeps the shared Common DSL (autorun_battle / localmain /
+skillstory), so click-to-move, explore and reporting still work unchanged.
 """
 import os
 import math
+import random
 from PIL import Image
 
 ROOT = r'D:\GitHub\CSharpGameFramework'
 DESIGN = os.path.join(ROOT, 'Resource', 'MapDesign')
 TILES = os.path.join(DESIGN, 'tiles')
-AREAS = os.path.join(ROOT, 'Unity3d', 'Assets', 'Resources', 'MapData')
 STORY = os.path.join(ROOT, 'Resource', 'DslFile', 'Story')
 EVENTS = os.path.join(ROOT, 'Resource', 'Tables', 'Server', 'WorldEvent.txt')
+SLOTS = os.path.join(DESIGN, 'battle_slots.txt')
 
-# 每波推进距离：必须 <=25（设计 20.6），且加上刷怪环半径 14 后仍小于怪 view=35。
 ADVANCE_STEP = 20.0
-# obj_move 到达后由引擎发 npcarrived:1000；这里只是移动未生效/超时时的兜底。
-# 主角 speed=8，20 单位约 2.5s，留足余量避免超时早于到达（否则怪会刷在移动中途）。
 ADVANCE_TIMEOUT_MS = 4000
+WAVES = 2
 
 OPENING = {
     'ARR': '洪水退去后，冰盖裂隙里还留着方舟的木痕。',
@@ -75,52 +69,43 @@ ERA_LABEL = {
 }
 
 
-def tiles():
+def slots():
     out = []
-    with open(os.path.join(DESIGN, 'regions.txt'), encoding='utf-8') as f:
+    with open(SLOTS, encoding='utf-8') as f:
         for line in f:
             if line.startswith('#') or not line.strip():
                 continue
-            p = [x.strip() for x in line.split('|')]
-            out.append(dict(tid=p[0], code=p[1], name=p[2], era=p[3],
-                            route=p[4], src=p[6], diff=int(p[7]), seq=int(p[8])))
+            p = line.rstrip('\n').split('\t')
+            out.append(dict(level_id=int(p[0]), tid=p[1], slot=int(p[2]),
+                            grid_key=p[3], era=p[4], kind=p[5],
+                            x=float(p[6]), z=float(p[7]), title=p[11],
+                            code=p[12], name=p[13], src=p[14],
+                            diff=int(p[15]), route=p[16]))
     return out
 
 
-def battle_zones(tid):
-    p = os.path.join(AREAS, tid + '_areas.txt')
-    out = []
-    if not os.path.exists(p):
-        return out
-    with open(p, encoding='utf-8-sig') as f:
-        for line in f:
-            q = [x.strip() for x in line.split('|')]
-            if len(q) < 4 or not q[0].isdigit():
-                continue
-            t = int(q[0])
-            if 60 <= t <= 140:
-                out.append((float(q[1]), float(q[2]), float(q[3])))
-    return out[:4]
+def ground_y(s, wx, wz):
+    """Spawn height from the battlefield's own magnified terrain PNG."""
+    png = os.path.join(TILES, s['grid_key'] + '_terrain.png')
+    if not os.path.exists(png):
+        png = os.path.join(TILES, s['tid'] + '_terrain.png')
+    img = Image.open(png).convert('RGB')
+    px = img.load()
+    x = max(0, min(255, int(wx / 2)))
+    y = max(0, min(255, int(wz / 2)))
+    return px[x, y][0] / 255.0 * 70.0
 
 
-def event_count(tid):
+def event_count(grid_key):
     if not os.path.exists(EVENTS):
         return 0
     n = 0
     with open(EVENTS, encoding='gbk') as f:
         for line in f:
             p = line.split('\t')
-            if len(p) > 1 and p[1] == tid:
+            if len(p) > 1 and p[1] == grid_key:
                 n += 1
     return n
-
-
-def ground_y(tid, wx, wz):
-    img = Image.open(os.path.join(TILES, tid + '_terrain.png')).convert('RGB')
-    px = img.load()
-    x = max(0, min(255, int(wx / 2)))
-    y = max(0, min(255, int(wz / 2)))
-    return px[x, y][0] / 255.0 * 70.0
 
 
 def esc(s):
@@ -128,52 +113,38 @@ def esc(s):
 
 
 def signed(v):
-    # Explicit +/- operator: "+-11.3" is not a valid DSL term.
     return ('+%.1f' % v) if v >= 0 else ('-%.1f' % -v)
 
 
-def advance_vector(zones, w):
-    """第 w 波(>=2)的推进向量：沿相邻设计区链取方向，步长固定 ADVANCE_STEP。
-
-    区域坐标相距数百单位，这里只取方向、绝不走到区域中心（19.4 的教训）。
-    """
-    x0, z0, _ = zones[w - 2]
-    x1, z1, _ = zones[w - 1]
-    if w == 2:
-        x0, z0 = 60.0, 70.0          # 波 2 从队伍出生点出发
-    dx, dz = x1 - x0, z1 - z0
-    n = math.hypot(dx, dz)
-    if n < 1e-3:
-        return 0.0, ADVANCE_STEP
-    return ADVANCE_STEP * dx / n, ADVANCE_STEP * dz / n
+def advance_vector(s):
+    """Deterministic short advance direction, seeded by battlefield key."""
+    rnd = random.Random(s['level_id'] * 7919 + 13)
+    ang = rnd.uniform(-math.pi, math.pi)
+    return ADVANCE_STEP * math.cos(ang), ADVANCE_STEP * math.sin(ang)
 
 
-def wave_branch(code, name, w, x, y, z, diff, src):
-    zone = ZONES[code][(w - 1) % len(ZONES[code])]
-    # 波 1 保持原地开打（登录/首波链路已实机验证）；波 2..N 先做一段
-    # <=25 单位的推进，到达后才刷怪，避免把双方拉开几百单位（19.4/20.6）。
-    action = ('wave_spawn_1' if w == 1 else 'wave_advance_%d' % w)
-    lines = [
+def wave_branch(s, w):
+    zone = ZONES[s['code']][(s['slot'] + w - 1) % len(ZONES[s['code']])]
+    action = 'wave_spawn_1' if w == 1 else 'wave_advance_%d' % w
+    return [
         '      if(@wave<%d){' % (w + 1),
-        '        fire_message("push_tip_info", "%s：%s·%s");' % (esc(name), esc(zone), esc(src)),
+        '        fire_message("push_tip_info", "%s：%s·%s");' %
+        (esc(s['name']), esc(zone), esc(s['src'])),
         '        fire_message("%s");' % action,
         '      } else {',
     ]
-    return lines
 
 
 def advance_handler(w, dx, dz):
-    """波间推进：obj_move 的第三参是客户端到达事件名；服务端到达时固定发
-    npcarrived:1000，两者同名故双端都能触发 arrived_handler。wait 是移动
-    未生效/超时时的兜底，@advancing 守卫保证与到达信号只生效一次。"""
     return [
         '  onmessage("wave_advance_%d")' % w,
         '  {',
         '    @advancing=1;',
-        '    fire_message("push_tip_info", "向下一处遗迹推进 %d 步（第 %d 波）");' % (int(ADVANCE_STEP), w),
-        '    obj_move(get_leader_id(),vector3(get_position_x(get_leader_id())%s,'
-        'get_position_y(get_leader_id()),get_position_z(get_leader_id())%s),"npcarrived:1000");'
-        % (signed(dx), signed(dz)),
+        '    fire_message("push_tip_info", "向下一处遗迹推进 %d 步（第 %d 波）");' %
+        (int(ADVANCE_STEP), w),
+        '    obj_move(unit_id_2_obj_id(1000),vector3(get_position_x(unit_id_2_obj_id(1000))%s,'
+        'get_position_y(unit_id_2_obj_id(1000)),get_position_z(unit_id_2_obj_id(1000))%s),'
+        '"npcarrived:1000");' % (signed(dx), signed(dz)),
         '    wait(%d);' % ADVANCE_TIMEOUT_MS,
         '    if(@advancing>0){',
         '      @advancing=0;',
@@ -184,13 +155,7 @@ def advance_handler(w, dx, dz):
 
 
 def arrived_handler(total):
-    """obj_move 到达后刷当前波的怪（@spawned 守卫幂等）。"""
-    lines = [
-        '  onmessage("npcarrived:1000")',
-        '  {',
-        '    if(@advancing>0){',
-        '      @advancing=0;',
-    ]
+    lines = ['  onmessage("npcarrived:1000")', '  {', '    if(@advancing>0){', '      @advancing=0;']
     for w in range(1, total + 1):
         lines.append('      if(@wave<%d){' % (w + 1))
         lines.append('        fire_message("wave_spawn_%d");' % w)
@@ -205,8 +170,6 @@ def spawn_handler(w, diff):
     count = 4 + diff // 2
     base = 1006 + w * 20
     radius = 14.0
-    # Fixed ring layout instead of random scatter: with random ±8 offsets the
-    # mobs overlapped, and they all converged on the same pursuit point.
     lines = [
         '  onmessage("wave_spawn_%d")' % w,
         '  {',
@@ -215,139 +178,89 @@ def spawn_handler(w, diff):
     ]
     for i in range(count):
         ang = 2.0 * math.pi * i / count
-        dx = round(radius * math.cos(ang), 1)
-        dz = round(radius * math.sin(ang), 1)
-        # Emit an explicit + or - operator; "+-11.3" is not a valid DSL term.
-        dxs = ('+%.1f' % dx) if dx >= 0 else ('-%.1f' % -dx)
-        dzs = ('+%.1f' % dz) if dz >= 0 else ('-%.1f' % -dz)
+        dx, dz = round(radius * math.cos(ang), 1), round(radius * math.sin(ang), 1)
         lines.append(
-            '      create_npc(%d,vector3(get_position_x(get_leader_id())%s,'
-            'get_position_y(get_leader_id()),get_position_z(get_leader_id())%s),'
+            '      create_npc(%d,vector3(get_position_x(unit_id_2_obj_id(1000))%s,'
+            'get_position_y(unit_id_2_obj_id(1000)),'
+            'get_position_z(unit_id_2_obj_id(1000))%s),'
             '0,4,%d,"ai_normal",string_list("Ai/ailogic_normal.dsl"));'
-            % (base + i, dxs, dzs, 6 + i)
-        )
+            % (base + i, signed(dx), signed(dz), 6 + i))
     lines += ['    };', '  };']
     return lines
 
 
-def build(t, rank):
-    tid, code, name = t['tid'], t['code'], t['name']
-    era_suffix = {
-        'ARR': 'flood', 'ORB': 'prediluvian', 'LEV': 'sumerian', 'MES': 'sumer',
-        'EGY': 'prediluvian', 'ABZ': 'prediluvian', 'AMR': 'postdiluvian', 'PAC': 'ancient',
-    }[code]
-    zones = battle_zones(tid)
-    if not zones:
-        zones = [(60.0, 70.0, 30.0), (200.0, 200.0, 30.0)]
-    total = len(zones)
-    py = ground_y(tid, 60.0, 70.0)
-    ev = event_count(tid)
-    level_id = 10000 + rank
-    opening = OPENING[code]
+def build(s):
+    code, name, src = s['code'], s['name'], s['src']
+    level_id = s['level_id']
+    scene = 'Battle_%s_%s_s%02d' % (s['tid'], s['era'], s['slot'])
+    py = ground_y(s, 60.0, 70.0)
+    ev = event_count(s['grid_key'])
     era = ERA_LABEL[code]
-    main = '这条线索连着主线，别急着离开。' if t['route'] == '主线' else '支线记载，或许能补上别处缺的那一页。'
+    main = '这条线索连着主线，别急着离开。' if s['route'] == '主线' else '支线记载，或许能补上别处缺的那一页。'
+    zone_hint = '这里留着主轴线索。' if s['kind'] == 'axis' else '这是一处次要勘察点。'
 
-    L = []
-    L.append('story(battle_main)')
-    L.append('{')
-    L.append('  // %s | %s | %s | %s' % (tid, name, era, t['src']))
-    L.append('  local')
-    L.append('  {')
-    L.append('    @wave(0);')
-    L.append('    @spawned(0);')
-    L.append('    @advancing(0);')
-    L.append('    @total(%d);' % total)
-    L.append('  };')
-    L.append('  onmessage("start")')
-    L.append('  {')
-    L.append('    create_npc(1000,vector3(60,%.1f,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));' % py)
-    L.append('    set_leader_id(unit_id_2_obj_id(1000));')
-    L.append('    npc_set_formation(1000,0);')
-    L.append('    loop(4){')
-    L.append('      create_npc(1001+$$,vector3(60+rnd_int(0,10),%.1f,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),get_leader_id());' % py)
-    L.append('      npc_set_formation(1001+$$,$$+1);')
-    L.append('    };')
-    # No-arg form uses the already-set LeaderId directly; the unit-id form
-    # silently does nothing when GetEntityByUnitId misses.
-    L.append('    camera_follow();')
-    L.append('    publish_gfx_event("loading_complete", "ui");')
-    L.append('    fire_message("set_map_image", "Minimap/%s_minimap_%s");' % (tid, era_suffix))
-    # Each scene declares its own grid. get_scene_id() in the shared autorun
-    # story returns the story scene id (101/102), which the server cannot map
-    # to a treasure-map grid, so every explore request used to miss the table.
-    L.append('    send_room_story_message("enter_parallel", "%s");' % tid)
-    L.append('    start_story("auto_battle");')
-    L.append('    fire_message("push_tip_info", "【%s】%s");' % (esc(name), esc(opening)))
-    L.append('    fire_message("push_tip_info", "时代层：%s。%s");' % (esc(era), esc(main)))
+    L = ['story(battle_main)', '{',
+         '  // %s | %s | %s | %s | level=%d' % (s['grid_key'], name, era, s['kind'], level_id),
+         '  local', '  {', '    @wave(0);', '    @spawned(0);', '    @advancing(0);',
+         '    @total(%d);' % WAVES, '  };',
+         '  onmessage("start")', '  {',
+         '    create_npc(1000,vector3(60,%.1f,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));' % py,
+         '    set_leader_id(unit_id_2_obj_id(1000));',
+         '    npc_set_formation(1000,0);',
+         '    loop(4){',
+         '      create_npc(1001+$$,vector3(60+rnd_int(0,10),%.1f,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),unit_id_2_obj_id(1000));' % py,
+         '      npc_set_formation(1001+$$,$$+1);',
+         '    };',
+         '    camera_follow();',
+         '    publish_gfx_event("loading_complete", "ui");',
+         '    fire_message("set_map_image", "Minimap/%s_minimap");' % s['grid_key'],
+         '    send_room_story_message("enter_parallel", "%s");' % s['grid_key'],
+         '    start_story("auto_battle");',
+         '    fire_message("push_tip_info", "【%s】%s");' % (esc(name), esc(OPENING[code])),
+         '    fire_message("push_tip_info", "时代层：%s。%s");' % (esc(era), esc(main)),
+         '    fire_message("push_tip_info", "%s");' % esc(zone_hint)]
     if ev > 0:
         L.append('    fire_message("push_tip_info", "这一带留着线索，靠近后按 E 调查");')
-    L.append('    fire_message("wave_go");')
-    L.append('  };')
-    L.append('  onmessage("wave_go")')
-    L.append('  {')
-    L.append('    inc(@wave);')
-    L.append('    if(@wave>@total){')
-    L.append('      fire_message("push_tip_info", "%s");' % esc(ENDING[code]))
-    L.append('      clear_message("show_dlg");')
-    L.append('      fire_message("show_dlg",998);')
-    L.append('    } else {')
-    # Nested < comparisons only (no == dependency): wave 1 / 2 / 3 / 4.
-    for i, (x, z, _r) in enumerate(zones):
-        w = i + 1
-        y = ground_y(tid, x, z)
-        L.extend(wave_branch(code, name, w, x, y, z, t['diff'], t['src']))
-    for _ in range(total):
-        L.append('      };')   # close the nested else chain, one per line
-    L.append('    };')
-    L.append('  };')
-    for w in range(1, total + 1):
-        L.extend(spawn_handler(w, t['diff']))
-    for w in range(2, total + 1):
-        dx, dz = advance_vector(zones, w)
+    L += ['    fire_message("wave_go");', '  };',
+          '  onmessage("wave_go")', '  {', '    inc(@wave);',
+          '    if(@wave>@total){',
+          '      fire_message("push_tip_info", "%s");' % esc(ENDING[code]),
+          '      clear_message("show_dlg");', '      fire_message("show_dlg",998);',
+          '    } else {']
+    for w in range(1, WAVES + 1):
+        L.extend(wave_branch(s, w))
+    for _ in range(WAVES):
+        L.append('      };')
+    L += ['    };', '  };']
+    for w in range(1, WAVES + 1):
+        L.extend(spawn_handler(w, s['diff']))
+    for w in range(2, WAVES + 1):
+        dx, dz = advance_vector(s)
         L.extend(advance_handler(w, dx, dz))
-    if total > 1:
-        L.extend(arrived_handler(total))
-    L.append('  onmessage("all_killed")')
-    L.append('  {')
-    L.append('    fire_message("wave_go");')
-    L.append('  };')
-    L.append('  onmessage("npc_killed:1000")')
-    L.append('  {')
-    L.append('    clear_message("show_dlg");')
-    L.append('    fire_message("show_dlg",999);')
-    L.append('  };')
-    L.append('  onmessage("all_died")')
-    L.append('  {')
-    L.append('    clear_message("show_dlg");')
-    L.append('    fire_message("show_dlg",999);')
-    L.append('  };')
-    L.append('  onmessage("dialog_over",998)')
-    L.append('  {')
-    L.append('    terminate();')
-    L.append('    close_battle(%d);' % level_id)
-    L.append('  };')
-    L.append('  onmessage("dialog_over",999)')
-    L.append('  {')
-    L.append('    terminate();')
-    L.append('    close_battle(%d);' % level_id)
-    L.append('  };')
-    L.append('};')
-    return '\n'.join(L) + '\n'
+    L.extend(arrived_handler(WAVES))
+    L += ['  onmessage("all_killed")', '  {', '    fire_message("wave_go");', '  };',
+          '  onmessage("npc_killed:1000")', '  {',
+          '    clear_message("show_dlg");', '    fire_message("show_dlg",999);', '  };',
+          '  onmessage("all_died")', '  {',
+          '    clear_message("show_dlg");', '    fire_message("show_dlg",999);', '  };',
+          '  onmessage("dialog_over",998){ terminate(); close_battle(%d); };' % level_id,
+          '  onmessage("dialog_over",999){ terminate(); close_battle(%d); };' % level_id,
+          '};']
+
+    d = os.path.join(STORY, scene)
+    os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, 'story.dsl'), 'w', encoding='utf-8', newline='') as f:
+        f.write('\n'.join(L) + '\n')
+    return scene
 
 
 def main():
-    rows = tiles()
-    for rank, t in enumerate(rows, 1):
-        era_suffix = {
-            'ARR': 'flood', 'ORB': 'prediluvian', 'LEV': 'sumerian', 'MES': 'sumer',
-            'EGY': 'prediluvian', 'ABZ': 'prediluvian', 'AMR': 'postdiluvian', 'PAC': 'ancient',
-        }[t['code']]
-        d = os.path.join(STORY, 'Battle_%s_%s' % (t['tid'], era_suffix))
-        os.makedirs(d, exist_ok=True)
-        with open(os.path.join(d, 'story.dsl'), 'w', encoding='utf-8') as f:
-            f.write(build(t, rank))
-    print('stories=%d' % len(rows))
-    print('sample r2c4 zones=%d' % len(battle_zones('r2c4')))
+    rows = slots()
+    for s in rows:
+        build(s)
+    print('STORIES battlefields=%d waves_each=%d' % (len(rows), WAVES))
+    print('level_id range=%d..%d' % (min(r['level_id'] for r in rows),
+                                     max(r['level_id'] for r in rows)))
 
 
 if __name__ == '__main__':

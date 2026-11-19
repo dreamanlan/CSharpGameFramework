@@ -57,11 +57,14 @@ namespace ScriptableFramework.Skill.Trigers
                                 if (m_IsEffectSkillTime) {
                                     instance.TimeScale = m_Speed;
                                 }
-                                // Hold locomotion off so the AI's next MoveTo
-                                // does not immediately restart the Run clip.
+                                // Hold locomotion off for the whole clip. A fixed
+                                // 0.6s used to cut Attack (0.83s) short, so the
+                                // actor looked like it was always running. The
+                                // view calibrates the real length from the live
+                                // AnimatorStateInfo (state name != clip name).
                                 var view = ScriptableFramework.EntityViewModelManager.Instance
                                     .GetEntityViewById(senderObj.ObjId);
-                                if (null != view) view.LockAnimation(0.6f);
+                                if (null != view) view.LockAnimation(0.6f, anim);
                             } catch (Exception ex) {
                                 LogSystem.Error("[skill:{0} dsl skill id:{1}] play animation {2} throw exception:{3}.", senderObj.SkillId, instance.DslSkillId, anim, ex.Message);
                             }

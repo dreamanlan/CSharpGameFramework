@@ -58,6 +58,10 @@ namespace ScriptableFramework
                             user.SendMessage(RoomMessageDefine.Msg_RC_SyncProperty, msg);
                         }
                     }
+                    // CreateNpc only carries position/facing; replay movement and
+                    // parallel-space state so a late joiner sees the same world.
+                    WorldSyncSystem.SyncMovementToUser(user, this);
+                    WorldSyncSystem.SyncStateToUser(user, this);
                 }
             }
         }

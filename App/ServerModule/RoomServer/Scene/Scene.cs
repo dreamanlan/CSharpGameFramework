@@ -58,6 +58,7 @@ namespace ScriptableFramework
 
         public void Reset()
         {
+            WorldSyncSystem.ResetScene(this);
             m_SceneContext.ResetUniqueId();
             m_EntityMgr.Reset();
             m_SceneLogicInfoMgr.Reset();
@@ -135,6 +136,9 @@ namespace ScriptableFramework
 
         public void LeaveScene(User user)
         {
+            // Drop the visible parallel-space state before the entity goes away
+            // so other players do not keep a stale anchor after a disconnect.
+            WorldSyncSystem.ClearState(user);
             user.HaveEnterPosition = false;
             user.IsEntered = false;
             EntityInfo info = user.Info;

@@ -71,6 +71,10 @@ namespace ScriptableFramework
             m_MovementSystem.Tick();
             m_SceneProfiler.MovementSystemTime = TimeSnapshot.DoCheckPoint();
 
+            // World-layer multi-player sync: authoritative arrival/heartbeat
+            // positions and stale parallel-space state cleanup.
+            WorldSyncSystem.Tick(this);
+
             TickAi();
             m_SceneProfiler.AiSystemTime = TimeSnapshot.DoCheckPoint();
 

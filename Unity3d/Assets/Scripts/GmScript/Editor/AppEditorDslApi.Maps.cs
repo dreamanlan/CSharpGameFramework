@@ -17,6 +17,8 @@ using System.Text;
 public static class MapBuild
 {
     private const string DesignRoot = @"D:\GitHub\CSharpGameFramework\Resource\MapDesign";
+    private const string RootDir = @"D:\GitHub\CSharpGameFramework";
+    private const string ROOT_DSL = RootDir + @"\Resource\DslFile";
     private const string TileDir = DesignRoot + @"\tiles";
     private const string SceneDir = "Assets/Scenes/Levels";
     private const string DataDir = "Assets/Scenes/Levels/MapData";
@@ -29,6 +31,20 @@ public static class MapBuild
         public string Id, Code, Name, Era, Route;
         public int Diff, Seq;
     }
+
+    // One battlefield per (tile, slot). Coordinates are the event centre in
+    // the tile's 0..512 world space; the 32x32 neighbourhood around it has
+    // already been magnified x16 into its own terrain PNG by
+    // build_battlefield_art.py, so battlefields never share TerrainData.
+    private struct Slot
+    {
+        public int LevelId, SlotIndex;
+        public string TileId, GridKey, Era, Kind;
+        public float X, Z;
+    }
+
+    private const int SlotsPerTile = 10;
+    private const float Neighbourhood = 32f;
 
     private static readonly Dictionary<string, string> EraSuffix = new Dictionary<string, string>
     {
@@ -62,6 +78,32 @@ public static class MapBuild
         return list;
     }
 
+    private static List<Slot> LoadSlots()
+    {
+        var list = new List<Slot>();
+        string path = Path.Combine(DesignRoot, "battle_slots.txt");
+        if (!File.Exists(path)) return list;
+        foreach (string line in File.ReadAllLines(path))
+        {
+            if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line)) continue;
+            string[] p = line.Split('\t');
+            if (p.Length < 9) continue;
+            list.Add(new Slot
+            {
+                LevelId = int.Parse(p[0]), TileId = p[1], SlotIndex = int.Parse(p[2]),
+                GridKey = p[3], Era = p[4], Kind = p[5],
+                X = float.Parse(p[6], System.Globalization.CultureInfo.InvariantCulture),
+                Z = float.Parse(p[7], System.Globalization.CultureInfo.InvariantCulture)
+            });
+        }
+        return list;
+    }
+
+    private static string SlotSceneName(Slot s)
+    {
+        return "Battle_" + s.TileId + "_" + s.Era + "_s" + s.SlotIndex.ToString("00");
+    }
+
     // Unity's GetPixels32 starts at bottom-left; the design PNGs start top-left.
     private static Color32[] ReadPng(string path, out int w, out int h)
     {
@@ -92,7 +134,7 @@ public static class MapBuild
         return px[y * w + x];
     }
 
-    private static TerrainData BuildTerrain(Tile t, string assetPath, out float minH, out float maxH)
+    private static TerrainData BuildTerrain(Tile t, string assetPath, string pngName, out float minH, out float maxH)
     {
         TerrainData td = AssetDatabase.LoadAssetAtPath<TerrainData>(assetPath);
         if (td == null)
@@ -103,7 +145,9 @@ public static class MapBuild
             AssetDatabase.CreateAsset(td, assetPath);
         }
         int tw, th;
-        Color32[] tp = ReadPng(Path.Combine(TileDir, t.Id + "_terrain.png"), out tw, out th);
+        string png = Path.Combine(TileDir, pngName);
+        if (!File.Exists(png)) throw new Exception("missing terrain PNG " + png);
+        Color32[] tp = ReadPng(png, out tw, out th);
         int res = td.heightmapResolution;
         td.size = new Vector3(WorldSize, TerrainHeight, WorldSize);
         float[,] heights = new float[res, res];
@@ -243,9 +287,16 @@ public static class MapBuild
         File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
     }
 
-    private const float BattleCamDistance = 28f;
-    private const float BattleCamUp = 8f;
-    private const float BattleCamPitch = 52f;
+    // Spectator-style view: a high, pulled-back oblique camera. distance=104
+    // (with up=0) gives camDist=104; at FOV 50 the ground width is ~176 units
+    // (~1/3 of a 512 tile), double the previous 52 view.
+    // Keep FOV at 50: OverHeadBar scales itself from Camera.main.fieldOfView.
+    // Mirror CameraSetting.BattleDistance/Up/Pitch (runtime override). Kept as
+    // literals because CameraSetting lives under the special Gizmos folder.
+    // Up must stay 0 or the player slides toward the bottom hint area.
+    private const float BattleCamDistance = 104f;
+    private const float BattleCamUp = 0f;
+    private const float BattleCamPitch = 46f;
 
     private static System.Type CameraSettingType()
     {
@@ -300,15 +351,16 @@ public static class MapBuild
     {
         var sb = new StringBuilder();
         List<Tile> tiles = LoadTiles();
+        List<Slot> slots = LoadSlots();
         string current = SceneManager.GetActiveScene().path;
         int fixedCount = 0;
+        var names = new List<string>();
+        foreach (Tile t in tiles) names.Add("Battle_" + t.Id);
+        foreach (Slot s in slots) names.Add(SlotSceneName(s));
         try
         {
-            foreach (Tile t in tiles)
+            foreach (string name in names)
             {
-                string suffix;
-                if (!EraSuffix.TryGetValue(t.Code, out suffix)) suffix = "ancient";
-                foreach (string name in new[] { "Battle_" + t.Id, "Battle_" + t.Id + "_" + suffix })
                 {
                     string path = SceneDir + "/" + name + ".unity";
                     if (!File.Exists(path)) continue;
@@ -344,15 +396,34 @@ public static class MapBuild
         return sb.ToString();
     }
 
-    // One .unity per era: the physical terrain data is shared, but the scene
-    // (light, fog, mood, layout) is a separate asset so eras never stack in memory.
-    private static void MakeScene(Tile t, TerrainData td, Color tint, string path, bool isEra)
+    // One .unity per world tile or battlefield. Each battlefield owns its own
+    // TerrainData (magnified neighbourhood); no two scenes share terrain.
+    // World scenes additionally get Config/1..N waypoint nodes: autorun.dsl
+    // calls get_child_count("Config") and get_position("Config/"+index), so
+    // the children must be active GameObjects named with those indices.
+    private static void MakeScene(Tile t, TerrainData td, Color tint, string path, bool isEra, string label,
+                                  List<Slot> waypoints = null)
     {
         Scene sc = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
         GameObject terrainGo = Terrain.CreateTerrainGameObject(td);
-        terrainGo.name = "Terrain_" + t.Id;
+        terrainGo.name = "Terrain_" + label;
         foreach (Transform tr in terrainGo.GetComponentsInChildren<Transform>(true))
             GameObjectUtility.SetStaticEditorFlags(tr.gameObject, StaticEditorFlags.NavigationStatic);
+
+        if (null != waypoints && waypoints.Count > 0)
+        {
+            var config = new GameObject("Config");
+            for (int i = 0; i < waypoints.Count; ++i)
+            {
+                Slot s = waypoints[i];
+                var node = new GameObject((i + 1).ToString());
+                node.transform.SetParent(config.transform, false);
+                float u = Mathf.Clamp01(s.X / WorldSize);
+                float v = Mathf.Clamp01(s.Z / WorldSize);
+                float h = td.GetInterpolatedHeight(u, v);
+                node.transform.position = new Vector3(s.X, h + 1.0f, s.Z);
+            }
+        }
 
         Color mood = isEra
             ? new Color(tint.r * 0.72f, tint.g * 0.70f, tint.b * 0.80f)
@@ -401,65 +472,76 @@ public static class MapBuild
         return added;
     }
 
+    // Design doc 35: 64 world tiles + 64x10 battlefields, each battlefield
+    // with its own magnified 32x32 neighbourhood terrain. Story skeletons for
+    // battlefields are generated by build_story.py (stage 3), not here.
     public static string Build(string which)
     {
         var sb = new StringBuilder();
         List<Tile> tiles = LoadTiles();
-        if (!string.IsNullOrEmpty(which)) tiles = tiles.Where(t => t.Id == which).ToList();
+        List<Slot> slots = LoadSlots();
+        if (!string.IsNullOrEmpty(which))
+        {
+            tiles = tiles.Where(t => t.Id == which).ToList();
+            slots = slots.Where(s => s.TileId == which).ToList();
+        }
         Directory.CreateDirectory(DataDir);
         Directory.CreateDirectory("Assets/Resources/Minimap");
         Directory.CreateDirectory("Assets/Resources/MapData");
         Directory.CreateDirectory(Path.Combine(DesignRoot, "stories"));
         string current = SceneManager.GetActiveScene().path;
-        int rank = 0, ok = 0;
+        int okWorld = 0, okBattle = 0;
         var scenePaths = new List<string>();
         try
         {
+            // ---- world / modern survey layer: one full-tile terrain per tile ----
             foreach (Tile t in tiles)
             {
-                rank = string.IsNullOrEmpty(which) ? rank + 1 : Mathf.Max(1, tiles[0].Seq);
-                string suffix;
-                if (!EraSuffix.TryGetValue(t.Code, out suffix)) suffix = "ancient";
-                string terrainPath = Path.Combine(TileDir, t.Id + "_terrain.png");
-                string layoutPath = Path.Combine(TileDir, t.Id + "_layout.png");
-                string eraLayoutPath = Path.Combine(TileDir, t.Id + "_layout_" + suffix + ".png");
-                if (!File.Exists(terrainPath) || !File.Exists(layoutPath))
-                { sb.AppendLine("MISS_INPUT " + t.Id); continue; }
-
+                string terrainPng = t.Id + "_terrain.png";
+                if (!File.Exists(Path.Combine(TileDir, terrainPng)))
+                { sb.AppendLine("MISS_WORLD_TERRAIN " + t.Id); continue; }
                 float minH, maxH;
-                string assetPath = DataDir + "/" + t.Id + "_Ground.asset";
-                TerrainData td = BuildTerrain(t, assetPath, out minH, out maxH);
-
-                List<Area> areas = BakeLayout(layoutPath);
-                List<Area> eraAreas = File.Exists(eraLayoutPath) ? BakeLayout(eraLayoutPath) : new List<Area>();
-                WriteAreas(areas, "Assets/Resources/MapData/" + t.Id + "_areas.txt");
-                WriteAreas(eraAreas, "Assets/Resources/MapData/" + t.Id + "_areas_" + suffix + ".txt");
-
-                foreach (string src in new[] { t.Id + "_minimap.png", t.Id + "_minimap_" + suffix + ".png" })
+                TerrainData td = BuildTerrain(t, DataDir + "/" + t.Id + "_Ground.asset",
+                                              terrainPng, out minH, out maxH);
+                string src = Path.Combine(TileDir, t.Id + "_minimap.png");
+                if (File.Exists(src))
                 {
-                    string s = Path.Combine(TileDir, src);
-                    if (!File.Exists(s)) continue;
-                    string d = "Assets/Resources/Minimap/" + src;
-                    File.Copy(s, d, true);
-                    AssetDatabase.ImportAsset(d, ImportAssetOptions.ForceSynchronousImport);
+                    string dst = "Assets/Resources/Minimap/" + t.Id + "_minimap.png";
+                    File.Copy(src, dst, true);
+                    AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
                 }
-                WriteStorySkeleton(t, areas, rank, Path.Combine(DesignRoot, "stories", t.Id + "_story.dsl"));
-
-                // Two independent scenes per tile: modern survey layer and the
-                // tile's past-era battle layer. TerrainData is shared, scenes are not.
                 Color tint = Tints.ContainsKey(t.Code) ? Tints[t.Code] : Color.white;
-                string modernPath = SceneDir + "/Battle_" + t.Id + ".unity";
-                string eraPath = SceneDir + "/Battle_" + t.Id + "_" + suffix + ".unity";
-                MakeScene(t, td, tint, modernPath, false);
-                MakeScene(t, td, tint, eraPath, true);
-                scenePaths.Add(modernPath);
-                scenePaths.Add(eraPath);
-                ok++;
-                int nBattle = areas.Count(a => a.Type >= 60 && a.Type <= 140);
-                sb.AppendLine(string.Format("BUILD {0} [{1} {2}] modern+{3} height={4:F1}..{5:F1} areas={6} eraAreas={7} rank={8}",
-                    t.Id, t.Code, t.Name, suffix,
-                    minH * TerrainHeight, maxH * TerrainHeight, nBattle,
-                    eraAreas.Count(a => a.Type >= 60 && a.Type <= 140), rank));
+                string path = SceneDir + "/Battle_" + t.Id + ".unity";
+                List<Slot> tileSlots = slots.Where(s => s.TileId == t.Id).OrderBy(s => s.SlotIndex).ToList();
+                MakeScene(t, td, tint, path, false, t.Id, tileSlots);
+                scenePaths.Add(path);
+                okWorld++;
+            }
+
+            // ---- 640 battlefields: independent magnified terrain per slot ----
+            var tileBy = tiles.ToDictionary(t => t.Id, t => t);
+            foreach (Slot s in slots)
+            {
+                if (!tileBy.ContainsKey(s.TileId)) { sb.AppendLine("NO_TILE " + s.GridKey); continue; }
+                Tile t = tileBy[s.TileId];
+                string terrainPng = s.GridKey + "_terrain.png";
+                if (!File.Exists(Path.Combine(TileDir, terrainPng)))
+                { sb.AppendLine("MISS_BATTLE_TERRAIN " + s.GridKey); continue; }
+                float minH, maxH;
+                TerrainData td = BuildTerrain(t, DataDir + "/" + s.GridKey + "_Ground.asset",
+                                              terrainPng, out minH, out maxH);
+                string src = Path.Combine(TileDir, s.GridKey + "_minimap.png");
+                if (File.Exists(src))
+                {
+                    string dst = "Assets/Resources/Minimap/" + s.GridKey + "_minimap.png";
+                    File.Copy(src, dst, true);
+                    AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
+                }
+                Color tint = Tints.ContainsKey(t.Code) ? Tints[t.Code] : Color.white;
+                string path = SceneDir + "/" + SlotSceneName(s) + ".unity";
+                MakeScene(t, td, tint, path, true, s.GridKey);
+                scenePaths.Add(path);
+                okBattle++;
             }
         }
         catch (Exception e) { sb.AppendLine("BUILD_FAIL " + e); }
@@ -471,7 +553,107 @@ public static class MapBuild
             if (!string.IsNullOrEmpty(current) && File.Exists(current))
                 EditorSceneManager.OpenScene(current, OpenSceneMode.Single);
         }
-        sb.Insert(0, "MAP_BUILD tiles=" + tiles.Count + " built=" + ok + " scenes=" + (ok * 2) + "\n");
+        sb.Insert(0, string.Format("MAP_BUILD tiles={0} world_scenes={1} battlefields={2} scenes={3} slots_source={4}\n",
+            tiles.Count, okWorld, okBattle, okWorld + okBattle, slots.Count));
+        return sb.ToString();
+    }
+
+    // Stage 1 of the world-layer cutover (design doc 36): rebuild ONLY the 64
+    // world-map scenes. Never touch battlefield .unity files here -- those hold
+    // the 640 baked NavMesh references from map_nav().
+    public static string BuildWorld(string which)
+    {
+        var sb = new StringBuilder();
+        List<Tile> tiles = LoadTiles();
+        List<Slot> slots = LoadSlots();
+        if (!string.IsNullOrEmpty(which))
+        {
+            tiles = tiles.Where(t => t.Id == which).ToList();
+            slots = slots.Where(s => s.TileId == which).ToList();
+        }
+        Directory.CreateDirectory(DataDir);
+        Directory.CreateDirectory("Assets/Resources/Minimap");
+        string current = SceneManager.GetActiveScene().path;
+        int ok = 0;
+        var scenePaths = new List<string>();
+        try
+        {
+            foreach (Tile t in tiles)
+            {
+                string png = t.Id + "_terrain.png";
+                if (!File.Exists(Path.Combine(TileDir, png)))
+                { sb.AppendLine("MISS_WORLD_TERRAIN " + t.Id); continue; }
+                float minH, maxH;
+                TerrainData td = BuildTerrain(t, DataDir + "/" + t.Id + "_Ground.asset",
+                                              png, out minH, out maxH);
+                string src = Path.Combine(TileDir, t.Id + "_minimap.png");
+                if (File.Exists(src))
+                {
+                    string dst = "Assets/Resources/Minimap/" + t.Id + "_minimap.png";
+                    File.Copy(src, dst, true);
+                    AssetDatabase.ImportAsset(dst, ImportAssetOptions.ForceSynchronousImport);
+                }
+                Color tint = Tints.ContainsKey(t.Code) ? Tints[t.Code] : Color.white;
+                string path = SceneDir + "/Battle_" + t.Id + ".unity";
+                List<Slot> tileSlots = slots.Where(s => s.TileId == t.Id)
+                                            .OrderBy(s => s.SlotIndex).ToList();
+                MakeScene(t, td, tint, path, false, t.Id, tileSlots);
+                scenePaths.Add(path);
+                ok++;
+                sb.AppendLine(string.Format("WORLD {0} waypoints={1}", t.Id, tileSlots.Count));
+            }
+        }
+        catch (Exception e) { sb.AppendLine("WORLD_BUILD_FAIL " + e); }
+        finally
+        {
+            AssetDatabase.SaveAssets();
+            int added = RegisterBuildScenes(scenePaths);
+            sb.AppendLine("BUILD_SETTINGS added=" + added + " total=" + EditorBuildSettings.scenes.Length);
+            if (!string.IsNullOrEmpty(current) && File.Exists(current))
+                EditorSceneManager.OpenScene(current, OpenSceneMode.Single);
+        }
+        sb.Insert(0, "MAP_WORLD_BUILD tiles=" + tiles.Count + " built=" + ok + "\n");
+        return sb.ToString();
+    }
+
+    // Bake NavMesh for world-map scenes only (autorun.dsl obj_move needs it).
+    public static string BakeWorldNav(string which)
+    {
+        var sb = new StringBuilder();
+        List<Tile> tiles = LoadTiles();
+        if (!string.IsNullOrEmpty(which)) tiles = tiles.Where(t => t.Id == which).ToList();
+        string current = SceneManager.GetActiveScene().path;
+        int baked = 0;
+        try
+        {
+            foreach (Tile t in tiles)
+            {
+                string sceneName = "Battle_" + t.Id;
+                string path = SceneDir + "/" + sceneName + ".unity";
+                if (!File.Exists(path)) continue;
+                if (File.Exists(SceneDir + "/" + sceneName + "/NavMesh.asset")) continue;
+                Directory.CreateDirectory(SceneDir + "/" + sceneName);
+                Scene sc = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                foreach (GameObject go in sc.GetRootGameObjects())
+                {
+                    if (go == null) continue;
+                    foreach (Transform tr in go.GetComponentsInChildren<Transform>(true))
+                        GameObjectUtility.SetStaticEditorFlags(tr.gameObject, StaticEditorFlags.NavigationStatic);
+                }
+                UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
+                EditorSceneManager.MarkSceneDirty(sc);
+                EditorSceneManager.SaveScene(sc);
+                baked++;
+            }
+        }
+        catch (Exception e) { sb.AppendLine("WORLD_NAV_FAIL " + e); }
+        finally
+        {
+            AssetDatabase.SaveAssets();
+            if (!string.IsNullOrEmpty(current) && File.Exists(current))
+                EditorSceneManager.OpenScene(current, OpenSceneMode.Single);
+        }
+        sb.Insert(0, "MAP_WORLD_NAV tiles=" + tiles.Count + " baked=" + baked + "\n");
         return sb.ToString();
     }
 
@@ -479,77 +661,64 @@ public static class MapBuild
     {
         var sb = new StringBuilder();
         List<Tile> tiles = LoadTiles();
-        if (!string.IsNullOrEmpty(which)) tiles = tiles.Where(t => t.Id == which).ToList();
-        int pass = 0;
+        List<Slot> slots = LoadSlots();
+        if (!string.IsNullOrEmpty(which))
+        {
+            tiles = tiles.Where(t => t.Id == which).ToList();
+            slots = slots.Where(s => s.TileId == which).ToList();
+        }
+        int pass = 0, total = 0;
+        // World tiles: scene + full-tile terrain + minimap.
         foreach (Tile t in tiles)
         {
-            string suffix;
-            if (!EraSuffix.TryGetValue(t.Code, out suffix)) suffix = "ancient";
-            string scene = SceneDir + "/Battle_" + t.Id + ".unity";
-            string ground = DataDir + "/" + t.Id + "_Ground.asset";
-            string areas = "Assets/Resources/MapData/" + t.Id + "_areas.txt";
-            string mini = "Assets/Resources/Minimap/" + t.Id + "_minimap.png";
-            string story = Path.Combine(DesignRoot, "stories", t.Id + "_story.dsl");
-            bool sceneOk = File.Exists(scene), groundOk = File.Exists(ground);
-            bool areasOk = File.Exists(areas), miniOk = File.Exists(mini), storyOk = File.Exists(story);
-            int nBattle = 0, nEvent = 0, nPortal = 0, nReward = 0;
-            float relief = 0f;
-            if (areasOk)
-            {
-                foreach (string line in File.ReadAllLines(areas))
-                {
-                    if (line.StartsWith("#") || string.IsNullOrWhiteSpace(line)) continue;
-                    string[] p = line.Split('|');
-                    if (p.Length < 7) continue;
-                    int type = int.Parse(p[0].Trim());
-                    if (type >= 60 && type <= 140) nBattle++;
-                    else if (type == 220) nEvent++;
-                    else if (type == 240) nReward++;
-                    else if (type == 250) nPortal++;
-                }
-            }
-            TerrainData td = AssetDatabase.LoadAssetAtPath<TerrainData>(ground);
-            if (td != null)
-            {
-                float lo = 1f, hi = 0f;
-                for (int i = 0; i <= 16; ++i)
-                    for (int j = 0; j <= 16; ++j)
-                    {
-                        float v = td.GetInterpolatedHeight(i / 16f, j / 16f) / td.size.y;
-                        lo = Mathf.Min(lo, v); hi = Mathf.Max(hi, v);
-                    }
-                relief = (hi - lo) * td.size.y;
-            }
-            string eraScene = SceneDir + "/Battle_" + t.Id + "_" + suffix + ".unity";
-            bool eraOk = File.Exists(eraScene);
-            bool ok = sceneOk && eraOk && groundOk && areasOk && miniOk && storyOk &&
-                      nBattle >= 2 && nEvent >= 1 && nPortal >= 1 && nReward >= 1 && relief > 8f;
+            total++;
+            bool sceneOk = File.Exists(SceneDir + "/Battle_" + t.Id + ".unity");
+            bool groundOk = File.Exists(DataDir + "/" + t.Id + "_Ground.asset");
+            bool miniOk = File.Exists("Assets/Resources/Minimap/" + t.Id + "_minimap.png");
+            bool ok = sceneOk && groundOk && miniOk;
             if (ok) pass++;
-            sb.AppendLine(string.Format("VERIFY {0} modern={1} era={2} ground={3} areas={4} mini={5} story={6} " +
-                "battle={7} event={8} reward={9} portal={10} relief={11:F1} => {12}",
-                t.Id, sceneOk, eraOk, groundOk, areasOk, miniOk, storyOk,
-                nBattle, nEvent, nReward, nPortal, relief, ok ? "PASS" : "FAIL"));
+            sb.AppendLine(string.Format("VERIFY_WORLD {0} scene={1} ground={2} mini={3} => {4}",
+                t.Id, sceneOk, groundOk, miniOk, ok ? "PASS" : "FAIL"));
         }
-        sb.Insert(0, "MAP_VERIFY total=" + tiles.Count + " pass=" + pass + " fail=" + (tiles.Count - pass) + "\n");
+        // Battlefields: scene + independent magnified terrain + minimap + areas + story.
+        foreach (Slot s in slots)
+        {
+            total++;
+            string scene = SceneDir + "/" + SlotSceneName(s) + ".unity";
+            string ground = DataDir + "/" + s.GridKey + "_Ground.asset";
+            string mini = "Assets/Resources/Minimap/" + s.GridKey + "_minimap.png";
+            string areas = "Assets/Resources/MapData/" + s.GridKey + "_areas.txt";
+            string story = Path.Combine(ROOT_DSL, "Story", SlotSceneName(s), "story.dsl");
+            bool ok = File.Exists(scene) && File.Exists(ground) && File.Exists(mini) &&
+                      File.Exists(areas) && File.Exists(story);
+            if (ok) pass++;
+            sb.AppendLine(string.Format("VERIFY_BATTLE {0} scene={1} ground={2} mini={3} areas={4} story={5} => {6}",
+                s.GridKey, File.Exists(scene), File.Exists(ground), File.Exists(mini),
+                File.Exists(areas), File.Exists(story), ok ? "PASS" : "FAIL"));
+        }
+        sb.Insert(0, "MAP_VERIFY total=" + total + " pass=" + pass + " fail=" + (total - pass) + "\n");
         return sb.ToString();
     }
 
     // Legacy NavMesh data is stored in a folder named after each scene.
-    public static string BakeNav()
+    public static string BakeNav(string which = "")
     {
         var sb = new StringBuilder();
-        List<Tile> tiles = LoadTiles();
+        List<Slot> slots = LoadSlots();
+        if (!string.IsNullOrEmpty(which))
+            slots = slots.Where(s => s.TileId == which).ToList();
         string current = SceneManager.GetActiveScene().path;
         int baked = 0;
         try
         {
-            foreach (Tile t in tiles)
+            foreach (Slot s in slots)
             {
-                string suffix;
-                if (!EraSuffix.TryGetValue(t.Code, out suffix)) suffix = "ancient";
-                string sceneName = "Battle_" + t.Id + "_" + suffix;
+                string sceneName = SlotSceneName(s);
                 string path = SceneDir + "/" + sceneName + ".unity";
                 if (!File.Exists(path)) continue;
+                // Baking 640 scenes takes hours; support resuming after a
+                // cancelled run instead of rebuilding everything from scratch.
+                if (File.Exists(SceneDir + "/" + sceneName + "/NavMesh.asset")) continue;
                 Directory.CreateDirectory(SceneDir + "/" + sceneName);
                 Scene sc = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
                 foreach (GameObject go in sc.GetRootGameObjects())
@@ -581,27 +750,35 @@ public static class MapBuild
         string dir = "e:/tmp/map_previews";
         Directory.CreateDirectory(dir);
         List<Tile> tiles = LoadTiles();
-        if (!string.IsNullOrEmpty(which)) tiles = tiles.Where(t => t.Id == which).ToList();
+        List<Slot> slots = LoadSlots();
+        if (!string.IsNullOrEmpty(which))
+        {
+            tiles = tiles.Where(t => t.Id == which).ToList();
+            slots = slots.Where(s => s.TileId == which).ToList();
+        }
+        var variants = new List<KeyValuePair<string, string>>();
+        foreach (Tile t in tiles)
+            variants.Add(new KeyValuePair<string, string>(
+                SceneDir + "/Battle_" + t.Id + ".unity", t.Id));
+        foreach (Slot s in slots)
+            variants.Add(new KeyValuePair<string, string>(
+                SceneDir + "/" + SlotSceneName(s) + ".unity", s.GridKey));
         string current = SceneManager.GetActiveScene().path;
         try
         {
-            foreach (Tile t in tiles)
+            foreach (var v in variants)
             {
-                string suffix;
-                if (!EraSuffix.TryGetValue(t.Code, out suffix)) suffix = "ancient";
-                var variants = new[] { new { Path = SceneDir + "/Battle_" + t.Id + ".unity", Name = t.Id },
-                                       new { Path = SceneDir + "/Battle_" + t.Id + "_" + suffix + ".unity", Name = t.Id + "_" + suffix } };
-                foreach (var v in variants)
+                string variantPath = v.Key, variantName = v.Value;
+                if (!File.Exists(variantPath)) continue;
                 {
-                    if (!File.Exists(v.Path)) continue;
-                    Scene sc = EditorSceneManager.OpenScene(v.Path, OpenSceneMode.Single);
+                    Scene sc = EditorSceneManager.OpenScene(variantPath, OpenSceneMode.Single);
                     Camera cam = null;
                     foreach (GameObject go in sc.GetRootGameObjects())
                     {
                         cam = go.GetComponent<Camera>();
                         if (cam != null) break;
                     }
-                    if (cam == null) { sb.AppendLine("NO_CAM " + v.Name); continue; }
+                    if (cam == null) { sb.AppendLine("NO_CAM " + variantName); continue; }
                     var rt = new RenderTexture(640, 360, 24);
                     var tex = new Texture2D(640, 360, TextureFormat.RGB24, false);
                     RenderTexture oldTarget = cam.targetTexture, prev = RenderTexture.active;
@@ -618,7 +795,7 @@ public static class MapBuild
                         cam.targetTexture = rt; cam.Render();
                         RenderTexture.active = rt;
                         tex.ReadPixels(new Rect(0, 0, 640, 360), 0, 0); tex.Apply();
-                        string outPath = Path.Combine(dir, v.Name + ".png");
+                        string outPath = Path.Combine(dir, variantName + ".png");
                         File.WriteAllBytes(outPath, tex.EncodeToPNG());
                         sb.AppendLine("SHOT " + outPath);
                     }
@@ -674,7 +851,26 @@ public sealed class MapNavExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
-        return BoxedValue.FromString(MapBuild.BakeNav());
+        string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
+        return BoxedValue.FromString(MapBuild.BakeNav(w));
+    }
+}
+
+public sealed class MapWorldBuildExp : SimpleExpressionBase
+{
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+        string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
+        return BoxedValue.FromString(MapBuild.BuildWorld(w));
+    }
+}
+
+public sealed class MapWorldNavExp : SimpleExpressionBase
+{
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+        string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
+        return BoxedValue.FromString(MapBuild.BakeWorldNav(w));
     }
 }
 
@@ -731,6 +927,16 @@ public sealed class CameraProbeExp : SimpleExpressionBase
 // live entity, so "mobs wander like zombies" can be diagnosed from data.
 public static class CombatProbe
 {
+    private const float c_Rad2Deg = 180.0f / (float)Math.PI;
+
+    // Shortest angular distance in degrees, always in [0, 180].
+    private static float AngleError(float a, float b)
+    {
+        float d = (a - b) % 360.0f;
+        if (d < 0.0f) d += 360.0f;
+        return d > 180.0f ? 360.0f - d : d;
+    }
+
     public static string Run()
     {
         var sb = new StringBuilder();
@@ -739,19 +945,26 @@ public static class CombatProbe
         // to their owning actors instead: this also proves which actors got one.
         var bars = UnityEngine.Object.FindObjectsOfType<OverHeadBar>();
         int n = 0;
+        int orphans = 0;      // bar exists but its owning entity is gone
+        int noParent = 0;     // bar detached from any actor
+        int faceCount = 0;
+        float errSum = 0.0f, errMax = 0.0f;
         foreach (var bar in bars)
         {
-            if (bar == null || bar.transform.parent == null) continue;
+            if (bar == null || bar.transform.parent == null) { noParent++; continue; }
             GameObject owner = bar.transform.parent.gameObject;
             int id = ScriptableFramework.PluginFramework.Instance.GetGameObjectId(owner);
             var e = ScriptableFramework.PluginFramework.Instance.GetEntityById(id);
             if (e == null)
             {
+                orphans++;
                 sb.AppendLine("E id=" + id + " obj=" + owner.name + " (no entity)");
                 continue;
             }
             var ai = e.GetAiStateInfo();
             var ms = e.GetMovementStateInfo();
+            float faceDeg = ms.GetFaceDir() * c_Rad2Deg;
+            float wantedDeg = ms.GetWantedFaceDir() * c_Rad2Deg;
             sb.Append("E id=" + id +
                       " pos=" + ms.GetPosition3D() +
                       " state=" + ai.CurState +
@@ -760,7 +973,25 @@ public static class CombatProbe
                       " gohome=" + e.GohomeRange +
                       " view=" + e.ViewRange +
                       " moving=" + ms.IsMoving +
-                      " tgtPos=" + ms.TargetPosition);
+                      " tgtPos=" + ms.TargetPosition +
+                      " face=" + faceDeg.ToString("F1") +
+                      " wanted=" + wantedDeg.ToString("F1") +
+                      " faceErr=" + AngleError(faceDeg, wantedDeg).ToString("F1"));
+            // Expected heading: 0 deg = +z, same convention as Geometry.GetYRadian.
+            if (ai.Target > 0) {
+                var target = ScriptableFramework.PluginFramework.Instance.GetEntityById(ai.Target);
+                if (target != null) {
+                    var p = ms.GetPosition3D();
+                    var t = target.GetMovementStateInfo().GetPosition3D();
+                    float expectDeg = (float)Math.Atan2(t.X - p.X, t.Z - p.Z) * c_Rad2Deg;
+                    float err = AngleError(faceDeg, expectDeg);
+                    sb.Append(" expect=" + expectDeg.ToString("F1") +
+                              " expectErr=" + err.ToString("F1"));
+                    errSum += err;
+                    if (err > errMax) errMax = err;
+                    faceCount++;
+                }
+            }
             var view = ScriptableFramework.EntityViewModelManager.Instance.GetEntityViewById(id);
             if (view != null && view.Animator != null) {
                 var st = view.Animator.GetCurrentAnimatorStateInfo(0);
@@ -774,7 +1005,11 @@ public static class CombatProbe
         }
         var sel = ScriptableFramework.PluginFramework.Instance.SelectedTarget;
         sb.Insert(0, "COMBAT_PROBE entities=" + n + " overheadBars=" + bars.Length +
-                  " lockedTarget=" + (sel == null ? 0 : sel.TargetId) + "\n");
+                  " orphans=" + orphans + " noParent=" + noParent +
+                  " lockedTarget=" + (sel == null ? 0 : sel.TargetId) +
+                  " facing=" + faceCount +
+                  " expectErrAvg=" + (faceCount == 0 ? 0.0f : errSum / faceCount).ToString("F1") +
+                  " expectErrMax=" + errMax.ToString("F1") + "\n");
         return sb.ToString();
     }
 }

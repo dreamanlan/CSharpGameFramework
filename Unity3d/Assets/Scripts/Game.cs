@@ -35,12 +35,40 @@ public class Game : MonoBehaviour
     private Camera m_UiCamera = null;
     private float m_NextExploreTime = 0f;   // local UX cooldown for the explore skill
 
-    // Battle scenes are loaded Additively on top of the story scene. These hold the
-    // story scene visuals disabled while a battle is active, and restore them on unload.
-    private readonly List<Renderer> m_MainSceneRenderers = new List<Renderer>();
-    private readonly List<Camera> m_MainSceneCameras = new List<Camera>();
-    private readonly List<Light> m_MainSceneLights = new List<Light>();
-    private readonly List<Terrain> m_MainSceneTerrains = new List<Terrain>();
+    // Battle scenes are loaded Additively on top of the base (world/story) scene.
+    // Each entry keeps the component's ORIGINAL enabled state, so restoring after
+    // unload never turns on something that was disabled to begin with (e.g. hidden
+    // UI cameras). Entries are de-duplicated, so overlapping Additive loads cannot
+    // drop a component from the restore list.
+    // Renderer derives from Component, not Behaviour, so the common base here
+    // is Component and enabled has to be read/written per concrete type.
+    private readonly List<KeyValuePair<Component, bool>> m_HiddenVisuals =
+        new List<KeyValuePair<Component, bool>>();
+
+    private static bool VisualEnabled(Component c)
+    {
+        Behaviour b = c as Behaviour;
+        if (null != b) return b.enabled;
+        Renderer r = c as Renderer;
+        return null != r && r.enabled;
+    }
+
+    private static void SetVisualEnabled(Component c, bool v)
+    {
+        Behaviour b = c as Behaviour;
+        if (null != b) { b.enabled = v; return; }
+        Renderer r = c as Renderer;
+        if (null != r) r.enabled = v;
+    }
+
+    private void HideVisual(Component c)
+    {
+        if (null == c) return;
+        for (int i = 0; i < m_HiddenVisuals.Count; ++i)
+            if (m_HiddenVisuals[i].Key == c) return;
+        m_HiddenVisuals.Add(new KeyValuePair<Component, bool>(c, VisualEnabled(c)));
+        SetVisualEnabled(c, false);
+    }
 
     void Awake()
     {
@@ -348,7 +376,10 @@ public class Game : MonoBehaviour
                 if (!IsPointOnMainUI(screenPos)) {
                     Ray ray = Camera.main.ScreenPointToRay(screenPos);
                     RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit, 100, (1 << LayerMask.NameToLayer("Terrain")) | (1 << LayerMask.NameToLayer("Default")))) {
+                    // Ray must reach the ground from the spectator camera: at
+                    // distance=104 the centre ray is ~104 long and the top-edge
+                    // ray ~209, so the old 100 limit made click-to-move miss.
+                    if (Physics.Raycast(ray, out hit, 500, (1 << LayerMask.NameToLayer("Terrain")) | (1 << LayerMask.NameToLayer("Default")))) {
                         int objId = PluginFramework.Instance.GetGameObjectId(hit.collider.gameObject);
                         if (objId > 0) {
                             PluginFramework.Instance.ClickNpc(objId);
@@ -396,7 +427,17 @@ public class Game : MonoBehaviour
     }
 
     void OnLevelLoaded(Scene scene, LoadSceneMode loadSceneMode)
-    {   
+    {
+        // An Additive battlefield is layered on top of an already loaded base
+        // scene. Re-running the UI initialisation here used to create a second
+        // UiCamera/TopMenu and subscribe every OverHeadBar handler again.
+        // Still call OverHeadBarManager.Init() (now idempotent) because a base
+        // scene with buildIndex==2 never initialises it.
+        if (loadSceneMode == LoadSceneMode.Additive) {
+            OverHeadBarManager.Instance.Init();
+            m_CameraController = new CameraController(Camera.main);
+            return;
+        }
         if (scene.buildIndex == 2) {
             HighlightPromptManager.Instance.Init();
         }
@@ -436,6 +477,9 @@ public class Game : MonoBehaviour
         LoadingManager.Instance.Show();
         yield return null;
         LoadingManager.Instance.SetProgress(0.1f);
+        // By now the previous battle's entities have been destroyed. Drop any
+        // bars that lost their owner before the new battle creates its own.
+        OverHeadBarManager.Instance.PurgeOrphans();
         yield return Resources.UnloadUnusedAssets();
         LoadingManager.Instance.SetProgress(0.2f);
         var asyncOper = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(lvl.prefab, UnityEngine.SceneManagement.LoadSceneMode.Additive);
@@ -450,6 +494,11 @@ public class Game : MonoBehaviour
         // to be destroyed. Drop it before any LateUpdate can run.
         m_CameraController = null;
         RestoreMainSceneVisuals();
+        // Additive unloading cannot take the bars with it: actors live in the
+        // active/base scene and pooled bars under the DontDestroyOnLoad ResPool.
+        // Drop bars whose owning entity is already gone so they do not pile up
+        // across battle rounds.
+        OverHeadBarManager.Instance.PurgeOrphans();
         LoadingManager.Instance.Show();
         yield return null;
         LoadingManager.Instance.SetProgress(0.1f);
@@ -487,25 +536,28 @@ public class Game : MonoBehaviour
 
     private void OnLoadBattleComplete(int levelId)
     {
-        // Battle scenes are added on top of the story scene. Hide the story scene's
-        // static visuals so the themed battle scene is what the player actually sees.
-        m_MainSceneRenderers.Clear();
-        m_MainSceneCameras.Clear();
-        m_MainSceneLights.Clear();
-        m_MainSceneTerrains.Clear();
+        // A battlefield is loaded Additive on top of the base (world/story)
+        // scene. Hide every other loaded scene's static visuals so only the
+        // battlefield renders. Identify it by the level's prefab name rather
+        // than the historical StartsWith("Battle") check: the 64 world-map
+        // scenes are also named Battle_*, so that prefix used to leave two
+        // terrains, two MainCameras and two suns enabled at the same time.
+        string battleSceneName = string.Empty;
+        TableConfig.Level battleLevel = TableConfig.LevelProvider.Instance.GetLevel(levelId);
+        if (null != battleLevel) battleSceneName = battleLevel.prefab;
+        m_HiddenVisuals.Clear();
         for (int i = 0; i < SceneManager.sceneCount; ++i) {
             Scene sc = SceneManager.GetSceneAt(i);
-            if (!sc.isLoaded || sc.name.StartsWith("Battle")) continue;
+            bool isBattleScene = battleSceneName.Length > 0
+                ? sc.name == battleSceneName
+                : sc.name.StartsWith("Battle");
+            if (!sc.isLoaded || isBattleScene) continue;
             foreach (GameObject go in sc.GetRootGameObjects()) {
                 if (go == null) continue;
-                foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
-                    if (r != null && r.enabled) { r.enabled = false; m_MainSceneRenderers.Add(r); }
-                foreach (Camera c in go.GetComponentsInChildren<Camera>(true))
-                    if (c != null && c.enabled) { c.enabled = false; m_MainSceneCameras.Add(c); }
-                foreach (Light l in go.GetComponentsInChildren<Light>(true))
-                    if (l != null && l.enabled) { l.enabled = false; m_MainSceneLights.Add(l); }
-                foreach (Terrain t in go.GetComponentsInChildren<Terrain>(true))
-                    if (t != null && t.enabled) { t.enabled = false; m_MainSceneTerrains.Add(t); }
+                foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true)) HideVisual(r);
+                foreach (Camera c in go.GetComponentsInChildren<Camera>(true)) HideVisual(c);
+                foreach (Light l in go.GetComponentsInChildren<Light>(true)) HideVisual(l);
+                foreach (Terrain t in go.GetComponentsInChildren<Terrain>(true)) HideVisual(t);
             }
         }
         // sceneLoaded fires before the story-scene cameras are disabled, so the
@@ -517,14 +569,9 @@ public class Game : MonoBehaviour
 
     private void RestoreMainSceneVisuals()
     {
-        foreach (Renderer r in m_MainSceneRenderers) if (r != null) r.enabled = true;
-        foreach (Camera c in m_MainSceneCameras) if (c != null) c.enabled = true;
-        foreach (Light l in m_MainSceneLights) if (l != null) l.enabled = true;
-        foreach (Terrain t in m_MainSceneTerrains) if (t != null) t.enabled = true;
-        m_MainSceneRenderers.Clear();
-        m_MainSceneCameras.Clear();
-        m_MainSceneLights.Clear();
-        m_MainSceneTerrains.Clear();
+        foreach (var kv in m_HiddenVisuals)
+            if (kv.Key != null) SetVisualEnabled(kv.Key, kv.Value);
+        m_HiddenVisuals.Clear();
     }
 
     private IEnumerator LoadAssetAsync(object[] args)

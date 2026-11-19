@@ -35,12 +35,12 @@ story(story_main)
     if($bi<10001){
       $bi=10001;
     };
-    if($bi>10064){
+    if($bi>10640){
       $bi=10001;
     };
     send_client_story_message("open_battle", $bi)touser($userId);
     inc($bi);
-    if($bi>10064){
+    if($bi>10640){
       $bi=10001;
     };
     prop_set("battleIndex", $bi);

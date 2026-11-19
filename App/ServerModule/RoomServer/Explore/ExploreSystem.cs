@@ -254,19 +254,6 @@ namespace ScriptableFramework
             return hit;
         }
 
-        private static void Broadcast(User user, string state, string grid, string era)
-        {
-            Scene scene = user.OwnRoomUserManager != null ? user.OwnRoomUserManager.ActiveScene : null;
-            if (scene == null) return;
-            var msg = new Msg_CRC_StoryMessage { m_MsgId = "parallel_state" };
-            msg.m_Args.Add(Arg(ArgType.INT, user.RoleId.ToString(CultureInfo.InvariantCulture)));
-            msg.m_Args.Add(Arg(ArgType.STRING, state));
-            msg.m_Args.Add(Arg(ArgType.STRING, grid ?? ""));
-            msg.m_Args.Add(Arg(ArgType.STRING, era ?? ""));
-            // State flag only. No scene loading, no battle entities, no lifecycle.
-            scene.NotifyAllUser(RoomMessageDefine.Msg_CRC_StoryMessage, msg);
-        }
-
         private static int Total(long roleId)
         {
             int t;
@@ -295,12 +282,16 @@ namespace ScriptableFramework
         }
 
         // ---------------------------------------------------------------- handlers
-        // Level ids are 10001..10064, laid out row-major over the 8x8 treasure map.
+        // Battle level ids are 10001..10640: ten battlefields per tile, laid
+        // out row-major over the 8x8 treasure map. Fall back to the tile grid
+        // key only when the caller passes a numeric id instead of a grid key.
         private static string GridFromLevel(int levelId)
         {
             int idx = levelId - 10001;
-            if (idx < 0 || idx >= 64) return "";
-            return "r" + (idx / 8) + "c" + (idx % 8);
+            if (idx < 0 || idx >= 640) return "";
+            int tile = idx / 10;
+            int slot = idx % 10;
+            return string.Format("r{0}c{1}_s{2:00}", tile / 8, tile % 8, slot);
         }
 
         private static void Enter(User user, long roleId, List<string> a)
@@ -324,22 +315,16 @@ namespace ScriptableFramework
                     LastExploreMs = 0, LastPosMs = 0, HasPos = false
                 };
             }
-            Broadcast(user, "InParallelSpace", grid, era);
+            WorldSyncSystem.SetState(user, grid, era);
         }
 
         private static void Leave(User user, long roleId)
         {
-            string grid = "", era = "";
             lock (s_Lock)
             {
-                Session s;
-                if (s_Sessions.TryGetValue(roleId, out s))
-                {
-                    grid = s.GridId; era = s.Era;
-                    s_Sessions.Remove(roleId);
-                }
+                s_Sessions.Remove(roleId);
             }
-            Broadcast(user, "Left", grid, era);
+            WorldSyncSystem.ClearState(user);
         }
 
         private static void BattlePos(long roleId, List<string> a)
@@ -351,6 +336,7 @@ namespace ScriptableFramework
             {
                 Session s;
                 if (!s_Sessions.TryGetValue(roleId, out s)) return;
+                WorldSyncSystem.Touch(roleId, now);
                 if (s.HasPos)
                 {
                     float dt = (now - s.LastPosMs) / 1000f;
@@ -427,7 +413,9 @@ namespace ScriptableFramework
                 long now = NowMs;
                 var stale = new List<long>();
                 foreach (var kv in s_Sessions)
-                    if (kv.Value.HasPos && now - kv.Value.LastPosMs > 30000) stale.Add(kv.Key);
+                    if (kv.Value.HasPos && now - kv.Value.LastPosMs > WorldSyncSystem.StaleMs) stale.Add(kv.Key);
+                // Visible state cleanup and the "Left" broadcast are driven by
+                // WorldSyncSystem.Tick; do not send network messages under s_Lock.
                 foreach (long id in stale) s_Sessions.Remove(id);
 
                 var sb = new StringBuilder("EXPLORE_TRAFFIC (server received)\n");
@@ -449,12 +437,14 @@ namespace ScriptableFramework
             int grids = s_ByGrid == null ? 0 : s_ByGrid.Count;
             int events = s_ByGrid == null ? 0 : s_ByGrid.Values.Sum(l => l.Count);
             sb.AppendLine("EXPLORE_SELFTEST");
-            sb.AppendLine("grids=" + grids + " events=" + events);
+            sb.AppendLine("battlefields=" + grids + " events=" + events);
             sb.AppendLine("table_path=" + Path.Combine(BaseDir, "Tables", "Server", "WorldEvent.dat") +
                           " reader=TableConfig.WorldEventProvider");
             sb.AppendLine("cooldown_ms=" + CooldownMs + " max_speed=" + MaxSpeed +
                           " tolerance=" + SpeedTolerance + " max_jump=" + MaxTriggerJump);
-            bool ok = grids >= 64 && events >= 100;
+            // grid_id is now a battlefield key ({tid}_s{slot}), one per
+            // battlefield: 64 tiles x 10 = 640 keys holding 640 events.
+            bool ok = grids >= 640 && events >= 640;
 
             if (s_ByGrid != null && s_ByGrid.Count > 0)
             {

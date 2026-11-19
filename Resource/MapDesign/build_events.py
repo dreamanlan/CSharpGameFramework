@@ -124,33 +124,50 @@ def write_hints(tid, centers, rnd):
         f.write('\n'.join(lines) + '\n')
 
 
+def battle_slots():
+    """640 rows from the single source of truth produced by build_battle_slots.py."""
+    out = []
+    with open(os.path.join(DESIGN, 'battle_slots.txt'), encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#') or not line.strip():
+                continue
+            p = line.rstrip('\n').split('\t')
+            out.append(dict(level_id=int(p[0]), tid=p[1], slot=int(p[2]),
+                            grid_key=p[3], era=p[4], kind=p[5],
+                            x=float(p[6]), z=float(p[7]), radius=float(p[8]),
+                            reward=int(p[9]), token=p[10], title=p[11]))
+    return out
+
+
 def main():
     rows = tiles()
+    slots = battle_slots()
     rnd = random.Random(3417)
-    # Standard project table header: row 1 = types, row 2 = field names.
-    # GenDsl derives tabledef(WorldEvent, dictionary, server) from these rows.
+    # Keep the 9-column schema so TableReaderGenerator does not regenerate
+    # DataReader.cs field definitions. Battlefield identity is encoded in
+    # grid_id ("r0c0_s00"); ExploreSystem builds s_ByGrid from it, which makes
+    # the ten battlefields of one tile hold disjoint event sets. level_id is
+    # recoverable as 10001 + tile_index*10 + slot (see build_battle_slots.py).
     out = [
         '\t'.join(['string', 'string', 'string', 'float', 'float',
                    'float', 'int32', 'string', 'string']),
         '\t'.join(['id', 'grid_id', 'era', 'x', 'z',
                    'radius', 'reward', 'token', 'title']),
     ]
-    total = 0
-    for rank, t in enumerate(rows, 1):
-        era = ERA[t['code']]
-        centers = event_centers(t['tid'], era)
-        write_hints(t['tid'], centers, rnd)
+    # Coarse client hints are still per-tile (no exact event positions leak).
+    by_tile = {}
+    for s in slots:
+        by_tile.setdefault(s['tid'], []).append((s['x'], s['z'], 1))
+    for t in rows:
+        write_hints(t['tid'], by_tile.get(t['tid'], []), rnd)
         purify_areas(t['tid'])
-        for i, (x, z, n) in enumerate(centers):
-            reward = (100 + t['diff'] * 20) if t['route'] == '主线' else (40 + t['diff'] * 12)
-            radius = 8.0 + min(4.0, n / 120.0)
-            out.append('\t'.join([
-                'ev_%s_%d' % (t['tid'], i), t['tid'], era,
-                '%.1f' % x, '%.1f' % z, '%.1f' % radius, str(reward),
-                'frag_%s_%d' % (t['tid'], i),
-                '%s：%s' % (t['name'], t['src']),
-            ]))
-            total += 1
+    for n, s in enumerate(slots):
+        out.append('\t'.join([
+            'ev_%s_%d' % (s['grid_key'], n), s['grid_key'], s['era'],
+            '%.1f' % s['x'], '%.1f' % s['z'], '%.1f' % s['radius'],
+            str(s['reward']), s['token'], s['title'],
+        ]))
+    total = len(slots)
     text = '\n'.join(out) + '\n'
     os.makedirs(os.path.dirname(SERVER_TABLE), exist_ok=True)
     # TableReaderGenerator / Txt2Binary read project tables as GBK (codepage 936).
@@ -177,7 +194,9 @@ def main():
                 leaked_rows += sum(1 for l in f if l.strip().startswith('220'))
     report = [
         'EVENTS_CHECK',
-        'tiles=%d events=%d' % (len(rows), total),
+        'tiles=%d battlefields=%d events=%d' % (len(rows), 640, total),
+        'axis=%d branch=%d' % (sum(1 for s in slots if s['kind'] == 'axis'),
+                               sum(1 for s in slots if s['kind'] == 'branch')),
         'server_table=%s' % SERVER_TABLE,
         'client_Tables_Server_exists=%s' % os.path.isdir(client_server_dir),
         'client_area_event_rows=%d' % leaked_rows,

@@ -37,6 +37,9 @@ public class CameraController
         if (cameraSetting == null) {
             cameraSetting = cam.gameObject.AddComponent<CameraSetting>();
         }
+        // Scenes were built with a close follow pose; use the spectator-style
+        // distance for every tile without rewriting 128 serialized scene assets.
+        cameraSetting.ApplyBattleView();
         //cameraSetting.yaw = cam.gameObject.transform.rotation.eulerAngles.y;
         //cameraSetting.pitch = cam.gameObject.transform.rotation.eulerAngles.x;
         cam.transform.rotation = cameraSetting.GetRotation();

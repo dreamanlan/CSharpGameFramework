@@ -1,4 +1,12 @@
 # Coarse visual hints only. No event ids, exact positions, radii or rewards.
 # hint | coarseX | coarseZ | radius | textKey
-hint | 376.4 | 201.0 | 48.0 | clue_r5c5_0
-hint | 260.3 | 322.1 | 48.0 | clue_r5c5_1
+hint | 20.0 | 20.0 | 48.0 | clue_r5c5_0
+hint | 253.9 | 20.0 | 48.0 | clue_r5c5_1
+hint | 492.0 | 20.0 | 48.0 | clue_r5c5_2
+hint | 393.3 | 184.9 | 48.0 | clue_r5c5_3
+hint | 54.3 | 265.7 | 48.0 | clue_r5c5_4
+hint | 250.5 | 313.0 | 48.0 | clue_r5c5_5
+hint | 446.6 | 325.7 | 48.0 | clue_r5c5_6
+hint | 20.0 | 492.0 | 48.0 | clue_r5c5_7
+hint | 256.7 | 492.0 | 48.0 | clue_r5c5_8
+hint | 492.0 | 492.0 | 48.0 | clue_r5c5_9
