@@ -171,6 +171,7 @@ namespace DotnetStoryScript.DslExpression
     {
         public object Stack = null;
         public RunStateEnum RunState = RunStateEnum.Normal;
+        public Exception CurrentException = null;
         internal Stack<bool> GlobalSyncCalculationStack = new Stack<bool>();
     }
 
@@ -2377,6 +2378,322 @@ namespace DotnetStoryScript.DslExpression
         private List<Clause> m_Clauses = new List<Clause>();
         private bool m_IsAsync = false;
     }
+    internal sealed class TryExp : AbstractExpression
+    {
+        public override bool IsAsync { get { return m_IsAsync; } }
+        protected override BoxedValue DoCalc(DslCalculator calculator)
+        {
+            BoxedValue v = 0;
+            Exception pendingException = null;
+            try {
+                v = CalcBlock(calculator, m_TryExpressions);
+            }
+            catch (Exception ex) {
+                calculator.RunState = RunStateEnum.Normal;
+                if (m_HasCatch) {
+                    Exception previousException = calculator.CurrentException;
+                    calculator.CurrentException = ex;
+                    try {
+                        try {
+                            SetCatchException(calculator, ex);
+                            v = CalcBlock(calculator, m_CatchExpressions);
+                        }
+                        catch (Exception catchEx) {
+                            pendingException = catchEx;
+                        }
+                    }
+                    finally {
+                        calculator.CurrentException = previousException;
+                    }
+                }
+                else {
+                    pendingException = ex;
+                }
+            }
+            RunStateEnum pendingState = calculator.RunState;
+            if (m_HasFinally) {
+                calculator.RunState = RunStateEnum.Normal;
+                try {
+                    BoxedValue finallyValue = CalcBlock(calculator, m_FinallyExpressions);
+                    if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
+                        v = finallyValue;
+                    }
+                    if (calculator.RunState != RunStateEnum.Normal) {
+                        pendingException = null;
+                    }
+                    else {
+                        calculator.RunState = pendingState;
+                    }
+                }
+                catch (Exception finallyEx) {
+                    pendingException = finallyEx;
+                    calculator.RunState = RunStateEnum.Normal;
+                }
+            }
+            if (null != pendingException) {
+                calculator.RunState = RunStateEnum.Normal;
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(pendingException).Throw();
+            }
+            return v;
+        }
+        protected override IEnumerator DoCalc(DslCalculator calculator, AsyncCalcResult result)
+        {
+            BoxedValue v = 0;
+            Exception pendingException = null;
+            var tryResult = new AsyncBlockResult();
+            var _ei1 = CalcBlockAsync(calculator, m_TryExpressions, tryResult);
+            try {
+                while (_ei1.MoveNext()) { yield return _ei1.Current; }
+            }
+            finally {
+                (_ei1 as IDisposable)?.Dispose();
+            }
+            v = tryResult.Value;
+            pendingException = tryResult.Exception;
+            if (null != pendingException) {
+                calculator.RunState = RunStateEnum.Normal;
+                if (m_HasCatch) {
+                    Exception previousException = calculator.CurrentException;
+                    calculator.CurrentException = pendingException;
+                    try {
+                        bool runCatch = true;
+                        try {
+                            SetCatchException(calculator, pendingException);
+                        }
+                        catch (Exception ex) {
+                            pendingException = ex;
+                            runCatch = false;
+                        }
+                        if (runCatch) {
+                            var catchResult = new AsyncBlockResult();
+                            var _ei2 = CalcBlockAsync(calculator, m_CatchExpressions, catchResult);
+                            try {
+                                while (_ei2.MoveNext()) { yield return _ei2.Current; }
+                            }
+                            finally {
+                                (_ei2 as IDisposable)?.Dispose();
+                            }
+                            v = catchResult.Value;
+                            pendingException = catchResult.Exception;
+                        }
+                    }
+                    finally {
+                        calculator.CurrentException = previousException;
+                    }
+                }
+            }
+            RunStateEnum pendingState = calculator.RunState;
+            if (m_HasFinally) {
+                calculator.RunState = RunStateEnum.Normal;
+                var finallyResult = new AsyncBlockResult();
+                var _ei3 = CalcBlockAsync(calculator, m_FinallyExpressions, finallyResult);
+                try {
+                    while (_ei3.MoveNext()) { yield return _ei3.Current; }
+                }
+                finally {
+                    (_ei3 as IDisposable)?.Dispose();
+                }
+                if (null != finallyResult.Exception) {
+                    pendingException = finallyResult.Exception;
+                    calculator.RunState = RunStateEnum.Normal;
+                }
+                else {
+                    if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
+                        v = finallyResult.Value;
+                    }
+                    if (calculator.RunState != RunStateEnum.Normal) {
+                        pendingException = null;
+                    }
+                    else {
+                        calculator.RunState = pendingState;
+                    }
+                }
+            }
+            if (null != pendingException) {
+                calculator.RunState = RunStateEnum.Normal;
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(pendingException).Throw();
+            }
+            result.Value = v;
+        }
+        protected override bool Load(Dsl.StatementData statementData)
+        {
+            foreach (var fd in statementData.Functions) {
+                var fData = fd.AsFunction;
+                if (null == fData) {
+                    LogError(fd);
+                    continue;
+                }
+                string id = fData.GetId();
+                if (id == "try") {
+                    if (fData != statementData.First || fData.HaveLowerOrderParam()) {
+                        LogError(fData);
+                    }
+                    else {
+                        LoadExpressions(fData, m_TryExpressions);
+                    }
+                }
+                else if (id == "catch") {
+                    if (m_HasCatch || m_HasFinally) {
+                        LogError(fData);
+                    }
+                    else {
+                        m_HasCatch = true;
+                        if (fData.HaveLowerOrderParam()) {
+                            var lower = fData.LowerOrderFunction;
+                            if (lower.GetParamNum() == 1) {
+                                string varId = lower.GetParamId(0);
+                                if (!string.IsNullOrEmpty(varId) && varId[0] == '$') {
+                                    m_CatchVariable = varId;
+                                }
+                                else {
+                                    LogError(fData);
+                                }
+                            }
+                            else if (lower.GetParamNum() > 1) {
+                                LogError(fData);
+                            }
+                        }
+                        LoadExpressions(fData, m_CatchExpressions);
+                    }
+                }
+                else if (id == "finally") {
+                    if (m_HasFinally || fData.HaveLowerOrderParam()) {
+                        LogError(fData);
+                    }
+                    else {
+                        m_HasFinally = true;
+                        LoadExpressions(fData, m_FinallyExpressions);
+                    }
+                }
+                else {
+                    LogError(fData);
+                }
+            }
+            if (!m_HasCatch && !m_HasFinally) {
+                LogError(statementData);
+            }
+            UpdateIsAsync();
+            return true;
+        }
+
+        private static BoxedValue CalcBlock(DslCalculator calculator, IList<IExpression> expressions)
+        {
+            BoxedValue v = 0;
+            for (int i = 0; i < expressions.Count; ++i) {
+                BoxedValue tv = expressions[i].Calc(calculator);
+                if (calculator.RunState != RunStateEnum.Normal) {
+                    if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
+                        v = tv;
+                    }
+                    return v;
+                }
+                v = tv;
+            }
+            return v;
+        }
+        private static IEnumerator CalcBlockAsync(DslCalculator calculator, IList<IExpression> expressions, AsyncBlockResult blockResult)
+        {
+            IEnumerator enumerator = CalcBlockAsyncCore(calculator, expressions, blockResult);
+            try {
+                for (; ; ) {
+                    bool moveNext = false;
+                    bool failed = false;
+                    object current = null;
+                    try {
+                        moveNext = enumerator.MoveNext();
+                        if (moveNext) {
+                            current = enumerator.Current;
+                        }
+                    }
+                    catch (Exception ex) {
+                        blockResult.Exception = ex;
+                        failed = true;
+                    }
+                    if (failed || !moveNext) {
+                        break;
+                    }
+                    yield return current;
+                }
+            }
+            finally {
+                (enumerator as IDisposable)?.Dispose();
+            }
+        }
+        private static IEnumerator CalcBlockAsyncCore(DslCalculator calculator, IList<IExpression> expressions, AsyncBlockResult blockResult)
+        {
+            BoxedValue v = 0;
+            for (int i = 0; i < expressions.Count; ++i) {
+                var exp = expressions[i];
+                BoxedValue tv;
+                if (exp.IsAsync) {
+                    var asyncResult = new AsyncCalcResult();
+                    var enumerator = exp.Calc(calculator, asyncResult);
+                    try {
+                        while (enumerator.MoveNext()) { yield return enumerator.Current; }
+                        tv = asyncResult.Value;
+                    }
+                    finally {
+                        (enumerator as IDisposable)?.Dispose();
+                    }
+                }
+                else {
+                    tv = exp.Calc(calculator);
+                }
+                if (calculator.RunState != RunStateEnum.Normal) {
+                    if (calculator.RunState == RunStateEnum.Return || calculator.RunState == RunStateEnum.Redirect) {
+                        v = tv;
+                    }
+                    blockResult.Value = v;
+                    yield break;
+                }
+                v = tv;
+            }
+            blockResult.Value = v;
+        }
+        private void SetCatchException(DslCalculator calculator, Exception exception)
+        {
+            if (!string.IsNullOrEmpty(m_CatchVariable)) {
+                calculator.SetVariable(m_CatchVariable, BoxedValue.FromObject(exception));
+            }
+        }
+        private void LoadExpressions(Dsl.FunctionData funcData, List<IExpression> expressions)
+        {
+            for (int i = 0; i < funcData.GetParamNum(); ++i) {
+                expressions.Add(CodeStructure.Load(funcData.GetParam(i)));
+            }
+        }
+        private void UpdateIsAsync()
+        {
+            m_IsAsync = ContainsAsync(m_TryExpressions) || ContainsAsync(m_CatchExpressions) || ContainsAsync(m_FinallyExpressions);
+        }
+        private static bool ContainsAsync(IList<IExpression> expressions)
+        {
+            for (int i = 0; i < expressions.Count; ++i) {
+                if (expressions[i].IsAsync) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private void LogError(Dsl.ISyntaxComponent syntax)
+        {
+            CodeStructure.Log("DslCalculator error, {0} line {1}", syntax.ToScriptString(false, Dsl.DelimiterInfo.Default), syntax.GetLine());
+        }
+
+        private sealed class AsyncBlockResult
+        {
+            internal BoxedValue Value = 0;
+            internal Exception Exception = null;
+        }
+
+        private List<IExpression> m_TryExpressions = new List<IExpression>();
+        private List<IExpression> m_CatchExpressions = new List<IExpression>();
+        private List<IExpression> m_FinallyExpressions = new List<IExpression>();
+        private string m_CatchVariable = null;
+        private bool m_HasCatch = false;
+        private bool m_HasFinally = false;
+        private bool m_IsAsync = false;
+    }
     internal sealed class WhileExp : AbstractExpression
     {
         public override bool IsAsync { get { return m_IsAsync; } }
@@ -4341,6 +4658,25 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
+    internal sealed class ThrowExp : SimpleExpressionBase
+    {
+        protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+        {
+            if (operands.Count > 1)
+                throw new Exception("Expected: throw([exception_or_message]) api");
+            if (operands.Count == 0) {
+                var current = calculator.CurrentException;
+                if (null == current)
+                    throw new Exception("no current exception");
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(current).Throw();
+            }
+            var exception = operands[0].As<Exception>();
+            if (null != exception) {
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception).Throw();
+            }
+            throw new Exception(operands[0].AsString);
+        }
+    }
     internal sealed class ReturnExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
@@ -4542,6 +4878,7 @@ namespace DotnetStoryScript.DslExpression
             m_CodeStructure.Clear();
             m_Stack.Clear();
             m_GlobalSyncCalculationStack.Clear();
+            m_CurrentException = null;
             m_GlobalVariables.Clear();
             m_Pool.Clear();
         }
@@ -4551,6 +4888,7 @@ namespace DotnetStoryScript.DslExpression
             m_Stack.Clear();
             m_GlobalSyncCalculationStack.Clear();
             m_RunState = RunStateEnum.Normal;
+            m_CurrentException = null;
             for (int i = 0; i < m_GlobalVariables.Count; ++i) {
                 m_GlobalVariables[i] = BoxedValue.NullObject;
             }
@@ -4797,13 +5135,6 @@ namespace DotnetStoryScript.DslExpression
                         else {
                             ret = exp.Calc(this);
                         }
-                        if (m_RunState == RunStateEnum.Return) {
-                            m_RunState = RunStateEnum.Normal;
-                            break;
-                        }
-                        else if (m_RunState == RunStateEnum.Redirect) {
-                            break;
-                        }
                     }
                     catch (DirectoryNotFoundException ex5) {
                         Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex5.Message, ex5.StackTrace);
@@ -4842,6 +5173,13 @@ namespace DotnetStoryScript.DslExpression
                             ret = asyncResult.Value;
                         }
                     }
+                    if (m_RunState == RunStateEnum.Return) {
+                        m_RunState = RunStateEnum.Normal;
+                        break;
+                    }
+                    else if (m_RunState == RunStateEnum.Redirect) {
+                        break;
+                    }
                 }
                 finally {
                     (asyncEnumerator as IDisposable)?.Dispose();
@@ -4871,6 +5209,10 @@ namespace DotnetStoryScript.DslExpression
             get { return m_RunState; }
             set { m_RunState = value; }
         }
+        internal Exception CurrentException {
+            get { return m_CurrentException; }
+            set { m_CurrentException = value; }
+        }
         public bool IsInSyncCalculation => SyncCalculationStack.Count > 0;
         public void SyncCalculationPush()
         {
@@ -4894,12 +5236,14 @@ namespace DotnetStoryScript.DslExpression
             m_Stack = (Stack<StackInfo>)ctx.Stack;
             m_GlobalSyncCalculationStack = ctx.GlobalSyncCalculationStack;
             m_RunState = ctx.RunState;
+            m_CurrentException = ctx.CurrentException;
         }
         public void SaveAsyncContext(AsyncTaskRuntimeContext ctx)
         {
             ctx.Stack = m_Stack;
             ctx.GlobalSyncCalculationStack = m_GlobalSyncCalculationStack;
             ctx.RunState = m_RunState;
+            ctx.CurrentException = m_CurrentException;
         }
         public T GetFuncContext<T>() where T : class
         {
@@ -5191,6 +5535,7 @@ namespace DotnetStoryScript.DslExpression
         }
 
         private RunStateEnum m_RunState = RunStateEnum.Normal;
+        private Exception m_CurrentException = null;
         private Dictionary<string, FuncInfo> m_Funcs { get { return m_CodeStructure.Funcs; } }
         private Stack<StackInfo> m_Stack = new Stack<StackInfo>();
         private Stack<bool> m_GlobalSyncCalculationStack = new Stack<bool>();

@@ -47,24 +47,38 @@ public class OverHeadBar : MonoBehaviour
 	}
     public void ShowPaoPao(string strContent)
     {
+        if (null == content || null == bkg) return;
         content.text = strContent;
         paopaoShowTime = Time.time;
         bkg.gameObject.SetActive(true);
     }
     public void HidePaoPao()
     {
+        if (null == bkg) return;
         bkg.gameObject.SetActive(false);
     }
+    // Editor domain reloads clear non-serialized private fields but Unity does
+    // NOT rerun Start() afterwards. Reconstruct them on demand so a bar keeps
+    // working (and stops throwing NullReferenceException every frame) after a
+    // script recompile while playing.
+    private void EnsureInitialized()
+    {
+        if (null != generator) return;
+        generator = new TextGenerator();
+        canvas = this.GetComponentInChildren<Canvas>();
+        if (null != bkg) {
+            RectTransform r = bkg.gameObject.GetComponent<RectTransform>();
+            if (null != r) bkgSize = r.sizeDelta;
+        }
+    }
+
     public void Start() 
     {
-        generator = new TextGenerator();
-        health.fillAmount = 1f;
-		healthSlow.fillAmount = 1f;
+        EnsureInitialized();
+        if (null != health) health.fillAmount = 1f;
+		if (null != healthSlow) healthSlow.fillAmount = 1f;
 		slowTime = 0f;
-        canvas = this.GetComponentInChildren<Canvas>();
-        RectTransform bkgRect = bkg.gameObject.GetComponent<RectTransform>();
-        bkgSize = bkgRect.sizeDelta;
-	}	
+	}
     public void SetHealthColor(bool isGreen) 
     {
     	health.gameObject.SetActive(isGreen);
@@ -109,15 +123,19 @@ public class OverHeadBar : MonoBehaviour
     }
     internal void Update() 
     {
-        if (Camera.main != null) 
+        EnsureInitialized();
+        if (Camera.main != null && null != canvas)
         {
             this.transform.LookAt(this.transform.position - Camera.main.transform.TransformDirection(Vector3.back));
             float dist = (Camera.main.transform.position - this.transform.position).magnitude;
             float degree = Camera.main.fieldOfView * 0.4f;
             float size = Mathf.Tan(degree * Mathf.Deg2Rad / 2) * 2 * dist;
             RectTransform canvasRect = (canvas.transform as RectTransform);
-            float defaultSize = canvasRect.rect.size.y * canvasRect.localScale.y;
-            this.transform.localScale = new Vector3(1,1,0) * size / defaultSize;
+            if (null != canvasRect) {
+                float defaultSize = canvasRect.rect.size.y * canvasRect.localScale.y;
+                if (defaultSize > 0.001f)
+                    this.transform.localScale = new Vector3(1,1,0) * size / defaultSize;
+            }
         }
 
         // Slow health bar
@@ -144,14 +162,17 @@ public class OverHeadBar : MonoBehaviour
     }
     internal void LateUpdate()
     {
+        EnsureInitialized();
         float curTime = Time.time;
         if (curTime - paopaoShowTime > paopaoDurationTime && paopaoShowTime > 0) {
             HidePaoPao();
             paopaoShowTime = 0;
         }
 
+        if (null == bkg || null == content || null == generator) return;
         RectTransform bkgRect = bkg.gameObject.GetComponent<RectTransform>();
         RectTransform textBox = content.GetComponent<RectTransform>();
+        if (null == bkgRect || null == textBox) return;
         TextGenerationSettings settings = content.GetGenerationSettings(bkgSize);
         float fHeight = generator.GetPreferredHeight(content.text, settings);//content.preferredHeight + 50;
         float fWidth = generator.GetPreferredWidth(content.text, settings);

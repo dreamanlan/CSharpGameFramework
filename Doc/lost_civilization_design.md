@@ -1990,7 +1990,9 @@ Unity 重编译 `NO_CS_ERRORS` + `Mono: successfully reloaded assembly`、`read_
 
 ### 36.6 环境经验（本轮）
 
-- 电脑重启后服务全套需手动恢复，且 `RunServer.cmd` 里的 `node.exe nodejs/app.js` 在系统 PATH 无 node 时会静默失败 → 需显式用 `C:\Users\dreamanlan\.workbuddy\binaries\node\versions\22.22.2-6\node.exe`；网关端口 9001 是登录链路必需
+- 电脑重启后服务全套需手动恢复：执行 `RunServer.cmd`（用 `Start-Process -FilePath RunServer.cmd -WorkingDirectory <root> -Wait -NoNewWindow -PassThru -RedirectStandardOutput BuildLog/runserver_out.txt -RedirectStandardError BuildLog/runserver_err.txt` 可留痕）。该批处理把 6 个 .NET 服务全部拉起（实测同父 PID、3 秒内连续创建），但 `start "node" node.exe nodejs/app.js` 那一行当次没有留下存活进程，网关 9001 未监听；后由 `Start-Process` 用绝对路径 `C:\Users\dreamanlan\.workbuddy\binaries\node\versions\22.22.2-6\node.exe nodejs/app.js` 单独补起（PID 37736、`02:14:26`），登录链路才通。**9001 是登录链路必需**。
+- **更正（2026-11-20 复核）**：此前把 node 未启动归因为「系统 PATH 无 node」是**未验证就下的错误结论**。`Get-Command node.exe` 实测为 `D:\nodejs\node.exe`（v26.13.1），PATH 里有 node；且用两个版本实测 `require('./nodejs/Release/center_client.node')` 均 `LOAD_OK`（v26 modules=147、workbuddy v22 modules=127），**ABI 不兼容也不是原因**。真实原因未确证，最可能是启动时序——`nodejs/app.js:1-3` 一开头就 `core_start()` + `core_query_config("nodejsport")`，而 `ServerCenter` 刚 `start`、30000 配置端口未必就绪；或 `start` 新窗口闪退且 stdout 未重定向故无日志。下次需带日志复现，不要臆断。
+- **已修复（2026-11-20）**：`StopServer.cmd` 原先用 `taskkill /im node.exe /f`，会**无差别杀掉所有 node 进程**（含 WorkBuddy 的 `edge-sync/server/index.cjs`、Playwright 的 `cli.js run-driver`）。现改为 PowerShell 精确匹配：只停 `Name='node.exe'` 且命令行含 `nodejs/app.js` 的进程，并辅以 9001 端口 owner 兜底（覆盖命令行格式不同的启动方式）；候选 PID 再用 `Get-Process(...).ProcessName -eq 'node'` 复核后才 `Stop-Process -Force`。单引号字面量避免 cmd 转义。实测：执行前 3 个 node（65824 WorkBuddy / 37736 本工程网关 / 54640 Playwright），执行后只 37736 消失、9001 释放，另两个存活；随后用绝对路径 node 重启网关（新 PID 67668、9001 恢复）。dry-run 副本（`Stop-Process` 换成 `Write-Host`）先验证过 cmd → PowerShell 引号传递与 `LASTEXITCODE=0`。
 - 改 Editor 侧 C# 后必须 `asset_refresh()` 才会重编译，`api_list("新命令")` 可快速确认是否生效
 - 域重载后 editor GM 通道偶发不自动连出：`unity_activate` 无效时按纪律重启编辑器（本次重启后仍不连，最终 `unity_wait_ready(timeout=120)` 等到连接，比反复重启更省事）
 
@@ -2042,3 +2044,283 @@ Unity 重编译 `NO_CS_ERRORS` + `Mono: successfully reloaded assembly`、`read_
 - `ResourceSystem.CleanupResourcePool()`（`:271-301`）只清账本不销毁对象；`PluginFramework.Reset()` / `RefreshRoomScene()` / `Msg_RC_DestroyNpc_Handler` 绕过 `ui_remove_actor`；`ui_drop` 有订阅无发布者
 - `OverHeadBar.Reset()` 只 `DetachChildren()` 飘字；`Game.LoadUi()` 重复实例化 UI 无旧 UI 清理；退出链 `GameControler.Release()` 无 UI 管理器清理
 - 历史文档记录的 `overheadBars` 样本都是 `overheadBars==entities`（§19/§22），未记录过 `>` 的残留采样，故无法用历史数据对比本轮修复前后的数量
+
+---
+
+## 38. 名字板残留真因与正式入口接入世界层（2026-11-20）
+
+用户反馈「名字板还是会残留，而且**没有切场景就会残留**」「进游戏还是跑的**老的世界地图场景**」。第 37 节把根因归到切场景/Additive 链，用户这两条反馈推翻了它；本轮重新实机取证，两个问题**同源**。
+
+### 38.1 决定性实机证据（本轮重启 Unity 后）
+
+`ai_bar1` 登录、基底仍是 `Story1` 时，用 `Resources.FindObjectsOfTypeAll<OverHeadBar>()`（含 inactive）取到 **31~32 个**血条，其中 active 29~30。`combat_probe()` 只算 active 的 `FindObjectsOfType`，故显示 `overheadBars=25 orphans=0 noParent=0`——**孤儿计数为 0，说明不是"没销毁的孤儿血条"**。
+
+按 `gameObject.scene.name` 与 `GetGameObjectId(owner)` 归因：
+
+| 归属 | 数量 | 说明 |
+|---|---|---|
+| `Story1` 场景，id `100..123` | 24 | **基底场景预制 NPC 的名字板**，战斗时一直可见 |
+| `DontDestroyOnLoad`，id `1160..1169` | 4~9 | 战斗主角/队友/怪，正常应显示 |
+
+即：`OnLoadBattleComplete()` 只隐藏 `Renderer/Camera/Light/Terrain`，**名字板是挂在 Actor 下的 world-space `Canvas`，四类都不覆盖**，所以基底 24 个 NPC 名字板在战斗中全部叠在画面上。这与「没切场景也会残留」完全吻合（Additive 加载根本不卸载基底）。第 37 节修的 `Release()`/`PurgeOrphans()`/`ui_remove_actor` 针对的是孤儿对象，方向不对。
+
+另外：上轮（§37）改完代码后 GM editor 通道一直未连出、Unity 未重启重编译，**改动没有真正生效**，这也是用户「还是残留」的直接原因。
+
+### 38.2 修复（3 处）
+
+| 文件 | 改动 |
+|---|---|
+| `Unity3d/Assets/Scripts/Game.cs` `OnLoadBattleComplete()` | 用 `m_LevelId` 查表得到基底场景名；遍历已加载场景时，**仅对基底场景**的 `OverHeadBar` 子 `Canvas` 调 `HideVisual()` 并记录原始 enabled，`RestoreMainSceneVisuals()` 自动恢复。限定基底是为了不误伤挂在 `DontDestroyOnLoad` 下的战斗实体血条，也不动主 UI Canvas |
+| `Resource/Tables/Public/Level.txt:7` | **只把 101 行 prefab 从 `Story1` 改成 `Battle_r0c0`**，其余列（含 `Story/Story1/story.dsl`、`RoomSvr1 4/4/24`、EnterX/Y）全部保留 |
+| 三端 `Level.dat` | `dslcopy.bat Debug False` 同步，三份均 108511 字节 |
+
+**为什么选"repoint 101"而不是"改 `change_scene(20001)`"**：子代理查证 `change_scene(20001)` 会走 `DelayChangeScene → UserNetworkSystem.EnterScene → Lobby.FindSceneRoom(20001)`，而 `RoomProcessThread.cs:136-140` 在 `roomId<=0` 时**静默不回包**（§36.4 实测「服务端未响应」），登录会卡死；且 `world_main.dsl` 的 story id 是 `world_main` 而服务端固定 `StartStory("story_main")`（`Scene_Utility.cs:42`），补 handler 也启动不了；还得改 `ExploreSystem.GridFromLevel`、64 格 `Config`/NavMesh、UI 底图。repoint 101 则复用当前已跑通的 `EnterScene(101)`（16 个 field room）与 `Story1/story.dsl` 的 `client:touchnpc → open_battle` 轮换链，**零服务端改动、零 DSL 改动**。`Battle_r0c0.unity` 已在 §36 补过 `Config/1..10` 与世界层 NavMesh，故 `autorun.dsl` 的 `findnpc` 巡点可用。
+
+`cutover.py` 的 legacy 行是 verbatim 保留（`int(id) < 10001` 原样写回），重跑不会把 101 改回 `Story1`，无需改代码。
+
+### 38.3 实机验证（`ai_world2`，Unity 重启后新编译生效）
+
+```
+OnLoadSceneComplete 101 → scene=Battle_r0c0        ← 问题 2 修复
+findnpc → open_battle → OnLoadBattleComplete 10142 → wave_spawn_1
+→ all_killed → wave_spawn_2 → all_killed → dialog_over:998
+→ UnloadBattle → on_battle_closed → findnpc        ← 轮换链完好
+```
+
+战斗中按 owner 分查 Canvas：基底 NPC `id=100..124` 全部 `canvas=False`，战斗实体 `id=1117..1127` 全部 `canvas=True`——**只显示战场血条**。战斗间隙 `battleState=False` 时只剩 20 个基底 NPC 血条、上一场怪血条全部清掉；连跑 4 场后 `combat_probe()` 稳定为 `entities=20 overheadBars=20 orphans=0 noParent=0`，**不累积**。Unity 编译 `NO_CS_ERRORS`，日志最后 2500 行无 `Exception` / `unknown func` / `unassigned global` / `error CS`。
+
+### 38.4 边界与剩余项（如实说明）
+
+- 基底仍是 `levelId=101` 但视觉是 `Battle_r0c0`，`get_scene_id()` 仍为 101；`ExploreSystem.GridFromLevel(101)` 返回空 grid，世界层探索/收益仍未接通
+- 只接入了 `r0c0` 一格；`20001..20064` 的跨格换房、`world_main.dsl` 的 story id/handler、其余 63 格 `Config`/NavMesh、4096 藏宝图 UI、`localmain.dsl` 的 `UITexture/Story1` 底图都还是 §36.5 的未完成项
+- 世界层间隙那 20 个 NPC 名字板是 101 房间同步的合法 NPC，不是残留；若希望世界地图不显示 NPC 名字板，需另行关闭服务端 NPC 同步或加显示过滤
+- 本轮环境：Unity 冷启动后 GM `delayCall` 迟到，`unity_activate` + 反复 `SetForegroundWindow` 约 48 秒后连出（日志出现 `[GmSocket] editor connection started`）；按纪律未反复重启编辑器
+
+---
+
+## 39. 战斗态隔离世界层同步实体（2026-11-20）
+
+用户提出架构修正：「客户端在战斗场景时，应该忽略房间服务器同步的世界场景的玩家与 npc 相关信息」，并给出备选「或者把相关信息隐藏」。§38 的做法是「战斗中隐藏基底场景 NPC 的名字板 Canvas」，属于按组件打补丁；本节改为**按实体归属整体隔离**。
+
+### 39.1 两个方案的取舍
+
+| | A 忽略同步消息 | B 按实体归属整体隐藏（采用） |
+|---|---|---|
+| 落点 | `MessageDispatch.Dispatch()` 过滤 `Msg_RC_CreateNpc/NpcMove/NpcDead/DestroyNpc/NpcFace/AdjustPosition/SyncProperty/...` | `Game.cs` 隐藏世界层 Actor + `OverHeadBarManager` 门控 + `MiniMap` 跳过圆点 |
+| 覆盖 | 只挡新消息；进战斗前已存在的 20 个实体仍在，模型/名字板/小地图圆点都不消失 | 模型、名字板、子物体、小地图圆点一起消失，含已存在的与战斗中新到的 |
+| 风险 | 服务端 `WorldSyncSystem` 有 AOI / 5s heartbeat / late-joiner 快照；客户端丢消息后战斗结束要等补同步；且 `Msg_CRC_StoryMessage`（承载 `open_battle`）在同一分派表里，白名单一旦写错会**直接断掉战斗轮换** | 数据照常同步、只是不渲染；可逆，卸载即恢复；判据 `IsServerEntity` 精确且现成 |
+
+**判据（代码实证）**：`Msg_RC_CreateNpc_Handler` 调 `CreateEntity(objId, unitId, ...)` 重载，`PluginFramework.cs:518/534` 置 `IsServerEntity=true`；战斗实体是 story 的本地 `create_npc`，走 `:478/495` 重载置 `IsServerEntity=false`（`NpcCommands.cs:42,44`）。`WorldSyncSystem.cs:20-22` 自身注释也写明只对 `type==Story(2)` 场景生效、战斗场景走原路径——所以战斗期间服务端推来的实体消息都是基底世界层的。
+
+### 39.2 改动（3 处）
+
+| 文件 | 改动 |
+|---|---|
+| `Unity3d/Assets/Scripts/Game.cs` | 新增 `m_HiddenWorldActors` + `HideWorldSceneActors()` / `RestoreWorldSceneActors()`：遍历 `EntityManager.Entities`，对 `IsServerEntity=true` 的实体取整只 Actor `SetActive(false)`，记录原 `activeSelf`；`OnLoadBattleComplete()` 调用隐藏、`RestoreMainSceneVisuals()` 调用恢复。移除 §38 那段「按 baseSceneName 隐藏名字板 Canvas」的补丁（整只 Actor 隐藏已覆盖，且不受场景归属影响） |
+| `Unity3d/Assets/Scripts/OverHeadBarManager.cs` | `AddActor()` 开头：若 `IsBattleState` 且该实体 `IsServerEntity`，直接 return——战斗中后到的世界层同步实体不再生成名字板 |
+| `App/ClientModule/ClientPlugins/UI/MiniMap.cs` | `RefreshEntityDots()`：`inBattle && info.IsServerEntity` 时 continue，下面的 stale sweep 会把战斗前已生成的圆点移除 |
+
+`dotnet build ClientPlugins.csproj` 0 错误，`PluginFramework.dll` / `ClientPlugins.dll` 部署到 `Unity3d/Assets/Plugins/`；Unity `asset_refresh()` 后 `NO_CS_ERRORS`、`read_lints` 0 诊断。
+
+### 39.3 实机验证（`ai_sync1`，Unity 重编译生效后）
+
+战斗中（`OnLoadBattleComplete 10204`）：
+
+```
+battleState=True  barsAll=31 barsActive=5   ← 修复前 active 29~30
+miniDots=5                                  ← 与战斗实体数一致
+active 血条所属实体 1115..1129 全部 server=False
+```
+
+即战斗画面只剩本地战斗实体，**世界层玩家/NPC 的模型、名字板、小地图圆点全部消失**。卸载后（`battleState=False`）：`barsAll=24 barsActive=20 miniDots=19`，世界层实体与圆点全部恢复。连跑 4 场后 `combat_probe()` 稳定在 `entities=20 overheadBars=20 orphans=0 noParent=0`，不累积；`findnpc → open_battle → 两波 all_killed → dialog_over:998 → UnloadBattle → on_battle_closed → findnpc` 轮换链完好，日志无 `Exception` / `unknown func` / `unassigned global` / `error CS`。
+
+### 39.4 边界（如实说明）
+
+- 采用「隐藏」而非「忽略同步」：消息仍被处理、实体数据持续与服务端一致，只是不渲染；这是为避免破坏 `WorldSyncSystem` 的状态机与 `Msg_CRC_StoryMessage` 轮换链。若日后要做真正的网络层隔离，需在服务端按「用户处于战斗中」标记跳过 `NotifyNearby`（`User` 对象目前无该标记），或在客户端做**精确白名单**过滤并补 late-joiner 重同步
+- `Game.cs` 的 `HideWorldSceneActors()` 只在 `OnLoadBattleComplete` 时执行一次；战斗中新到的世界层实体由 `OverHeadBarManager.AddActor` 门控名字板、`MiniMap` 门控圆点，但其 Actor 模型不会被自动隐藏（实机未出现该情形）。若要完全覆盖，需在 `Msg_RC_CreateNpc_Handler` 里同步调用隐藏
+- 世界层间隙仍显示 20 个 NPC 名字板/圆点，这是 101 房间同步的合法 NPC，不是残留；战斗画面中已全部消失
+
+---
+
+## 40. 战场固定原点 + 逻辑实体参照系（2026-11-20）
+
+用户提出替代架构：世界场景分块与战场**同时加载但放在不同原点**，相机挪到战场区域，战斗结束卸载战场、相机切回；并明确「**挪战场、不要挪世界场景**，因为世界场景有服务端坐标对应」「战场原点在制作时就固定，烘焙 NavMesh 就没问题」「坐标只是逻辑实体需要有参照系的概念即可」。
+
+### 40.1 三个必须先解决的硬约束（只读核查结论）
+
+| # | 约束 | 证据 |
+|---|---|---|
+| 1 | 实体视图坐标是直接写世界坐标的，不会跟场景原点走 | `EntityViewModel_Base.cs:42` `m_Actor.transform.position = new Vector3(x,y,z)`；`ResourceSystem.cs:437` `InitializeObject` 只 `SetParent(null)`，实体永远是 active scene 根对象 |
+| 2 | NavMesh 是场景级数据，烘焙时绑定世界坐标 | `NavMesh.asset` 含 `m_Position`/`m_SourceBounds`；`NavMesh.CalculateTriangulation()` 返回世界坐标顶点；`NavMeshAgent.SetDestination` / `SamplePosition` 都用世界坐标 |
+| 3 | 逻辑坐标被多处读回并上报服务端 | `get_position*` 读 `GameObject.transform.position`；`autorun_battle.dsl:27,36` 上报 `battle_pos`/`explore` 的 `(x,z)`；服务端 `ExploreSystem.ResolveHit` 与 `WorldEvent.txt` 是 0..512 局部坐标 |
+
+关键结论：**战场实体模拟是纯客户端本地**（`RoomManager` 只给 `type==2` 建房间，`WorldSyncSystem.IsWorldSceneType` 只认 Story，`Level.txt` 表头注明 type=4 场景脚本客户端运行），但**上报给服务端的 `(x,z)` 必须维持 0..512**。所以参照系只能放在客户端「逻辑↔视图」边界，不能引入 `MovementStateInfo` 或服务端。
+
+### 40.2 实现（10 处）
+
+**参照系层**（新增 `App/ClientModule/PluginFramework/SceneOrigin.cs`，放在 DLL 侧供 Unity/Editor 共用；`Unity3d/Assets` 无 `.asmdef`，引用方向是 Assembly-CSharp → DLL）：
+
+```
+BattleOffset = (8192, 0, 0)   // > 4096 完整 8x8x512 世界，且远超 farClip=1200
+ForEntity(e)  : !e.IsServerEntity && IsBattleState -> BattleOffset, else Zero
+Current       : IsBattleState -> BattleOffset, else Zero   // 无实体上下文时用
+```
+
+**逻辑→视图**（加偏移）：
+
+| 文件 | 改动 |
+|---|---|
+| `EntityViewModel_Base.cs` | 新增 `m_Origin`（视图创建时固化，避免卸载时序污染）；`CreateActor` 写 `ToWorld(local, m_Origin)` |
+| `EntityViewModel_Npc.cs` | `SyncSpatial`/`SyncPosition` 用 `ToLocal(transform.position, m_Origin)` 写回 `msi`（含 `tpos-v3` 距离比较）；`MoveTo` 的 `NavMeshAgent.SetDestination` 用 `ToWorld` |
+| `Game.cs` `CameraLook` | 服务端/客户端 `GameLogicCommands` 传的是 `MovementStateInfo` 逻辑坐标，`MoveFollowPath` 前转世界坐标 |
+| `MiniMap.cs` `PlaceDot` | 映射前减 `Current`，否则圆点飞出图外 |
+| `Game.cs` 点击 | `Physics.Raycast` 的 `hit.point` 减 `Current` 再 `MoveTo` |
+| 客户端 `ObjectFunctions.cs` 4 个 `get_position*` | 按 `SceneOrigin.ForGameObject(obj)` 转回逻辑坐标；非实体对象（如 `Config/1`）解析为零，天然 no-op |
+
+**制作时固定原点**（`AppEditorDslApi.Maps.cs`）：`MakeScene` 的 `isEra`（战场）分支给所有根对象（Terrain / Main Camera / Sun / marker / Config 节点）统一加 `BattleOffset`，世界层保持零；`ApplyBattleCamera(cam, td, origin)` 的 anchor 同样带原点；`FixCameras` 按场景类型携带原点；`Shot` 俯拍预览相机与 LookAt 同步偏移。
+
+**免重烘命令**：新增 `map_battle_origin([tile_id])`（`ApplyBattleOrigin`），就地平移 640 个已有战场场景的根对象，并用 `SerializedObject` 把对应 `NavMesh.asset` 的 `m_Position` 累加同一 delta。幂等（已到位的场景跳过），**1 分钟左右完成，避免 `map_nav()` 全量重烘的 5.4 小时**。
+
+### 40.3 实机验证（`ai_origin1`，Unity 重启重编译后）
+
+环境：电脑重启后 Unity 与服务全套都未自动恢复；重新编译部署客户端 DLL、`unity_start_by_name` 冷启动、处理管理员弹窗、前台激活等 GM `delayCall`；`RunServer.cmd` 启动 6 服务 + node 网关（这次 PATH 里的 `D:\nodejs\node.exe` 正常，9001 已监听）。
+
+```
+map_battle_origin("r0c0")  -> slots=10 moved=10 skipped=0 navShifted=10 navMissed=0  (1.2s)
+map_battle_origin()        -> 640 场景 + 640 NavMesh 全部处理
+map_battle_origin() 再跑  -> slots=640 moved=0 skipped=640 navShifted=0  (幂等)
+NavMeshData.position       -> (8192.00, 0.00, 0.00)
+CalculateTriangulation    -> v0.x=8192.667  vMid.x=8192.667  vLast.x=8661.333  count=576
+                             (烘焙时 0.667~469.333，运行时确实整体平移了)
+```
+
+**战斗中决定性证据**（`camera_probe()`）：
+
+```
+CAM pos=(8267.9, 118.3, -14.4)  rot=(46,0,0) fov=50 setting=[distance=104 up=0 pitch=46]
+LEADER id=1220 pos=(8267.9, 43.5, 57.8)  camDist=104.0
+```
+
+即 `8192 + 局部 (75.9, 43.5, 57.8)`；间隙相机回到 `pos=(335.7,104.9,391.7)`、`leader=(335.7,30.1,463.9)`（0..512 世界层）。**相机自动随主角移动，无需任何显式搬移代码**——`CameraController.cs:98` 的 `followPose.pos = obj.transform.position + ...` 读的就是世界坐标。
+
+连跑 3 场（`10001`→`10002`→`10003`）均「两波 `all_killed` → `dialog_over:998` → `UnloadBattle` → `on_battle_closed` → 下一场」，日志最后 2500 行无 `Exception` / `NullReference` / `unknown func` / `error CS` / `MoveTo failed`。`combat_probe()` 显示世界层 NPC 逻辑坐标仍 0..512、`orphans=0 noParent=0`；服务端 `explore_selftest` 仍 `battlefields=640 events=640`、`battle_pos` 上报持续增长无反作弊拒绝。Unity `NO_CS_ERRORS`、`read_lints` 0 诊断、`dotnet build ClientPlugins` 0 错误。
+
+### 40.4 隐藏/恢复补丁为何暂时保留（如实说明）
+
+§36/§38/§39 加的 `m_HiddenVisuals`、`HideWorldSceneActors`、`OverHeadBarManager.AddActor` 门控、`MiniMap` inBattle 跳过，在异原点后**渲染层已冗余**（相机 farClip=1200，两个区域相距 8192）。但两点使删除不是纯收益：
+
+- 两个场景各有 `Main Camera`（tag=`MainCamera`）与 `Directional Light`。**方向光是全局的、不受距离影响**，两个都启用会让战场照明叠加；`Camera.main` 在两个启用相机间归属不确定，且 SolidColor 清屏会互相覆盖。因此 `Camera`/`Light` 的隐藏必须保留，或改成只让战场场景带光源/相机（需重新生成 640 场景）。
+- 其余 `Renderer`/`Terrain` 隐藏与名字板/圆点门控虽可删，但删除需重新编译部署 + 重启 Play 复测，收益仅为代码整洁。
+
+**本轮按"先跑通、不引入回归"保留全部补丁**，并在补丁注释中说明异原点后的新语义。后续若要清理，建议先统一场景模板（世界层不带 Light、战场层不带 Camera，只留一台全局相机），再一次性删除。
+
+### 40.5 剩余项
+
+- `TransformTrigger.cs:88`（`RelativeWorld` 的 `m_Postion`）、`MovementTrigger.cs:87,267-286,353-389` 的 `word_target_pos`、`GeneralCommands.cs:1018/1177/1179`（`create_game_object`/`set_transform` 的 DSL 实参）是否含**逻辑绝对坐标**尚未逐一核对；当前战斗链未触发这些分支。约定建议：GameObject 类 DSL 命令一律用世界坐标
+- `Game.cs:779` `CameraPosition`/`MoveToFixedPosition` 未找到任何发送方（疑为遗留入口），未改
+- `map_nav()` 的断点续跑仍会跳过已存在的 `NavMesh.asset`；本轮用 `m_Position` 平移代替重烘，若日后重新烘焙，需先删除旧 `NavMesh.asset` 或给 `BakeNav` 加 `force` 参数
+- 64 世界层场景仍只有 `r0c0` 补过 `Config`/NavMesh（§36.3），跨格换房、`ExploreSystem.GridFromLevel` 扩到 20001+、4096 藏宝图 UI 仍是未完成项
+
+---
+
+## 41. OverHeadBar.LateUpdate 空引用（域重载陷阱，2026-11-20）
+
+用户报告 `NullReferenceException: OverHeadBar.LateUpdate() (Assets/Scripts/UI/OverHeadBar.cs:156)`。这与前面几节的场景/同步/原点问题**无关**，是编辑器域重载的独立陷阱。
+
+### 41.1 根因（日志与代码双证）
+
+`OverHeadBar.cs` 把三个**非序列化私有字段**只在 `Start()` 里初始化：
+
+```25:26:Unity3d/Assets/Scripts/UI/OverHeadBar.cs
+    private Canvas canvas;
+    private float slowTime;
+    private TextGenerator generator;
+```
+
+```58:67:Unity3d/Assets/Scripts/UI/OverHeadBar.cs
+    public void Start() 
+    {
+        generator = new TextGenerator();
+        ...
+        canvas = this.GetComponentInChildren<Canvas>();
+        RectTransform bkgRect = bkg.gameObject.GetComponent<RectTransform>();
+        bkgSize = bkgRect.sizeDelta;
+    }
+```
+
+`LateUpdate()`（原 `:153-157`）无条件使用它们。Unity **域重载（Domain Reload）会清空非序列化私有字段，但不会重跑 `Start()`**（`Start` 每个组件实例只在首次启用时调用一次），于是 `generator == null`，每帧刷 `NullReferenceException`。
+
+`Editor.log` 证据链：首次异常在 **146328** 行，而 **146211-146250** 正是 `Reloading assemblies after finishing script compilation` → `Begin MonoManager ReloadAssembly` → `Mono: successfully reloaded assembly`；146316 GM 通道恢复后立刻开始刷错。`OverHeadBar.Start` 的错误记录为 **0**，排除「Start 自身抛错」。异常刷到日志 **690 MB / 约 1380 万行**，全量 `Select-String` 甚至触发 PowerShell `OutOfMemoryException`（排查时需用 `Get-Content -Tail` 流式读尾部）。
+
+触发源：本会话频繁 `asset_refresh()` / 改 C# / 重启 Unity 导致 Play 中域重载。这解释了为什么该异常"突然出现"且与名字板残留数量无关。
+
+### 41.2 修复（`Unity3d/Assets/Scripts/UI/OverHeadBar.cs`）
+
+| 改动 | 内容 |
+|---|---|
+| 新增 `EnsureInitialized()` | 以 `generator == null` 为唯一判据，一次性重建 `generator` / `canvas` / `bkgSize`；在 `Start()`、`Update()`、`LateUpdate()` 开头调用，域重载后自愈且不会每帧重算 |
+| `Start()` | 改调 `EnsureInitialized()`；`health`/`healthSlow` 加判空 |
+| `Update()` | 条件补 `null != canvas`；`canvasRect` 判空、`defaultSize` 加除零保护 |
+| `LateUpdate()` | 调用 `EnsureInitialized()`；`bkg`/`content`/`generator`/`bkgRect`/`textBox` 全判空后再计算 |
+| `ShowPaoPao()` / `HidePaoPao()` | `bkg`/`content` 判空（同类裸访问） |
+
+只在 Assembly-CSharp 内改动，无需重编译客户端 DLL。`read_lints` 0 诊断、`asset_refresh()` 后 Unity `NO_CS_ERRORS`。
+
+### 41.3 实机验证
+
+- **不再刷屏**：最后一次域重载（`Editor.log:13819877`）之后 `OverHeadBar.LateUpdate` 异常数 **0**；12 秒采样日志大小 `delta=0`（此前每帧增长）；尾部 300/400 行异常数 0
+- **字段确实重建**：Play 中用 GM 反射读 6 个 active 血条的私有字段，全部 `genNull=False:canvasNull=False`——不是靠"没执行到那行"蒙混
+- **功能无回归**：`ai_barfix` 登录后 `OnLoadBattleComplete 10014` → 两波 `all_killed` → `dialog_over:998` → `UnloadBattle` → `on_battle_closed` → `10015`，`Game.log` 无 `Exception` / `NullReference` / `unknown func`
+
+### 41.4 备注
+
+- 690 MB 的 `Editor.log` 是本次刷屏的历史产物，未删除（属 Unity 环境文件，重启编辑器会自动轮转）。后续排查请避免全量扫描，用 `Get-Content -Tail <n>`
+- 同类风险：其它 `MonoBehaviour` 若在 `Start()` 里初始化非序列化私有字段并在 `Update`/`LateUpdate` 裸用，域重载后会同样报错。本次只修了 `OverHeadBar`，未做全仓普查
+
+---
+
+## 42. 方案 A：战场对象归属 Additive Scene，实现干净加载/卸载（2026-11-20）
+
+用户确认按方案 A 实施，诉求是「**能干净地加载与卸载战场**，Additive 给人的感觉像只能增量添加没法移除」。
+
+### 42.1 先纠正一个直觉
+
+`UnloadSceneAsync` **本来就能移除战场场景**（`Game.cs:507` 一直在调）。真正的问题是：全仓 `SetActiveScene` 0 命中，`ResourceSystem.InitializeObject` 用 `SetParent(null)` 让所有运行时对象落在 **active/base scene 根**，回收态又挂在 `DontDestroyOnLoad` 的 `ResPool` 下——它们**都不属于战场 Scene**，所以卸载带不走，只能靠 `PurgeOrphans` / `HideWorldSceneActors` / 名字板门控 / 小地图 inBattle 跳过这一整套补丁逐个压制。
+
+补充核查（Unity 2022.3.35f1，`SubScene` 讨论）：`com.unity.entities` 未安装、全仓无 `SubScene`/`Unity.Entities`/`.asmdef`，故 SubScene 不是可选项；它是 ECS 的 baking 容器，与本项目 GameObject 工作流不兼容。方案 A 用的 `SceneManager.MoveGameObjectToScene` 才是引擎核心 API。
+
+### 42.2 实现（6 处）
+
+| 文件 | 改动 |
+|---|---|
+| `ResourceSystem.cs` | 新增 `SetBattleScene/ClearBattleScene`（持有 `Scene` 句柄）、`AttachToBattleScene`（仅根对象、幂等、try/catch）、`DetachFromBattleScene`（回迁 base scene）、`RecycleBattleObjects()`（卸载前回收战场 Scene 内的池对象，保持账本一致）；`InitializeObject` 在 `IsBattleState` 时自动搬移——这是全部 20 个 `NewObject` 调用点的**唯一收口**，也天然覆盖池化复用「每次取出都要重搬」 |
+| `EntityViewModel_Base.cs` | `CreateActor` 里对 `m_Origin == Vector3.zero`（世界层/server 实体）调 `DetachFromBattleScene`，避免战斗期间新同步的世界层 NPC 被误搬进战场后销毁 |
+| `PluginFramework.cs` `UnloadBattle()` | 从「`Hp=0` + 发 `ui_remove_actor`」改为：收集所有 `!IsServerEntity` id → `StopAllSkill(id,...)` → `EntityViewModelManager.ForgetEntityView(id)` → `DestroyEntityById(id)`。**不再回收对象**，让 Scene 卸载成为唯一销毁者 |
+| `EntityViewModelManager.cs` | 新增 `ForgetEntityView(int)`：只清 `m_EntityViews` / `m_Object2Ids` / `m_SpaceInfoViews`，**不调 `view.Destroy()`** |
+| `OverHeadBarManager.cs` | `PurgeOrphans()` 换成 `ClearBattleViews()`：按 `IsServerEntity` 清掉战斗血条的 `views` 引用，世界层 20 个 NPC 血条保留；不回收（回收会把血条挂回 ResPool 而「逃生」） |
+| `Game.cs` | `LoadBattle` 在 `yield asyncOper` 后 `SetBattleScene(FindBattleScene(lvl.prefab))`；`UnloadBattle` 改为 `RecycleBattleObjects()` → `ClearBattleViews()` → **`yield return UnloadSceneAsync(...)` 真正等待** → `ClearBattleScene()`；删除 `HideWorldSceneActors` / `RestoreWorldSceneActors` / `m_HiddenWorldActors` 与两处 `PurgeOrphans` 调用 |
+
+**三个关键陷阱的处理**（子代理查证）：①「回收即逃生」——卸载阶段一律不 `RecycleObject`，否则对象被 `FinalizeObject` 挂回 `DontDestroyOnLoad` 的 ResPool 而跳过卸载；②「池化对象账本残留」——卸载前 `RecycleBattleObjects()` 主动走正常回收链，避免 Scene 销毁后 `m_UsedResources` 留下死对象、被 `Tick` 塞进闲池并在下次 `NewObject` 抛 `MissingReferenceException`；③「世界层实体误删」——用 `IsServerEntity` 精确排除，且 `AttachToBattleScene` 只搬根对象（名字板/飘字等子对象随根自动归属）。
+
+保留未删：`m_HiddenVisuals` 的 `Camera`/`Light` 隐藏（两个 Scene 各有 `MainCamera` 与 `Directional Light`，`Camera.main` 仲裁与全局照明叠加仍需抑制）、`OverHeadBarManager.Init` 幂等、`AddActor` 的 `IsBattleState` 门控、`MiniMap` 的 inBattle 跳过（见 §40.4，需统一场景模板后再整体清理）。
+
+### 42.3 实机验证（`ai_sceneA`，Unity 重编译后）
+
+```
+OnLoadBattleComplete 10016 → 两波 all_killed → dialog_over:998
+→ UnloadBattle → on_battle_closed → 10017 → 10018 → 10019 → 10020
+```
+
+- **归属生效**：战斗中 25 个 active 血条里 **5 个属于战场 Scene**、20 个属于 base scene（世界层 NPC）——正是预期划分
+- **卸载干净**：战斗间隙 `scenes=1`（只剩 `Battle_r0c0`）、`battleState=False`；`combat_probe()` 为 `entities=20 overheadBars=20 orphans=0 noParent=0`，战斗实体/血条全部消失，世界层 20 个 NPC 坐标仍 0..512、完好未误删
+- **不累积**：连跑 5 场后数字仍稳定 `entities=20 overheadBars=20 orphans=0`
+- 日志最后 4000 行无 `Exception` / `NullReference` / `MissingReference` / `unknown func` / `AttachToBattleScene failed` / `DetachFromBattleScene failed`
+- `dotnet build ClientPlugins` 0 错误、Unity `NO_CS_ERRORS`、`read_lints` 0 诊断、DLL 已部署
+
+### 42.4 边界（如实说明）
+
+- **仍需显式字典清理**：Scene 归属只解决「GameObject 是否随卸载销毁」，不解决 `EntityManager` / `EntityViewModelManager` / `OverHeadBarManager.views` / `MiniMap.m_Dots` 等 C# 字典。这些已在 `UnloadBattle` 里逐个清掉；若以后新增持有运行时对象的管理器，必须同步补清理
+- `BulletManager.m_Bullets` / `EffectManager.m_EffectObject` 仍可能持有已回收（inactive）对象引用，下一场复用时会累积。当前实机 5 场无异常，因技能特效生命周期短且 `GfxSkillSystem.StopAllSkill(id,...)` 已按战斗实体停止；若日后做长时间战斗需补 `Clear()` 入口
+- `OverHeadBar.cs:Reset()` 的 `DetachChildren()` 会产生不在池账本里的飘字孤儿，它们作为战场 Scene 根对象会被 `UnloadSceneAsync` 销毁——这正是 Scene 归属作为兜底的价值
+- `MiniMap` 的 inBattle 跳过与 `AddActor` 门控仍保留：战斗期间房间服务器仍在同步世界层实体，这两个过滤防止给它们建血条/圆点。彻底删除需先统一场景模板（见 §40.4）
+- `OnLevelLoaded` 的 Additive 分支仍调 `OverHeadBarManager.Init()`（幂等）与重建 `CameraController`，与对象归属无关

@@ -34,12 +34,24 @@ namespace ScriptableFramework
             }
         }
 
+        // Reference frame captured when the view is created. Keeping it on the
+        // view (instead of reading a global "current battle" flag each frame)
+        // means unload/unregister ordering can never write shifted coordinates
+        // back into MovementStateInfo.
+        protected Vector3 m_Origin = Vector3.zero;
+
         protected void CreateActor(int objId, string model, float x, float y, float z, float dir, float scale, float radius, float speed)
         {
             m_ObjId = objId;
+            m_Origin = SceneOrigin.ForEntity(objId);
             m_Actor = ResourceSystem.Instance.NewObject(model) as GameObject;
             if (null != m_Actor) {
-                m_Actor.transform.position = new Vector3(x, y, z);
+                // A server-owned world actor created while a battle is active
+                // must stay in the base scene; otherwise unloading the
+                // battlefield would delete it and break room-server sync.
+                if (m_Origin == Vector3.zero)
+                    ResourceSystem.Instance.DetachFromBattleScene(m_Actor);
+                m_Actor.transform.position = SceneOrigin.ToWorld(new Vector3(x, y, z), m_Origin);
                 m_Actor.transform.localRotation = Quaternion.Euler(0, Utility.RadianToDegree(dir), 0);
                 Vector3 prefabScale = m_Actor.transform.localScale;
                 m_Actor.transform.localScale = new Vector3(prefabScale.x * scale, prefabScale.y * scale, prefabScale.z * scale);

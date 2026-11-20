@@ -1,6 +1,12 @@
 # 会话交接摘要（压缩状态，2026-11-18）
 
-用途：本会话已很长，后续继续游戏开发时先读这份，避免重复翻历史。完整过程见 `Doc/lost_civilization_design.md`（第 1~37 节，含 29.6 关闭避让实验、第 30~34 节点击移动/相机/小地图、第 35 节 640 战场重构三阶段、第 36 节世界层接入运行时第一阶段、第 37 节名字板残留修复）；改名经验见 `Doc/api_rename_sop.md`。
+用途：本会话已很长，后续继续游戏开发时先读这份，避免重复翻历史。完整过程见 `Doc/lost_civilization_design.md`（第 1~42 节，含 29.6 关闭避让实验、第 30~34 节点击移动/相机/小地图、第 35 节 640 战场重构三阶段、第 36 节世界层接入运行时第一阶段、第 37/38 节名字板残留初查与真因修正、第 39 节战斗态隔离世界层同步实体、第 40 节战场固定原点与参照系、第 41 节域重载空引用修复、第 42 节战场对象归属 Additive Scene）；改名经验见 `Doc/api_rename_sop.md`。
+
+**战场加载/卸载（§42，重要）**：所有战斗期运行时对象由 `ResourceSystem.InitializeObject` 自动 `MoveGameObjectToScene` 到 Additive 战场 Scene；世界层实体（`IsServerEntity=true`）通过 `EntityViewModel_Base.CreateActor` 的 `DetachFromBattleScene` 回迁 base scene，绝不能一起销毁。卸载顺序固定为：`PluginFramework.UnloadBattle`（清实体/视图字典，**不回收对象**）→ `Game.UnloadBattle`（`RecycleBattleObjects` 回收池对象保持账本、`ClearBattleViews` 清血条字典、`yield return UnloadSceneAsync` 真正等待、`ClearBattleScene`）。**卸载阶段禁止 `RecycleObject`**：它把对象挂回 `DontDestroyOnLoad` 的 ResPool，会逃过 Scene 卸载。新增持有运行时对象的管理器时必须同步补字典清理。`Camera`/`Light` 隐藏、`Init` 幂等、`AddActor`/`MiniMap` 的 inBattle 过滤仍保留（双相机/双光源 + 房间服务器战斗期仍同步世界层）。
+
+**当前入口**：`Level.txt` 的 101 行 prefab 已 repoint 到 `Battle_r0c0`（新 64 格世界层），但 `change_scene(101)`、SceneDslFile `Story/Story1/story.dsl`、room 配置都没变——`get_scene_id()` 仍是 101，跨格换房未实现。改表后要跑 `dslcopy.bat Debug False` 同步三端 `Level.dat`。
+
+**战场原点（重要）**：640 个战场场景及其 `NavMesh.asset` 已在制作时固定到 `SceneOrigin.BattleOffset = (8192,0,0)`；世界层与服务端坐标保持 0..512 不变。`MovementStateInfo`、story DSL、服务端表一律用局部坐标，偏移只在 `SceneOrigin` 的逻辑↔视图边界转换。新增/重建战场后必须跑 `map_battle_origin([tile_id])`（幂等，约 1 分钟）把场景根对象与 NavMeshData 一起平移，**不要**重跑 `map_nav()` 全量（5.4 小时）。相机由 `CameraController.Follow` 自动跟随，无需显式搬移。详见 §40。
 
 **当前最重要的事**：仓库已从「64 格 1 战场」改为「64 格 × 10 = 640 战场」。唯一数据源是 `Resource/MapDesign/battle_slots.txt`（640 行），所有生成器都读它；改布局请改 `build_battle_slots.py` 后依次重跑 `build_battlefield_art.py` → `build_story.py` → `build_events.py` → `cutover.py` → `dslcopy.bat`，再在 Unity 跑 `map_build()` / `map_nav()` / `map_verify()`。`map_nav()` 全量约 2.3 小时，可传格 id 分批。详见 `lost_civilization_design.md` 第 35 节。
 
@@ -51,11 +57,19 @@
 | 34 | 相机再拉远一倍（distance 52→104，camDist=104）+ 点击 raycast 100→500 联动 |
 | 35 | 640 战场重构（32×32 邻域 ×16 放大）：三阶段落地、704 场景、708 行 Level.txt |
 | 36 | 世界地图层接入运行时·第一阶段：修视觉隐藏判定、Config 巡点、r0c0 样板、实机验证 |
-| 37 | 名字板残留根因（Release 传错类型 / Additive 重复 Init / 卸载不清理）与修复 |
+| 37 | 名字板残留初查（Release 传错类型 / Additive 重复 Init / 卸载不清理）——方向被 §38 修正 |
+| 38 | 名字板残留真因（基底 NPC 的 Canvas 未隐藏）+ 正式入口 repoint 101 → Battle_r0c0 |
+| 39 | 战斗态按 IsServerEntity 整体隔离世界层同步实体（模型/名字板/小地图圆点） |
+| 40 | 战场固定原点 8192 + 逻辑实体参照系：640 场景/NavMesh 就地平移、免 5.4h 重烘、实机验证 |
+| 41 | OverHeadBar.LateUpdate 空引用：域重载清空非序列化私有字段且 Start 不重跑，改惰性自愈 |
+| 42 | 方案 A：战场对象归属 Additive Scene，干净加载/卸载，删隐藏补丁并实机验证 |
 
 ## 4. 未完成 / 下一步（按建议优先级）
 
--2. **名字板残留实机复测（2026-11-20 修复已完成，验证受阻）**：第 37 节三处根因已修（`OverHeadBarManager.Release()` 传错类型、Additive 重复 `Init()`、战场进出不清理），代码编译 0 错误、`PluginFramework.dll` 已部署，但 Unity 重启后 editor GM 通道始终未连出，**没有跑到 `combat_probe()`**。下次通道恢复后进 Play 连跑 3~4 场战斗，每场间隙看 `orphans=0` / `noParent=0` / `overheadBars≈entities`。`CombatProbe` 已新增这两个计数。
+-3. ~~**战场干净加载/卸载（2026-11-20 已完成并实机验证）**~~：方案 A 已落地（§42），战斗对象归属 Additive 战场 Scene、`UnloadSceneAsync` 真正 await、卸载前回收池对象保持账本；已删除 `HideWorldSceneActors` / `RestoreWorldSceneActors` / `PurgeOrphans` 与两处调用，`m_HiddenWorldActors` 字段一并移除。实机连跑 5 场：战斗中 5 个血条归战场 Scene、20 个世界层血条归 base scene；卸载后 `scenes=1`、`entities=20 overheadBars=20 orphans=0`，不累积、无异常。**剩余**：`Camera`/`Light` 隐藏（双相机/双光源，需统一场景模板后才能删）、`AddActor`/`MiniMap` 的 inBattle 过滤（房间服务器战斗期仍同步世界层）、`BulletManager`/`EffectManager` 字典可能持有已回收 inactive 引用（当前无异常，长战斗需补 `Clear()`）。
+-3b. **技能触发器坐标约定待核对（2026-11-20，未做）**：`TransformTrigger.cs:88`、`MovementTrigger.cs:87,267-286,353-389`、`GeneralCommands.cs:1018/1177/1179` 的 `m_Postion`/`word_target_pos`/`create_game_object`/`set_transform` 是否含逻辑绝对坐标尚未逐一验证；当前战斗链未触发这些分支。`Game.cs:779` 的 `CameraPosition` 未找到发送方（疑为遗留）。详见 §40.5。
+
+-2. ~~**名字板残留 / 正式入口（2026-11-20 已完成并实机验证）**~~：真因是基底场景 NPC 名字板的 world-space `Canvas` 不在 `OnLoadBattleComplete()` 的隐藏列表（只藏 Renderer/Camera/Light/Terrain），不是 §37 判断的"孤儿血条"。已在 `Game.cs` 对基底场景的 `OverHeadBar` Canvas 做隐藏/恢复；同时把 `Level.txt` 101 行 prefab repoint 到 `Battle_r0c0`，进游戏即新世界层。实机 `scene=Battle_r0c0`、轮换链完整、连跑 4 场 `overheadBars=20 orphans=0 noParent=0` 不累积、无异常。详见 §38。**剩余**：跨格换房、`world_main.dsl` story id/handler、其余 63 格 `Config`/NavMesh、4096 藏宝图 UI、世界层探索 grid、小地图底图（仍是 `UITexture/Story1`）。
 
 -1. **世界地图层接入运行时 · 第 2~5 阶段（2026-11-20 第一阶段已完成）**：第一阶段修了 `Game.cs` 视觉隐藏判定（按 levelId 精确识别战场，消除双层 Terrain）、世界层补 `Config/1..10` 巡点、新增 `map_world_build` / `map_world_nav`、完成 `r0c0` 单格样板并实机验证（以 20001 为基底自然进战斗、两波结算、Terrain/Camera 各只剩一套、无异常）。**未做**：正式入口 `change_scene(20001)` 及三端轮换链、服务端 `GridFromLevel` 扩到 20001+ 与跨格换房、相机/小地图多场景修正、4096 藏宝图 UI、铺满 64 格。详见 `lost_civilization_design.md` §36.5。当前 `MainUi/story.dsl:30` 仍是 `change_scene(101)`，运行时默认基底仍为 `Story1`。
 
@@ -81,6 +95,8 @@
 - **服务端改动按四步**：`StopServer → buildall Debug False → copyserverdlls Debug → RunServer`。只复制 `RoomServer.dll` 会漏依赖（曾因 `GameObjects.dll` 未更新导致 `TypeLoadException`）；服务在跑时 DLL 被占用无法覆盖。
 - **story 工程有两套**：`*_dotnet_framework.csproj`（net472，独立 sln，`buildall` 不构建）与 `*.csproj`（netstandard2.1）。共用 `obj/`，必须**先 framework 后 core**，各自 `/t:Restore`；framework 产物要复制回仓库根目录，GameDemo 的 `StoryScript.dll` 要同步到 CSharpGameFramework 的 `Unity3d/Assets/Plugins/`。
 - **RunServer 后第一次 Play 登录可能卡在 `do_login`**（无错误日志），重启一次 Play 重连即恢复。
+- **域重载陷阱（2026-11-20，§41）**：Play 中改 C# / `asset_refresh()` 触发 Unity Domain Reload 时，非序列化私有字段会被清空且 `Start()` **不会重跑**；任何在 `Update`/`LateUpdate` 裸用这类字段的 `MonoBehaviour` 都会每帧刷 `NullReferenceException`。本次 `OverHeadBar.generator` 刷出 690 MB `Editor.log`，已改为 `EnsureInitialized()` 惰性自愈。排查大日志别用全量 `Select-String`（会 OOM），用 `Get-Content -Tail <n>`
+- **启动服务器就是执行 `RunServer.cmd`**（工作目录仓库根；可 `Start-Process -FilePath RunServer.cmd -WorkingDirectory <root> -Wait -NoNewWindow -PassThru -RedirectStandardOutput BuildLog/runserver_out.txt -RedirectStandardError BuildLog/runserver_err.txt` 留痕）。它会拉起 6 个 .NET 服务 + `start "node" node.exe nodejs/app.js` 网关（9001）。**2026-11-20 实测**：6 个服务都起来了、node 网关那行当次没留下存活进程，需 `Start-Process` 用绝对路径 node 单独补起；PATH 里其实有 `D:\nodejs\node.exe`（v26.13.1），v26 与 workbuddy v22 都能加载 `center_client.node`（ABI 不是原因），真实原因未确证（疑启动时序/闪退无日志）。详见 `lost_civilization_design.md` §36.6 更正。`StopServer.cmd` **已修复**（2026-11-20）：原先 `taskkill /im node.exe /f` 会无差别杀所有 node（含 WorkBuddy / Playwright），现改为按命令行含 `nodejs/app.js` 精确匹配 + 9001 端口 owner 兜底，且复核 `ProcessName -eq 'node'` 才 `Stop-Process`；实测只停本工程网关、另两个 node 存活。详见 `lost_civilization_design.md` §36.6。
 - 表改动要跑 `TableReaderGenerator` 两端同步；DSL 改动要跑 `DslCopy` 两端同步；`WorldEvent.txt` 是 GBK 标准表，不要用 UTF-8 读写。
 
 ## 6. 常用工具与文件

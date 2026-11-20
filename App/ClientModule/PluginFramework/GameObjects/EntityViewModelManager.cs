@@ -67,6 +67,24 @@ namespace ScriptableFramework
             }
         }
 
+        /// <summary>
+        /// Drop all dictionary entries for an entity WITHOUT destroying or
+        /// recycling its GameObject. Used when an Additive battlefield scene is
+        /// about to be unloaded: the scene destroy is the single owner of those
+        /// objects, and Recycling them would re-parent them into the
+        /// DontDestroyOnLoad ResPool so they would survive the unload.
+        /// </summary>
+        public void ForgetEntityView(int objId)
+        {
+            EntityViewModel view;
+            if (m_EntityViews.TryGetValue(objId, out view)) {
+                if (view != null && null != view.Actor)
+                    m_Object2Ids.Remove(view.Actor);
+                m_EntityViews.Remove(objId);
+            }
+            m_SpaceInfoViews.Remove(objId);
+        }
+
         public EntityViewModel GetEntityViewById(int objId)
         {
             EntityViewModel view = null;

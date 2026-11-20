@@ -100,6 +100,10 @@ namespace ScriptableFramework.Story.Functions
                     pt = obj.transform.localPosition;
                 else
                     pt = obj.transform.position;
+                // story DSL works in logical coordinates. Actors are placed in
+                // world space at their scene origin; non-entity objects resolve
+                // to a zero origin, so this is a no-op for them.
+                pt = SceneOrigin.ToLocal(pt, SceneOrigin.ForGameObject(obj));
                 return (Vector3Obj)new ScriptRuntime.Vector3(pt.x, pt.y, pt.z);
             }
             return (Vector3Obj)ScriptRuntime.Vector3.Zero;
@@ -136,7 +140,7 @@ namespace ScriptableFramework.Story.Functions
                     pt = obj.transform.localPosition;
                 else
                     pt = obj.transform.position;
-                return pt.x;
+                return SceneOrigin.ToLocal(pt, SceneOrigin.ForGameObject(obj)).x;
             }
             return 0.0f;
         }
@@ -172,7 +176,7 @@ namespace ScriptableFramework.Story.Functions
                     pt = obj.transform.localPosition;
                 else
                     pt = obj.transform.position;
-                return pt.y;
+                return SceneOrigin.ToLocal(pt, SceneOrigin.ForGameObject(obj)).y;
             }
             return 0.0f;
         }
@@ -208,7 +212,7 @@ namespace ScriptableFramework.Story.Functions
                     pt = obj.transform.localPosition;
                 else
                     pt = obj.transform.position;
-                return pt.z;
+                return SceneOrigin.ToLocal(pt, SceneOrigin.ForGameObject(obj)).z;
             }
             return 0.0f;
         }

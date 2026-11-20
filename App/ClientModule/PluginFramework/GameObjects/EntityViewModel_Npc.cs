@@ -87,7 +87,10 @@ namespace ScriptableFramework
         {
             if (null != m_Entity && null != Actor) {
                 MovementStateInfo msi = m_Entity.GetMovementStateInfo();
-                UnityEngine.Vector3 v3 = Actor.transform.position;
+                // Transform is in world space; MovementStateInfo/TargetPosition
+                // are logical local coordinates. Convert back through the
+                // view's captured reference frame before comparing distances.
+                UnityEngine.Vector3 v3 = SceneOrigin.ToLocal(Actor.transform.position, m_Origin);
                 msi.SetPosition(v3.x, v3.y, v3.z);
                 float dir = Utility.DegreeToRadian(Actor.transform.localEulerAngles.y);
                 msi.SetFaceDir(dir);
@@ -116,7 +119,7 @@ namespace ScriptableFramework
         {
             if (null != m_Entity && null != Actor) {
                 MovementStateInfo msi = m_Entity.GetMovementStateInfo();
-                UnityEngine.Vector3 v3 = Actor.transform.position;
+                UnityEngine.Vector3 v3 = SceneOrigin.ToLocal(Actor.transform.position, m_Origin);
                 msi.SetPosition(v3.x, v3.y, v3.z);
             }
         }
@@ -203,7 +206,9 @@ namespace ScriptableFramework
             msi.TargetPosition = new ScriptRuntime.Vector3(x, y, z);
             if (null != Agent && Agent.enabled && Agent.isOnNavMesh) {
                 try {
-                    Agent.SetDestination(new Vector3(x, y, z));
+                    // NavMesh is baked in world space at the battlefield
+                    // origin, so the logical target must be shifted too.
+                    Agent.SetDestination(SceneOrigin.ToWorld(new Vector3(x, y, z), m_Origin));
                     Agent.isStopped = false;
                 } catch {
                     m_Agent.enabled = true;

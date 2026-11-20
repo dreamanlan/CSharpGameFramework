@@ -50,25 +50,24 @@ public sealed class OverHeadBarManager
     }
 
     /// <summary>
-    /// Drop bars whose owning entity is gone. Additive battle unloading does
-    /// not destroy them: actors live in the active/base scene and pooled bars
-    /// live under the DontDestroyOnLoad ResPool root. Called on battle unload
-    /// so bars from a finished battle do not pile up in the next one.
+    /// Drop all battle-owned bar references without touching the GameObjects.
+    /// Bars are children of battle actors, which now belong to the Additive
+    /// battlefield scene; UnloadSceneAsync destroys them in one shot. Recycling
+    /// them here would re-parent them into the DontDestroyOnLoad ResPool and
+    /// they would escape the unload. World-layer bars (server-owned actors in
+    /// the base scene) are kept so the world map still shows its NPCs.
     /// </summary>
-    public int PurgeOrphans()
+    public int ClearBattleViews()
     {
-        var dead = new List<int>();
+        var doomed = new List<int>();
         foreach (var pair in views) {
-            OverHeadBar view = pair.Value;
-            if (null == view || PluginFramework.Instance.GetGameObject(pair.Key) == null)
-                dead.Add(pair.Key);
+            var e = PluginFramework.Instance.GetEntityById(pair.Key);
+            if (null == e || !e.IsServerEntity)
+                doomed.Add(pair.Key);
         }
-        foreach (int id in dead) {
-            OverHeadBar view;
-            if (views.TryGetValue(id, out view)) DestroyBar(view);
+        foreach (int id in doomed)
             views.Remove(id);
-        }
-        return dead.Count;
+        return doomed.Count;
     }
     private void UpdateVisible(int actorID)
     {
@@ -80,6 +79,14 @@ public sealed class OverHeadBarManager
     }
     private void AddActor(int actorID, bool isGreen, TableConfig.Actor cfg)
     {
+        // During an Additive battle the base field room still syncs world
+        // players/NPCs. Those actors are hidden by Game.HideWorldSceneActors(),
+        // and a late-arriving one must not get a nameplate either. Local battle
+        // actors are IsServerEntity=false and keep their bars.
+        if (PluginFramework.Instance.IsBattleState) {
+            var e = PluginFramework.Instance.GetEntityById(actorID);
+            if (null != e && e.IsServerEntity) return;
+        }
         GameObject obj = PluginFramework.Instance.GetGameObject(actorID);
         if (obj == null) return;
 

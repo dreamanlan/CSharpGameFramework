@@ -73,8 +73,14 @@ class MiniMap : ITickPlugin
         int camp = null != leader ? leader.GetCampId() : PluginFramework.Instance.CampId;
         var mgr = PluginFramework.Instance.EntityManager;
         if (null == mgr) return;
+        // While a battlefield is Additively loaded the base field room keeps
+        // syncing world players/NPCs, but their actors are hidden by Game.
+        // Do not draw dots for them either; the stale sweep below removes any
+        // dots left over from before the battle started.
+        bool inBattle = PluginFramework.Instance.IsBattleState;
         foreach (EntityInfo info in mgr.Entities.Values) {
             if (null == info) continue;
+            if (inBattle && info.IsServerEntity) continue;
             int id = info.GetId();
             if (id == leaderId) continue;
             if (info.IsDead() || !info.IsCombatNpc()) continue;
@@ -138,8 +144,11 @@ class MiniMap : ITickPlugin
     private void PlaceDot(RectTransform rt, Vector3 worldPos)
     {
         if (null == rt) return;
-        float x = worldPos.x * m_MapWidth / m_TerrainWidth - m_MapWidth / 2;
-        float y = worldPos.z * m_MapHeight / m_TerrainHeight - m_MapHeight / 2;
+        // Actors are world-space; the 512x512 minimap is in the scene's local
+        // frame. Remove the active region origin before mapping.
+        Vector3 local = SceneOrigin.ToLocal(worldPos, SceneOrigin.Current);
+        float x = local.x * m_MapWidth / m_TerrainWidth - m_MapWidth / 2;
+        float y = local.z * m_MapHeight / m_TerrainHeight - m_MapHeight / 2;
         rt.localPosition = new Vector3(x, y, 0);
     }
 

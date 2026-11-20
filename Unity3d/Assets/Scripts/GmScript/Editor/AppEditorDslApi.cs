@@ -57,6 +57,7 @@ public sealed class AppEditorDslApi
         calc.Register("map_nav", "map_nav() - bake NavMesh for all 640 battlefield scenes", new ExpressionFactoryHelper<MapNavExp>());
         calc.Register("map_camera_fix", "map_camera_fix() - patch all 704 scene cameras (64 world + 640 battlefields) without rebuilding NavMesh", new ExpressionFactoryHelper<MapCameraFixExp>());
         calc.Register("map_world_build", "map_world_build([tile_id]) - rebuild world-map scenes with Config waypoints, leaving battlefield scenes untouched", new ExpressionFactoryHelper<MapWorldBuildExp>());
+        calc.Register("map_battle_origin", "map_battle_origin([tile_id]) - move existing battlefield scenes and their baked NavMesh to the fixed battlefield origin (idempotent, no re-bake)", new ExpressionFactoryHelper<MapBattleOriginExp>());
         calc.Register("map_world_nav", "map_world_nav([tile_id]) - bake NavMesh for world-map scenes (resumable)", new ExpressionFactoryHelper<MapWorldNavExp>());
         calc.Register("camera_probe", "camera_probe() - report live camera pose and distance to the party leader", new ExpressionFactoryHelper<CameraProbeExp>());
         calc.Register("combat_probe", "combat_probe() - dump live entity AI state/home/target ranges", new ExpressionFactoryHelper<CombatProbeExp>());

@@ -325,13 +325,13 @@ public static class MapBuild
     // CameraController only rewrites camera.position while followTargetId>0.
     // The saved scene pose therefore has to be a usable close gameplay view,
     // otherwise a missed camera_follow leaves the camera at a 300m preview pose.
-    private static void ApplyBattleCamera(Camera cam, TerrainData td)
+    private static void ApplyBattleCamera(Camera cam, TerrainData td, Vector3 origin)
     {
         Quaternion rot = Quaternion.Euler(BattleCamPitch, 0f, 0f);
         Vector3 anchor = new Vector3(60f, 0f, 70f);
         if (td != null)
             anchor.y = td.GetInterpolatedHeight(60f / WorldSize, 70f / WorldSize);
-        cam.transform.position = anchor + Vector3.up * BattleCamUp - rot * Vector3.forward * BattleCamDistance;
+        cam.transform.position = anchor + origin + Vector3.up * BattleCamUp - rot * Vector3.forward * BattleCamDistance;
         cam.transform.rotation = rot;
         cam.fieldOfView = 50f;
 
@@ -354,13 +354,18 @@ public static class MapBuild
         List<Slot> slots = LoadSlots();
         string current = SceneManager.GetActiveScene().path;
         int fixedCount = 0;
-        var names = new List<string>();
-        foreach (Tile t in tiles) names.Add("Battle_" + t.Id);
-        foreach (Slot s in slots) names.Add(SlotSceneName(s));
+        var scenes = new List<KeyValuePair<string, Vector3>>();
+        foreach (Tile t in tiles)
+            scenes.Add(new KeyValuePair<string, Vector3>("Battle_" + t.Id, Vector3.zero));
+        foreach (Slot s in slots)
+            scenes.Add(new KeyValuePair<string, Vector3>(SlotSceneName(s),
+                ScriptableFramework.SceneOrigin.BattleOffset));
         try
         {
-            foreach (string name in names)
+            foreach (var entry in scenes)
             {
+                string name = entry.Key;
+                Vector3 origin = entry.Value;
                 {
                     string path = SceneDir + "/" + name + ".unity";
                     if (!File.Exists(path)) continue;
@@ -378,7 +383,9 @@ public static class MapBuild
                         }
                     }
                     if (cam == null) { sb.AppendLine("NO_CAM " + name); continue; }
-                    ApplyBattleCamera(cam, td);
+                    foreach (GameObject go in sc.GetRootGameObjects())
+                        if (go != null && go.name.StartsWith("Terrain_")) go.transform.position = origin;
+                    ApplyBattleCamera(cam, td, origin);
                     EditorSceneManager.MarkSceneDirty(sc);
                     EditorSceneManager.SaveScene(sc);
                     fixedCount++;
@@ -405,8 +412,13 @@ public static class MapBuild
                                   List<Slot> waypoints = null)
     {
         Scene sc = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        // Battlefield scenes are authored at a fixed far-away origin so the
+        // world tile (server-owned coordinates) and the battlefield can both
+        // stay loaded. World-tile scenes keep the zero origin.
+        Vector3 origin = isEra ? ScriptableFramework.SceneOrigin.BattleOffset : Vector3.zero;
         GameObject terrainGo = Terrain.CreateTerrainGameObject(td);
         terrainGo.name = "Terrain_" + label;
+        terrainGo.transform.position = origin;
         foreach (Transform tr in terrainGo.GetComponentsInChildren<Transform>(true))
             GameObjectUtility.SetStaticEditorFlags(tr.gameObject, StaticEditorFlags.NavigationStatic);
 
@@ -421,7 +433,7 @@ public static class MapBuild
                 float u = Mathf.Clamp01(s.X / WorldSize);
                 float v = Mathf.Clamp01(s.Z / WorldSize);
                 float h = td.GetInterpolatedHeight(u, v);
-                node.transform.position = new Vector3(s.X, h + 1.0f, s.Z);
+                node.transform.position = new Vector3(s.X, h + 1.0f, s.Z) + origin;
             }
         }
 
@@ -434,7 +446,7 @@ public static class MapBuild
         // Gameplay pose: a close third-person view anchored on the party spawn
         // point (60,70). CameraController only rewrites position while it has a
         // follow target, so the saved pose must already be playable.
-        ApplyBattleCamera(cam, td);
+        ApplyBattleCamera(cam, td, origin);
         cam.clearFlags = CameraClearFlags.SolidColor;
         cam.backgroundColor = mood * 0.66f;
         cam.farClipPlane = 1200f;
@@ -444,6 +456,7 @@ public static class MapBuild
         sun.type = LightType.Directional;
         sun.color = Color.Lerp(Color.white, mood, 0.35f);
         sun.intensity = isEra ? 1.05f : 1.25f;
+        lightGo.transform.position = origin;
         lightGo.transform.rotation = Quaternion.Euler(48f, 20f + (t.Seq % 8) * 28f + (isEra ? 15f : 0f), 0f);
         RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Flat;
         RenderSettings.ambientLight = mood * (isEra ? 0.72f : 0.85f);
@@ -454,6 +467,7 @@ public static class MapBuild
 
         var marker = new GameObject(isEra ? "EraLayer" : "ModernLayer");
         marker.tag = "EditorOnly";
+        marker.transform.position = origin;
         EditorSceneManager.SaveScene(sc, path);
     }
 
@@ -700,6 +714,71 @@ public static class MapBuild
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Move already-built battlefield scenes (and their baked NavMesh data) to
+    /// the fixed battlefield origin. Re-baking 640 scenes takes hours; a baked
+    /// NavMeshData is a self-contained object with its own position/rotation,
+    /// so shifting it by the same delta keeps terrain, physics and NavMesh in
+    /// one frame without a rebuild. Idempotent: a scene already at the origin
+    /// is skipped. World-tile scenes are never touched.
+    /// </summary>
+    public static string ApplyBattleOrigin(string which = "")
+    {
+        var sb = new StringBuilder();
+        List<Slot> slots = LoadSlots();
+        if (!string.IsNullOrEmpty(which))
+            slots = slots.Where(s => s.TileId == which).ToList();
+        string current = SceneManager.GetActiveScene().path;
+        Vector3 origin = ScriptableFramework.SceneOrigin.BattleOffset;
+        int moved = 0, skipped = 0, navShifted = 0, navMissed = 0;
+        try
+        {
+            foreach (Slot s in slots)
+            {
+                string sceneName = SlotSceneName(s);
+                string path = SceneDir + "/" + sceneName + ".unity";
+                if (!File.Exists(path)) { skipped++; continue; }
+                Scene sc = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                GameObject terrainGo = null;
+                foreach (GameObject go in sc.GetRootGameObjects())
+                    if (go != null && go.name.StartsWith("Terrain_")) { terrainGo = go; break; }
+                if (null == terrainGo) { skipped++; continue; }
+                Vector3 delta = origin - terrainGo.transform.position;
+                if (delta.sqrMagnitude < 0.01f) { skipped++; continue; }
+                foreach (GameObject go in sc.GetRootGameObjects())
+                    if (go != null) go.transform.position += delta;
+                EditorSceneManager.MarkSceneDirty(sc);
+                EditorSceneManager.SaveScene(sc);
+                moved++;
+
+                string navPath = SceneDir + "/" + sceneName + "/NavMesh.asset";
+                var data = AssetDatabase.LoadAssetAtPath<UnityEngine.AI.NavMeshData>(navPath);
+                if (null == data) { navMissed++; continue; }
+                try
+                {
+                    var so = new SerializedObject(data);
+                    var pos = so.FindProperty("m_Position");
+                    if (null == pos) { navMissed++; continue; }
+                    pos.vector3Value += delta;
+                    so.ApplyModifiedPropertiesWithoutUndo();
+                    EditorUtility.SetDirty(data);
+                    navShifted++;
+                }
+                catch (Exception e) { navMissed++; sb.AppendLine("NAV_SHIFT_FAIL " + sceneName + ": " + e.Message); }
+            }
+            AssetDatabase.SaveAssets();
+        }
+        catch (Exception e) { sb.AppendLine("ORIGIN_FAIL " + e); }
+        finally
+        {
+            if (!string.IsNullOrEmpty(current) && File.Exists(current))
+                EditorSceneManager.OpenScene(current, OpenSceneMode.Single);
+        }
+        sb.Insert(0, string.Format("MAP_BATTLE_ORIGIN slots={0} moved={1} skipped={2} navShifted={3} navMissed={4}\n",
+            slots.Count, moved, skipped, navShifted, navMissed));
+        return sb.ToString();
+    }
+
     // Legacy NavMesh data is stored in a folder named after each scene.
     public static string BakeNav(string which = "")
     {
@@ -788,9 +867,13 @@ public static class MapBuild
                     try
                     {
                         // Whole-tile oblique preview only; the saved scene keeps
-                        // its close gameplay camera pose.
-                        cam.transform.position = new Vector3(20f, 300f, 20f);
-                        cam.transform.LookAt(new Vector3(256f, 0f, 256f));
+                        // its close gameplay camera pose. Battlefield scenes
+                        // are authored at a fixed offset, so both the camera
+                        // and its look-at target must use that same origin.
+                        Vector3 previewOrigin = variantName.IndexOf("_s") >= 0
+                            ? ScriptableFramework.SceneOrigin.BattleOffset : Vector3.zero;
+                        cam.transform.position = new Vector3(20f, 300f, 20f) + previewOrigin;
+                        cam.transform.LookAt(new Vector3(256f, 0f, 256f) + previewOrigin);
                         cam.fieldOfView = 60f;
                         cam.targetTexture = rt; cam.Render();
                         RenderTexture.active = rt;
@@ -875,12 +958,21 @@ public sealed class MapWorldNavExp : SimpleExpressionBase
 }
 
 public sealed class MapCameraFixExp : SimpleExpressionBase
-{
+    {
     protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
     {
-        return BoxedValue.FromString(MapBuild.FixCameras());
+    return BoxedValue.FromString(MapBuild.FixCameras());
     }
-}
+    }
+
+    public sealed class MapBattleOriginExp : SimpleExpressionBase
+    {
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+    string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
+    return BoxedValue.FromString(MapBuild.ApplyBattleOrigin(w));
+    }
+    }
 
 // Runtime diagnostic: report the live camera and its distance to the party
 // leader, so "follows / too far" can be measured instead of eyeballed.

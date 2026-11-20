@@ -35,19 +35,28 @@ public sealed class GmRootScript : MonoBehaviour
             TimeUtility.UpdateGfxTime(Time.time, Time.realtimeSinceStartup, Time.timeScale);
             long curTime = TimeUtility.GetLocalRealMilliseconds();
             if (m_ClipboardInterval > 0) {
-                DetectClipboardCommand();
+                bool clipboardEnabled = DetectClipboardCommand();
                 if (m_LastClipboardTime + m_ClipboardInterval < curTime) {
-                    if (m_NeedCheckClipboard) {
-                        m_NeedCheckClipboard = false;
-
-                        string cmd = GUIUtility.systemCopyBuffer.Trim();
-                        if (cmd.StartsWith(c_clipboard_cmd_tag)) {
-                            DebugConsole.Execute(cmd.Substring(c_clipboard_cmd_tag.Length));
-                        }
-                        else if (!string.IsNullOrEmpty(s_clipboard_cmd_tag) && cmd.StartsWith(s_clipboard_cmd_tag)) {
-                            DebugConsole.Execute(cmd.Substring(s_clipboard_cmd_tag.Length));
+                    string cmd = GUIUtility.systemCopyBuffer.Trim();
+                    string body = null;
+                    if (cmd.StartsWith(c_clipboard_cmd_tag)) {
+                        body = cmd.Substring(c_clipboard_cmd_tag.Length);
+                    }
+                    else if (!string.IsNullOrEmpty(s_clipboard_cmd_tag) && cmd.StartsWith(s_clipboard_cmd_tag)) {
+                        body = cmd.Substring(s_clipboard_cmd_tag.Length);
+                    }
+                    if (!string.IsNullOrEmpty(body)) {
+                        // iOS UIKeyCommand delivers Command+V as one command with a synthetic
+                        // key-up, so the modifier+V key-state check is unreliable there. Run
+                        // once per distinct tagged payload as a keyboard-free fallback.
+                        bool fromKey = m_NeedCheckClipboard;
+                        bool changed = cmd != m_LastClipboardCommand;
+                        if (clipboardEnabled && (fromKey || changed)) {
+                            DebugConsole.Execute(body);
+                            m_LastClipboardCommand = cmd;
                         }
                     }
+                    m_NeedCheckClipboard = false;
                     m_LastClipboardTime = curTime;
                 }
                 else if (m_LastClipboardTime > curTime) {
@@ -72,7 +81,7 @@ public sealed class GmRootScript : MonoBehaviour
             LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
-    private void DetectClipboardCommand()
+    private bool DetectClipboardCommand()
     {
         bool checkCtrlV = false;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
@@ -89,6 +98,7 @@ public sealed class GmRootScript : MonoBehaviour
                 m_NeedCheckClipboard = true;
             }
         }
+        return checkCtrlV;
     }
     private void TryInitGmRoot()
     {
@@ -268,9 +278,14 @@ public sealed class GmRootScript : MonoBehaviour
     }
 
     private long m_LastTaskCleanupTime;
+    // Clipboard polling is enabled explicitly by listen_clipboard(interval),
+    // typically from initgm.txt. Once enabled, Update() executes each distinct
+    // tagged payload once, which also works on iOS where UIKeyCommand gives no
+    // reliable modifier+V key state.
     private int m_ClipboardInterval;
     private long m_LastClipboardTime;
     private bool m_NeedCheckClipboard;
+    private string m_LastClipboardCommand = string.Empty;
     private BroadcastReceiverHandler m_AndroidReceiver;
     private bool m_SocketServerInited;
 

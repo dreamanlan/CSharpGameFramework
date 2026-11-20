@@ -301,16 +301,22 @@ namespace ScriptableFramework
         {
             m_IsBattleState = false;
 
-            //Kill all client NPCs. Also tell the UI to drop their overhead
-            // bars: Hp=0 only hides a bar (SetActive(false)) and leaves it in
-            // OverHeadBarManager.views, so bars from finished battles used to
-            // pile up across the additive load/unload cycle.
+            // Battle entities are owned by the Additive battlefield scene.
+            // Remove them from all runtime dictionaries here, WITHOUT recycling
+            // their GameObjects: recycling re-parents an object into the
+            // DontDestroyOnLoad ResPool, which would make it escape the scene
+            // unload. Game.cs recycles pooled objects first (ledger stays
+            // valid), then UnloadSceneAsync destroys the rest.
+            var ids = new List<int>();
             for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
-                if (!info.IsServerEntity) {
-                    info.Hp = 0;
-                    Utility.EventSystem.Publish("ui_remove_actor", "ui", info.GetId());
-                }
+                if (null != info && !info.IsServerEntity)
+                    ids.Add(info.GetId());
+            }
+            foreach (int id in ids) {
+                GfxSkillSystem.Instance.StopAllSkill(id, true, true, true);
+                EntityViewModelManager.Instance.ForgetEntityView(id);
+                DestroyEntityById(id);
             }
 
             var lvl = TableConfig.LevelProvider.Instance.GetLevel(levelId);

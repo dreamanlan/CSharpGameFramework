@@ -385,7 +385,9 @@ public class Game : MonoBehaviour
                             PluginFramework.Instance.ClickNpc(objId);
                         }
                         else {
-                            Vector3 pos = hit.point;
+                            // Raycast hits world space; MoveTo and the battle
+                            // story expect logical local coordinates.
+                            Vector3 pos = SceneOrigin.ToLocal(hit.point, SceneOrigin.Current);
                             PluginFramework.Instance.MoveTo(pos.x, pos.y, pos.z);
                         }
                     }
@@ -477,15 +479,26 @@ public class Game : MonoBehaviour
         LoadingManager.Instance.Show();
         yield return null;
         LoadingManager.Instance.SetProgress(0.1f);
-        // By now the previous battle's entities have been destroyed. Drop any
-        // bars that lost their owner before the new battle creates its own.
-        OverHeadBarManager.Instance.PurgeOrphans();
         yield return Resources.UnloadUnusedAssets();
         LoadingManager.Instance.SetProgress(0.2f);
         var asyncOper = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(lvl.prefab, UnityEngine.SceneManagement.LoadSceneMode.Additive);
         LoadingManager.Instance.SetAsync(asyncOper, 0.3f, 0.7f);
         yield return asyncOper;
+        // Capture the freshly loaded battlefield scene. From now on every
+        // runtime object created through ResourceSystem.NewObject is moved
+        // into this scene, so a single UnloadSceneAsync removes them all.
+        ResourceSystem.Instance.SetBattleScene(FindBattleScene(lvl.prefab));
         PluginFramework.Instance.OnBattleLoaded(lvl);
+    }
+
+    private Scene FindBattleScene(string prefab)
+    {
+        for (int i = 0; i < SceneManager.sceneCount; ++i) {
+            Scene sc = SceneManager.GetSceneAt(i);
+            if (sc.isLoaded && sc.name == prefab)
+                return sc;
+        }
+        return new Scene();
     }
 
     private IEnumerator UnloadBattle(TableConfig.Level lvl)
@@ -494,15 +507,25 @@ public class Game : MonoBehaviour
         // to be destroyed. Drop it before any LateUpdate can run.
         m_CameraController = null;
         RestoreMainSceneVisuals();
-        // Additive unloading cannot take the bars with it: actors live in the
-        // active/base scene and pooled bars under the DontDestroyOnLoad ResPool.
-        // Drop bars whose owning entity is already gone so they do not pile up
-        // across battle rounds.
-        OverHeadBarManager.Instance.PurgeOrphans();
+
+        // Recycle pooled objects that live in the battlefield scene BEFORE
+        // unloading it. This keeps the ResourceSystem ledger valid (objects go
+        // back to the DontDestroyOnLoad ResPool instead of being destroyed
+        // behind its back). Anything not in the ledger is destroyed by the
+        // scene unload itself.
+        ResourceSystem.Instance.RecycleBattleObjects();
+        OverHeadBarManager.Instance.ClearBattleViews();
+
         LoadingManager.Instance.Show();
         yield return null;
         LoadingManager.Instance.SetProgress(0.1f);
-        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(lvl.prefab);
+        // Wait for the unload to actually complete. Fire-and-forget used to let
+        // on_battle_closed / the next battle start while the old scene was
+        // still being torn down.
+        var unload = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(lvl.prefab);
+        if (null != unload)
+            yield return unload;
+        ResourceSystem.Instance.ClearBattleScene();
         LoadingManager.Instance.SetProgress(0.9f);
         yield return Resources.UnloadUnusedAssets();
         LoadingManager.Instance.SetProgress(1.0f);
@@ -728,8 +751,11 @@ public class Game : MonoBehaviour
     private void CameraLook(float[] poses)
     {
         if (null != poses && poses.Length >= 3) {
+            // Targets come from MovementStateInfo (logical); the camera lives
+            // in world space at the active scene origin.
+            Vector3 target = SceneOrigin.ToWorld(new Vector3(poses[0], poses[1], poses[2]), SceneOrigin.Current);
             m_CameraController.ClearFollow();
-            m_CameraController.MoveFollowPath(new Vector3(poses[0], poses[1], poses[2]), true);
+            m_CameraController.MoveFollowPath(target, true);
         }
     }
 

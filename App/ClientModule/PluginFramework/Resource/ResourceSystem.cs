@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using System.Reflection;
 
 namespace ScriptableFramework
@@ -437,6 +438,13 @@ namespace ScriptableFramework
                 gameObj.transform.SetParent(null);
                 gameObj.SetActive(true);
                 OnActiveChanged(gameObj, true);
+                // Single choke point for every NewObject (fresh Instantiate AND
+                // reuse from the idle heap). Battle-time runtime objects belong
+                // to the Additive battlefield scene so UnloadSceneAsync can
+                // remove them. World-layer actors are moved back by
+                // EntityViewModel_Base.CreateActor via DetachFromBattleScene.
+                if (PluginFramework.Instance.IsBattleState)
+                    AttachToBattleScene(gameObj);
             }
         }
         private void FinalizeObject(UnityEngine.Object obj)
@@ -627,6 +635,87 @@ namespace ScriptableFramework
 
         private MyDictionary<int, int> m_LayerDict = new MyDictionary<int, int>();
         private int m_DeactiveLayer = LayerMask.NameToLayer("DeActive");
+
+        // Battlefield scenes are loaded Additively. Runtime objects created
+        // during a battle are moved into that scene, so UnloadSceneAsync also
+        // removes anything the explicit cleanup missed. The world/base scene
+        // and the DontDestroyOnLoad ResPool must never be unloaded.
+        private Scene m_BattleScene;
+        private bool m_HasBattleScene = false;
+
+        public void SetBattleScene(Scene scene)
+        {
+            m_BattleScene = scene;
+            m_HasBattleScene = scene.IsValid();
+        }
+
+        public void ClearBattleScene()
+        {
+            m_BattleScene = new Scene();
+            m_HasBattleScene = false;
+        }
+
+        /// <summary>
+        /// Move a root GameObject into the battle scene. Only roots can be
+        /// moved; children inherit their root's scene. Fails silently for
+        /// objects Unity refuses to move (e.g. some DontDestroyOnLoad roots) —
+        /// RecycleBattleObjects still cleans their ledger entries on unload.
+        /// </summary>
+        public void AttachToBattleScene(GameObject go)
+        {
+            if (null == go || !m_HasBattleScene || !m_BattleScene.isLoaded) return;
+            if (null != go.transform.parent) return;
+            if (go.scene == m_BattleScene) return;
+            try {
+                SceneManager.MoveGameObjectToScene(go, m_BattleScene);
+            } catch (Exception e) {
+                LogSystem.Warn("AttachToBattleScene failed for {0}: {1}", go.name, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// World-layer actors are server-owned and must survive battle unload.
+        /// Move them back to the active (base) scene.
+        /// </summary>
+        public void DetachFromBattleScene(GameObject go)
+        {
+            if (null == go || !m_HasBattleScene) return;
+            Scene baseScene = SceneManager.GetActiveScene();
+            if (!baseScene.IsValid() || !baseScene.isLoaded) return;
+            if (go.scene == baseScene) return;
+            try {
+                SceneManager.MoveGameObjectToScene(go, baseScene);
+            } catch (Exception e) {
+                LogSystem.Warn("DetachFromBattleScene failed for {0}: {1}", go.name, e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Recycle every pooled object still living in the battle scene BEFORE
+        /// unloading it. This keeps the pool ledger consistent (the objects go
+        /// back to ResPool instead of being destroyed behind its back) and
+        /// returns how many were reclaimed. Anything not in the ledger (e.g.
+        /// detached fly-text) is simply destroyed by UnloadSceneAsync.
+        /// </summary>
+        public int RecycleBattleObjects()
+        {
+            if (!m_HasBattleScene) return 0;
+            var doomed = new List<UsedResourceInfo>();
+            for (LinkedListNode<UsedResourceInfo> node = m_UsedResources.FirstNode; null != node; node = node.Next) {
+                UsedResourceInfo info = node.Value;
+                if (null == info) continue;
+                GameObject go = info.m_Object as GameObject;
+                if (null != go && go.scene == m_BattleScene)
+                    doomed.Add(info);
+            }
+            foreach (UsedResourceInfo info in doomed) {
+                FinalizeObject(info.m_Object);
+                AddToUnusedResources(info.m_ResId, info.m_Object);
+                RemoveFromUsedResources(info.m_ObjId, info.m_Group);
+                info.Recycle();
+            }
+            return doomed.Count;
+        }
 
         private GameObject m_ResPoolRoot = null;
         private Transform m_ResPoolRootTransform = null;
