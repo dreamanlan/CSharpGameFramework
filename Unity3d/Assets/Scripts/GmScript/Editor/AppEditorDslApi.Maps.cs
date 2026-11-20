@@ -134,19 +134,38 @@ public static class MapBuild
         return px[y * w + x];
     }
 
-    private static TerrainData BuildTerrain(Tile t, string assetPath, string pngName, out float minH, out float maxH)
+    /// <summary>
+    /// Bilinear sample of a design PNG channel. The old RoundToInt lookup
+    /// quantised the 256px design into a 129px heightmap in visible steps.
+    /// </summary>
+    private static Vector2 SampleBilinearRG(Color32[] px, int w, int h, float u, float v)
     {
-        TerrainData td = AssetDatabase.LoadAssetAtPath<TerrainData>(assetPath);
-        if (td == null)
-        {
-            TerrainData src = AssetDatabase.LoadAssetAtPath<TerrainData>(SourceTerrain);
-            if (src == null) throw new Exception("missing base terrain " + SourceTerrain);
-            td = UnityEngine.Object.Instantiate(src);
-            AssetDatabase.CreateAsset(td, assetPath);
-        }
-        int tw, th;
-        string png = Path.Combine(TileDir, pngName);
+        float fx = Mathf.Clamp(u, 0f, 1f) * (w - 1);
+        float fy = Mathf.Clamp(v, 0f, 1f) * (h - 1);
+        int x0 = Mathf.FloorToInt(fx), y0 = Mathf.FloorToInt(fy);
+        int x1 = Mathf.Min(x0 + 1, w - 1), y1 = Mathf.Min(y0 + 1, h - 1);
+        float tx = fx - x0, ty = fy - y0;
+        Color32 a = px[y0 * w + x0], b = px[y0 * w + x1];
+        Color32 c = px[y1 * w + x0], d = px[y1 * w + x1];
+        float r = Mathf.Lerp(Mathf.Lerp(a.r, b.r, tx), Mathf.Lerp(c.r, d.r, tx), ty);
+        float g = Mathf.Lerp(Mathf.Lerp(a.g, b.g, tx), Mathf.Lerp(c.g, d.g, tx), ty);
+        return new Vector2(r, g);
+    }
+
+    /// <summary>
+    /// Write the R/G channels of a design PNG into an EXISTING TerrainData.
+    /// Shared by BuildTerrain() and map_terrain_patch() so that a full art
+    /// regeneration never has to rebuild the 704 scenes or re-bake NavMesh
+    /// references held by those scenes.
+    ///
+    /// The material band is a CONTINUOUS weight across adjacent layers (with a
+    /// slope bias towards rock) instead of the old one-hot four-step lookup,
+    /// which was the main cause of the hard-edged "colouring book" look.
+    /// </summary>
+    private static void ApplyTerrainFromPng(TerrainData td, string png, out float minH, out float maxH)
+    {
         if (!File.Exists(png)) throw new Exception("missing terrain PNG " + png);
+        int tw, th;
         Color32[] tp = ReadPng(png, out tw, out th);
         int res = td.heightmapResolution;
         td.size = new Vector3(WorldSize, TerrainHeight, WorldSize);
@@ -157,7 +176,7 @@ public static class MapBuild
             for (int x = 0; x < res; ++x)
             {
                 float u = (float)x / (res - 1), v = (float)z / (res - 1);
-                float val = SampleR(tp, tw, th, u, v);
+                float val = SampleBilinearRG(tp, tw, th, u, v).x / 255f;
                 heights[z, x] = val;
                 minH = Mathf.Min(minH, val); maxH = Mathf.Max(maxH, val);
             }
@@ -173,20 +192,219 @@ public static class MapBuild
                 for (int x = 0; x < ares; ++x)
                 {
                     float u = (float)x / (ares - 1), v = (float)z / (ares - 1);
-                    byte g = Sample(tp, tw, th, u, v).g;
-                    int layer = g < 64 ? 0 : g < 128 ? 1 : g < 192 ? 2 : 3;
-                    layer = Mathf.Clamp(layer, 0, layers - 1);
-                    alpha[z, x, layer] = 1f;
+                    Vector2 rg = SampleBilinearRG(tp, tw, th, u, v);
+                    // local terrain slope, sampled from the design height
+                    float du = 1f / Mathf.Max(1, tw - 1);
+                    float dv = 1f / Mathf.Max(1, th - 1);
+                    float hx = SampleBilinearRG(tp, tw, th, u + du, v).x -
+                               SampleBilinearRG(tp, tw, th, u - du, v).x;
+                    float hz = SampleBilinearRG(tp, tw, th, u, v + dv).x -
+                               SampleBilinearRG(tp, tw, th, u, v - dv).x;
+                    float slope = Mathf.Sqrt(hx * hx + hz * hz) / 255f;
+                    // G in 0..255 -> continuous position across the 4 layers;
+                    // steep ground is biased towards the rock/snow end.
+                    float t = Mathf.Clamp(rg.y / 64f + Mathf.Clamp(slope * 3.2f, 0f, 1f) * 0.85f,
+                                          0f, layers - 1 + 0.001f);
+                    int la = Mathf.Clamp(Mathf.FloorToInt(t), 0, layers - 1);
+                    int lb = Mathf.Min(la + 1, layers - 1);
+                    float f = Mathf.Clamp01(t - la);
+                    alpha[z, x, la] = 1f - f;
+                    alpha[z, x, lb] += f;
                 }
             }
             td.SetAlphamaps(0, 0, alpha);
         }
-        // Stage-0 design PNGs carry no tree layer; drop the trees inherited from
-        // the base Level2 terrain (they also spam the Pine_tree shader warning).
+        // Design PNGs carry no tree layer; drop trees inherited from Level2.
         td.treeInstances = new TreeInstance[0];
         td.treePrototypes = new TreePrototype[0];
         EditorUtility.SetDirty(td);
+    }
+
+    private static TerrainData BuildTerrain(Tile t, string assetPath, string pngName, out float minH, out float maxH)
+    {
+        TerrainData td = AssetDatabase.LoadAssetAtPath<TerrainData>(assetPath);
+        if (td == null)
+        {
+            TerrainData src = AssetDatabase.LoadAssetAtPath<TerrainData>(SourceTerrain);
+            if (src == null) throw new Exception("missing base terrain " + SourceTerrain);
+            td = UnityEngine.Object.Instantiate(src);
+            AssetDatabase.CreateAsset(td, assetPath);
+        }
+        ApplyTerrainFromPng(td, Path.Combine(TileDir, pngName), out minH, out maxH);
         return td;
+    }
+
+    /// <summary>
+    /// Build a six-sided skybox material from the Bluesky textures already in
+    /// the repo and place it under Resources so Game.cs can apply it at runtime
+    /// (no need to edit 704 scene files).
+    /// </summary>
+    public static string BuildSkybox()
+    {
+        const string dir = "Assets/Resources/Materials";
+        const string path = dir + "/BattleSkybox.mat";
+        Directory.CreateDirectory(dir);
+        var shader = Shader.Find("Skybox/6 Sided");
+        if (null == shader) return "SKYBOX_FAIL missing shader Skybox/6 Sided";
+        var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+        if (null == mat)
+        {
+            mat = new Material(shader);
+            AssetDatabase.CreateAsset(mat, path);
+        }
+        mat.shader = shader;
+        string baseDir = "Assets/Content/Textures/Skybox";
+        var slots = new[] {
+            new KeyValuePair<string,string>("Front", "_FrontTex"),
+            new KeyValuePair<string,string>("Back", "_BackTex"),
+            new KeyValuePair<string,string>("Left", "_LeftTex"),
+            new KeyValuePair<string,string>("Right", "_RightTex"),
+            new KeyValuePair<string,string>("Up", "_UpTex"),
+            new KeyValuePair<string,string>("Down", "_DownTex"),
+        };
+        int ok = 0;
+        foreach (var kv in slots)
+        {
+            string texPath = baseDir + "/Bluesky " + kv.Key + ".jpg";
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(texPath);
+            if (null == tex) continue;
+            mat.SetTexture(kv.Value, tex);
+            ok++;
+        }
+        mat.SetFloat("_Exposure", 1.05f);
+        EditorUtility.SetDirty(mat);
+        AssetDatabase.SaveAssets();
+        return "MAP_SKYBOX textures=" + ok + " path=" + path;
+    }
+
+    /// <summary>
+    /// Configure the 4096 treasure map so Unity does not downscale it to the
+    /// project default 2048, and keep mipmaps on for the minimap zoom levels.
+    /// </summary>
+    public static string SetupWorldMapTexture()
+    {
+        const string path = "Assets/Resources/UITexture/WorldMap.png";
+        if (!File.Exists(path)) return "WORLDMAP_FAIL missing " + path;
+        AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+        var imp = AssetImporter.GetAtPath(path) as TextureImporter;
+        if (null == imp) return "WORLDMAP_FAIL no TextureImporter";
+        imp.textureType = TextureImporterType.Default;
+        imp.maxTextureSize = 4096;
+        imp.mipmapEnabled = true;
+        imp.textureCompression = TextureImporterCompression.Compressed;
+        imp.sRGBTexture = true;
+        imp.alphaIsTransparency = false;
+        imp.SaveAndReimport();
+        return "MAP_WORLDMAP_TEXTURE path=" + path + " max=4096";
+    }
+
+    /// <summary>
+    /// Upgrade the four SHARED TerrainLayer assets with normal maps, a tighter
+    /// tile size and mild specular response. All 704 TerrainData assets point
+    /// at these layers, so one pass upgrades every scene without touching a
+    /// single .unity file or NavMesh reference.
+    /// </summary>
+    public static string PatchTerrainMaterials()
+    {
+        var sb = new StringBuilder();
+        var names = new[] {
+            "LvZhouCaoDi_01", "ChengZhen_DiZhuan_02",
+            "LvZhouSha_01", "YiZhan_HuangTuDi_02",
+        };
+        int layersDone = 0, normalsFound = 0;
+        try
+        {
+            // Import the generated normal maps with the right texture type.
+            foreach (string n in names)
+            {
+                string path = "Assets/Resources/TerrainNormals/" + n + "_normal.png";
+                if (!File.Exists(path)) { sb.AppendLine("MISS_NORMAL " + n); continue; }
+                AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceSynchronousImport);
+                var imp = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (null != imp)
+                {
+                    if (imp.textureType != TextureImporterType.NormalMap || imp.mipmapEnabled == false)
+                    {
+                        imp.textureType = TextureImporterType.NormalMap;
+                        imp.mipmapEnabled = true;
+                        imp.SaveAndReimport();
+                    }
+                }
+                normalsFound++;
+            }
+
+            var td = AssetDatabase.LoadAssetAtPath<TerrainData>(
+                DataDir + "/r0c0_s00_Ground.asset");
+            if (null == td) throw new Exception("missing sample TerrainData");
+            var layers = td.terrainLayers;
+            for (int i = 0; i < layers.Length && i < names.Length; ++i)
+            {
+                var layer = layers[i];
+                if (null == layer) continue;
+                string npath = "Assets/Resources/TerrainNormals/" + names[i] + "_normal.png";
+                var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(npath);
+                if (null != tex)
+                {
+                    layer.normalMapTexture = tex;
+                    layer.normalScale = 0.85f;
+                }
+                // 15m tiles made the 512m terrain read as one flat smear;
+                // 6m tiles keep visible surface grain at gameplay camera distance.
+                layer.tileSize = new Vector2(6f, 6f);
+                layer.smoothness = 0.12f;
+                layer.metallic = 0f;
+                EditorUtility.SetDirty(layer);
+                layersDone++;
+            }
+            AssetDatabase.SaveAssets();
+        }
+        catch (Exception e) { sb.AppendLine("MATERIAL_FAIL " + e); }
+        sb.Insert(0, string.Format("MAP_TERRAIN_MATERIALS layers={0} normals={1}\n",
+            layersDone, normalsFound));
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// In-place refresh of all 704 TerrainData assets from the design PNGs.
+    /// Does NOT touch any .unity scene, so the baked NavMesh references stay
+    /// intact. Optional tile id limits the refresh to one tile's 11 assets.
+    /// </summary>
+    public static string PatchTerrains(string which = "")
+    {
+        var sb = new StringBuilder();
+        List<Tile> tiles = LoadTiles();
+        List<Slot> slots = LoadSlots();
+        if (!string.IsNullOrEmpty(which))
+        {
+            tiles = tiles.Where(t => t.Id == which).ToList();
+            slots = slots.Where(s => s.TileId == which).ToList();
+        }
+        int done = 0, missing = 0;
+        try
+        {
+            var jobs = new List<KeyValuePair<string, string>>();
+            foreach (Tile t in tiles)
+                jobs.Add(new KeyValuePair<string, string>(
+                    t.Id + "_Ground.asset", t.Id + "_terrain.png"));
+            foreach (Slot s in slots)
+                jobs.Add(new KeyValuePair<string, string>(
+                    s.GridKey + "_Ground.asset", s.GridKey + "_terrain.png"));
+            foreach (var job in jobs)
+            {
+                string assetPath = DataDir + "/" + job.Key;
+                var td = AssetDatabase.LoadAssetAtPath<TerrainData>(assetPath);
+                string png = Path.Combine(TileDir, job.Value);
+                if (null == td || !File.Exists(png)) { missing++; sb.AppendLine("MISS " + job.Key); continue; }
+                float minH, maxH;
+                ApplyTerrainFromPng(td, png, out minH, out maxH);
+                done++;
+            }
+            AssetDatabase.SaveAssets();
+        }
+        catch (Exception e) { sb.AppendLine("PATCH_FAIL " + e); }
+        sb.Insert(0, string.Format("MAP_TERRAIN_PATCH jobs={0} updated={1} missing={2}\n",
+            tiles.Count + slots.Count, done, missing));
+        return sb.ToString();
     }
 
     private struct Area
@@ -408,6 +626,263 @@ public static class MapBuild
     // World scenes additionally get Config/1..N waypoint nodes: autorun.dsl
     // calls get_child_count("Config") and get_position("Config/"+index), so
     // the children must be active GameObjects named with those indices.
+    // ---- Stage 3 set dressing (design doc 43) -----------------------------
+    // Runtime props are authored INTO the scene so every battlefield has a
+    // stable, deterministic silhouette. They are deliberately NOT marked
+    // NavigationStatic: baked NavMesh must stay terrain-only, otherwise the
+    // two-wave encounter can be blocked by a tree or a house.
+
+    private const string PropDir = "Assets/Resources/SceneProps/";
+    private const float WaterR = 17f / 255f;   // matches terrain_synth water_level
+
+    private static GameObject LoadProp(string name)
+    {
+        return AssetDatabase.LoadAssetAtPath<GameObject>(PropDir + name + ".prefab");
+    }
+
+    private static Material s_FallbackPropMat = null;
+
+    private static Material FallbackPropMat()
+    {
+        if (null == s_FallbackPropMat)
+        {
+            var sh = Shader.Find("Standard");
+            if (null != sh)
+            {
+                s_FallbackPropMat = new Material(sh);
+                s_FallbackPropMat.name = "SceneryFallback";
+                s_FallbackPropMat.color = new Color(0.24f, 0.36f, 0.20f);
+                s_FallbackPropMat.SetFloat("_Glossiness", 0.12f);
+            }
+        }
+        return s_FallbackPropMat;
+    }
+
+    /// <summary>
+    /// Legacy tree prefabs use a bright pink foliage atlas. Standard shader
+    /// multiplies m.color over the texture, so a deep green tint neutralises
+    /// the pink while keeping all leaf detail. One cloned material per source
+    /// material is created as a scene-local asset and shared by every prop.
+    /// </summary>
+    private static readonly Dictionary<int, Material> s_TintedMats =
+        new Dictionary<int, Material>();
+
+    private static void TintFoliage(GameObject go)
+    {
+        foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
+        {
+            if (null == r) continue;
+            Material[] src = r.sharedMaterials;
+            if (null == src || src.Length == 0) continue;
+            var dst = new Material[src.Length];
+            for (int i = 0; i < src.Length; ++i)
+            {
+                Material m = src[i];
+                if (null == m) { dst[i] = FallbackPropMat(); continue; }
+                Material tinted;
+                if (!s_TintedMats.TryGetValue(m.GetInstanceID(), out tinted))
+                {
+                    tinted = new Material(m);
+                    tinted.name = m.name + "_Foliage";
+                    tinted.color = new Color(0.34f, 0.52f, 0.30f, m.color.a);
+                    string p = "Assets/Resources/Materials/Foliage_" +
+                               Mathf.Abs(m.GetInstanceID()) + ".mat";
+                    var existing = AssetDatabase.LoadAssetAtPath<Material>(p);
+                    if (null != existing) AssetDatabase.DeleteAsset(p);
+                    AssetDatabase.CreateAsset(tinted, p);
+                    s_TintedMats[m.GetInstanceID()] = tinted;
+                }
+                dst[i] = tinted;
+            }
+            r.sharedMaterials = dst;
+        }
+    }
+
+    private static void PlaceProp(GameObject prefab, Transform parent, Vector3 pos,
+                                  float yaw, float scale, string name, bool tintFoliage = false)
+    {
+        if (null == prefab) return;
+        GameObject go = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+        if (null == go) return;
+        go.name = name;
+        go.transform.SetParent(parent, false);
+        go.transform.position = pos;
+        go.transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+        go.transform.localScale = Vector3.one * scale;
+        // Scenery is decorative only: a collider would intercept the click-to-
+        // move Raycast in Game.cs and turn a tree into a movement target.
+        foreach (Collider c in go.GetComponentsInChildren<Collider>(true))
+            if (null != c) UnityEngine.Object.DestroyImmediate(c);
+        // Some legacy prop materials reference a missing shader and render
+        // bright magenta. Replace only broken ones; healthy ones keep their art.
+        foreach (Renderer r in go.GetComponentsInChildren<Renderer>(true))
+        {
+            if (null == r) continue;
+            Material[] mats = r.sharedMaterials;
+            if (null == mats) continue;
+            bool changed = false;
+            for (int i = 0; i < mats.Length; ++i)
+            {
+                Material m = mats[i];
+                bool bad = (null == m) || (null == m.shader) ||
+                           m.shader.name.Contains("InternalError") ||
+                           m.shader.name.Contains("Hidden/");
+                if (bad) { mats[i] = FallbackPropMat(); changed = true; }
+            }
+            if (changed) r.sharedMaterials = mats;
+        }
+        if (tintFoliage) TintFoliage(go);
+    }
+
+    private static void DressScene(Scene sc, TerrainData td, Vector3 origin,
+                                   string label, bool isEra, Color mood, List<Slot> waypoints)
+    {
+        var root = new GameObject("Scenery");
+        root.transform.position = origin;
+        SceneManager.MoveGameObjectToScene(root, sc);
+
+        // ---- water plane: only the low-lying carved areas show through -----
+        float waterY = TerrainHeight * WaterR;
+        var waterGo = GameObject.CreatePrimitive(PrimitiveType.Plane);
+        waterGo.name = "Water";
+        waterGo.transform.SetParent(root.transform, false);
+        waterGo.transform.position = origin + new Vector3(WorldSize * 0.5f, waterY + 0.12f, WorldSize * 0.5f);
+        // Slightly inside the tile so the plane never extends past the terrain
+        // edge into the sky, and only low-lying carved areas show water.
+        waterGo.transform.localScale = new Vector3(WorldSize * 0.094f, 1f, WorldSize * 0.094f);
+        var waterCol = waterGo.GetComponent<Collider>();
+        if (null != waterCol) UnityEngine.Object.DestroyImmediate(waterCol);
+        // The legacy Assets/Content/Materials/water.mat points at a missing
+        // shader (Hidden/InternalErrorShader) and renders bright magenta.
+        // Always build a self-contained Standard transparent material instead.
+        const string waterPath = "Assets/Resources/Materials/BattleWater.mat";
+        Material waterMat = AssetDatabase.LoadAssetAtPath<Material>(waterPath);
+        if (null != waterMat && Shader.Find("Standard") != waterMat.shader)
+        {
+            AssetDatabase.DeleteAsset(waterPath);
+            waterMat = null;
+        }
+        if (null == waterMat)
+        {
+            var sh = Shader.Find("Standard");
+            if (null != sh)
+            {
+                waterMat = new Material(sh);
+                waterMat.name = "BattleWater";
+                AssetDatabase.CreateAsset(waterMat, waterPath);
+            }
+        }
+        if (null != waterMat)
+        {
+            waterMat.color = new Color(0.16f, 0.34f, 0.46f, 0.80f);
+            waterMat.SetFloat("_Mode", 3f);
+            waterMat.SetFloat("_Glossiness", 0.92f);
+            waterMat.SetFloat("_Metallic", 0.05f);
+            waterMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            waterMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            waterMat.SetInt("_ZWrite", 0);
+            waterMat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+            waterMat.renderQueue = 3000;
+            EditorUtility.SetDirty(waterMat);
+            waterGo.GetComponent<Renderer>().sharedMaterial = waterMat;
+        }
+
+        // ---- deterministic scatter ----------------------------------------
+        var seed = 2166136261u;
+        foreach (char ch in label) { seed ^= ch; seed *= 16777619u; }
+        var rnd = new System.Random((int)(seed & 0x7FFFFFFF));
+        var tree = LoadProp("PineTree001");
+        var tree2 = LoadProp("LargeTree001");
+        var dead = LoadProp("DeadTree001");
+        var rock = LoadProp("Rock_a");
+        var house = LoadProp("House");
+        var hall = LoadProp("Building_a");
+
+        // Keep the spawn plateau (world 60,70) and the wave-2 advance clear.
+        const float spawnClear = 42f;
+        int placed = 0;
+        for (int i = 0; i < 150 && placed < 46; ++i)
+        {
+            float wx = (float)rnd.NextDouble() * WorldSize;
+            float wz = (float)rnd.NextDouble() * WorldSize;
+            if (Vector2.Distance(new Vector2(wx, wz), new Vector2(60f, 70f)) < spawnClear) continue;
+            float u = Mathf.Clamp01(wx / WorldSize), v = Mathf.Clamp01(wz / WorldSize);
+            float h = td.GetInterpolatedHeight(u, v);
+            if (h < waterY + 0.6f) continue;                 // underwater
+            float slope = td.GetSteepness(u, v);
+            if (slope > 34f) continue;                        // too steep
+            float wy = h;
+            GameObject prefab;
+            float scale;
+            bool isTree;
+            double pick = rnd.NextDouble();
+            if (slope > 22f || pick < 0.18) { prefab = rock; scale = 0.8f + (float)rnd.NextDouble() * 1.5f; isTree = false; }
+            else if (pick < 0.48) { prefab = tree; scale = 0.7f + (float)rnd.NextDouble() * 0.8f; isTree = true; }
+            else if (pick < 0.70) { prefab = tree2; scale = 0.7f + (float)rnd.NextDouble() * 0.7f; isTree = true; }
+            else { prefab = dead; scale = 0.8f + (float)rnd.NextDouble() * 0.7f; isTree = true; }
+            if (null == prefab) continue;
+            PlaceProp(prefab, root.transform,
+                      origin + new Vector3(wx, wy, wz),
+                      (float)rnd.NextDouble() * 360f, scale, "Prop_" + placed, isTree);
+            placed++;
+        }
+
+        // ---- a small ruin cluster, away from the fighting ground -----------
+        if (isEra)
+        {
+            float bx = 300f + (float)rnd.NextDouble() * 120f;
+            float bz = 300f + (float)rnd.NextDouble() * 120f;
+            float bu = Mathf.Clamp01(bx / WorldSize), bv = Mathf.Clamp01(bz / WorldSize);
+            float by = td.GetInterpolatedHeight(bu, bv);
+            if (by > waterY + 1.5f && td.GetSteepness(bu, bv) < 20f)
+            {
+                PlaceProp(house, root.transform, origin + new Vector3(bx, by, bz),
+                          (float)rnd.NextDouble() * 360f, 1.0f, "Ruin_House");
+                PlaceProp(hall, root.transform, origin + new Vector3(bx + 26f, by, bz + 8f),
+                          (float)rnd.NextDouble() * 360f, 0.9f, "Ruin_Hall");
+                PlaceProp(rock, root.transform, origin + new Vector3(bx - 18f, by, bz + 20f),
+                          0f, 1.2f, "Ruin_Rock");
+            }
+        }
+
+        // ---- event beacons from the slot waypoints -------------------------
+        if (null != waypoints)
+        {
+            var beamMat = AssetDatabase.LoadAssetAtPath<Material>("Assets/Resources/Materials/Beacon.mat");
+            if (null == beamMat)
+            {
+                var sh = Shader.Find("Standard");
+                if (null != sh)
+                {
+                    beamMat = new Material(sh);
+                    beamMat.color = new Color(0.95f, 0.78f, 0.32f, 0.55f);
+                    beamMat.SetFloat("_Mode", 3f);
+                    beamMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    beamMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    beamMat.SetInt("_ZWrite", 0);
+                    beamMat.EnableKeyword("_EMISSION");
+                    beamMat.SetColor("_EmissionColor", new Color(1.0f, 0.72f, 0.24f) * 1.4f);
+                    beamMat.renderQueue = 3000;
+                    AssetDatabase.CreateAsset(beamMat, "Assets/Resources/Materials/Beacon.mat");
+                }
+            }
+            for (int i = 0; i < waypoints.Count; ++i)
+            {
+                Slot s = waypoints[i];
+                float u = Mathf.Clamp01(s.X / WorldSize), v = Mathf.Clamp01(s.Z / WorldSize);
+                float h = td.GetInterpolatedHeight(u, v);
+                var beam = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                beam.name = "Beacon_" + (i + 1);
+                beam.transform.SetParent(root.transform, false);
+                beam.transform.position = origin + new Vector3(s.X, h + 5.0f, s.Z);
+                beam.transform.localScale = new Vector3(1.1f, 5.0f, 1.1f);
+                var col = beam.GetComponent<Collider>();
+                if (null != col) UnityEngine.Object.DestroyImmediate(col);
+                if (null != beamMat) beam.GetComponent<Renderer>().sharedMaterial = beamMat;
+            }
+        }
+    }
+
     private static void MakeScene(Tile t, TerrainData td, Color tint, string path, bool isEra, string label,
                                   List<Slot> waypoints = null)
     {
@@ -468,6 +943,9 @@ public static class MapBuild
         var marker = new GameObject(isEra ? "EraLayer" : "ModernLayer");
         marker.tag = "EditorOnly";
         marker.transform.position = origin;
+
+        Directory.CreateDirectory("Assets/Resources/Materials");
+        DressScene(sc, td, origin, label, isEra, mood, waypoints);
         EditorSceneManager.SaveScene(sc, path);
     }
 
@@ -648,13 +1126,22 @@ public static class MapBuild
                 if (File.Exists(SceneDir + "/" + sceneName + "/NavMesh.asset")) continue;
                 Directory.CreateDirectory(SceneDir + "/" + sceneName);
                 Scene sc = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+                List<GameObject> scenery = new List<GameObject>();
                 foreach (GameObject go in sc.GetRootGameObjects())
                 {
                     if (go == null) continue;
+                    if (go.name == "Scenery")
+                    {
+                        scenery.Add(go);
+                        go.SetActive(false);
+                        continue;
+                    }
                     foreach (Transform tr in go.GetComponentsInChildren<Transform>(true))
                         GameObjectUtility.SetStaticEditorFlags(tr.gameObject, StaticEditorFlags.NavigationStatic);
                 }
                 UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
+                foreach (GameObject go in scenery)
+                    if (null != go) go.SetActive(true);
                 EditorSceneManager.MarkSceneDirty(sc);
                 EditorSceneManager.SaveScene(sc);
                 baked++;
@@ -779,8 +1266,40 @@ public static class MapBuild
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Bake exactly one battlefield scene. Public so the sentinel-driven
+    /// bootstrap can spread 640 bakes across editor frames (keeping Unity
+    /// responsive) without going through the GM channel.
+    /// </summary>
+    public static bool BakeOneBattleScene(string sceneName)
+    {
+        string path = SceneDir + "/" + sceneName + ".unity";
+        if (!File.Exists(path)) return false;
+        Directory.CreateDirectory(SceneDir + "/" + sceneName);
+        Scene sc = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
+        var scenery = new List<GameObject>();
+        foreach (GameObject go in sc.GetRootGameObjects())
+        {
+            if (go == null) continue;
+            // Classic BuildNavMesh() may collect every Mesh regardless of
+            // static flags; hide decorative props while baking.
+            if (go.name == "Scenery") { scenery.Add(go); go.SetActive(false); continue; }
+            foreach (Transform tr in go.GetComponentsInChildren<Transform>(true))
+                GameObjectUtility.SetStaticEditorFlags(tr.gameObject, StaticEditorFlags.NavigationStatic);
+        }
+        UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
+        foreach (GameObject go in scenery)
+            if (null != go) go.SetActive(true);
+        EditorSceneManager.MarkSceneDirty(sc);
+        EditorSceneManager.SaveScene(sc);
+        return true;
+    }
+
     // Legacy NavMesh data is stored in a folder named after each scene.
-    public static string BakeNav(string which = "")
+    // force=true re-bakes scenes that already have a NavMesh.asset (needed
+    // after the terrain is regenerated); the default keeps the resumable
+    // "skip existing" behaviour for interrupted runs.
+    public static string BakeNav(string which = "", bool force = false)
     {
         var sb = new StringBuilder();
         List<Slot> slots = LoadSlots();
@@ -797,19 +1316,12 @@ public static class MapBuild
                 if (!File.Exists(path)) continue;
                 // Baking 640 scenes takes hours; support resuming after a
                 // cancelled run instead of rebuilding everything from scratch.
-                if (File.Exists(SceneDir + "/" + sceneName + "/NavMesh.asset")) continue;
-                Directory.CreateDirectory(SceneDir + "/" + sceneName);
-                Scene sc = EditorSceneManager.OpenScene(path, OpenSceneMode.Single);
-                foreach (GameObject go in sc.GetRootGameObjects())
-                {
-                    if (go == null) continue;
-                    foreach (Transform tr in go.GetComponentsInChildren<Transform>(true))
-                        GameObjectUtility.SetStaticEditorFlags(tr.gameObject, StaticEditorFlags.NavigationStatic);
-                }
-                UnityEditor.AI.NavMeshBuilder.BuildNavMesh();
-                EditorSceneManager.MarkSceneDirty(sc);
-                EditorSceneManager.SaveScene(sc);
-                baked++;
+                // force overrides this for a full refresh after terrain changes.
+                // Do NOT delete the existing asset: the scene keeps a guid
+                // reference to it, and BuildNavMesh() overwrites its content in
+                // place. Deleting would break that link for every scene.
+                if (!force && File.Exists(SceneDir + "/" + sceneName + "/NavMesh.asset")) continue;
+                if (BakeOneBattleScene(sceneName)) baked++;
             }
         }
         catch (Exception e) { sb.AppendLine("NAV_FAIL " + e); }
@@ -931,13 +1443,22 @@ public sealed class MapShotExp : SimpleExpressionBase
 }
 
 public sealed class MapNavExp : SimpleExpressionBase
-{
-    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
-    {
-        string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
-        return BoxedValue.FromString(MapBuild.BakeNav(w));
-    }
-}
+  {
+  protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+  {
+  string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
+  return BoxedValue.FromString(MapBuild.BakeNav(w));
+  }
+  }
+
+  public sealed class MapNavForceExp : SimpleExpressionBase
+  {
+  protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+  {
+  string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
+  return BoxedValue.FromString(MapBuild.BakeNav(w, true));
+  }
+  }
 
 public sealed class MapWorldBuildExp : SimpleExpressionBase
 {
@@ -971,6 +1492,39 @@ public sealed class MapCameraFixExp : SimpleExpressionBase
     {
     string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
     return BoxedValue.FromString(MapBuild.ApplyBattleOrigin(w));
+    }
+    }
+
+    public sealed class MapTerrainPatchExp : SimpleExpressionBase
+    {
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+    string w = operands.Count > 0 ? operands[0].GetString() : string.Empty;
+    return BoxedValue.FromString(MapBuild.PatchTerrains(w));
+    }
+    }
+
+    public sealed class MapTerrainMaterialsExp : SimpleExpressionBase
+    {
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+    return BoxedValue.FromString(MapBuild.PatchTerrainMaterials());
+    }
+    }
+
+    public sealed class MapSkyboxExp : SimpleExpressionBase
+    {
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+    return BoxedValue.FromString(MapBuild.BuildSkybox());
+    }
+    }
+
+    public sealed class MapWorldMapTextureExp : SimpleExpressionBase
+    {
+    protected override BoxedValue OnCalc(DslCalculator calculator, IList<BoxedValue> operands)
+    {
+    return BoxedValue.FromString(MapBuild.SetupWorldMapTexture());
     }
     }
 

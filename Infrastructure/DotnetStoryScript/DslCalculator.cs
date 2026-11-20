@@ -5209,7 +5209,7 @@ namespace DotnetStoryScript.DslExpression
             get { return m_RunState; }
             set { m_RunState = value; }
         }
-        internal Exception CurrentException {
+        public Exception CurrentException {
             get { return m_CurrentException; }
             set { m_CurrentException = value; }
         }

@@ -2324,3 +2324,99 @@ OnLoadBattleComplete 10016 → 两波 all_killed → dialog_over:998
 - `OverHeadBar.cs:Reset()` 的 `DetachChildren()` 会产生不在池账本里的飘字孤儿，它们作为战场 Scene 根对象会被 `UnloadSceneAsync` 销毁——这正是 Scene 归属作为兜底的价值
 - `MiniMap` 的 inBattle 跳过与 `AddActor` 门控仍保留：战斗期间房间服务器仍在同步世界层实体，这两个过滤防止给它们建血条/圆点。彻底删除需先统一场景模板（见 §40.4）
 - `OnLevelLoaded` 的 Additive 分支仍调 `OverHeadBarManager.Init()`（幂等）与重建 `CameraController`，与对象归属无关
+
+---
+
+## 43. 美术升级：档 2 → 档 1 → 档 3（2026-11-20 起，进行中）
+
+用户反馈「地图像幼儿园小朋友的画作」，确认按「先档 2 重做地形、再档 3 加水面/建筑、逐步细化」推进，给出 48 小时窗口。
+
+### 43.1 只读核查结论（为什么粗糙）
+
+`map_shot("r0c0")` 的实拍预览证实：战场 `r0c0_s00` 原本是**一整片灰褐色、无纹理、无阴影**；世界层像塑料沙盘；战场小地图几乎单色 + 一个黄点。
+
+反直觉发现：**仓库已有写实素材，只是没被正确用上**。实测 `r0c0_s00_Ground.asset`：`heightmapResolution=129`、`alphamapResolution=256`、`terrainLayers=4`（`LvZhouCaoDi_01` 草 / `ChengZhen_DiZhuan_02` 砖 / `LvZhouSha_01` 沙 / `YiZhan_HuangTuDi_02` 黄土，均 512×512 有 diffuse、无法线），`tileSize=(15,15)`。`Assets/Brush/*.jpg` 有 69 张实拍风地面贴图，`LvZhouCaoDi_01.jpg` 质量很好。
+
+五个成因：① 4 档硬阈值 one-hot alphamap（零过渡）；② 战场是 16×16 源像素双线性放大 + 仅 `±9/255` 噪声；③ 高度图仅 129×129 且整格是解析 `sin/cos` 拼贴；④ 单体平涂渲染（`SolidColor` 清屏 + `AmbientMode.Flat` + 一盏无阴影方向光 + 同色雾，无天空盒/后处理/水面/植被）；⑤ 小地图 NEAREST 放大 + 4 档量化，4096 藏宝图没进 UI。
+
+### 43.2 已完成：档 2（地形与小地图重做）
+
+**新增 `Resource/MapDesign/terrain_synth.py`**（共享合成模块，纯 numpy + Pillow）：
+- `value_noise`（PIL BICUBIC 格点插值；初版手写双线性在 lattice 边界有 0.59 跳变，改用 PIL 后降到 0.023）、`fbm`（6 八度）、`ridged`、`domain_warp`、`sample_warped`
+- `river_mask`（变宽蜿蜒河道）、`hydraulic_erosion`（3 轮坡度加权拉普拉斯 + 冲沟）、`slope_map`
+- `compose()`：区域配方 → ridged 山脊 + 域扭曲 → 河道下切/陨坑/群岛/沙丘/梯田 → 外围羽化山脊 → 侵蚀 → **水位归一化**（分位数平移，内陆 ~10%、群岛 ~42%）→ 顶部软压缩（消除平顶）→ 由高度/坡度/湿度生成**连续 G 材质带** → B 可行走掩码
+- `cartographic_minimap()`：连续高程色带 + `hillshade` 晕渲 + 等高线 + 陡坡压暗 + 纸张颗粒；语义覆盖层改为柔化半透明道路/虚线战斗环/小光晕点标记（不再是实心红盘）
+
+**`draw_all_tiles.py`**：`gen_terrain()` 改调 `terrain_synth.compose`，保留「战斗区压平 `(32,g0,255)`」契约；`fast_minimap` 改调晕渲制图；顺带修掉 Python 3.15 下 `shutil.copy_file` 不存在的既有 bug。64 格 `TOTAL=64 PASS=64`。
+
+**`build_battlefield_art.py` 重写**：不再裁 16×16 放大，改为**程序化独立合成**——tile 级低频场（`fbm(256, tile_seed, base_cells=2.5)`，同格 10 战场共享）+ slot 级 6 八度细节场，按 `grid_key` 播种；出生点 `(60,70)`→PNG `(30,35)` 周围做**不规则边界软压平战斗平台**（R≈62，可走，覆盖两波推进）；小地图改晕渲 + 出生环 + 罗盘。全量 640 张耗时 85.6 秒，同格 10 张之间 5 万+ 像素不同。
+
+**`build_story.py` 重跑**：出生高度随新地形从 43.4 变为 17.0；`dslcopy.bat Debug False` 三端同步；704 张小地图 PNG 复制到 `Assets/Resources/Minimap/`。
+
+**`build_world_map.py`（新增）**：用 64 张真实晕渲地形拼 4096 藏宝图，回填战斗平台高度消除圆斑、羽化格边消除接缝、加分区框/路线/罗盘/图例。产物 `world_map.png`（16.9 MB）与预览；复制为 `Assets/Resources/UITexture/WorldMap.png`。`localmain.dsl:12/19` 的 `UITexture/Map1` / `Story1` 改 `UITexture/WorldMap`，三端各 2 处引用。
+
+### 43.3 已完成：档 1（材质与光照）
+
+**`AppEditorDslApi.Maps.cs`**：抽出 `ApplyTerrainFromPng()`（供 `BuildTerrain` 与新 patch 命令共用），把 `Mathf.RoundToInt` 最近邻改成**双线性采样**，把 one-hot alphamap 改成**按 G 连续权重 + 坡度偏向岩石**的相邻层混合；新增 `PatchTerrains([tile_id])`（就地刷新 704 份 `TerrainData`，**不碰任何 .unity / NavMesh 引用**）、`PatchTerrainMaterials()`（4 个共享 `TerrainLayer` 挂法线、tileSize 15→6、smoothness 0.12）、`BuildSkybox()`（用现成 `Bluesky*.jpg` 生成 6 面天空盒到 `Assets/Resources/Materials/BattleSkybox.mat`）、`SetupWorldMapTexture()`（4096 不缩水）。
+
+**`build_terrain_normals.py`（新增）**：从 4 张 diffuse 用 Sobel 亮度梯度生成切线空间法线 PNG，放到 `Assets/Resources/TerrainNormals/`，由 patcher 以 `TextureImporterType.NormalMap` 导入。
+
+**`Game.cs`**：新增 `ApplySceneAtmosphere()`，运行时一次性应用天空盒、`AmbientMode.Trilight`、雾色与背景分离、方向光 Soft 阴影；在 `OnLevelLoaded` 与 `OnLoadBattleComplete` 调用。这样 704 个场景文件一个都不用改。
+
+新增 GM 命令：`map_terrain_patch` / `map_terrain_materials` / `map_skybox` / `map_worldmap_texture`。实测 `MAP_TERRAIN_PATCH jobs=704 updated=704 missing=0`（33 秒）、`MAP_TERRAIN_MATERIALS layers=4 normals=4`、`MAP_SKYBOX textures=6`、`MAP_WORLDMAP_TEXTURE max=4096`；`MAP_VERIFY total=704 pass=704 fail=0`。
+
+**效果（map_shot 前后对比）**：战场从"灰褐无纹理"变成有山脊、河谷、草/岩/沙连续过渡；世界层从"塑料沙盘"变成有植被斑块、冲沟、山脊。
+
+### 43.4 进行中：档 3（水面/植被/建筑/光柱）
+
+**`MakeScene` 新增 `DressScene()`**：水面平面（按 `water_level=17/255` 的世界高度，仅低洼处露出）、按高度/坡度确定性散布 ≤46 个树/岩 prop（避开出生平台 42 单位、水下与 >34° 陡坡）、遗迹建筑簇、事件点光柱；装饰物**不设 NavigationStatic**，保证 NavMesh 只基于地形。
+
+配套：`LoadProp/PlaceProp/FallbackPropMat/TintFoliage`（处理旧 prefab 的粉色 foliage 贴图与破损 shader）；自建 `BattleWater.mat` 与 `Beacon.mat`（**旧 `Assets/Content/Materials/water.mat` 用 `Hidden/InternalErrorShader`，会渲染成洋红，必须避开**）。
+
+单格探针 `map_build("r0c0")` 成功（`scenes=11`），`map_shot` 暴露并修复了水面洋红与溢出边界问题；树冠粉红 tint 修正已写入代码，**尚未重新出图确认**。
+
+### 43.5 全量落地与恢复检查点（2026-11-20 夜）
+
+**档 3 视觉已确认**（`map_shot("r0c0")`）：树冠粉红消除（棕褐秋叶）、水面深蓝且不溢出地形边界、山脊/河谷/湖泊/植被散布清晰；`r0c0_s00` 与 `r0c0_s05` 地貌明显不同，证明 640 战场各自独立。
+
+**落地顺序（全部完成，2026-11-21 02:56）**：
+```
+1. map_build()                -> 704 场景全量重建（含 DressScene），MAP_VERIFY total=704 pass=704 fail=0
+2. map_nav_force("r0c0")      -> 单格探针 10/10，验证覆盖写保住 guid
+3. map_nav_force()            -> 640 场景全量重烘完成（23:27~01:22，约 2h；最后 r7c7_ancient_s09）
+   + map_nav_force("r0c0")    -> 补齐 3 张早于统计切点的探针批次，最终 640/640
+4. map_battle_origin()        -> slots=640 moved=0 skipped=640 navShifted=0 navMissed=0（无二次平移）
+5. map_verify()               -> MAP_VERIFY total=704 pass=704 fail=0
+6. 进 Play 实机验证（ai_art48，见 §43.7）
+```
+
+### 43.7 实机验证（2026-11-21 02:51~02:56）
+
+环境重新就绪：Unity 切回 `Start` 后 Play，runtime GM 通道连出，`RunServer.cmd` 起 6 服务 + 9001 网关。
+
+- **结算链**：连跑 7 场 `10001 → 10008`，每场都是「两波 `all_killed` → `dialog_over:998` → `UnloadBattle` → `on_battle_closed` → 下一场」，`Game.log` 最后 4000 行无 `Exception` / `NullReference` / `MissingReference` / `unknown func` / `MoveTo failed`。**寻路正常**，证明新 NavMesh 与档 2 地形匹配、装饰物未挡路
+- **实体/名字板**：战斗中 `combat_probe()` = `entities=25 overheadBars=25 orphans=0 noParent=0`（5 本地战斗实体 + 20 世界层 NPC），7 场后数字不变、不累积；世界层实体逻辑坐标仍 0..512、战斗实体 ~60/70，`SceneOrigin` 参照系完好
+- **档 1 运行时氛围确认生效**：`RenderSettings.skybox` 非 null、`ambientMode=Trilight`、`fog=True`、`Camera.main.clearFlags=Skybox`（编辑器 `map_shot` 预览看不到这部分，只有 Play 里能验证）
+- 640 份 `NavMesh.asset` 齐全、`.meta` guid 保留、服务 6 个进程在跑
+
+**历史噪声**：`Editor.log:14170939` 的 `CS2001 NavRebuildBootstrap.cs could not be found` 是删除哨兵引导脚本时的单次编译报错，其后 `14171040 Mono: successfully reloaded assembly` 已恢复；Play 跑通 7 场证实当前编译正常。引导脚本与哨兵文件均已清理。
+
+**本轮新增的三道保险**（避免 5.4 小时白跑与玩法回归）：
+- `PlaceProp()` 移除装饰物所有 `Collider`：否则 `Game.cs` 点击移动的 `Physics.Raycast` 会命中树/岩石，把树当成移动目标
+- `BakeOneBattleScene()` 烘焙前把 `Scenery` 根 `SetActive(false)`、烘完恢复：`NavMeshBuilder.BuildNavMesh()` 的 collect-objects 可能收集所有 Mesh（不看 static flag），装饰物会变成可行走面的障碍困住战斗实体。`BakeNav` / `BakeWorldNav` 都走这个单一方法
+- 单格探针验证：`Scenery` rootFlags=0、顶点 1579（含装饰物时 1849）、坐标 `8208~8661`（战场 8192 原点区）、`NavMeshData.position=(0,0,0)`、`NavMesh.asset.meta` 保留（guid 未变）
+
+**新增 `map_nav_force([tile_id])`**：`BakeNav(which, force)` 的 force 分支跳过 `File.Exists` 断点检查，**就地覆盖写**而不删除资产（删除会让 704 场景里的 guid 引用失效）。默认 `map_nav()` 仍是可中断续跑语义。这取代了 §43.5 早期版本里「先删 640 个 NavMesh.asset」的做法——那个做法既破坏性又会断 guid。
+
+**服务**：`RunServer.cmd` 已启动 6 服务 + node 网关，9001 监听中，为重烘完成后的实机验证备好。
+
+**监控方式**：`Get-ChildItem Unity3d/Assets/Scenes/Levels -Filter 'NavMesh.asset' -Recurse | Where-Object LastWriteTime > now-5min`，标题栏显示当前烘焙场景；Unity 主线程忙时 `Responding=False` 属正常，不要重复提交命令。GM 通道在长批处理 + 域重载后可能长时间不连出，`unity_activate` + 前台激活通常 0~7 次恢复。
+
+若重烘中途失败，直接再跑 `map_nav()`（不带 force）即可从断点续跑；确认全部 640 份 mtime 都是本轮之后，再执行 4/5/6。
+
+### 43.6 环境备注
+
+- 本地 Python 3.15.2 原本无 numpy，已 `pip install numpy`（2.5.5）；仅影响本地生成环境，未写入仓库依赖清单
+- 域重载后 editor GM 通道偶发长时间不连出（`SetForegroundWindow` 通常 0~7 次激活恢复，本轮末尾连续 14 次未恢复）；按纪律不无限重试
+- `e:/tmp/map_previews/` 存有各阶段对比图
+- 生成器重跑顺序：`draw_all_tiles.py` → `build_battlefield_art.py` → `build_world_map.py` → `build_story.py` → `dslcopy.bat Debug False` → Unity `map_terrain_patch()` / `map_terrain_materials()` / `map_skybox()` / `map_worldmap_texture()`

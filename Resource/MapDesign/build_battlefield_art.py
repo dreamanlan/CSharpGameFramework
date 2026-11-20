@@ -1,29 +1,43 @@
 # -*- coding: utf-8 -*-
 """
-Stage 2 art generator: crop each battlefield's 32x32 world-space
-neighbourhood out of its tile's 256x256 design PNG, magnify x16 into a
-256x256 source PNG for the (still 512x512) Unity terrain, and add
-deterministic fine detail so 640 battlefields do not look identical.
+Stage 2+ battlefield art generator (design doc 43).
 
-Channel contract (same as draw_all_tiles.py gen_terrain):
+Each of the 640 battlefields is a 512x512 world-unit scene authored at the
+fixed battlefield origin (SceneOrigin.BattleOffset). Instead of cropping a
+16x16 window out of its tile's design PNG and magnifying it x16 (which only
+produced smooth gradient blocks), we now synthesise a full 256x256 terrain
+procedurally:
+
+  * a tile-level low-frequency field keeps the 10 battlefields of one tile
+    geographically related;
+  * a slot-level fBm + ridged + domain-warped field gives every battlefield
+    its own ridges, gullies and material variation;
+  * the shared compose() pipeline carves rivers, erodes, and derives the
+    material band from height/slope/moisture;
+  * a soft, irregularly shaped combat plateau around the fixed spawn point
+    (world 60,70 -> pixel 30,35) keeps the two-wave encounter playable.
+
+Channel contract (unchanged):
   R = height (0..255 -> 0..TerrainHeight)
-  G = alphamap material band
+  G = alphamap material band (continuous)
   B = walkability mask
 
-Outputs, per battlefield grid_key ({tid}_s{slot:02d}):
-  tiles/{grid_key}_terrain.png          256x256 RGB magnified neighbourhood
-  tiles/{grid_key}_minimap.png          512x512 RGB coarse overview
+Outputs per grid_key ({tid}_s{slot:02d}):
+  tiles/{grid_key}_terrain.png          256x256 RGB
+  tiles/{grid_key}_minimap.png          512x512 hillshaded map
   tiles/minimap640/{grid_key}_minimap.png
   MapData/{grid_key}_areas.txt          battlefield-local area hints
 
-The 16x16 source pixels carry only the broad shape. Three octaves of
-value noise (seeded from grid_key, rendered with PIL's C-level resize)
-supply the "more detail" the design asks for. Amplitude stays within
-+/-9/255 on R so the world silhouette, relief and walkability survive.
+build_story.py reads the spawn height from {grid_key}_terrain.png, so it must
+be re-run after this generator (and dslcopy.bat afterwards).
 """
 import os
-import random
-from PIL import Image, ImageChops, ImageDraw
+import math
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter
+
+import terrain_synth as ts
+from draw_all_tiles import PROFILE
 
 ROOT = r'D:\GitHub\CSharpGameFramework'
 DESIGN = os.path.join(ROOT, 'Resource', 'MapDesign')
@@ -33,10 +47,11 @@ MINIMAP_DIR = os.path.join(TILES, 'minimap640')
 SLOTS = os.path.join(DESIGN, 'battle_slots.txt')
 
 SRC = 256                          # design PNG resolution, 1 px = 2 world units
-PX_PER_UNIT = SRC / 512.0
-NEIGHBOURHOOD = 32.0
-WINDOW = int(NEIGHBOURHOOD * PX_PER_UNIT)   # 16 source pixels
-MAGNIFY = 16                       # 32 world units -> 512 world units
+SPAWN_PX = (30, 35)                # world (60, 70) / 2
+PLATFORM_RADIUS = 26.0             # px = 52 world units; covers wave-2 advance
+PLATFORM_FALLOFF = 26.0            # wider blend so the plateau reads as a
+                                   # natural clearing instead of a disc
+PLATFORM_HEIGHT = 62.0             # R value, ~17 world units
 
 
 def slots():
@@ -48,7 +63,8 @@ def slots():
             p = line.rstrip('\n').split('\t')
             out.append(dict(level_id=int(p[0]), tid=p[1], slot=int(p[2]),
                             grid_key=p[3], era=p[4], kind=p[5],
-                            x=float(p[6]), z=float(p[7]), title=p[11]))
+                            x=float(p[6]), z=float(p[7]), title=p[11],
+                            code=p[12], diff=int(p[15])))
     return out
 
 
@@ -60,54 +76,78 @@ def seed_of(key):
     return h
 
 
-def detail_noise(seed):
-    """Three smoothed octaves, each upscaled by PIL (C level), combined to 0..18."""
-    rnd = random.Random(seed)
-    acc = None
-    for cell, weight in ((8, 0.55), (24, 0.30), (64, 0.15)):
-        n = SRC // cell + 2
-        small = Image.frombytes('L', (n, n),
-                                bytes(rnd.randrange(256) for _ in range(n * n)))
-        big = small.resize((SRC, SRC), Image.BILINEAR)
-        acc = big if acc is None else Image.blend(acc, big, weight)
-    lut = [int(round(i / 255.0 * 18.0)) for i in range(256)]
-    return acc.point(lut)
+def tile_seed(tid):
+    return seed_of('tile:' + tid)
 
 
-def build_terrain(src_im, s):
-    w, h = src_im.size
-    cx = s['x'] * PX_PER_UNIT
-    cy = s['z'] * PX_PER_UNIT
-    x0 = int(max(0, min(w - WINDOW, cx - WINDOW / 2.0)))
-    y0 = int(max(0, min(h - WINDOW, cy - WINDOW / 2.0)))
-    window = src_im.crop((x0, y0, x0 + WINDOW, y0 + WINDOW))
-    big = window.resize((SRC, SRC), Image.BILINEAR)
-    r, g, b = big.split()
-    noise = detail_noise(seed_of(s['grid_key']) ^ (0x9E37 * (s['slot'] + 1)))
-    r = ImageChops.add(r, noise, scale=1.0, offset=-9)
-    return Image.merge('RGB', (r, g, b))
+def build_terrain(s, cache):
+    size = SRC
+    tseed = tile_seed(s['tid'])
+    sseed = seed_of(s['grid_key'])
+
+    # Cache the tile-level low-frequency field: 10 slots share it.
+    if s['tid'] not in cache:
+        cache[s['tid']] = ts.fbm(size, tseed, octaves=4, base_cells=2.5)
+    low = cache[s['tid']]
+
+    # Slot-specific detail. The (x,z) slot centre phases the field so nearby
+    # slots are related without looking identical.
+    detail = ts.fbm(size, sseed, octaves=6, base_cells=4.0)
+    phase = (s['x'] + s['z']) / 1024.0
+    detail = 0.82 * detail + 0.18 * np.roll(
+        np.roll(detail, int(phase * size * 0.35), axis=1),
+        int(phase * size * 0.21), axis=0)
+    field = 0.48 * low + 0.52 * detail
+
+    code = s['code'] if s['code'] in PROFILE else 'ARR'
+    p = PROFILE[code]
+    relief = p['relief'] * (0.80 + 0.20 * s['diff'] / 5.0)
+    rgb = ts.compose(
+        field, sseed,
+        base=p['base'], relief=relief, bias=p['bias'],
+        rivers=p['rivers'], craters=p['craters'], islands=p['islands'],
+        dunes=p['dunes'], terraces=p['terraces'], boundary=True,
+        target_water=0.42 if p['islands'] else 0.09)
+
+    # ---- soft combat plateau ---------------------------------------------
+    # The story always spawns the party at world (60,70) and advances ~20
+    # world units in wave 2. Blend the terrain towards a walkable, gently
+    # undulating plateau with an irregular boundary (no visible hard disc).
+    yy, xx = np.mgrid[0:size, 0:size].astype(np.float64)
+    d = np.hypot(xx - SPAWN_PX[0], yy - SPAWN_PX[1])
+    wobble = (ts.value_noise(size, 7.0, sseed + 31) - 0.5) * 12.0
+    t = np.clip((d - (PLATFORM_RADIUS + wobble)) / PLATFORM_FALLOFF, 0.0, 1.0)
+    t = t * t * (3.0 - 2.0 * t)
+    micro = (ts.fbm(size, sseed + 77, octaves=3, base_cells=24.0) - 0.5) * 7.0
+    plateau = PLATFORM_HEIGHT + micro
+    rgb[:, :, 0] = rgb[:, :, 0] * t + plateau * (1.0 - t)
+    rgb[:, :, 2] = np.where(t < 0.55, 255.0, rgb[:, :, 2])
+    # keep the material band coherent with the new height
+    slope = ts.slope_map(rgb[:, :, 0])
+    g = np.clip((rgb[:, :, 0] - 60.0) / 90.0, 0.0, 1.0) * 120.0
+    g += np.clip((slope - 1.6) / 7.0, 0.0, 1.0) * 75.0
+    g -= (ts.fbm(size, sseed + 888, octaves=4, base_cells=5.0) - 0.5) * 34.0
+    g += p['bias'] * 16.0
+    rgb[:, :, 1] = rgb[:, :, 1] * t + np.clip(g, 8.0, 250.0) * (1.0 - t)
+    return ts.to_image(rgb)
 
 
-def build_minimap(terrain):
-    im = terrain.resize((512, 512), Image.BILINEAR).convert('RGB')
-    px = im.load()
-    for y in range(512):
-        for x in range(512):
-            r, g, b = px[x, y]
-            if r < 70:
-                c = (60, 96, 130)
-            elif r < 110:
-                c = (96, 118, 96)
-            elif r < 155:
-                c = (140, 128, 92)
-            else:
-                c = (168, 162, 150)
-            px[x, y] = (int(c[0] * 0.5 + r * 0.5),
-                        int(c[1] * 0.5 + g * 0.5),
-                        int(c[2] * 0.5 + b * 0.5))
-    d = ImageDraw.Draw(im)
-    d.ellipse((248, 248, 264, 264), fill=(230, 200, 70), outline=(60, 50, 20))
-    return im
+def build_minimap(terrain, s):
+    """Hillshaded battlefield map with a subtle spawn marker."""
+    img = ts.cartographic_minimap(terrain, size=512, seed=seed_of(s['grid_key']))
+    d = ImageDraw.Draw(img)
+    # spawn ring at (60,70) world -> 512px map centre offset
+    px, py = int(SPAWN_PX[0] * 2), int(SPAWN_PX[1] * 2)
+    r = 11
+    d.ellipse((px - r, py - r, px + r, py + r), outline=(238, 214, 128), width=2)
+    d.ellipse((px - 2, py - 2, px + 2, py + 2), fill=(248, 226, 140))
+    # compass rose in a corner, drawn small and unobtrusive
+    cx, cy, cr = 512 - 34, 34, 15
+    d.ellipse((cx - cr, cy - cr, cx + cr, cy + cr), outline=(226, 214, 188), width=1)
+    d.line((cx, cy - cr + 3, cx, cy + cr - 3), fill=(226, 214, 188), width=1)
+    d.line((cx - cr + 3, cy, cx + cr - 3, cy), fill=(226, 214, 188), width=1)
+    d.polygon([(cx, cy - cr + 2), (cx - 3, cy), (cx + 3, cy)], fill=(238, 214, 128))
+    return img
 
 
 def write_battle_areas(s):
@@ -132,21 +172,14 @@ def main():
     cache = {}
     n = 0
     for s in rows:
-        src = os.path.join(TILES, s['tid'] + '_terrain.png')
-        if not os.path.exists(src):
-            print('MISS_SRC', s['tid'])
-            continue
-        if s['tid'] not in cache:
-            cache[s['tid']] = Image.open(src).convert('RGB')
-        terrain = build_terrain(cache[s['tid']], s)
+        terrain = build_terrain(s, cache)
         terrain.save(os.path.join(TILES, s['grid_key'] + '_terrain.png'))
-        mini = build_minimap(terrain)
+        mini = build_minimap(terrain, s)
         mini.save(os.path.join(TILES, s['grid_key'] + '_minimap.png'))
         mini.save(os.path.join(MINIMAP_DIR, s['grid_key'] + '_minimap.png'))
         write_battle_areas(s)
         n += 1
-    print('BATTLEFIELD_ART battlefields=%d out=%dx%d window=%dpx magnify=x%d' %
-          (n, SRC, SRC, WINDOW, MAGNIFY))
+    print('BATTLEFIELD_ART battlefields=%d out=%dx%d mode=procedural' % (n, SRC, SRC))
     print('terrain_png=%d minimap_png=%d areas=%d' % (n, n, n))
 
 

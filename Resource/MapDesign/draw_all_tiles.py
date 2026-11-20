@@ -107,75 +107,31 @@ def gen_points(row, era_seed):
 
 
 def gen_terrain(row, all_areas):
-    """R 高度 / G 材质 / B 功能 mask；战斗区内部高度恒定、边界封边。"""
+    """
+    R 高度 / G 材质 / B 功能 mask；战斗区内部高度恒定、边界封边。
+
+    Stage 2+ (design doc 43): the analytic sin/cos height field is replaced
+    by the shared procedural synthesiser (fBm + ridged noise + domain warp +
+    river downcutting + hydraulic erosion + slope-derived material).
+    The RGB channel contract, the walkability semantics and the flattened
+    combat platforms are unchanged, so BuildTerrain / BuildStory /
+    WorldEvent / areas.txt keep working.
+    """
+    import terrain_synth as ts
     code = row['code']
     p = PROFILE[code]
-    m = MATERIAL[code]
-    rnd = random.Random(seed_of(row['tid']))
-    ph = rnd.random() * 6.283
-    img = Image.new('RGB', (W, W))
-    px = img.load()
+    seed = seed_of(row['tid']) & 0xFFFFFFFF
     diff = row['diff'] / 5.0
+    relief = p['relief'] * (0.78 + 0.28 * diff)
 
-    rivers = []
-    for k in range(p['rivers']):
-        rivers.append((60 + 62 * k + rnd.randint(-12, 12), 0.022 + 0.008 * k, rnd.random() * 6.28))
-    craters = [(rnd.randint(50, 206), rnd.randint(50, 206), rnd.randint(22, 40))
-               for _ in range(p['craters'])]
-    islands = [(rnd.randint(50, 206), rnd.randint(50, 206), rnd.randint(28, 46))
-               for _ in range(p['islands'])]
-
-    for y in range(W):
-        for x in range(W):
-            nx, ny = x / W, y / W
-            h = p['base'] + p['relief'] * 0.30 * (
-                math.sin(nx * 7.0 + ph) * math.cos(ny * 6.0 + ph * 0.7) +
-                0.5 * math.sin(nx * 15.0 - ny * 11.0 + ph * 1.7))
-            # 河道 / 干河床
-            for (cy, freq, phase) in rivers:
-                riv = abs(y - (cy + 26 * math.sin(x * freq + phase)))
-                if riv < 9:
-                    h = min(h, 8 + riv * 0.6)
-            # 陨坑 / 矿坑 / 竖井
-            for (cx, cy, rad) in craters:
-                d = math.hypot(x - cx, y - cy)
-                if d < rad:
-                    h -= (1 - d / rad) * 42
-                elif d < rad * 1.35:
-                    h += (1 - abs(d - rad * 1.15) / (rad * 0.35)) * 22
-            # 群岛
-            if p['islands']:
-                near = min(math.hypot(x - cx, y - cy) - rad for cx, cy, rad in islands)
-                if near > 0:
-                    h = max(4, 16 - near * 0.9)
-                else:
-                    h += min(52, -near * 1.4)
-            # 沙丘
-            if p['dunes']:
-                h += 18 * (0.5 + 0.5 * math.sin(x * 0.09 + y * 0.035 + ph))
-            # 梯田
-            if p['terraces']:
-                h += (math.floor(math.hypot(x - 128, y - 128) / 22) % 4) * 11
-            # 外围山脊
-            d = math.hypot(x - 128, y - 128)
-            if d > 98:
-                h += min(78 * diff, (d - 98) * 1.05) * (0.6 + 0.4 * math.sin(x * 0.06 + y * 0.04))
-            # 边界封边：缓坡 + 不规则起伏，避免整齐的方形高墙
-            edge = min(x, y, W - 1 - x, W - 1 - y)
-            boundary = edge < 14
-            if boundary:
-                h = max(h, 118 + (14 - edge) * 3.2 +
-                        16 * math.sin(x * 0.09) * math.cos(y * 0.075))
-            R = int(max(0, min(255, h)))
-            idx = 0 if R < 24 else 1 if R < 80 else 2 if R < 155 else 3
-            idx = max(0, min(3, idx + p['bias']))
-            G = m[2] if boundary else m[idx]      # 边界用岩，不用雪白
-            B = 255 if R < 85 else 128
-            if R < 18:            # 水面不可通行；跨水只能走布局图里的道路/桥
-                B = 0
-            if boundary or R > 175:
-                B = 0
-            px[x, y] = (R, G, B)
+    field = ts.fbm(W, seed, octaves=6, base_cells=3.0)
+    rgb = ts.compose(
+        field, seed,
+        base=p['base'], relief=relief, bias=p['bias'],
+        rivers=p['rivers'], craters=p['craters'], islands=p['islands'],
+        dunes=p['dunes'], terraces=p['terraces'], boundary=True)
+    img = ts.to_image(rgb)
+    px = img.load()
 
     # 两套时代层的所有战斗区都要落在可走平台上（物理层共用）。
     # 只压平高度、保留原地材质，避免战斗区变成突兀的纯色圆盘。
@@ -189,40 +145,11 @@ def gen_terrain(row, all_areas):
 
 
 def fast_minimap(terrain, layout, path, title):
-    small = Image.new('RGB', (W, W))
-    sp, tp, lp = small.load(), terrain.load(), layout.load()
-    for y in range(W):
-        for x in range(W):
-            R, G, B = tp[x, y]
-            lr = lp[x, y][0]
-            if lr in (60, 80, 100, 120):
-                base = (190, 84, 68)
-            elif lr == 200:
-                base = (196, 168, 108)
-            elif lr == 220:
-                base = (232, 196, 66)
-            elif lr == 240:
-                base = (70, 186, 200)
-            elif lr == 250:
-                base = (222, 92, 176)
-            else:
-                # G 决定材质色相，R 决定明度：不同区地貌直接体现在小地图上
-                if G < 64:      mat = (86, 132, 78)      # 草
-                elif G < 128:   mat = (198, 172, 106)    # 沙
-                elif G < 192:   mat = (150, 138, 118)    # 岩
-                else:           mat = (222, 224, 220)    # 雪
-                t = max(0.0, min(1.0, R / 190.0))
-                shade = 0.60 + 0.55 * t
-                base = tuple(int(min(255, c * shade)) for c in mat)
-                if B == 0 and R > 100:
-                    base = (96, 92, 86)                 # 边界 / 陡坡
-                elif R < 18:
-                    base = (86, 140, 176)               # 河道 / 海（B=0 但不是边界）
-            sp[x, y] = base
-    img = small.resize((512, 512), Image.NEAREST)
-    d = ImageDraw.Draw(img)
-    d.rectangle([8, 8, 420, 52], fill=(28, 26, 22))
-    d.text((18, 12), title, font=dm.F(24), fill=(238, 228, 200))
+    """Hillshaded, continuously shaded map with soft semantic overlays."""
+    import terrain_synth as ts
+    seed = sum((i + 1) * ord(ch) for i, ch in enumerate(title))
+    img = ts.cartographic_minimap(terrain, size=512, seed=seed,
+                                  title=title, overlays=layout)
     img.save(os.path.join(TILES, path))
 
 
@@ -293,9 +220,9 @@ def main():
                    (tid, code, row['route'], s1, s2, 'PASS' if ok else 'FAIL'))
     # 保持第 13 节文档列出的样板格 preview 文件名与新图一致
     import shutil
-    shutil.copy_file(os.path.join(TILES, 'r2c4_minimap.png'),
+    shutil.copyfile(os.path.join(TILES, 'r2c4_minimap.png'),
                     os.path.join(TILES, 'r2c4_preview_modern.png'))
-    shutil.copy_file(os.path.join(TILES, 'r2c4_minimap_sumer.png'),
+    shutil.copyfile(os.path.join(TILES, 'r2c4_minimap_sumer.png'),
                     os.path.join(TILES, 'r2c4_preview_sumer.png'))
     log.append('TOTAL=%d PASS=%d FAIL=%d' % (len(rows), passed, len(rows) - passed))
     with open(os.path.join(ROOT, 'tiles_check.txt'), 'w', encoding='utf-8') as f:

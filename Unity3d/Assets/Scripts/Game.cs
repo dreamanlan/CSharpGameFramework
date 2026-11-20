@@ -428,6 +428,41 @@ public class Game : MonoBehaviour
         GameControler.Release();
     }
 
+    // Art pass (design doc 43): the authored scenes use a flat SolidColor
+    // clear, Flat ambient and a single unshadowed directional light. Apply a
+    // coherent sky/ambient/fog/shadow setup at runtime instead of editing the
+    // 704 scene files (which would invalidate their baked NavMesh refs).
+    // Safe to call repeatedly; Resources.Load is cached by Unity.
+    private static bool s_AtmosphereApplied = false;
+    private static void ApplySceneAtmosphere()
+    {
+        Material sky = Resources.Load<Material>("Materials/BattleSkybox");
+        if (null != sky)
+        {
+            RenderSettings.skybox = sky;
+            RenderSettings.ambientMode = UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor = new Color(0.62f, 0.70f, 0.80f);
+            RenderSettings.ambientEquatorColor = new Color(0.48f, 0.50f, 0.47f);
+            RenderSettings.ambientGroundColor = new Color(0.28f, 0.26f, 0.22f);
+            RenderSettings.ambientIntensity = 1.0f;
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.ExponentialSquared;
+            RenderSettings.fogColor = new Color(0.68f, 0.74f, 0.80f);
+            RenderSettings.fogDensity = 0.0016f;
+            s_AtmosphereApplied = true;
+        }
+        Camera cam = Camera.main;
+        if (null != cam && s_AtmosphereApplied)
+            cam.clearFlags = CameraClearFlags.Skybox;
+        foreach (Light l in UnityEngine.Object.FindObjectsOfType<Light>())
+        {
+            if (null == l || l.type != LightType.Directional) continue;
+            l.shadows = LightShadows.Soft;
+            l.shadowStrength = 0.72f;
+            l.intensity = 1.15f;
+        }
+    }
+
     void OnLevelLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
         // An Additive battlefield is layered on top of an already loaded base
@@ -435,6 +470,7 @@ public class Game : MonoBehaviour
         // UiCamera/TopMenu and subscribe every OverHeadBar handler again.
         // Still call OverHeadBarManager.Init() (now idempotent) because a base
         // scene with buildIndex==2 never initialises it.
+        ApplySceneAtmosphere();
         if (loadSceneMode == LoadSceneMode.Additive) {
             OverHeadBarManager.Instance.Init();
             m_CameraController = new CameraController(Camera.main);
@@ -586,6 +622,7 @@ public class Game : MonoBehaviour
         // sceneLoaded fires before the story-scene cameras are disabled, so the
         // CameraController created in OnLevelLoaded may be bound to the wrong
         // camera. Rebind now that only the battle camera is active.
+        ApplySceneAtmosphere();
         if (Camera.main != null)
             m_CameraController = new CameraController(Camera.main);
     }

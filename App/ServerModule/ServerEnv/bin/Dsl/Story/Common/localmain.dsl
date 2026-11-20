@@ -9,14 +9,14 @@ story(local_main)
   {
     log("open_battle");
     open_battle($sceneId);
-    fire_message("set_map_image", "UITexture/Map1");
+    fire_message("set_map_image", "UITexture/WorldMap");
   };
   onmessage("on_battle_closed")params($objId,$unitId)
   {
     set_leader_id($objId);
     camera_follow($unitId);
     publish_gfx_event("loading_complete", "ui");
-    fire_message("set_map_image", "UITexture/Story1");
+    fire_message("set_map_image", "UITexture/WorldMap");
     wait(3000);
     fire_message("findnpc");
   };

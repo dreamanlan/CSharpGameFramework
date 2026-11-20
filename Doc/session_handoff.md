@@ -1,6 +1,8 @@
 # 会话交接摘要（压缩状态，2026-11-18）
 
-用途：本会话已很长，后续继续游戏开发时先读这份，避免重复翻历史。完整过程见 `Doc/lost_civilization_design.md`（第 1~42 节，含 29.6 关闭避让实验、第 30~34 节点击移动/相机/小地图、第 35 节 640 战场重构三阶段、第 36 节世界层接入运行时第一阶段、第 37/38 节名字板残留初查与真因修正、第 39 节战斗态隔离世界层同步实体、第 40 节战场固定原点与参照系、第 41 节域重载空引用修复、第 42 节战场对象归属 Additive Scene）；改名经验见 `Doc/api_rename_sop.md`。
+用途：本会话已很长，后续继续游戏开发时先读这份，避免重复翻历史。完整过程见 `Doc/lost_civilization_design.md`（第 1~43 节，含 29.6 关闭避让实验、第 30~34 节点击移动/相机/小地图、第 35 节 640 战场重构三阶段、第 36 节世界层接入运行时第一阶段、第 37/38 节名字板残留初查与真因修正、第 39 节战斗态隔离世界层同步实体、第 40 节战场固定原点与参照系、第 41 节域重载空引用修复、第 42 节战场对象归属 Additive Scene、第 43 节美术升级）；改名经验见 `Doc/api_rename_sop.md`。
+
+**美术管线（§43，重要）**：唯一数据源仍是 `Resource/MapDesign/battle_slots.txt`。地形/小地图由 `terrain_synth.py` + `draw_all_tiles.py`（64 格）/ `build_battlefield_art.py`（640 战场）/ `build_world_map.py`（4096 藏宝图）生成；改地形后必须依次重跑 `build_story.py`（出生高度）→ `dslcopy.bat Debug False`，再在 Unity 跑 `map_terrain_patch([tile_id])` **就地刷新 TerrainData**（不重建场景、不重烘 NavMesh）。新增命令：`map_terrain_patch` / `map_terrain_materials` / `map_skybox` / `map_worldmap_texture` / `map_nav_force([tile_id])`（就地覆盖重烘 NavMesh，不删资产、不断 guid）。`map_nav()` 仍是可中断续跑语义。**旧 `Assets/Content/Materials/water.mat` 的 shader 丢失（`Hidden/InternalErrorShader`），会渲染洋红，不要用**。档3 的 `DressScene` 装饰物绝不能带 Collider 或被标 `NavigationStatic`。本地 Python 已装 numpy 2.5.5。
 
 **战场加载/卸载（§42，重要）**：所有战斗期运行时对象由 `ResourceSystem.InitializeObject` 自动 `MoveGameObjectToScene` 到 Additive 战场 Scene；世界层实体（`IsServerEntity=true`）通过 `EntityViewModel_Base.CreateActor` 的 `DetachFromBattleScene` 回迁 base scene，绝不能一起销毁。卸载顺序固定为：`PluginFramework.UnloadBattle`（清实体/视图字典，**不回收对象**）→ `Game.UnloadBattle`（`RecycleBattleObjects` 回收池对象保持账本、`ClearBattleViews` 清血条字典、`yield return UnloadSceneAsync` 真正等待、`ClearBattleScene`）。**卸载阶段禁止 `RecycleObject`**：它把对象挂回 `DontDestroyOnLoad` 的 ResPool，会逃过 Scene 卸载。新增持有运行时对象的管理器时必须同步补字典清理。`Camera`/`Light` 隐藏、`Init` 幂等、`AddActor`/`MiniMap` 的 inBattle 过滤仍保留（双相机/双光源 + 房间服务器战斗期仍同步世界层）。
 
@@ -63,8 +65,11 @@
 | 40 | 战场固定原点 8192 + 逻辑实体参照系：640 场景/NavMesh 就地平移、免 5.4h 重烘、实机验证 |
 | 41 | OverHeadBar.LateUpdate 空引用：域重载清空非序列化私有字段且 Start 不重跑，改惰性自愈 |
 | 42 | 方案 A：战场对象归属 Additive Scene，干净加载/卸载，删隐藏补丁并实机验证 |
+| 43 | 美术升级档2/档1/档3：程序化地形、晕渲地图、连续材质、天空盒、场景装饰（进行中） |
 
 ## 4. 未完成 / 下一步（按建议优先级）
+
+-4. ~~**美术升级档2/档1/档3 全部完成并实机验证（2026-11-21 02:56）**~~：`map_build()` 重建 704 场景 → `map_nav_force()` 重烘 640 NavMesh → `map_battle_origin()` 幂等（`moved=0 skipped=640 navShifted=0`）→ `map_verify total=704 pass=704 fail=0` → Play 连跑 7 场 `10001~10008` 全部两波结算闭环、`combat_probe entities=25 overheadBars=25 orphans=0` 不累积、日志 4000 行无异常；`RenderSettings.skybox` 非 null / `Trilight` / `fog=True` / `Camera.main.clearFlags=Skybox` 证明档1 运行时氛围生效。详见 `lost_civilization_design.md` §43.5/§43.7。**保留约束**：装饰物绝不能带 Collider 或被标 `NavigationStatic`（`BakeOneBattleScene` 烘焙时会禁用 `Scenery` 再恢复）；改地形后用 `map_nav_force()` 就地覆盖重烘，**不要删 `NavMesh.asset`**（会断 guid）；`map_nav()` 不带 force 仍是断点续跑语义。
 
 -3. ~~**战场干净加载/卸载（2026-11-20 已完成并实机验证）**~~：方案 A 已落地（§42），战斗对象归属 Additive 战场 Scene、`UnloadSceneAsync` 真正 await、卸载前回收池对象保持账本；已删除 `HideWorldSceneActors` / `RestoreWorldSceneActors` / `PurgeOrphans` 与两处调用，`m_HiddenWorldActors` 字段一并移除。实机连跑 5 场：战斗中 5 个血条归战场 Scene、20 个世界层血条归 base scene；卸载后 `scenes=1`、`entities=20 overheadBars=20 orphans=0`，不累积、无异常。**剩余**：`Camera`/`Light` 隐藏（双相机/双光源，需统一场景模板后才能删）、`AddActor`/`MiniMap` 的 inBattle 过滤（房间服务器战斗期仍同步世界层）、`BulletManager`/`EffectManager` 字典可能持有已回收 inactive 引用（当前无异常，长战斗需补 `Clear()`）。
 -3b. **技能触发器坐标约定待核对（2026-11-20，未做）**：`TransformTrigger.cs:88`、`MovementTrigger.cs:87,267-286,353-389`、`GeneralCommands.cs:1018/1177/1179` 的 `m_Postion`/`word_target_pos`/`create_game_object`/`set_transform` 是否含逻辑绝对坐标尚未逐一验证；当前战斗链未触发这些分支。`Game.cs:779` 的 `CameraPosition` 未找到发送方（疑为遗留）。详见 §40.5。

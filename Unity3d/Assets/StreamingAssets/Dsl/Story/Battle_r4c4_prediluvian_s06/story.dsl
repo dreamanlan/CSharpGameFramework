@@ -10,11 +10,11 @@ story(battle_main)
   };
   onmessage("start")
   {
-    create_npc(1000,vector3(60,16.7,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
+    create_npc(1000,vector3(60,16.5,70),0,3,1,"ai_player",string_list("Ai/ailogic_player.dsl"));
     set_leader_id(unit_id_2_obj_id(1000));
     npc_set_formation(1000,0);
     loop(4){
-      create_npc(1001+$$,vector3(60+rnd_int(0,10),16.7,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),unit_id_2_obj_id(1000));
+      create_npc(1001+$$,vector3(60+rnd_int(0,10),16.5,70+rnd_int(0,10)),0,3,$$+2,"ai_member",string_list("Ai/ailogic_member.dsl"),unit_id_2_obj_id(1000));
       npc_set_formation(1001+$$,$$+1);
     };
     camera_follow();
