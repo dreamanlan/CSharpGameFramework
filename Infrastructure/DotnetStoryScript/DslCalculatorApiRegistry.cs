@@ -3806,6 +3806,7 @@ namespace DotnetStoryScript.DslExpression
             Register("!", "logical not operator", new ExpressionFactoryHelper<NotExp>());
             Register("?", "conditional expression", new ExpressionFactoryHelper<CondExp>());
             Register("if", "if(cond)func(args); or if(cond){...}[elseif/elif(cond){...}else{...}]; statement", new ExpressionFactoryHelper<IfExp>());
+            Register("try", "try{...}[catch[(err)]{...}][finally{...}]; at least one catch/finally clause is required", new ExpressionFactoryHelper<TryExp>());
             Register("while", "while(cond)func(args); or while(cond){...}; statement, iterator is $$", new ExpressionFactoryHelper<WhileExp>());
             Register("loop", "loop(ct)func(args); or loop(ct){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopExp>());
             Register("loop_list", "loop_list(list)func(args); or loop_list(list){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopListExp>());
@@ -3835,6 +3836,7 @@ namespace DotnetStoryScript.DslExpression
             Register("dotnet_new", "dotnet_new(assembly,type_name,arg1,arg2,...) api", new ExpressionFactoryHelper<DotnetNewExp>());
             Register("call_stack", "call_stack() api", new ExpressionFactoryHelper<CallStackExp>());
             Register("call", "call(func_name,arg1,arg2,...) api", new ExpressionFactoryHelper<CallExp>());
+            Register("throw", "throw([exception_or_message]) api; no argument rethrows the current catch exception", new ExpressionFactoryHelper<ThrowExp>());
             Register("return", "return([val]) api", new ExpressionFactoryHelper<ReturnExp>());
             Register("redirect", "redirect(arg1,arg2,...) api", new ExpressionFactoryHelper<RedirectExp>());
             Register("prop_set", "prop_set(varname,val) - set variable", new ExpressionFactoryHelper<PropSetExp>());

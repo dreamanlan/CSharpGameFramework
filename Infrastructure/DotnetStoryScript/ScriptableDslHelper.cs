@@ -18,7 +18,10 @@ namespace DotnetStoryScript
             PAIR_TAG_LOOPI,
             PAIR_TAG_LOOPD,
             PAIR_TAG_LOOPLIST,
-            PAIR_TAG_LAST = PAIR_TAG_LOOPLIST
+            PAIR_TAG_TRY,
+            PAIR_TAG_CATCH,
+            PAIR_TAG_FINALLY,
+            PAIR_TAG_LAST = PAIR_TAG_FINALLY
         }
 
         public Dictionary<string, uint> NameTags { get => m_NameTags; set => m_NameTags = value; }
@@ -147,7 +150,10 @@ namespace DotnetStoryScript
                 { "loop", (int)PairTagEnum.PAIR_TAG_LOOP },
                 { "loopi", (int)PairTagEnum.PAIR_TAG_LOOPI },
                 { "loopd", (int)PairTagEnum.PAIR_TAG_LOOPD },
-                { "loop_list", (int)PairTagEnum.PAIR_TAG_LOOPLIST }
+                { "loop_list", (int)PairTagEnum.PAIR_TAG_LOOPLIST },
+                { "try", (int)PairTagEnum.PAIR_TAG_TRY },
+                { "catch", (int)PairTagEnum.PAIR_TAG_CATCH },
+                { "finally", (int)PairTagEnum.PAIR_TAG_FINALLY }
             };
         private Dictionary<string, string> m_FirstLastKeyOfCompoundStatements = new Dictionary<string, string> {
                 { "if", "else" },
@@ -157,6 +163,7 @@ namespace DotnetStoryScript
                 { "loopi", "loopi" },
                 { "loopd", "loopd" },
                 { "loop_list", "loop_list" },
+                { "try", "finally" },
                 { "struct", "struct" }
             };
         private Dictionary<string, HashSet<string>> m_SuccessorsOfCompoundStatements = new Dictionary<string, HashSet<string>> {
@@ -164,6 +171,9 @@ namespace DotnetStoryScript
                 { "elseif", new HashSet<string> { "elseif", "elif", "else" } },
                 { "elif", new HashSet<string> { "elseif", "elif", "else" } },
                 { "else", new HashSet<string> { } },
+                { "try", new HashSet<string> { "catch", "finally" } },
+                { "catch", new HashSet<string> { "finally" } },
+                { "finally", new HashSet<string> { } },
                 { "while", new HashSet<string> { } },
                 { "for_each_value", new HashSet<string> { } },
                 { "loop", new HashSet<string> { } },
@@ -182,6 +192,7 @@ namespace DotnetStoryScript
                 "loopi",
                 "loopd",
                 "loop_list",
+                "try",
                 "struct",
                 "script",
                 "story"
